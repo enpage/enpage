@@ -1,0 +1,50 @@
+{
+  "name": "@enpage/types",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./datasources": {
+      "import": "./src/datasources.ts",
+      "types": "./src/datasources.ts"
+    },
+    "./metadata": {
+      "import": "./src/metadata.ts",
+      "types": "./src/metadata.ts"
+    },
+    "./responsive": {
+      "import": "./src/responsive.ts",
+      "types": "./src/responsive.ts"
+    },
+    "./settings": {
+      "import": "./src/settings.ts",
+      "types": "./src/settings.ts"
+    },
+    "./template": {
+      "import": "./src/template.ts",
+      "types": "./src/template.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "zod": "3.23.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "goober": "2.1.14"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

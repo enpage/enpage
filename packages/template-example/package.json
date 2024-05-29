@@ -1,0 +1,80 @@
+{
+  "name": "template-example",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "module": "./src/index.tsx",
+  "types": "./dist/template.tsx",
+  "exports": {
+    ".": {
+      "import": "./src/index.tsx",
+      "types": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build -c vite.config.build.ts",
+    "purge": "purgecss --css dist/*.css --content src/template.tsx --output dist && ls -lha dist",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@enpage/sdk": "workspace:*",
+    "@prerenderer/renderer-jsdom": "1.1.9",
+    "@prerenderer/renderer-puppeteer": "1.2.4",
+    "@prerenderer/rollup-plugin": "0.3.12",
+    "@types/react": "workspace:*",
+    "@types/react-dom": "workspace:*",
+    "@vanilla-extract/css": "1.15.2",
+    "@vanilla-extract/esbuild-plugin": "2.3.6",
+    "@vanilla-extract/vite-plugin": "4.0.10",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "10.4.19",
+    "cssnano": "7.0.1",
+    "enpage-eslint-config": "workspace:*",
+    "postcss": "8.4.38",
+    "purgecss": "6.0.0",
+    "rollup-plugin-visualizer": "5.12.0",
+    "vite": "^5.2.0",
+    "vite-plugin-dts": "3.9.1",
+    "vite-plugin-prerender": "1.0.8",
+    "vite-tsconfig-paths": "4.3.2"
+  },
+  "dependencies": {
+    "@enpage/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "@enpage/sdk": "workspace:*",
+    "@enpage/style-system": "workspace:*",
+    "@enpage/tailwind-preset": "workspace:*",
+    "react": "workspace:*",
+    "react-dom": "workspace:*",
+    "tailwindcss": "workspace:*",
+    "zod": "3.23.8"
+  },
+  "keywords": [],
+  "author": "Matthias Etienne",
+  "license": "MIT",
+  "tags": [
+    "enpage-template"
+  ],
+  "enpage": {
+    "id": "com.example.hello-world",
+    "version": "1.0.0",
+    "name": "Hello World",
+    "description": "A simple template that says hello.",
+    "outline-color": "#FF9900",
+    "tags": [
+      "hello",
+      "world"
+    ],
+    "author": "John Doe",
+    "thumbnail": "https://example.com/thumbnail.png",
+    "homepage": "https://example.com"
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "emotion"
+    }
+  }
+}

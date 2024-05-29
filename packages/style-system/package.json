@@ -1,0 +1,39 @@
+{
+  "name": "@enpage/style-system",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./style.css": {
+      "import": "./src/style.css.ts",
+      "types": "./src/style.css.ts"
+    },
+    "./style.css.ts": {
+      "import": "./src/style.css.ts",
+      "types": "./src/style.css.ts"
+    },
+    "./reset.css": {
+      "import": "./src/reset.css"
+    },
+    "./editor.css": {
+      "import": "./src/editor.css"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vanilla-extract/css": "1.15.2",
+    "polished": "4.3.1",
+    "rainbow-sprinkles": "0.17.1"
+  }
+}

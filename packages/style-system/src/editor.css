@@ -1,0 +1,48 @@
+[data-group] {
+  position: relative;
+}
+
+/** Outline all over the parent **/
+[data-group]::before {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  outline: 3px dashed #8f93d8;
+  outline-offset: 3px;
+  border-radius: inherit;
+  user-select: none;
+  transition: opacity 0.3s;
+}
+
+[data-group]::after {
+  position: absolute;
+  opacity: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  content: attr(data-label) " ";
+  min-width: 3rem;
+  height: 1.7rem;
+  color: #fff;
+  background-color: #8f93d8;
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 1rem;
+  left: -6px;
+  bottom: calc(100% + 3px);
+  user-select: none;
+  transition: opacity 0.3s;
+}
+
+[data-group].active::before,
+[data-group].active::after,
+[data-group]:hover::before,
+[data-group]:focus::before,
+[data-group]:hover::after,
+[data-group]:focus::after {
+  opacity: 1;
+}
