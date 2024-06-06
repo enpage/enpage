@@ -11,14 +11,15 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "allowJs": true,
-    "noEmit": true,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    // "noEmit": true,
     "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vite/client", "./custom-attrs.d.ts"]
+    "outDir": "dist"
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

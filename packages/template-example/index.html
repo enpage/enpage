@@ -1,15 +1,28 @@
-<!doctype html>
-<html lang="en">
+<!--
+This is an example of a Enpage template.
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enpage template demo</title>
-</head>
+Enpage handles a few specific attributes that are used to control the appearance and behavior of the page.
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/demo/index.tsx"></script>
-</body>
+You can also use pre-built web components from the @enpage/template-utils package.
 
-</html>
+Important:
+
+- A template MUST a least have one <section>.
+- Multiple <section> elements allow to simulate a multi-pages website.
+- When using multiple <section> elements, the first one is considered the home page.
+
+-->
+
+<!-- Script must be load as module. ES modules are deferrered by default, so they can access the DOM without problem -->
+<script type="module">
+  // `isEditorMode === true` when the page is being edited in the Enpage editor
+  import { enpage, isEditorMode } from '@enpage/sdk';
+
+</script>
+
+
+<section>
+  <div class="w-full bg-red-700" --data-container onclick="enpage.submitForm('#myform')">
+    Hellooooo
+  </div>
+</section>

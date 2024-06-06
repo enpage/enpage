@@ -1,6 +1,5 @@
 import type { ElementType } from "react";
 import { DatasourceManifestMap, AttributesMap } from "@enpage/types";
-import type { Styles } from "./styles.css";
 import type Zod from "zod";
 
 export type Customization =
@@ -18,9 +17,7 @@ export type Customization =
   | "transform"
   | "animation";
 
-type ResponsiveValue<T> = T | { mobile: T; tablet?: T; desktop?: T };
-
-interface CoreProps {
+export interface CoreProps {
   customizations?: Customization | Customization[];
   visibleAnimation?: string;
   visibleAnimationDuration?: string;
@@ -28,6 +25,9 @@ interface CoreProps {
   hoverAnimationDuration?: string;
   as?: ElementType;
   label?: string;
+  editable?: boolean;
+  id: string;
+  // dynamicStyles?: Record<string, unknown>;
 }
 
 interface Duplicatable {
@@ -76,6 +76,20 @@ export interface ElementProps extends CoreProps, Duplicatable {
   preventReordering?: never;
 }
 
+export interface IconProps extends CoreProps, Duplicatable {
+  blockType: "icon";
+  slug: string;
+  color?: string;
+  textEditable?: never;
+  preventReordering?: never;
+}
+
+export interface ImageProps extends CoreProps, Duplicatable {
+  blockType: "image";
+  textEditable?: never;
+  preventReordering?: never;
+}
+
 export interface WidgetProps extends CoreProps, Duplicatable {
   blockType: "widget";
   textEditable?: never;
@@ -94,14 +108,15 @@ export type PropTypes =
   | SectionsProps
   | SectionProps
   | ElementProps
+  | ImageProps
+  | IconProps
   | WidgetProps
   | TextProps;
 
 export type BlockProps<
   E extends ElementType,
   P extends PropTypes,
-  StylesProps,
-> = React.ComponentPropsWithoutRef<E> & StylesProps & P;
+> = React.ComponentPropsWithoutRef<E> & P;
 
 export type DataTemplateProp<D extends DatasourceManifestMap> = {
   [key in keyof D]: Zod.infer<D[key]["schema"]>;
@@ -116,6 +131,43 @@ export type TemplateProps<
   Settings extends AttributesMap = {},
 > = {
   data: DataTemplateProp<Datasources>;
-  styles: Record<string, Styles>;
+  styles: Record<string, unknown>;
   attributes: Partial<AttributesTemplateProp<Settings>>;
 };
+
+export type CSSVarName = string;
+export type CSSVarValue = string | number;
+
+export type ResponsiveValue<T> =
+  | T
+  | {
+      mobile?: T;
+      tablet?: T;
+      desktop?: T;
+      mobileOnly?: T;
+      tabletOnly?: T;
+      desktopOnly?: T;
+      maxMobile?: T;
+      maxTablet?: T;
+    };
+
+export type CSSVarDescriptor = {
+  name: CSSVarName;
+  cssProp: string;
+  globalValue?: CSSVarValue;
+  localValues: Map<ElementId, ResponsiveValue<CSSVarValue>>;
+};
+
+export type CSSVarRegistry = Map<symbol, CSSVarDescriptor>;
+
+export type CSSClassesReg = Map<string, Map<CSSVarName, CSSVarValue>>;
+export type ElementId = string;
+
+export type DynamicStylesArg = Record<
+  symbol,
+  ResponsiveValue<CSSVarValue> | undefined | null
+>;
+
+export interface Editor {
+  onSelectBlock: (blockId: string) => void;
+}

@@ -6,6 +6,9 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "jsx": "react-jsx"
-  }
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "typeRoots": ["vendor/types", "node_modules", "node_modules/@types"]
+  },
+  "include": ["vite.config.ts"]
 }

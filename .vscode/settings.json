@@ -1,26 +1,10 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "always"
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnType": false,
   "files.eol": "\n",
-
-  // from https://github.com/ben-rogerson/twin.macro/discussions/227
-  // helps tailwind intellisense work with twin.macro
-  "scss.validate": false,
-  "editor.quickSuggestions": {
-    "strings": true
-  },
-  "editor.autoClosingQuotes": "always",
-  "tailwindCSS.experimental.classRegex": [
-    "tw`([^`]*)", // tw`...`
-    "tw=\"([^\"]*)", // <div tw="..." />
-    "tw={\"([^\"}]*)", // <div tw={"..."} />
-    "tw\\.\\w+`([^`]*)", // tw.xxx`...`
-    "tw\\(.*?\\)`([^`]*)" // tw(Component)`...`
-  ],
   "tailwindCSS.includeLanguages": {
     "typescript": "javascript",
     "typescriptreact": "javascript"
@@ -28,5 +12,8 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "typescript.tsdk": "./node_modules/typescript/lib"
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "lit-plugin.strict": true,
+  "editor.rulers": [120],
+  "html.customData": ["./.vscode/html-custom-data.json"]
 }

@@ -9,6 +9,7 @@ export const datasources = {
       z.object({
         title: z.string(),
         url: z.string(),
+        icon: z.string(),
       }),
     ),
     sampleData: [

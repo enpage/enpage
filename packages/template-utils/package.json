@@ -1,0 +1,42 @@
+{
+  "name": "@enpage/template-utils",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "types": "dist/vite-plugin.d.ts",
+  "exports": {
+    "./vite-plugin": {
+      "import": "./dist/vite-plugin.js",
+      "require": "./dist/vite-plugin.cjs",
+      "types": "./dist/vite-plugin.d.ts"
+    },
+    "./demo/*": {
+      "import": "./dist/demo/*",
+      "require": "./dist/demo/*"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsup --watch",
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@enpage/sdk": "workspace:*",
+    "react": "workspace:*",
+    "react-dom": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "tsup": "8.0.2",
+    "vite": "5.2.12",
+    "vite-plugin-cdn-import": "1.0.1",
+    "vite-plugin-externalize-deps": "0.8.0",
+    "vite-plugin-html": "3.2.2",
+    "vite-tsconfig-paths": "^4.3.2"
+  }
+}
