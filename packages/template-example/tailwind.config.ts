@@ -1,12 +1,14 @@
 export default {
   presets: [require("@enpage/style-system/tailwind-preset")],
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./**/*.{js,ts}",
     "./index.html",
-    "node_modules/@enpage/sdk/src/**/*.{js,jsx,ts,tsx}",
-    "node_modules/@enpage/style-system/src/**/*.{js,jsx,ts,tsx}",
+    // keep the following 2 lines
+    "node_modules/@enpage/sdk/src/**/*.{js,ts}",
+    "node_modules/@enpage/style-system/src/**/*.{js,ts}",
   ],
   theme: {
+    // you can extend the theme here
     extend: {},
   },
 };

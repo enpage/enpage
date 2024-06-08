@@ -6,7 +6,6 @@ import transform3d from "tailwindcss-3d";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/**/*.html"],
   theme: {
     extend: {
       colors: {

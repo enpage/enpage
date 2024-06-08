@@ -20,8 +20,6 @@
     "@lit/context": "1.1.2",
     "@lit/reactive-element": "2.0.4",
     "@twind/core": "1.1.3",
-    "@twind/preset-tailwind": "1.1.4",
-    "@twind/with-web-components": "1.1.3",
     "clsx": "2.1.1",
     "immer": "10.1.1",
     "lit": "^3.1.4",
@@ -31,7 +29,6 @@
     "polished": "4.3.1",
     "style-vendorizer": "2.2.3",
     "tiny-invariant": "1.3.3",
-    "twind": "0.16.19",
     "zod": "workspace:*"
   },
   "peerDependencies": {

@@ -26,6 +26,7 @@
     "enpage-eslint-config": "workspace:*",
     "html-minifier": "4.0.0",
     "postcss": "8.4.38",
+    "postcss-import": "16.1.0",
     "rollup-plugin-visualizer": "5.12.0",
     "scheduler": "0.23.2",
     "vite": "^5.2.0",

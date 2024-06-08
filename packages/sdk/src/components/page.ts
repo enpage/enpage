@@ -21,11 +21,13 @@ class EnpagePage extends LitElement {
   }
 
   fetchData() {
-    const scriptTag = document.querySelector("script#enpage-context");
+    const scriptTag =
+      document.querySelector("script#enpage-context") ?? document.querySelector("script#enpage-sample-data");
     if (scriptTag) {
       try {
         if (!scriptTag.textContent) throw new Error();
         this.data = JSON.parse(scriptTag.textContent);
+        console.info("enpage-page data", this.data);
       } catch (e) {
         console.error("Invalid JSON data in script tag.", e);
       }

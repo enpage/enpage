@@ -1,6 +1,6 @@
 // @ts-check
 import { defineDataSources, enpage, z } from "@enpage/sdk";
-import "@enpage/sdk/components";
+// import "@enpage/sdk/components";
 
 defineDataSources({
   links: {

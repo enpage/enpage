@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <!--
 This is an example of a Enpage template.
@@ -13,62 +13,62 @@ Important:
 - A template MUST a least have one <section>.
 - Multiple <section> elements allow to simulate a multi-pages website.
 - When using multiple <section> elements, the first one is considered the home page.
-
 -->
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enpage template demo</title>
+  <!--
+    Not mandatory but recommended to use the Enpage CSS utility classes (based on Tailwind CSS).
+   -->
   <style>
-    /* Use the tailwind styles provided by Enpage (already includes some common tailwind plugins) */
     @import "@enpage/style-system/tailwind.css";
   </style>
-  <!-- make sure to import Enpage components -->
-  <!-- <script type="module" src="@enpage/sdk/components"></script> -->
-  <!-- Script must be load as module. ES modules are deferrered by default, so they can access the DOM without problem -->
+  <!--
+    Scripts MUST be loaded as modules (type="module").
+    Modules being deferrered by default, they can access the DOM immediately.
+   -->
   <script type="module" src="./index.js"></script>
 
   <script type="application/json" id="enpage-context">
-    {
-      "links": [
-        { "url": "http://instagram.com/1", "name": "Photo 1", "title": "Title 1" },
-        { "url": "http://instagram.com/2", "name": "Photo 2", "title": "Title 2" }
-      ],
-      "liked_videos": [
-        { "url": "http://youtube.com/1", "name": "Video 1", "title": "Title 1" },
-        { "url": "http://youtube.com/2", "name": "Video 2", "title": "Title 2" }
-      ],
-      "latest_videos": [
-      ]
-    }
-  </script>
-
+      {
+        "links": [
+          { "url": "http://instagram.com/", "name": "Instagram", "title": "Instagram" },
+          { "url": "http://facebook.com/", "name": "Facebook", "title": "Facebook" }
+        ],
+        "liked_videos": [
+          { "url": "http://youtube.com/1", "name": "Video 1", "title": "Title 1" },
+          { "url": "http://youtube.com/2", "name": "Video 2", "title": "Title 2" }
+        ],
+        "latest_videos": []
+      }
+    </script>
 </head>
 
 <enpage-page>
 
   <body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
-    <section class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 md:gap-16
-                  rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl
-                  max-sm:flex-col md:p-20">
-      <img id="profile-pic" src="/profile.webp" class="aspect-square w-auto rounded-xl max-h-64 self-start"
+    <section
+             class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+      <img id="profile-pic" src="/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
            label="Profile picture" />
       <div class="flex-1">
-        <p id="section-2" --data-label="Title" --data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
+        <p id="section-2" data-label="Title" data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
           Samantha Smith
         </p>
-        <p id="subtitle" --data-label="Subtitle" class="text-base font-thin" --data-text-editable="plain">
+        <p id="subtitle" data-label="Subtitle" class="text-base font-thin" data-text-editable="plain">
           General Manager @ Acme Corp
         </p>
-        <my-component>
-          <p class="bg-red-800 p-2 text-white">My custom component</p>
-        </my-component>
         <!-- Make use of Enpage-provided components to handle loops and conditions -->
         <ul class="mt-10 flex w-full flex-col gap-2">
-          <enpage-loop range="1-3">
-            <li class="flex items-center gap-3 p-2.5 rounded-md bg-white/10 text-white/80 hover:bg-white/20
-        group-hover/editor:bg-white/10"><a data-bind="value"></a></li>
+          <enpage-loop contextpath="links">
+            <template>
+              <li
+                  class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+                <a class="flex-1 p-2.5" data-bind-attr="href:url, title" data-bind="name"></a>
+              </li>
+            </template>
           </enpage-loop>
         </ul>
       </div>
