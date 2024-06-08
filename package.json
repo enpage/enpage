@@ -28,6 +28,7 @@
       "react-dom": "18.3.1",
       "@types/react": "18.3.2",
       "@types/react-dom": "18.3.0",
+      "@types/node": "^20.0.0",
       "goober": "2.1.14",
       "zod": "3.23.8",
       "twin.macro": "3.4.1",
@@ -54,7 +55,7 @@
     "prettier-plugin-classnames": "0.6.6",
     "prettier-plugin-tailwindcss": "0.5.14",
     "tailwindcss": "*",
-    "typescript": "*",
+    "typescript": "latest",
     "typescript-eslint": "*"
   }
 }

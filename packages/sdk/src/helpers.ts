@@ -8,7 +8,7 @@ import {
   AttrUrl,
   AttrColor,
 } from "@enpage/types";
-import { RunContextType } from "./hooks/use-run-context";
+import { RunContextType } from "./types";
 export * from "clsx";
 
 export const attr = {
@@ -34,10 +34,7 @@ export const attr = {
       ...opts,
     } as const satisfies AttrBoolean;
   },
-  enum<O extends string>(
-    name: string,
-    opts: Omit<AttrEnum<O>, "name" | "type">,
-  ) {
+  enum<O extends string>(name: string, opts: Omit<AttrEnum<O>, "name" | "type">) {
     return {
       type: "enum",
       name,

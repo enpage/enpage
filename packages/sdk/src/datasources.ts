@@ -1,3 +1,5 @@
 import { DatasourceManifestMap } from "@enpage/types/datasources";
 
-export {};
+export function defineDataSources(datasources: DatasourceManifestMap) {
+  return datasources;
+}

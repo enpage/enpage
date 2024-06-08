@@ -7,3 +7,5 @@ export * from "./helpers";
 // export * from "./hooks/use-attribute";
 // export * from "./hooks/use-datasource";
 export * from "./dynamic-css";
+export { html, css } from "lit-element";
+export { default as z } from "zod";

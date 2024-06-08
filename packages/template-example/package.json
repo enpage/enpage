@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "module": "./src/index.tsx",
+  "module": "./index.js",
   "types": "./dist/template.tsx",
   "exports": {
     ".": "./dist/template.js",
@@ -17,12 +17,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "6.0.0",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "10.4.19",
     "cssnano": "7.0.1",
     "enpage-eslint-config": "workspace:*",
+    "html-minifier": "4.0.0",
     "postcss": "8.4.38",
     "rollup-plugin-visualizer": "5.12.0",
     "scheduler": "0.23.2",
@@ -32,15 +34,15 @@
     "vite-tsconfig-paths": "4.3.2"
   },
   "dependencies": {
-    "@enpage/types": "workspace:*",
     "@enpage/sdk": "workspace:*",
+    "@enpage/style-system": "workspace:*",
+    "@enpage/template-utils": "workspace:*",
+    "@enpage/types": "workspace:*",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
     "react-icons": "5.2.1",
     "tailwindcss": "workspace:*",
-    "zod": "workspace:*",
-    "@enpage/style-system": "workspace:*",
-    "@enpage/template-utils": "workspace:*"
+    "zod": "workspace:*"
   },
   "peerDependencies": {
     "@enpage/sdk": "workspace:*",

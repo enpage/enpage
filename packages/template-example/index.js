@@ -1,8 +1,8 @@
-import { DatasourceManifestMap } from "@enpage/types";
-import z from "zod";
+// @ts-check
+import { defineDataSources, enpage, z } from "@enpage/sdk";
+import "@enpage/sdk/components";
 
-// Datasources of the template
-export const datasources = {
+defineDataSources({
   links: {
     name: "Links",
     schema: z.array(
@@ -17,6 +17,12 @@ export const datasources = {
       { title: "GitHub", url: "https://enpage.io/github" },
     ],
   },
-} satisfies DatasourceManifestMap;
-
-export type Datasources = typeof datasources;
+  videos: {
+    provider: "youtube",
+    name: "My Videos",
+    sampleData: [{ id: "dQw4w9WgXcQ" }, { id: "KMU0tzLwhbE" }],
+    schema: z.object({
+      id: z.string(),
+    }),
+  },
+});

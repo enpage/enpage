@@ -1,15 +1,7 @@
-import React from "react";
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
-import type { CSSProperties } from "react";
-import {
-  CSSClassesReg,
-  DynamicStylesArg,
-  ResponsiveValue,
-  CSSVarName,
-  CSSVarRegistry,
-  CSSVarValue,
-} from "./types";
+import { CSSClassesReg, DynamicStylesArg, ResponsiveValue, CSSVarName, CSSVarRegistry, CSSVarValue } from "./types";
+import type * as CSS from "csstype";
 
 export class CSSRegistry {
   constructor(
@@ -24,11 +16,7 @@ export class CSSRegistry {
   }
 
   // Method to add a new CSS variable scoped to a specific element
-  public createVar(
-    cssProp: keyof CSSProperties,
-    globalValue?: CSSVarValue,
-    debugName?: string,
-  ): symbol {
+  public createVar(cssProp: keyof CSS.Properties, globalValue?: CSSVarValue, debugName?: string): symbol {
     const key = Symbol(cssProp);
     const nano = nanoid(6);
     const name = this.debugMode ? debugName + "-" + nano : nano;
@@ -43,11 +31,7 @@ export class CSSRegistry {
     return key;
   }
 
-  registerClassProperty(
-    className: string,
-    cssProp: CSSVarName,
-    cssVal: CSSVarValue,
-  ) {
+  registerClassProperty(className: string, cssProp: CSSVarName, cssVal: CSSVarValue) {
     const existingProps = this.classesReg.get(className) ?? new Map();
     existingProps.set(cssProp, cssVal);
     this.classesReg.set(className, existingProps);
@@ -145,15 +129,15 @@ export const createVar = registry.createVar.bind(registry);
 // export const getClasses = registry.getClasses.bind(registry);
 export const dynamicStyles = registry.dynamicStyles.bind(registry);
 
-export function DynamicCSS() {
-  return (
-    <style>
-      {`
-        :root {
-          ${registry.getRootVars()}
-        }
-        ${registry.getClasses()}
-      `}
-    </style>
-  );
-}
+// export function DynamicCSS() {
+//   // return (
+//   //   <style>
+//   //     {`
+//   //       :root {
+//   //         ${registry.getRootVars()}
+//   //       }
+//   //       ${registry.getClasses()}
+//   //     `}
+//   //   </style>
+//   // );
+// }

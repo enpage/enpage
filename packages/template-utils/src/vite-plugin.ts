@@ -1,12 +1,8 @@
 import type { UserConfig, Plugin } from "vite";
-import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { createHtmlPlugin } from "vite-plugin-html";
 import { join, resolve, dirname } from "path";
 import { readFileSync } from "fs";
-
-const enpageVirtualModuleId = "virtual:enpage-template";
-const enpageResolvedVirtualModuleId = "\0" + enpageVirtualModuleId;
 
 // return partial config (recommended)
 const viteEnpagePlugin = (): Plugin => {
@@ -20,13 +16,9 @@ const viteEnpagePlugin = (): Plugin => {
     config: (cfg, { command }): UserConfig => {
       console.log("templateFile", templateFile);
       return {
-        plugins: [tsconfigPaths(), react()],
+        plugins: [tsconfigPaths()],
         resolve: {
           preserveSymlinks: true,
-          dedupe: ["react", "react-dom"],
-          alias: {
-            [enpageVirtualModuleId]: templateFile,
-          },
         },
         optimizeDeps: {
           include: ["@enpage/sdk", "@enpage/style-system"],
@@ -34,7 +26,7 @@ const viteEnpagePlugin = (): Plugin => {
         build: {
           sourcemap: true,
           lib: {
-            entry: templateFile,
+            entry: "index.html",
             // name: "EnpageTemplate",
             formats: ["es"],
             fileName: "template",
@@ -43,12 +35,10 @@ const viteEnpagePlugin = (): Plugin => {
             input: {
               "index.html": "index.html",
             },
-            external: ["zod", "react", "react/jsx-runtime", "react-dom", "@enpage/sdk"],
+            external: ["zod", "@enpage/sdk"],
             output: {
               esModule: true,
               globals: {
-                react: "React",
-                "react-dom": "ReactDOM",
                 zod: "Zod",
                 "@enpage/sdk": "Enpage",
                 "@enpage/style-system": "StyleSystem",

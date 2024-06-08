@@ -12,14 +12,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowJs": true,
+    "checkJs": true,
     "noEmit": true,
     "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vite/client", "./custom-attrs.d.ts"]
+    "types": ["vite/client", "./custom-attrs.d.ts", "@enpage/sdk/components"]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["*.html", "src"]
 }

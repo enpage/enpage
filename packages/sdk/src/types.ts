@@ -1,6 +1,6 @@
-import type { ElementType } from "react";
 import { DatasourceManifestMap, AttributesMap } from "@enpage/types";
 import type Zod from "zod";
+import { type CSSRegistry } from "./dynamic-css";
 
 export type Customization =
   | "none"
@@ -23,7 +23,6 @@ export interface CoreProps {
   visibleAnimationDuration?: string;
   hoverAnimation?: string;
   hoverAnimationDuration?: string;
-  as?: ElementType;
   label?: string;
   editable?: boolean;
   id: string;
@@ -113,11 +112,6 @@ export type PropTypes =
   | WidgetProps
   | TextProps;
 
-export type BlockProps<
-  E extends ElementType,
-  P extends PropTypes,
-> = React.ComponentPropsWithoutRef<E> & P;
-
 export type DataTemplateProp<D extends DatasourceManifestMap> = {
   [key in keyof D]: Zod.infer<D[key]["schema"]>;
 };
@@ -126,10 +120,7 @@ export type AttributesTemplateProp<S extends AttributesMap> = {
   [key in keyof S]: S[key]["value"];
 };
 
-export type TemplateProps<
-  Datasources extends DatasourceManifestMap = {},
-  Settings extends AttributesMap = {},
-> = {
+export type TemplateProps<Datasources extends DatasourceManifestMap = {}, Settings extends AttributesMap = {}> = {
   data: DataTemplateProp<Datasources>;
   styles: Record<string, unknown>;
   attributes: Partial<AttributesTemplateProp<Settings>>;
@@ -163,11 +154,16 @@ export type CSSVarRegistry = Map<symbol, CSSVarDescriptor>;
 export type CSSClassesReg = Map<string, Map<CSSVarName, CSSVarValue>>;
 export type ElementId = string;
 
-export type DynamicStylesArg = Record<
-  symbol,
-  ResponsiveValue<CSSVarValue> | undefined | null
->;
+export type DynamicStylesArg = Record<symbol, ResponsiveValue<CSSVarValue> | undefined | null>;
 
 export interface Editor {
   onSelectBlock: (blockId: string) => void;
 }
+
+export type RunContextType<
+  Datasources extends DatasourceManifestMap = {},
+  Settings extends AttributesMap = {},
+> = TemplateProps<Datasources, Settings> & {
+  mode: "edit" | "view";
+  cssRegistry: CSSRegistry;
+};

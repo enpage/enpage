@@ -1,6 +1,4 @@
 import { ResponsiveMode } from "./responsive";
-import { ReactNode } from "react";
-import z from "zod";
 
 export interface BaseAttribute {
   name: string;
@@ -40,15 +38,11 @@ export interface AttrBoolean extends BaseAttribute, Responsive<boolean> {
   value?: boolean;
 }
 
-export type AttrEnumOption =
-  | string
-  | { label: string; icon?: () => ReactNode; value: string };
+export type AttrEnumOption = string | { label: string; icon?: () => any; value: string };
 
-export interface AttrEnum<O extends string>
-  extends BaseAttribute,
-    Responsive<string> {
+export interface AttrEnum<O extends string> extends BaseAttribute, Responsive<string> {
   type: "enum";
-  options: (O | { label: string; icon?: () => ReactNode; value: O })[];
+  options: (O | { label: string; icon?: () => any; value: O })[];
   displayAs?: "radio" | "select" | "button-group" | "icon-group";
   placeholder?: string;
   value?: O;

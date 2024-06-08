@@ -12,8 +12,7 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
-    react(),
-    dts(),
+    dts({ rollupTypes: true }),
     visualizer({ filename: "stats.html", emitFile: true }) as PluginOption,
   ],
   resolve: {
@@ -24,30 +23,23 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "src/index.ts"),
+      entry: {
+        index: resolve(__dirname, "src/index.ts"),
+        components: resolve(__dirname, "src/components/index.ts"),
+      },
+
       name: "Enpage",
       // the proper extensions will be added
-      fileName: (format) => `enpage-sdk.${format}.js`,
-      formats: ["es", "umd"],
+      // fileName: (format, entryName) => `${entryName}.${format}.js`,
+      formats: ["es"],
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: [
-        "zod",
-        "react",
-        "react/jsx-runtime",
-        "react-dom",
-        "react-icons",
-        "tailwindcss",
-      ],
+      external: ["zod", "tailwindcss"],
       output: {
         // Provide global variables to use in the UMD build
         globals: {
-          react: "React",
-          "react/jsx-runtime": "jsx",
-          "react-dom": "ReactDOM",
-          "react-icons": "ReactIcons",
           zod: "zod",
           tailwindcss: "tailwindcss",
         },
