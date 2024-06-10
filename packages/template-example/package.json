@@ -3,55 +3,38 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "module": "./index.js",
-  "types": "./dist/template.tsx",
   "exports": {
-    ".": "./dist/template.js",
-    "./style.css": "./dist/style.css"
+    ".": "./dist",
+    "./package.json": "./package.json",
+    "./enpage.config.js": "./enpage.config.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vite",
+    "devold": "vite",
+    "dev": "node node_modules/@enpage/template-utils/dist/scripts/start-dev-server.js",
     "build": "vite build",
-    "purge": "purgecss --css dist/*.css --content src/template.tsx --output dist && ls -lha dist",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "6.0.0",
-    "@types/react": "workspace:*",
-    "@types/react-dom": "workspace:*",
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "10.4.19",
     "cssnano": "7.0.1",
     "enpage-eslint-config": "workspace:*",
-    "html-minifier": "4.0.0",
-    "postcss": "8.4.38",
     "postcss-import": "16.1.0",
+    "postcss-preset-env": "9.5.14",
     "rollup-plugin-visualizer": "5.12.0",
-    "scheduler": "0.23.2",
-    "vite": "^5.2.0",
-    "vite-plugin-dts": "3.9.1",
-    "vite-plugin-prerender": "1.0.8",
-    "vite-tsconfig-paths": "4.3.2"
+    "vite": "5.2.11",
+    "zod": "workspace:*"
   },
   "dependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
     "@enpage/template-utils": "workspace:*",
     "@enpage/types": "workspace:*",
-    "@types/react": "workspace:*",
-    "@types/react-dom": "workspace:*",
-    "react-icons": "5.2.1",
-    "tailwindcss": "workspace:*",
-    "zod": "workspace:*"
+    "tailwindcss": "workspace:*"
   },
   "peerDependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
     "@enpage/template-utils": "workspace:*",
-    "react": "workspace:*",
-    "react-dom": "workspace:*",
-    "react-icons": "5.2.1",
     "tailwindcss": "workspace:*",
     "zod": "workspace:*"
   },

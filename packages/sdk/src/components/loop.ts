@@ -141,7 +141,7 @@ class EnpageLoop extends LitElement {
           this.items = Array.from({ length: end - start + 1 }, (_, i) => ({ value: start + i }));
         }
       } else if (this.contextpath) {
-        const result = this.getDataFromScript("enpage-context", this.contextpath);
+        const result = this.getNestedProperty(window._enpageCtx, this.contextpath);
         this.processResult(result);
       } else if (this.source) {
         const result = this.getDataFromScript(this.source, this.contextpath);

@@ -1,14 +1,15 @@
 // @ts-check
-import { defineDataSources, enpage, z } from "@enpage/sdk";
-// import "@enpage/sdk/components";
+import z from "zod";
+import { defineDataSources } from "@enpage/sdk/datasources";
 
-defineDataSources({
+// define you datasources likes this
+export const datasources = defineDataSources({
   links: {
     name: "Links",
     schema: z.array(
       z.object({
         title: z.string(),
-        url: z.string(),
+        url: z.string().url(),
         icon: z.string().optional(),
       }),
     ),
@@ -18,11 +19,7 @@ defineDataSources({
     ],
   },
   videos: {
-    provider: "youtube",
+    provider: "youtube-feed",
     name: "My Videos",
-    sampleData: [{ id: "dQw4w9WgXcQ" }, { id: "KMU0tzLwhbE" }],
-    schema: z.object({
-      id: z.string(),
-    }),
   },
 });

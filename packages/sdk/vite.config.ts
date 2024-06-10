@@ -3,7 +3,6 @@
  * see "build" script in package.json
  */
 import { PluginOption, defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { resolve } from "path";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -26,6 +25,8 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, "src/index.ts"),
         components: resolve(__dirname, "src/components/index.ts"),
+        datasources: resolve(__dirname, "src/datasources.ts"),
+        "dev-utils": resolve(__dirname, "src/dev-utils.ts"),
       },
 
       name: "Enpage",
@@ -36,7 +37,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["zod", "tailwindcss"],
+      external: ["zod", "tailwindcss", "zod-schema-faker"],
       output: {
         // Provide global variables to use in the UMD build
         globals: {

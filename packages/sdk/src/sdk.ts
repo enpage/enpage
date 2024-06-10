@@ -6,6 +6,9 @@ class EnpageSDK {
   prevSection() {
     console.log("prev section");
   }
+  getContext() {
+    return window._enpageCtx;
+  }
 }
 
 export const enpage = new EnpageSDK();

@@ -13,14 +13,12 @@
     "isolatedModules": true,
     "emitDeclarationOnly": true,
     "declaration": true,
-    // "noEmit": true,
-    "jsx": "react-jsx",
+    "allowJs": true,
 
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist"
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "custom-attrs.d.ts"]
 }

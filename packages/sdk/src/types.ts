@@ -1,5 +1,4 @@
-import { DatasourceManifestMap, AttributesMap } from "@enpage/types";
-import type Zod from "zod";
+import { DatasourceManifestMap, AttributesMap, DatasourceResolved } from "@enpage/types";
 import { type CSSRegistry } from "./dynamic-css";
 
 export type Customization =
@@ -112,16 +111,14 @@ export type PropTypes =
   | WidgetProps
   | TextProps;
 
-export type DataTemplateProp<D extends DatasourceManifestMap> = {
-  [key in keyof D]: Zod.infer<D[key]["schema"]>;
-};
+export type EnpageContext = DatasourceResolved<DatasourceManifestMap>;
 
 export type AttributesTemplateProp<S extends AttributesMap> = {
   [key in keyof S]: S[key]["value"];
 };
 
 export type TemplateProps<Datasources extends DatasourceManifestMap = {}, Settings extends AttributesMap = {}> = {
-  data: DataTemplateProp<Datasources>;
+  data: EnpageContext;
   styles: Record<string, unknown>;
   attributes: Partial<AttributesTemplateProp<Settings>>;
 };

@@ -19,5 +19,8 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "lit-plugin.strict": true,
   "editor.rulers": [120],
-  "html.customData": ["./.vscode/html-custom-data.json"]
+  "html.customData": ["./.vscode/html-custom-data.json"],
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
 }

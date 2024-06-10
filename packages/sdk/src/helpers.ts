@@ -8,8 +8,7 @@ import {
   AttrUrl,
   AttrColor,
 } from "@enpage/types";
-import { RunContextType } from "./types";
-export * from "clsx";
+import type { RunContextType } from "./types";
 
 export const attr = {
   text(name: string, opts?: Omit<AttrText, "name" | "type">) {

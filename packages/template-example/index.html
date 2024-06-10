@@ -29,51 +29,35 @@ Important:
     Scripts MUST be loaded as modules (type="module").
     Modules being deferrered by default, they can access the DOM immediately.
    -->
-  <script type="module" src="./index.js"></script>
-
-  <script type="application/json" id="enpage-context">
-      {
-        "links": [
-          { "url": "http://instagram.com/", "name": "Instagram", "title": "Instagram" },
-          { "url": "http://facebook.com/", "name": "Facebook", "title": "Facebook" }
-        ],
-        "liked_videos": [
-          { "url": "http://youtube.com/1", "name": "Video 1", "title": "Title 1" },
-          { "url": "http://youtube.com/2", "name": "Video 2", "title": "Title 2" }
-        ],
-        "latest_videos": []
-      }
-    </script>
+  <script type="module" src="./src/index.js"></script>
 </head>
 
-<enpage-page>
 
-  <body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
-    <section
-             class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-      <img id="profile-pic" src="/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
-           label="Profile picture" />
-      <div class="flex-1">
-        <p id="section-2" data-label="Title" data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
-          Samantha Smith
-        </p>
-        <p id="subtitle" data-label="Subtitle" class="text-base font-thin" data-text-editable="plain">
-          General Manager @ Acme Corp
-        </p>
-        <!-- Make use of Enpage-provided components to handle loops and conditions -->
-        <ul class="mt-10 flex w-full flex-col gap-2">
-          <enpage-loop contextpath="links">
-            <template>
-              <li
-                  class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
-                <a class="flex-1 p-2.5" data-bind-attr="href:url, title" data-bind="name"></a>
-              </li>
-            </template>
-          </enpage-loop>
-        </ul>
-      </div>
-    </section>
-  </body>
-</enpage-page>
+<body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
+  <section
+           class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="/assets/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
+         label="Profile picture" />
+    <div class="flex-1">
+      <p id="section-2" data-label="Title" data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
+        Samantha Smith
+      </p>
+      <p id="subtitle" data-label="Subtitle" class="text-base font-thin" data-text-editable="plain">
+        General Manager @ Acme Corp
+      </p>
+      <!-- Make use of Enpage-provided components to handle loops and conditions -->
+      <ul class="mt-10 flex w-full flex-col gap-2">
+        <enpage-loop contextpath="links">
+          <template>
+            <li
+                class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+              <a class="flex-1 p-2.5" data-bind-attr="href:url, title" data-bind="title"></a>
+            </li>
+          </template>
+        </enpage-loop>
+      </ul>
+    </div>
+  </section>
+</body>
 
 </html>

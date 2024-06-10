@@ -14,6 +14,14 @@
     "./components": {
       "import": "./dist/components.js",
       "types": "./dist/components.d.ts"
+    },
+    "./datasources": {
+      "import": "./dist/datasources.js",
+      "types": "./dist/datasources.d.ts"
+    },
+    "./dev-utils": {
+      "import": "./dist/dev-utils.js",
+      "types": "./dist/dev-utils.d.ts"
     }
   },
   "dependencies": {
@@ -37,6 +45,7 @@
   },
   "devDependencies": {
     "@eslint/js": "workspace:*",
+    "@faker-js/faker": "8.4.1",
     "csstype": "3.1.3",
     "enpage-eslint-config": "workspace:*",
     "eslint": "workspace:*",

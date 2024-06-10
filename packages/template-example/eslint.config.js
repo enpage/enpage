@@ -1,3 +1,2 @@
-import config from "enpage-eslint-config";
-
-export default config;
+// You should not need to edit this file
+export { default } from "enpage-eslint-config";

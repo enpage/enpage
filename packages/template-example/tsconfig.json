@@ -14,12 +14,11 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
-    "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vite/client", "./internal/custom-attrs.d.ts", "@enpage/sdk/components"]
+    "types": ["vite/client", "@enpage/template-utils/custom-attrs.d.ts", "@enpage/sdk/components"]
   },
-  "include": ["*.html", "*.js", "internal"]
+  "include": ["*.html", "src"]
 }
