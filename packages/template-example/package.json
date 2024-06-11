@@ -56,7 +56,5 @@
     "thumbnail": "https://example.com/thumbnail.png",
     "homepage": "https://example.com"
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "private": true
 }
