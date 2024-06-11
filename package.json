@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm --parallel -r dev",
-    "build": "pnpm exec nx run-many -t build",
+    "build": "pnpm exec nx run-many -t build --parallel=false",
     "changeset": "changeset",
     "publish:packages": "changeset publish",
     "version:packages": "changeset version"
