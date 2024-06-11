@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm --parallel -r dev",
-    "build": "pnpm --parallel -r build"
+    "build": "pnpm --parallel -r build",
+    "changeset": "changeset",
+    "publish:packages": "changeset publish",
+    "version:packages": "changeset version"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +43,7 @@
     }
   },
   "devDependencies": {
+    "@changesets/cli": "2.27.5",
     "@eslint/js": "*",
     "@types/node": "^20.12.12",
     "eslint": "*",
