@@ -1,5 +1,11 @@
 # @enpage/eslint-config
 
+## 1.0.2
+
+### Patch Changes
+
+- 09786a3: Fix build
+
 ## 1.0.1
 
 ### Patch Changes
