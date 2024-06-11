@@ -5,7 +5,10 @@ import { resolve } from "path";
 import { fileURLToPath } from "url";
 import path from "path";
 import chalk from "chalk";
-import { existsSync, mkdirSync, lstatSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "fs";
+import { input } from "@inquirer/prompts";
+import { randomUUID } from "crypto";
+import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -13,7 +16,7 @@ const __dirname = path.dirname(__filename); // get the name of the directory
 program
   .description("Create a new Enpage template")
   .argument("[directory]", "Directory to create the template in", ".")
-  .action((dir) => {
+  .action(async (dir) => {
     const directory = resolve(process.cwd(), dir);
     const exist = existsSync(directory);
     if (!exist) {
@@ -25,21 +28,86 @@ program
       console.log(chalk.red(`${directory} exists but is not a directory. Aborting.`));
       process.exit(1);
     } else if (!isDirectoryEmpty(directory)) {
-      console.log(chalk.red(`Directory ${directory} already exists and is not empty. Aborting.`));
+      console.log(chalk.red(`Directory ${directory} is not empty. Aborting.`));
       process.exit(1);
     }
     process.stdout.write("Cloning template example... ");
 
     const emitter = degit("FlippableSoft/enpage-sdk/packages/template-example", {
-      cache: true,
-      force: true,
-      verbose: false,
-      mode: "tar",
+      verbose: true,
     });
 
-    emitter.clone(directory).then(() => {
-      console.log(chalk.blue("OK"));
+    await emitter.clone(directory);
+    console.log(chalk.blue("OK"));
+
+    console.log("");
+    console.log("Let's set up your new template:");
+
+    const description = await input({
+      message: "Enter a template description",
+      validate(value) {
+        if (value.length > 0) {
+          return true;
+        }
+        return "Description cannot be empty";
+      },
     });
+    const author = await input({
+      message: "Enter the author's name",
+      validate(value) {
+        if (value.length > 0) {
+          return true;
+        }
+        return "Author name cannot be empty";
+      },
+    });
+    // ask for tags
+    const tags = await input({ message: "Enter tags for the template (optional, comma separated)" });
+    const homepage = await input({
+      message: "Enter a homepage URL (optional)",
+      validate(value) {
+        if (value.length === 0) {
+          return true;
+        }
+        try {
+          new URL(value);
+          return true;
+        } catch (e) {}
+        return "Homepage URL must start with https://";
+      },
+    });
+
+    const template = {
+      id: randomUUID(),
+      tags: tags.split(",").map((tag: string) => tag.trim()),
+    };
+
+    const pkgPath = resolve(directory, "package.json");
+    const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
+
+    pkgJson.name = "enpage-template-" + path.basename(directory);
+    pkgJson.enpage = template;
+    pkgJson.author = author;
+    pkgJson.keywords = [...new Set([...pkgJson.keywords, ...template.tags])];
+    pkgJson.license = "UNLICENSED";
+    pkgJson.description = description;
+    pkgJson.homepage = homepage.length > 0 ? homepage : undefined;
+
+    // write the package.json
+    process.stdout.write("Writing package.json... ");
+    writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2));
+    console.log(chalk.blue("OK"));
+
+    // install dependencies
+    console.log("Installing dependencies... ");
+
+    const pm = getPackageManager();
+    execSync(`${pm} install`, { cwd: directory });
+
+    console.log(chalk.blue("All done!"));
+    console.log("\n\nYou can now develop your template:");
+    console.log(chalk.blue(`  cd ${directory}`));
+    console.log(chalk.blue(`  ${pm} start`));
   });
 
 program.parse();
@@ -47,4 +115,21 @@ program.parse();
 function isDirectoryEmpty(path: string) {
   const files = readdirSync(path);
   return files.length === 0;
+}
+
+function getPackageManager() {
+  // Detect package manager
+  let packageManager: string | undefined;
+  if (process.env.npm_config_user_agent) {
+    const pmPart = process.env.npm_config_user_agent.split(" ")[0];
+    packageManager = pmPart.slice(0, pmPart.lastIndexOf("/"));
+  }
+
+  // Display message
+  if (!packageManager) {
+    console.log("Warning: could not detect package manager");
+    packageManager = "npm";
+  }
+
+  return packageManager;
 }
