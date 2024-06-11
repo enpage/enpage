@@ -60,10 +60,10 @@
     "vite-tsconfig-paths": "workspace:*"
   },
   "scripts": {
-    "build": "vite build",
-    "dev": "vite build --watch",
-    "lint": "npx eslint .",
-    "preview": "vite preview",
+    "build": "nx vite:build",
+    "dev": "nx vite:build --watch",
+    "lint": "npx nx eslint:lint",
+    "preview": "nx vite:preview",
     "prepublishOnly": "pnpm build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

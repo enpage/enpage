@@ -22,5 +22,6 @@
   "html.customData": ["./.vscode/html-custom-data.json"],
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
-  }
+  },
+  "vitest.disableWorkspaceWarning": true
 }
