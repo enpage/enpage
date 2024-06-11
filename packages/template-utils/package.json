@@ -31,7 +31,8 @@
     "@enpage/sdk": "workspace:*",
     "@enpage/types": "workspace:*",
     "chalk": "5.3.0",
-    "commander": "12.1.0"
+    "commander": "12.1.0",
+    "html-minifier": "4.0.0"
   },
   "devDependencies": {
     "@types/html-minifier": "4.0.5",

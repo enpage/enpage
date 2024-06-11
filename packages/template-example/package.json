@@ -11,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ep-ctrl dev",
-    "build": "ep-ctrl build",
+    "build-template": "ep-ctrl build",
     "preview": "ep-ctrl preview"
   },
   "devDependencies": {

@@ -130,3 +130,8 @@ dist
 .pnp.*
 
 packages/testing
+
+
+
+.nx/cache
+.nx/workspace-data
