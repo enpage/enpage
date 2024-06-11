@@ -22,13 +22,10 @@ Once done, you can package the template using the `npm run build` command.
 
 ## Publish your template
 
-To publish your template, you can use the `publish-enpage-template` CLI tool.
-This tool will publish your template to the Enpage platform.
-
-To use the CLI tool, run the following command:
+To publish your template, you run `npm release` command and follow the instructions.
 
 ```bash
-npx publish-enpage-template
+npm run release
 ```
 
 ## Documentation
@@ -53,12 +50,6 @@ The `datasources` export is a zod schema that defines the shape of the datasourc
 
 It's important to provide a template that is responsive and accessible. The SDK facilitates this by providing a set of components that are already styled and accessible, as well
 as base styles and classes that can be used to style the template.
-
-### Basic template samples
-
-- [Typescript example](./example/template-typescript.tsx)
-- [Javascript example](./example/template-javascript.js)
-
 
 
 ## License
