@@ -1,7 +1,7 @@
 {
   "name": "@enpage/style-system",
   "version": "0.0.1",
-  "description": "",
+  "description": "Base tailwindcss setup with some extra plugins as well as colors and editor styles",
   "type": "module",
   "exports": {
     "./editor.css": {
@@ -18,9 +18,6 @@
       "import": "./src/colors.js",
       "require": "./src/colors.js"
     }
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Matthias Etienne",
