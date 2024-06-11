@@ -14,8 +14,8 @@ export const datasources = defineDataSources({
       }),
     ),
     sampleData: [
-      { title: "Enpage", url: "https://enpage.io" },
-      { title: "GitHub", url: "https://enpage.io/github" },
+      { title: "Enpage", url: "https://enpage.co" },
+      { title: "Google", url: "https://google.com" },
     ],
   },
   videos: {

@@ -11,10 +11,11 @@ The 2 main files are:
 
 ## Assets management (images, css)
 
-- Images should be placed in the `public/assets` folder
-- CSS files may be placed anywhere and linked in the HTML file
+- Images should be placed in the `public/assets` folder and prefixed with `/assets/` in the HTML file.
+- CSS files may be placed anywhere neer your index.html file and linked in the HTML file using relative paths.
 - Tailwind is included by default with some usefull plugins (forms, typography, scrollbars, animate, transform3d). 
-You can customize it in the `tailwind.config.js` file if needed.
+You can customize the default tailwind theme in the `tailwind.config.js` file if needed.
+- PostCSS is included by default with some plugins (autoprefixer, tailwindcss, cssnano). You can customize the PostCSS configuration in the `postcss.config.js` file if needed.
 
 ## `enpage.config.js` configuration file
 

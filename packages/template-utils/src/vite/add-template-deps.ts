@@ -6,7 +6,12 @@ export const addTemplateDeps = () => {
       handler: (html: string) => {
         return html.replace(
           "</head>",
-          `<script type="module">import "@enpage/sdk/components";</script>
+          `<script>
+          window.addEventListener("vite:preloadError", (event) => {
+            window.location.reload();
+          });
+          </script>
+          <script type="module">import "@enpage/sdk/components";</script>
           </head>`,
         );
       },
