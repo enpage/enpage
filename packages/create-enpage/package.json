@@ -1,0 +1,31 @@
+{
+  "name": "create-enpage",
+  "version": "0.0.1",
+  "description": "A CLI for creating Enpage templates.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsup --watch",
+    "build": "tsup"
+  },
+  "exports": {
+    ".": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=18.14.1"
+  },
+  "main": "./dist/cli.js",
+  "bin": "./dist/cli.js",
+  "keywords": [],
+  "author": "Matthias ETienne",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "12.1.0"
+  },
+  "devDependencies": {
+    "tsup": "8.0.2"
+  }
+}

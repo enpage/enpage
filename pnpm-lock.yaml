@@ -64,6 +64,16 @@ importers:
         specifier: 7.10.0
         version: 7.10.0(eslint@9.3.0)(typescript@5.4.5)
 
+  packages/create-enpage:
+    dependencies:
+      commander:
+        specifier: 12.1.0
+        version: 12.1.0
+    devDependencies:
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(postcss@8.4.38)(typescript@5.4.5)
+
   packages/editor-shared:
     devDependencies:
       '@types/react':
