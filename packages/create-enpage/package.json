@@ -21,7 +21,7 @@
   "main": "./dist/cli.js",
   "bin": "./dist/cli.js",
   "keywords": [],
-  "author": "Matthias ETienne",
+  "author": "Matthias Etienne",
   "license": "MIT",
   "dependencies": {
     "@inquirer/prompts": "5.0.5",
