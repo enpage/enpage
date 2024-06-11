@@ -1,0 +1,46 @@
+{
+  "name": "@enpage/types",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "module": "./src/index.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./datasources": {
+      "import": "./src/datasources.ts",
+      "types": "./src/datasources.ts"
+    },
+    "./metadata": {
+      "import": "./src/metadata.ts",
+      "types": "./src/metadata.ts"
+    },
+    "./responsive": {
+      "import": "./src/responsive.ts",
+      "types": "./src/responsive.ts"
+    },
+    "./settings": {
+      "import": "./src/settings.ts",
+      "types": "./src/settings.ts"
+    },
+    "./template": {
+      "import": "./src/template.ts",
+      "types": "./src/template.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "zod": "3.23.8"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

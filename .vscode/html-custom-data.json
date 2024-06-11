@@ -1,0 +1,344 @@
+{
+  "version": 1.1,
+  "tags": [
+    {
+      "name": "section",
+      "description": "A section simulates a page within a multi-page document. An Enpage template consists of one or more sections.",
+      "attributes": [
+        {
+          "name": "--data-appear-animation",
+          "description": "Appear animation for the element.",
+          "valueSet": "animation-appear"
+        },
+        {
+          "name": "--data-appear-delay",
+          "description": "Delay before the appear animation starts."
+        },
+        {
+          "name": "--data-appear-duration",
+          "description": "Duration of the appear animation."
+        },
+        {
+          "name": "--data-disappear-animation",
+          "description": "Disappear animation for the element.",
+          "valueSet": "animation-disappear"
+        },
+        {
+          "name": "--data-disappear-delay",
+          "description": "Delay before the disappear animation starts."
+        },
+        {
+          "name": "--data-disappear-duration",
+          "description": "Duration of the disappear animation."
+        }
+      ]
+    },
+    {
+      "name": "ep-loop",
+      "description": "Custom element that can dynamically render repeated content based on various data sources, including arrays and objects.",
+      "attributes": [
+        {
+          "name": "contextpath",
+          "description": "A dot-separated path to the property in the context data provided by `<enpage-page>` to loop through."
+        },
+        {
+          "name": "source",
+          "description": "The ID of a `<script>` tag containing JSON data to be used as the data source."
+        },
+        {
+          "name": "json",
+          "description": "A JSON string to be used as the data source."
+        },
+        {
+          "name": "range",
+          "description": "A range of numbers specified in the format 'start-end' to generate a sequence of numbers."
+        }
+      ]
+    }
+  ],
+  "globalAttributes": [
+    {
+      "name": "--data-label",
+      "description": "Label for the element. When not set, the element's --data-block-type is used."
+    },
+    {
+      "name": "--data-container",
+      "description": "When an element is marked as a container, it will act as a drop zone. Also, the user will be able to change its direction and alignment."
+    },
+    {
+      "name": "--data-container-accept",
+      "description": "Acceptable block types for the container."
+    },
+    {
+      "name": "--data-text-editable",
+      "description": "Enable text editing for the element.",
+      "valueSet": "text-editable"
+    }
+  ],
+  "valueSets": [
+    {
+      "name": "text-editable",
+      "values": [
+        {
+          "name": "plain"
+        },
+        {
+          "name": "html"
+        }
+      ]
+    },
+    {
+      "name": "animation-appear",
+      "values": [
+        {
+          "name": "bounce"
+        },
+        {
+          "name": "flash"
+        },
+        {
+          "name": "pulse"
+        },
+        {
+          "name": "rubberBand"
+        },
+        {
+          "name": "shakeX"
+        },
+        {
+          "name": "shakeY"
+        },
+        {
+          "name": "headShake"
+        },
+        {
+          "name": "swing"
+        },
+        {
+          "name": "tada"
+        },
+        {
+          "name": "wobble"
+        },
+        {
+          "name": "jello"
+        },
+        {
+          "name": "heartBeat"
+        },
+        {
+          "name": "backInDown"
+        },
+        {
+          "name": "backInLeft"
+        },
+        {
+          "name": "backInRight"
+        },
+        {
+          "name": "backInUp"
+        },
+
+        {
+          "name": "bounceIn"
+        },
+        {
+          "name": "bounceInDown"
+        },
+        {
+          "name": "bounceInLeft"
+        },
+        {
+          "name": "bounceInRight"
+        },
+        {
+          "name": "bounceInUp"
+        },
+        {
+          "name": "fadeIn"
+        },
+        {
+          "name": "fadeInDown"
+        },
+        {
+          "name": "fadeInDownBig"
+        },
+        {
+          "name": "fadeInLeft"
+        },
+        {
+          "name": "fadeInLeftBig"
+        },
+        {
+          "name": "fadeInRight"
+        },
+        {
+          "name": "fadeInRightBig"
+        },
+        {
+          "name": "fadeInUp"
+        },
+        {
+          "name": "fadeInUpBig"
+        },
+
+        {
+          "name": "flip"
+        },
+        {
+          "name": "flipInX"
+        },
+        {
+          "name": "flipInY"
+        },
+
+        {
+          "name": "lightSpeedIn"
+        },
+
+        {
+          "name": "rotateIn"
+        },
+        {
+          "name": "rotateInDownLeft"
+        },
+        {
+          "name": "rotateInDownRight"
+        },
+        {
+          "name": "rotateInUpLeft"
+        },
+        {
+          "name": "rotateInUpRight"
+        },
+        {
+          "name": "slideInUp"
+        },
+        {
+          "name": "slideInDown"
+        },
+        {
+          "name": "slideInLeft"
+        },
+        {
+          "name": "slideInRight"
+        },
+
+        {
+          "name": "zoomIn"
+        },
+        {
+          "name": "zoomInDown"
+        },
+        {
+          "name": "zoomInLeft"
+        },
+        {
+          "name": "zoomInRight"
+        },
+        {
+          "name": "zoomInUp"
+        },
+
+        {
+          "name": "hinge"
+        },
+        {
+          "name": "jackInTheBox"
+        },
+        {
+          "name": "rollIn"
+        }
+      ]
+    },
+    {
+      "name": "animation-disappear",
+      "values": [
+        {
+          "name": "fadeOut"
+        },
+        {
+          "name": "fadeOutDown"
+        },
+        {
+          "name": "fadeOutDownBig"
+        },
+        {
+          "name": "fadeOutLeft"
+        },
+        {
+          "name": "fadeOutLeftBig"
+        },
+        {
+          "name": "fadeOutRight"
+        },
+        {
+          "name": "fadeOutRightBig"
+        },
+        {
+          "name": "fadeOutUp"
+        },
+        {
+          "name": "fadeOutUpBig"
+        },
+        {
+          "name": "flipOutX"
+        },
+        {
+          "name": "flipOutY"
+        },
+        {
+          "name": "lightSpeedOut"
+        },
+        {
+          "name": "rotateOut"
+        },
+        {
+          "name": "rotateOutDownLeft"
+        },
+        {
+          "name": "rotateOutDownRight"
+        },
+        {
+          "name": "rotateOutUpLeft"
+        },
+        {
+          "name": "rotateOutUpRight"
+        },
+        {
+          "name": "slideOutUp"
+        },
+        {
+          "name": "slideOutDown"
+        },
+        {
+          "name": "slideOutLeft"
+        },
+        {
+          "name": "slideOutRight"
+        },
+        {
+          "name": "zoomOut"
+        },
+        {
+          "name": "zoomOutDown"
+        },
+        {
+          "name": "zoomOutLeft"
+        },
+        {
+          "name": "zoomOutRight"
+        },
+        {
+          "name": "zoomOutUp"
+        },
+        {
+          "name": "hinge"
+        },
+        {
+          "name": "rollOut"
+        }
+      ]
+    }
+  ]
+}

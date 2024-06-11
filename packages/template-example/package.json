@@ -1,0 +1,59 @@
+{
+  "name": "@enpage/template-example",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "exports": {
+    ".": "./dist",
+    "./package.json": "./package.json",
+    "./enpage.config.js": "./enpage.config.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ep-ctrl dev",
+    "build": "ep-ctrl build",
+    "preview": "ep-ctrl preview"
+  },
+  "devDependencies": {
+    "cssnano": "7.0.1",
+    "@enpage/eslint-config": "workspace:*",
+    "postcss-import": "16.1.0",
+    "postcss-preset-env": "9.5.14",
+    "rollup-plugin-visualizer": "5.12.0",
+    "vite": "5.2.11",
+    "zod": "workspace:*"
+  },
+  "dependencies": {
+    "@enpage/sdk": "workspace:*",
+    "@enpage/style-system": "workspace:*",
+    "@enpage/template-utils": "workspace:*",
+    "@enpage/types": "workspace:*",
+    "tailwindcss": "workspace:*"
+  },
+  "peerDependencies": {
+    "@enpage/sdk": "workspace:*",
+    "@enpage/style-system": "workspace:*",
+    "@enpage/template-utils": "workspace:*",
+    "tailwindcss": "workspace:*",
+    "zod": "workspace:*"
+  },
+  "keywords": [],
+  "author": "Matthias Etienne",
+  "license": "MIT",
+  "tags": [
+    "enpage-template"
+  ],
+  "enpage": {
+    "id": "com.example.hello-world",
+    "name": "Hello World",
+    "description": "A simple template that says hello.",
+    "outline-color": "#FF9900",
+    "tags": [
+      "hello",
+      "world"
+    ],
+    "author": "John Doe",
+    "thumbnail": "https://example.com/thumbnail.png",
+    "homepage": "https://example.com"
+  }
+}

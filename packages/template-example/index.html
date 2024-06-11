@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<!--
+This is an example of a Enpage template.
+
+Enpage handles a few specific attributes that are used to control the appearance and behavior of the page.
+
+You can also use pre-built web components from the @enpage/sdk package to handle dynamic content,
+looping, conditions, and more.
+
+Important:
+
+- A template MUST a least have one <section>.
+- Multiple <section> elements allow to simulate a multi-pages website.
+- When using multiple <section> elements, the first one is considered the home page.
+-->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enpage template demo</title>
+  <!--
+    Not mandatory but recommended to use the Enpage CSS utility classes (based on Tailwind CSS).
+   -->
+  <style>
+    @import "@enpage/style-system/tailwind.css";
+  </style>
+  <!--
+    Scripts MUST be loaded as modules (type="module").
+    Modules being deferrered by default, they can access the DOM immediately.
+   -->
+  <script type="module" src="./src/index.js"></script>
+</head>
+
+
+<body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
+  <section
+           class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="/assets/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
+         label="Profile picture" />
+    <div class="flex-1">
+      <p id="section-2" data-label="Title" data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
+        Samantha Smith
+      </p>
+      <p id="subtitle" data-label="Subtitle" class="text-base font-thin" data-text-editable="plain">
+        General Manager @ Acme Corp
+      </p>
+      <ul class="mt-10 flex w-full flex-col gap-2">
+        <!-- 
+          Make use of Enpage-provided components to handle loops and conditions.
+          The `enpage-loop` component will loop over the `links` datasource.
+        -->
+        <ep-loop datasource="links">
+          <template>
+            <li
+                class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+              <a class="flex-1 p-2.5" data-bind-attr="href:url, title" data-bind="title"></a>
+            </li>
+          </template>
+        </ep-loop>
+      </ul>
+    </div>
+  </section>
+</body>
+
+</html>
