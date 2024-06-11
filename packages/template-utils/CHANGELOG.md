@@ -1,5 +1,14 @@
 # @enpage/template-utils
 
+## 0.0.3
+
+### Patch Changes
+
+- 09786a3: Fix build
+- Updated dependencies [09786a3]
+  - @enpage/sdk@0.0.3
+  - @enpage/types@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
