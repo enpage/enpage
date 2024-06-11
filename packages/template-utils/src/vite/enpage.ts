@@ -1,5 +1,4 @@
 import { type Plugin } from "vite";
-import { join } from "path";
 import { logger } from "./logger";
 
 // return partial config (recommended)

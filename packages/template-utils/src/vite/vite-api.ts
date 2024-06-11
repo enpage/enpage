@@ -13,16 +13,9 @@ export async function startDevServer() {
 
   await server.listen();
 
-  // server.printUrls();
-
   console.log(chalk.green("Enpage Dev Server is running:\n"));
-
-  // display in the console in blue color
   console.log(`- Local:   `, chalk.green(server.resolvedUrls?.local[0]));
   console.log("- Network: ", chalk.gray(server.resolvedUrls?.network[0]));
-
-  // console.log("server.config", server.config);
-  // server.bindCLIShortcuts({ print: true });
 }
 
 export async function buildTemplate() {
