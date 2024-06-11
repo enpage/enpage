@@ -51,6 +51,19 @@ The `datasources` export is a zod schema that defines the shape of the datasourc
 It's important to provide a template that is responsive and accessible. The SDK facilitates this by providing a set of components that are already styled and accessible, as well
 as base styles and classes that can be used to style the template.
 
+## Development
+
+This monorepo uses changesets to manage versioning and releases. 
+Run:
+
+- `pnpm changeset`: Execute the Changeset CLI using npm. This lets you use npm run changeset to invoke the CLI instead of using npx.
+- `pnpm version:packages`: Takes Changesets that have been made, updates versions and dependencies of packages, and writes changelogs. This command handles all file changes related to versions before publishing to npm.
+- `pnpm publish:packages`: This publishes any unpublished packages to npm, and creates git tags.
+
+Read [https://brionmario.medium.com/changesets-is-a-game-changer-fe752af6a8cc](this article on medium) for more information on changesets.
+
+
+
 
 ## License
 
