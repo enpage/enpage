@@ -11,7 +11,7 @@ This tool will create a new template project with the Enpage SDK already install
 To use the CLI tool, run the following command:
 
 ```bash
-npx create-enpage-template my-template
+npm create enpage@latest my-template
 cd my-template
 npm start
 ```
