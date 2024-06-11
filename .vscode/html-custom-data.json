@@ -34,7 +34,7 @@
       ]
     },
     {
-      "name": "enpage-loop",
+      "name": "ep-loop",
       "description": "Custom element that can dynamically render repeated content based on various data sources, including arrays and objects.",
       "attributes": [
         {

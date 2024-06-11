@@ -19,10 +19,10 @@ You can customize it in the `tailwind.config.js` file if needed.
 ## `enpage.config.js` configuration file
 
 > **Note**
-> this file is optional. If you don't need any datasources, you can remove it.
+> this file is optional. If you don't need to use datasources or attributes, you can remove it.
 
 
-The `enpage.config.js` file is used to declare variuous template settings like `datasources`, etc.
+The `enpage.config.js` file is used to declare `datasources` and `attributes` for your template.
 
 
 ### Datasource(s)

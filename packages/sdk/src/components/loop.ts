@@ -8,7 +8,7 @@ import { customElement, property, state } from "lit/decorators.js";
  *
  * ### Attributes
  *
- * - `contextpath`: A dot-separated path to the property in the context data provided by `<enpage-page>` to loop through.
+ * - `datasource`: A dot-separated path to the property in the context data provided by `<enpage-page>` to loop through.
  * - `source`: The ID of a `<script>` tag containing JSON data to be used as the data source.
  * - `json`: A JSON string to be used as the data source.
  * - `range`: A range of numbers specified in the format "start-end" to generate a sequence of numbers.
@@ -16,27 +16,9 @@ import { customElement, property, state } from "lit/decorators.js";
  * ### Example Usage
  *
  * ```html
- * <enpage-page>
- *   <script type="application/json" id="enpage-context">
- *     {
- *       "youtubeData": {
- *         "items": [
- *           { "url": "http://youtube.com/1", "name": "Video 1", "title": "Title 1" },
- *           { "url": "http://youtube.com/2", "name": "Video 2", "title": "Title 2" }
- *         ],
- *         "ids": { "first": 1, "second": 2 }
- *       },
- *       "instagramData": {
- *         "items": [
- *           { "url": "http://instagram.com/1", "name": "Photo 1", "title": "Title 1" },
- *           { "url": "http://instagram.com/2", "name": "Photo 2", "title": "Title 2" }
- *         ]
- *       }
- *     }
- *   </script>
  *
  *   <ul class="gap-2">
- *     <enpage-loop contextpath="youtubeData.items">
+ *     <enpage-loop datasource="youtubeData.items">
  *       <li>
  *         <a data-bind-attr="href:url, title:title">
  *           <span data-bind="name"></span>
@@ -46,7 +28,7 @@ import { customElement, property, state } from "lit/decorators.js";
  *   </ul>
  *
  *   <ul class="gap-2">
- *     <enpage-loop contextpath="youtubeData.ids">
+ *     <enpage-loop datasource="youtubeData.ids">
  *       <li>
  *         <span data-bind-key></span>: <span data-bind="value"></span>
  *       </li>
@@ -54,7 +36,7 @@ import { customElement, property, state } from "lit/decorators.js";
  *   </ul>
  *
  *   <ul class="gap-2">
- *     <enpage-loop contextpath="youtubeData.ids">
+ *     <enpage-loop datasource="youtubeData.ids">
  *       <li>
  *         <a data-bind-key-attr="data-id:key">
  *           ID: <span data-bind-key></span> - Value: <span data-bind="value"></span>
@@ -64,7 +46,7 @@ import { customElement, property, state } from "lit/decorators.js";
  *   </ul>
  *
  *   <ul class="gap-2">
- *     <enpage-loop contextpath="instagramData.items">
+ *     <enpage-loop datasource="instagramData.items">
  *       <li>
  *         <a data-bind-attr="href:url, title:title">
  *           <span data-bind="name"></span>
@@ -72,7 +54,6 @@ import { customElement, property, state } from "lit/decorators.js";
  *       </li>
  *     </enpage-loop>
  *   </ul>
- * </enpage-page>
  * ```
  *
  * ### Data Binding
@@ -99,11 +80,11 @@ import { customElement, property, state } from "lit/decorators.js";
  * </li>
  * ```
  */
-@customElement("enpage-loop")
+@customElement("ep-loop")
 class EnpageLoop extends LitElement {
   @property({ type: Array }) items: Array<any> = [];
-  @property({ type: String }) contextpath: string = "";
-  @property({ type: String }) source: string = "";
+  @property({ type: String }) datasource: string = "";
+  @property({ type: String }) scriptId: string = "";
   @property({ type: String }) json: string = "";
   @property({ type: String }) range: string = "";
 
@@ -140,11 +121,11 @@ class EnpageLoop extends LitElement {
         } else {
           this.items = Array.from({ length: end - start + 1 }, (_, i) => ({ value: start + i }));
         }
-      } else if (this.contextpath) {
-        const result = this.getNestedProperty(window._enpageCtx, this.contextpath);
+      } else if (this.datasource) {
+        const result = this.getNestedProperty(window._enpageCtx, this.datasource);
         this.processResult(result);
-      } else if (this.source) {
-        const result = this.getDataFromScript(this.source, this.contextpath);
+      } else if (this.scriptId) {
+        const result = this.getDataFromScript(this.scriptId, this.datasource);
         this.processResult(result);
       } else {
         console.warn(
@@ -287,6 +268,6 @@ class EnpageLoop extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "enpage-loop": EnpageLoop;
+    "ep-loop": EnpageLoop;
   }
 }

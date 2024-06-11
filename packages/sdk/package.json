@@ -47,7 +47,7 @@
     "@eslint/js": "workspace:*",
     "@faker-js/faker": "8.4.1",
     "csstype": "3.1.3",
-    "enpage-eslint-config": "workspace:*",
+    "@enpage/eslint-config": "workspace:*",
     "eslint": "workspace:*",
     "rollup-plugin-visualizer": "5.12.0",
     "typescript": "workspace:*",

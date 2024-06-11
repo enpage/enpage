@@ -14,7 +14,7 @@ type CSSVariables = {
   [key in Breakpoints]?: Partial<Record<string, string>>;
 } & Partial<Record<string, string>>;
 
-@customElement("enpage-stylable")
+@customElement("ep-stylable")
 class EnpageStylable extends LitElement {
   @property({ type: Object }) cssvars: CSSVariables = {};
   @property({ type: Object }) responsiveStyles: ResponsiveStyles = {};
@@ -143,6 +143,6 @@ class EnpageStylable extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "enpage-stylable": EnpageStylable;
+    "ep-stylable": EnpageStylable;
   }
 }

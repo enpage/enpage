@@ -45,16 +45,19 @@ Important:
       <p id="subtitle" data-label="Subtitle" class="text-base font-thin" data-text-editable="plain">
         General Manager @ Acme Corp
       </p>
-      <!-- Make use of Enpage-provided components to handle loops and conditions -->
       <ul class="mt-10 flex w-full flex-col gap-2">
-        <enpage-loop contextpath="links">
+        <!-- 
+          Make use of Enpage-provided components to handle loops and conditions.
+          The `enpage-loop` component will loop over the `links` datasource.
+        -->
+        <ep-loop datasource="links">
           <template>
             <li
                 class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
               <a class="flex-1 p-2.5" data-bind-attr="href:url, title" data-bind="title"></a>
             </li>
           </template>
-        </enpage-loop>
+        </ep-loop>
       </ul>
     </div>
   </section>

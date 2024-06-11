@@ -1,9 +1,10 @@
 // @ts-nocheck
 /**
- * Make sure to keep the enpage-preset below and the content array.:
+ * Make sure to keep the enpage-preset below and the content array.
  */
+import enpagePreset from "@enpage/style-system/tailwind-preset";
 export default {
-  presets: [require("@enpage/style-system/tailwind-preset")],
+  presets: [enpagePreset],
   content: [
     "./src/**/*.{js,ts}",
     "./*.{js,ts}",
@@ -12,7 +13,7 @@ export default {
     "node_modules/@enpage/style-system/src/**/*.{js,ts}",
   ],
   theme: {
-    // you can extend the theme here
+    // you can extend the default theme here
     extend: {},
   },
 };
