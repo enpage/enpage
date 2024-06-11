@@ -23,7 +23,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matthias Etienne",
   "license": "MIT",
   "dependencies": {
     "@tailwindcss/forms": "0.5.7",
@@ -40,5 +40,8 @@
   },
   "peerDependencies": {
     "react": "18.3.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

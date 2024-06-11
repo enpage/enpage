@@ -62,5 +62,9 @@
     "lint": "npx eslint .",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthias Etienne",
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -41,6 +41,9 @@
     "zod": "3.23.8"
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT"
+  "author": "Matthias Etienne",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }

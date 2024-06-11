@@ -20,7 +20,7 @@
     "build": "tsup"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matthias Etienne",
   "license": "MIT",
   "dependencies": {
     "@enpage/sdk": "workspace:*",
@@ -40,5 +40,8 @@
     "vite-plugin-externalize-deps": "0.8.0",
     "vite-plugin-html": "3.2.2",
     "vite-tsconfig-paths": "^4.3.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

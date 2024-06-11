@@ -55,5 +55,8 @@
     "author": "John Doe",
     "thumbnail": "https://example.com/thumbnail.png",
     "homepage": "https://example.com"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
