@@ -1,5 +1,11 @@
 # @enpage/eslint-config
 
+## 1.0.3
+
+### Patch Changes
+
+- d703233: Clean packages
+
 ## 1.0.2
 
 ### Patch Changes
