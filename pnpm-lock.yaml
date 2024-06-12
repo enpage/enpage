@@ -248,13 +248,6 @@ importers:
       tailwindcss-opentype:
         specifier: 1.1.0
         version: 1.1.0(tailwindcss@3.4.3)
-    devDependencies:
-      '@types/react':
-        specifier: 18.3.2
-        version: 18.3.2
-      react:
-        specifier: 18.3.1
-        version: 18.3.1
 
   packages/template-example:
     dependencies:
