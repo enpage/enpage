@@ -85,6 +85,17 @@ program
     const pkgPath = resolve(directory, "package.json");
     const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
+    // replace all references to "workspace:" in all kind of dependencies with "latest"
+    for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+      if (pkgJson[depType]) {
+        for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
+          if (version.startsWith("workspace:")) {
+            pkgJson[depType][dep] = "latest";
+          }
+        }
+      }
+    }
+
     pkgJson.name = "enpage-template-" + path.basename(directory);
     pkgJson.enpage = template;
     pkgJson.author = author;
