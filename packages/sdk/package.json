@@ -48,10 +48,10 @@
     "@enpage/types": "workspace:*"
   },
   "devDependencies": {
-    "@eslint/js": "workspace:*",
+    "@eslint/js": "^8.56.0",
     "csstype": "3.1.3",
     "@enpage/eslint-config": "workspace:*",
-    "eslint": "workspace:*",
+    "eslint": "^8.56.0",
     "rollup-plugin-visualizer": "5.12.0",
     "typescript": "workspace:*",
     "typescript-eslint": "workspace:*",
