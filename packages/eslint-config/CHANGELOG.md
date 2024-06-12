@@ -1,5 +1,11 @@
 # @enpage/eslint-config
 
+## 1.0.4
+
+### Patch Changes
+
+- f0076b7: Change how publishing works
+
 ## 1.0.3
 
 ### Patch Changes

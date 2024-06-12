@@ -1,5 +1,11 @@
 # @enpage/editor-shared
 
+## 0.0.5
+
+### Patch Changes
+
+- f0076b7: Change how publishing works
+
 ## 0.0.4
 
 ### Patch Changes
