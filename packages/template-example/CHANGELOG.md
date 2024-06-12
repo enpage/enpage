@@ -1,5 +1,18 @@
 # @enpage/template-example
 
+## 0.0.6
+
+### Patch Changes
+
+- 5d05588: Allow creating a new template through Stackblitz
+- a594bdc: Fix create-enpage command
+- Updated dependencies [5d05588]
+- Updated dependencies [a594bdc]
+  - @enpage/sdk@0.0.6
+  - @enpage/style-system@0.0.6
+  - @enpage/template-utils@0.0.6
+  - @enpage/types@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
