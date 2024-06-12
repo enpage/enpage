@@ -1,5 +1,11 @@
 # @enpage/types
 
+## 0.0.7
+
+### Patch Changes
+
+- e5668eb: Update eslint config
+
 ## 0.0.6
 
 ### Patch Changes
