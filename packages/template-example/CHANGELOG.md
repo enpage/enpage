@@ -1,5 +1,16 @@
 # @enpage/template-example
 
+## 0.0.9
+
+### Patch Changes
+
+- 12960ce: Remove degit options
+- Updated dependencies [12960ce]
+  - @enpage/sdk@0.0.9
+  - @enpage/style-system@0.0.9
+  - @enpage/template-utils@0.0.9
+  - @enpage/types@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes
