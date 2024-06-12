@@ -1,5 +1,11 @@
 # @enpage/types
 
+## 0.0.10
+
+### Patch Changes
+
+- eeace3e: Add shebang to ep-ctrl
+
 ## 0.0.9
 
 ### Patch Changes
