@@ -52,7 +52,7 @@
     "eslint": "*",
     "eslint-plugin-react-hooks": "*",
     "eslint-plugin-react-refresh": "*",
-    "nx": "18",
+    "nx": "19",
     "prettier": "3.2.5",
     "prettier-plugin-classnames": "0.6.6",
     "prettier-plugin-tailwindcss": "0.5.14",
