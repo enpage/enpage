@@ -34,11 +34,7 @@ program
     }
     process.stdout.write("Cloning template example... ");
 
-    const emitter = degit("FlippableSoft/enpage-sdk/packages/template-example", {
-      verbose: true,
-      force: true,
-      mode: "git",
-    });
+    const emitter = degit("FlippableSoft/enpage-sdk/packages/template-example");
 
     await emitter.clone(directory);
     console.log(chalk.blue("OK"));
