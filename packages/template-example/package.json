@@ -21,21 +21,20 @@
     "postcss-preset-env": "9.5.14",
     "rollup-plugin-visualizer": "5.12.0",
     "vite": "5.2.11",
-    "zod": "workspace:*"
+    "zod": "3.23.8"
   },
   "dependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
     "@enpage/template-utils": "workspace:*",
     "@enpage/types": "workspace:*",
-    "tailwindcss": "workspace:*"
+    "tailwindcss": "3.4.3"
   },
   "peerDependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
     "@enpage/template-utils": "workspace:*",
-    "tailwindcss": "workspace:*",
-    "zod": "workspace:*"
+    "zod": "3.23.8"
   },
   "keywords": [],
   "author": "Matthias Etienne",
