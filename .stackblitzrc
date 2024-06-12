@@ -1,6 +1,6 @@
 {
   "installDependencies": true,
-  "startCommand": "pnpm add -g @nx/nx-linux-x64-gnu@19 && pnpm run build && pnpm run start",
+  "startCommand": "pnpm setup && pnpm add -g @nx/nx-linux-x64-gnu@19 && pnpm run build && pnpm run start",
   "openFile": [
     "packages/template-example/README.md",
     "packages/template-example/index.html",
