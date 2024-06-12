@@ -1,3 +1,4 @@
 {
-  "startCommand": "pnpm install --force && pnpm run build && pnpm install && pnpm run start"
+  "installDependencies": true,
+  "startCommand": "pnpm run build && pnpm run start"
 }
