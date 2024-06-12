@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 import degit from "degit";
 import { program } from "commander";
 import { resolve } from "path";
