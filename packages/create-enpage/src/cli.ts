@@ -36,6 +36,8 @@ program
 
     const emitter = degit("FlippableSoft/enpage-sdk/packages/template-example", {
       verbose: true,
+      force: true,
+      mode: "git",
     });
 
     await emitter.clone(directory);
