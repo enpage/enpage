@@ -2,15 +2,22 @@
 
 # Enpage SDK
 
-The Enpage SDK is a library that provides the core functionality for the Enpage templates.
-It is developed using React, Vanilla Extract, and TypeScript.
+The Enpage SDK regroups the  core functionality for the Enpage templates.
+It is based on standard web technologies (HTML, CSS, JS) and provides a set of components, utilities and tools
+to help you create templates that are responsive, accessible and easy to use and customize.
 
 ## Create a new template
 
-To create a new template, you can use the `create-enpage-template` CLI tool.
-This tool will create a new template project with the Enpage SDK already installed.
+### Using Stackblitz
 
-To use the CLI tool, run the following command:
+Click on the following link to create a new template using Stackblitz:
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/FlippableSoft/enpage-sdk?configPath=packages/template-example)
+
+
+### Locally
+
+Creating a new template locally is really easy. Just run the following command:
 
 ```bash
 npm create enpage@latest my-template
@@ -18,7 +25,8 @@ cd my-template
 npm start
 ```
 
-This will create a new template project in the `my-template` directory and start the development server.
+This will create a new template project in the directory `./my-template` and start the development server
+so you can start working on your template right away and have a live preview in your browser.
 
 Once done, you can package the template using the `npm run build` command.
 
@@ -50,10 +58,11 @@ The `datasources` export is a zod schema that defines the shape of the datasourc
 
 ### Design notes
 
-It's important to provide a template that is responsive and accessible. The SDK facilitates this by providing a set of components that are already styled and accessible, as well
-as base styles and classes that can be used to style the template.
+It's important to provide a template that is responsive and accessible.
+The SDK facilitates this by providing a custom tailwind configuration and predefined classes that can be used to style the template.
 
-## Development
+
+## Contributing
 
 This monorepo uses changesets to manage versioning and releases.
 Run:
@@ -62,8 +71,7 @@ Run:
 - `pnpm version:packages`: Takes Changesets that have been made, updates versions and dependencies of packages, and writes changelogs. This command handles all file changes related to versions before publishing to npm.
 - `pnpm publish:packages`: This publishes any unpublished packages to npm, and creates git tags.
 
-Read [https://brionmario.medium.com/changesets-is-a-game-changer-fe752af6a8cc](this article on medium) for more information on changesets.
-
+Read https://brionmario.medium.com/changesets-is-a-game-changer-fe752af6a8cc for more information on changesets.
 
 
 
