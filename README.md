@@ -1,6 +1,4 @@
-<center>
 ![Enpage SDK](https://github.com/FlippableSoft/enpage-sdk/blob/main/enpage-sdk.svg?raw=true)
-</center>
 
 # Enpage SDK
 
