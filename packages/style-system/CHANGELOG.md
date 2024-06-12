@@ -1,5 +1,11 @@
 # @enpage/style-system
 
+## 0.0.9
+
+### Patch Changes
+
+- 12960ce: Remove degit options
+
 ## 0.0.8
 
 ### Patch Changes

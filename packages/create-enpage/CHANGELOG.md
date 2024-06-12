@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.11
+
+### Patch Changes
+
+- 12960ce: Remove degit options
+
 ## 0.0.10
 
 ### Patch Changes
