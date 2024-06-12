@@ -1,0 +1,3 @@
+{
+  "startCommand": "pnpm run build && pnpm install && pnpm run start"
+}
