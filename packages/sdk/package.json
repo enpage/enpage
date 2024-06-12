@@ -64,7 +64,6 @@
     "dev": "nx vite:build --watch",
     "lint": "npx nx eslint:lint",
     "preview": "nx vite:preview",
-    "prepublishOnly": "pnpm build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Matthias Etienne",
