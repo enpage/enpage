@@ -1,7 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.1/schema.json",
   "changelog": "@changesets/cli/changelog",
-  "commit": false,
   "linked": [],
   "fixed": [["@enpage/sdk", "@enpage/template-utils", "@enpage/style-system", "@enpage/template-example"]],
   "access": "public",
