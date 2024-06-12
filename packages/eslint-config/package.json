@@ -1,6 +1,6 @@
 {
   "name": "@enpage/eslint-config",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "eslint.config.js",
   "type": "module",

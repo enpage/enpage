@@ -1,5 +1,11 @@
 # @enpage/editor-shared
 
+## 0.0.8
+
+### Patch Changes
+
+- 964c7f4: Force degit to use git
+
 ## 0.0.7
 
 ### Patch Changes
