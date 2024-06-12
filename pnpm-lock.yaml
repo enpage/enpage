@@ -29,6 +29,19 @@ overrides:
 importers:
 
   .:
+    optionalDependencies:
+      '@nx/nx-darwin-arm64':
+        specifier: 19.2.3
+        version: 19.2.3
+      '@nx/nx-darwin-x64':
+        specifier: 19.2.3
+        version: 19.2.3
+      '@nx/nx-linux-x64-gnu':
+        specifier: 19.2.3
+        version: 19.2.3
+      '@nx/nx-win32-x64-msvc':
+        specifier: 19.2.3
+        version: 19.2.3
     devDependencies:
       '@changesets/cli':
         specifier: 2.27.5
@@ -3421,7 +3434,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@nx/nx-darwin-x64@19.2.3:
@@ -3430,7 +3442,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@nx/nx-freebsd-x64@19.2.3:
@@ -3475,7 +3486,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@nx/nx-linux-x64-musl@19.2.3:
@@ -3502,7 +3512,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@nx/vite@19.2.3(@types/node@20.12.12)(nx@19.2.3)(typescript@5.4.5)(vite@5.2.11)(vitest@1.6.0):
