@@ -9,8 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsup --watch",
-    "build": "tsup",
-    "prepublishOnly": "pnpm build"
+    "build": "tsup"
   },
   "exports": {
     ".": "./dist/cli.js"
