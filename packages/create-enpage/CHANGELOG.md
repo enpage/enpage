@@ -1,5 +1,12 @@
 # create-enpage
 
+## 0.0.8
+
+### Patch Changes
+
+- 5d05588: Allow creating a new template through Stackblitz
+- a594bdc: Fix create-enpage command
+
 ## 0.0.7
 
 ### Patch Changes

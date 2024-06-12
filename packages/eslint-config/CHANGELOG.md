@@ -1,5 +1,12 @@
 # @enpage/eslint-config
 
+## 1.0.5
+
+### Patch Changes
+
+- 5d05588: Allow creating a new template through Stackblitz
+- a594bdc: Fix create-enpage command
+
 ## 1.0.4
 
 ### Patch Changes
