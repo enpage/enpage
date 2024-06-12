@@ -1,3 +1,7 @@
+<center>
+![Enpage SDK](https://github.com/FlippableSoft/enpage-sdk/blob/main/enpage-sdk.svg?raw=true)
+</center>
+
 # Enpage SDK
 
 The Enpage SDK is a library that provides the core functionality for the Enpage templates.
@@ -53,7 +57,7 @@ as base styles and classes that can be used to style the template.
 
 ## Development
 
-This monorepo uses changesets to manage versioning and releases. 
+This monorepo uses changesets to manage versioning and releases.
 Run:
 
 - `pnpm changeset`: Execute the Changeset CLI using npm. This lets you use npm run changeset to invoke the CLI instead of using npx.
