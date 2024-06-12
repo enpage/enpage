@@ -1,5 +1,14 @@
 # @enpage/template-utils
 
+## 0.0.7
+
+### Patch Changes
+
+- e5668eb: Update eslint config
+- Updated dependencies [e5668eb]
+  - @enpage/sdk@0.0.7
+  - @enpage/types@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

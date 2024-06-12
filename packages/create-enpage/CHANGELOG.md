@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.9
+
+### Patch Changes
+
+- e5668eb: Update eslint config
+
 ## 0.0.8
 
 ### Patch Changes
