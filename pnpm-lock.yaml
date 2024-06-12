@@ -3240,14 +3240,6 @@ packages:
       - nx
     dev: true
 
-  /@nrwl/devkit@19.2.3(nx@19.2.3):
-    resolution: {integrity: sha512-OL6sc70gR/USasvbYzyYY44Hd5ZCde2UfiA5h8VeAYAJbq+JmtscpvjcnZ7OIsXyYEOxe1rypULElqu/8qpKzQ==}
-    dependencies:
-      '@nx/devkit': 19.2.3(nx@19.2.3)
-    transitivePeerDependencies:
-      - nx
-    dev: true
-
   /@nrwl/js@19.2.3(@types/node@20.12.12)(nx@18.3.5)(typescript@5.4.5):
     resolution: {integrity: sha512-foM72vQZBjUXu/8RuTBK9fwf6Oyezqbv2nQQBmJmUhCeh9Tg3P9JPcSRIdI740qTjRlF05zouJPABFu899vuPQ==}
     dependencies:
@@ -3357,7 +3349,7 @@ packages:
     peerDependencies:
       nx: '>= 17 <= 20'
     dependencies:
-      '@nrwl/devkit': 19.2.3(nx@19.2.3)
+      '@nrwl/devkit': 19.2.3(nx@18.3.5)
       ejs: 3.1.10
       enquirer: 2.3.6
       ignore: 5.3.1
