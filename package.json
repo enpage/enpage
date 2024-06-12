@@ -32,7 +32,6 @@
       "@types/node": "^20.0.0",
       "goober": "2.1.14",
       "zod": "3.23.8",
-      "twin.macro": "3.4.1",
       "tailwindcss": "3.4.3",
       "@tailwindcss/container-queries": "0.1.1",
       "@tailwindcss/forms": "0.5.7",
