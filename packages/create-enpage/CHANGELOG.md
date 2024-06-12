@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.7
+
+### Patch Changes
+
+- f0076b7: Change how publishing works
+
 ## 0.0.6
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @enpage/template-utils
 
+## 0.0.5
+
+### Patch Changes
+
+- f0076b7: Change how publishing works
+- Updated dependencies [f0076b7]
+  - @enpage/sdk@0.0.5
+  - @enpage/types@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
