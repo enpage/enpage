@@ -1,5 +1,14 @@
 # @enpage/sdk
 
+## 0.0.4
+
+### Patch Changes
+
+- d703233: Clean packages
+- Updated dependencies [d703233]
+  - @enpage/style-system@0.0.4
+  - @enpage/types@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

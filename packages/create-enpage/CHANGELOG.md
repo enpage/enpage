@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.6
+
+### Patch Changes
+
+- d703233: Clean packages
+
 ## 0.0.5
 
 ### Patch Changes
