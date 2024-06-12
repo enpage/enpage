@@ -1,4 +1,4 @@
 {
   "installDependencies": true,
-  "startCommand": "pnpm run build && pnpm run start"
+  "startCommand": "pnpm add -g @nx/nx-linux-x64-gnu@19 && pnpm run build && pnpm run start"
 }
