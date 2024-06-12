@@ -1,5 +1,11 @@
 # @enpage/eslint-config
 
+## 1.0.7
+
+### Patch Changes
+
+- 964c7f4: Force degit to use git
+
 ## 1.0.6
 
 ### Patch Changes

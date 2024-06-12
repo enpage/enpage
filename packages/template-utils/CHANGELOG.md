@@ -1,5 +1,14 @@
 # @enpage/template-utils
 
+## 0.0.8
+
+### Patch Changes
+
+- 964c7f4: Force degit to use git
+- Updated dependencies [964c7f4]
+  - @enpage/sdk@0.0.8
+  - @enpage/types@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

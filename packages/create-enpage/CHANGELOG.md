@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.10
+
+### Patch Changes
+
+- 964c7f4: Force degit to use git
+
 ## 0.0.9
 
 ### Patch Changes
