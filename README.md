@@ -12,8 +12,7 @@ to help you create templates that are responsive, accessible and easy to use and
 
 Click on the following link to create a new template using Stackblitz:
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/FlippableSoft/enpage-sdk)
-
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/FlippableSoft/enpage-template)
 
 ### Locally
 
