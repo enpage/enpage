@@ -16,7 +16,6 @@
   },
   "devDependencies": {
     "cssnano": "7.0.1",
-    "@enpage/eslint-config": "workspace:*",
     "postcss-import": "16.1.0",
     "postcss-preset-env": "9.5.14",
     "rollup-plugin-visualizer": "5.12.0",
