@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.12
+
+### Patch Changes
+
+- eeace3e: Add shebang to ep-ctrl
+
 ## 0.0.11
 
 ### Patch Changes

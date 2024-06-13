@@ -1,5 +1,11 @@
 # @enpage/eslint-config
 
+## 1.0.9
+
+### Patch Changes
+
+- eeace3e: Add shebang to ep-ctrl
+
 ## 1.0.8
 
 ### Patch Changes

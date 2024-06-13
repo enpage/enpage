@@ -1,5 +1,16 @@
 # @enpage/template-example
 
+## 0.0.10
+
+### Patch Changes
+
+- eeace3e: Add shebang to ep-ctrl
+- Updated dependencies [eeace3e]
+  - @enpage/sdk@0.0.10
+  - @enpage/style-system@0.0.10
+  - @enpage/template-utils@0.0.10
+  - @enpage/types@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes
