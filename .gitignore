@@ -90,6 +90,7 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+.template-dist
 
 # Gatsby files
 .cache/
@@ -130,8 +131,6 @@ dist
 .pnp.*
 
 packages/testing
-
-
 
 .nx/cache
 .nx/workspace-data
