@@ -11,9 +11,9 @@ The 2 main files are:
 
 ## Assets management (images, css)
 
-- Images should be placed in the `public/assets` folder and prefixed with `/assets/` in the HTML file.
+- Images should be placed in the `assets/` folder and referenced with `./assets/` in the HTML file.
 - CSS files may be placed anywhere neer your index.html file and linked in the HTML file using relative paths.
-- Tailwind is included by default with some usefull plugins (forms, typography, scrollbars, animate, transform3d). 
+- Tailwind is included by default with some usefull plugins (forms, typography, scrollbars, animate, transform3d).
 You can customize the default tailwind theme in the `tailwind.config.js` file if needed.
 - PostCSS is included by default with some plugins (autoprefixer, tailwindcss, cssnano). You can customize the PostCSS configuration in the `postcss.config.js` file if needed.
 
@@ -41,10 +41,10 @@ export const datasources = defineDataSources({
      * Enpage built-in datasource (`youtube-feed`) representing a list of videos from Youtube
      */
     // "myVideos" is the unique datasource key that will be used in the template
-    myVideos: {                     
+    myVideos: {
         // The datasource name displayed in the editor
-        name: "My Videos",      
-        // The provider name (see docs for all available providers)    
+        name: "My Videos",
+        // The provider name (see docs for all available providers)
         provider: "youtube-feed"
     },
     /**
@@ -52,7 +52,7 @@ export const datasources = defineDataSources({
      */
     // "links" is the unique datasource key that will be used in the template
     links: {
-        name: "Links",          
+        name: "Links",
         // The schema of the datasource. Here, an array of objects with a title and a url.
         // It is used to validate the data and create the editor UI. Schema are declared using zod (https://zod.dev/).
         // Here, we have an array of objects with a title (string), a url (string) and an optional icon (string).
