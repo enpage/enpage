@@ -5,8 +5,7 @@ This is an example of a Enpage template.
 
 Enpage handles a few specific attributes that are used to control the appearance and behavior of the page.
 
-You can also use pre-built web components from the @enpage/sdk package to handle dynamic content,
-looping, conditions, and more.
+You can also use pre-built web components from the @enpage/sdk package to handle loops and conditions.
 
 Important:
 
@@ -22,21 +21,27 @@ Important:
   <!--
     Not mandatory but recommended to use the Enpage CSS utility classes (based on Tailwind CSS).
    -->
-  <style>
-    @import "@enpage/style-system/tailwind.css";
-  </style>
+
+  <!-- Here you can refrence your own css -->
+  <link rel="stylesheet" href="./styles.css" />
+
   <!--
-    Scripts MUST be loaded as modules (type="module").
+    Local scripts MUST be loaded as modules (type="module").
     Modules being deferrered by default, they can access the DOM immediately.
    -->
   <script type="module" src="./src/index.js"></script>
+
+  <!--
+    External scripts can be loaded as regular scripts like this:
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  -->
 </head>
 
 
 <body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
   <section
            class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-    <img id="profile-pic" src="/assets/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
+    <img id="profile-pic" src="assets/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
          label="Profile picture" />
     <div class="flex-1">
       <p id="section-2" data-label="Title" data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
@@ -46,7 +51,7 @@ Important:
         General Manager @ Acme Corp
       </p>
       <ul class="mt-10 flex w-full flex-col gap-2">
-        <!-- 
+        <!--
           Make use of Enpage-provided components to handle loops and conditions.
           The `enpage-loop` component will loop over the `links` datasource.
         -->

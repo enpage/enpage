@@ -4,8 +4,9 @@
   "description": "",
   "type": "module",
   "exports": {
-    ".": "./dist",
+    ".": "./.template-dist",
     "./package.json": "./package.json",
+    "./manifest.json": "./.vite/manifest.json",
     "./enpage.config.js": "./enpage.config.js"
   },
   "scripts": {
