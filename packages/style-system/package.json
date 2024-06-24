@@ -1,6 +1,6 @@
 {
   "name": "@enpage/style-system",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Base tailwindcss setup with some extra plugins as well as colors and editor styles",
   "type": "module",
   "exports": {
