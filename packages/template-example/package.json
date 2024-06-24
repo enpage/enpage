@@ -1,7 +1,7 @@
 {
   "name": "@enpage/template-example",
   "version": "0.0.10",
-  "description": "",
+  "description": "Enpage template example",
   "type": "module",
   "exports": {
     ".": "./.template-dist",
@@ -10,7 +10,6 @@
     "./enpage.config.js": "./enpage.config.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ep-ctrl dev",
     "build-template": "ep-ctrl build",
     "preview": "ep-ctrl preview"
@@ -36,10 +35,9 @@
     "@enpage/template-utils": "workspace:*",
     "zod": "3.23.8"
   },
-  "keywords": [],
   "author": "Matthias Etienne",
   "license": "MIT",
-  "tags": [
+  "keywords": [
     "enpage-template"
   ],
   "enpage": {
@@ -47,7 +45,7 @@
     "name": "Hello World",
     "description": "A simple template that says hello.",
     "outline-color": "#FF9900",
-    "tags": [
+    "keywords": [
       "hello",
       "world"
     ],

@@ -17,31 +17,26 @@ Important:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enpage template demo</title>
-  <!--
-    Not mandatory but recommended to use the Enpage CSS utility classes (based on Tailwind CSS).
-   -->
+  <title>{{ page.title }}</title>
 
-  <!-- Here you can refrence your own css -->
-  <link rel="stylesheet" href="./styles.css" />
+  <!-- Add your own css like this -->
+  <!-- <link rel="stylesheet" href="./assets/css/styles.css" /> -->
 
   <!--
     Local scripts MUST be loaded as modules (type="module").
     Modules being deferrered by default, they can access the DOM immediately.
    -->
-  <script type="module" src="./src/index.js"></script>
+  <!-- <script type="module" src="./src/index.js"></script> -->
 
   <!--
     External scripts can be loaded as regular scripts like this:
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   -->
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
 </head>
 
-
 <body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
-  <section
-           class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-    <img id="profile-pic" src="assets/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
+  <section class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
          label="Profile picture" />
     <div class="flex-1">
       <p id="section-2" data-label="Title" data-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
@@ -52,17 +47,14 @@ Important:
       </p>
       <ul class="mt-10 flex w-full flex-col gap-2">
         <!--
-          Make use of Enpage-provided components to handle loops and conditions.
-          The `enpage-loop` component will loop over the `links` datasource.
+          Loop over the `links` datasource to display a list of links.
         -->
-        <ep-loop datasource="links">
-          <template>
-            <li
-                class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
-              <a class="flex-1 p-2.5" data-bind-attr="href:url, title" data-bind="title"></a>
-            </li>
-          </template>
-        </ep-loop>
+        {% for link in data.links %}
+        <li
+            class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+          <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+        </li>
+        {% endfor %}
       </ul>
     </div>
   </section>

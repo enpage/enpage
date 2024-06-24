@@ -13,7 +13,7 @@ const viteEnpagePlugin = (): Plugin => {
           preserveSymlinks: true,
         },
         optimizeDeps: {
-          include: ["@enpage/sdk", "@enpage/sdk/components"],
+          include: ["@enpage/sdk"],
         },
         build: {
           rollupOptions: {

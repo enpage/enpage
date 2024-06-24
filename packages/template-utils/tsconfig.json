@@ -18,6 +18,7 @@
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
+    "rootDir": "src",
     "outDir": "dist"
   },
   "include": ["src", "custom-attrs.d.ts"]

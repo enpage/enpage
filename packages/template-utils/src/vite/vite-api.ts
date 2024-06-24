@@ -9,6 +9,7 @@ export async function startDevServer() {
   process.env.NODE_ENV = "development";
   const server = await createServer({
     configFile: resolve(__dirname, "./config/vite.config.js"),
+    cacheDir: process.cwd() + "/.cache",
   });
 
   await server.listen();

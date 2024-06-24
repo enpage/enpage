@@ -1,7 +1,7 @@
 import { defineConfig, UserConfig, loadEnv } from "vite";
 import { addTemplateDeps } from "../vite/add-template-deps";
 import { loadEnpageConfig } from "../vite/load-config";
-import { generateContext } from "../vite/generate-context";
+import { renderTemplate } from "../vite/render";
 import { minifyHtml } from "../vite/minify-html";
 import viteEnpagePlugin from "../vite/enpage";
 import { join } from "path";
@@ -15,12 +15,13 @@ export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Pr
     clearScreen: false,
     plugins: [
       viteEnpagePlugin(),
-      addTemplateDeps(),
-      ...(command === "serve" ? [generateContext(enpageCfg)] : []),
+      addTemplateDeps(enpageCfg),
+      renderTemplate(enpageCfg),
       ...(command === "build" ? [minifyHtml()] : []),
     ],
     server: {
       host: true,
+      open: true,
     },
     build: {
       manifest: true,

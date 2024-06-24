@@ -1,8 +1,9 @@
 // @ts-check
 import z from "zod";
 import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineAttributes, attr } from "@enpage/sdk/attributes";
 
-// define you datasources likes this
+// define your datasources
 export const datasources = defineDataSources({
   links: {
     name: "Links",
@@ -23,3 +24,20 @@ export const datasources = defineDataSources({
     name: "My Videos",
   },
 });
+
+// define your attributes
+export const attributes = defineAttributes({
+  title: attr.text("Title", {}),
+});
+// // template information
+// export const info = {
+//   name: "Example Template",
+//   description: "Description of the template",
+//   author: "John Doe",
+//   homepage: "https://enpage.co",
+// };
+
+// various settings
+export const settings = {
+  disableTailwind: false, // set to true to disable tailwind
+};

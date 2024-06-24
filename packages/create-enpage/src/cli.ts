@@ -3,16 +3,12 @@
 import degit from "degit";
 import { program } from "commander";
 import { resolve } from "path";
-import { fileURLToPath } from "url";
 import path from "path";
 import chalk from "chalk";
 import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { input } from "@inquirer/prompts";
 import { randomUUID } from "crypto";
 import { execSync } from "child_process";
-
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename); // get the name of the directory
 
 program
   .description("Create a new Enpage template")
@@ -34,7 +30,7 @@ program
     }
     process.stdout.write("Cloning template example... ");
 
-    const emitter = degit("FlippableSoft/enpage-sdk/packages/template-example");
+    const emitter = degit("enpage/enpage-sdk/packages/template-example");
 
     await emitter.clone(directory);
     console.log(chalk.blue("OK"));
@@ -78,9 +74,9 @@ program
 
     const template = {
       id: randomUUID(),
-      tags: tags.split(",").map((tag: string) => tag.trim()),
     };
 
+    const tagsArray = tags.split(",").map((tag: string) => tag.trim());
     const pkgPath = resolve(directory, "package.json");
     const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
@@ -98,7 +94,7 @@ program
     pkgJson.name = "enpage-template-" + path.basename(directory);
     pkgJson.enpage = template;
     pkgJson.author = author;
-    pkgJson.keywords = [...new Set([...pkgJson.keywords, ...template.tags])];
+    pkgJson.keywords = [...new Set([...pkgJson.keywords, ...tagsArray])];
     pkgJson.license = "UNLICENSED";
     pkgJson.description = description;
     pkgJson.homepage = homepage.length > 0 ? homepage : undefined;
@@ -115,9 +111,9 @@ program
     execSync(`${pm} install`, { cwd: directory });
 
     console.log(chalk.blue("All done!"));
-    console.log("\n\nYou can now develop your template:");
-    console.log(chalk.blue(`  cd ${directory}`));
-    console.log(chalk.blue(`  ${pm} start`));
+    console.log("\n\nYou can now develop your template:\n");
+    console.log(chalk.blue(`   cd ${directory}`));
+    console.log(chalk.blue(`   ${pm} start`));
   });
 
 program.parse();

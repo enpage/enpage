@@ -1,5 +1,6 @@
-import { DatasourceManifestMap, AttributesMap, DatasourceResolved } from "@enpage/types";
-import { type CSSRegistry } from "./dynamic-css";
+import type { DatasourceManifestMap, DatasourceResolved } from "@enpage/types/datasources";
+import type { AttributesMap } from "@enpage/types/attributes";
+import type { CSSRegistry } from "./dynamic-css";
 
 export type Customization =
   | "none"

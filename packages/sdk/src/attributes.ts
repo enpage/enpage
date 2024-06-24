@@ -1,3 +1,4 @@
+import type { AttributesMap } from "@enpage/types/attributes";
 import {
   AttrText,
   AttrNumber,
@@ -7,10 +8,16 @@ import {
   AttrFile,
   AttrUrl,
   AttrColor,
-} from "@enpage/types";
-import type { RunContextType } from "./types";
+} from "@enpage/types/attributes";
+
+export function defineAttributes(attrs: AttributesMap) {
+  return attrs;
+}
 
 export const attr = {
+  /**
+   * Define a text attribute
+   */
   text(name: string, opts?: Omit<AttrText, "name" | "type">) {
     return {
       type: "text",
@@ -18,6 +25,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrText;
   },
+  /**
+   * Define a number attribute
+   */
   number(name: string, opts?: Omit<AttrNumber, "name" | "type">) {
     return {
       type: "number",
@@ -26,6 +36,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrNumber;
   },
+  /**
+   * Define a boolean attribute
+   */
   boolean(name: string, opts?: Omit<AttrBoolean, "name" | "type">) {
     return {
       type: "boolean",
@@ -33,6 +46,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrBoolean;
   },
+  /**
+   * Define an enum attribute
+   */
   enum<O extends string>(name: string, opts: Omit<AttrEnum<O>, "name" | "type">) {
     return {
       type: "enum",
@@ -40,6 +56,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrEnum<O>;
   },
+  /**
+   * Define a file attribute
+   */
   file(
     name: string,
     opts: Omit<AttrFile, "name" | "type"> = {
@@ -52,6 +71,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrFile;
   },
+  /**
+   * Define a URL attribute
+   */
   url(name: string, opts: Omit<AttrUrl, "name" | "type"> = {}) {
     return {
       type: "url",
@@ -59,6 +81,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrUrl;
   },
+  /**
+   * Define a color attribute
+   */
   color(name: string, opts: Omit<AttrColor, "name" | "type"> = {}) {
     return {
       type: "color",
@@ -67,7 +92,3 @@ export const attr = {
     } as const satisfies AttrColor;
   },
 };
-
-export function isEditMode(ctx: RunContextType) {
-  return ctx.mode === "edit";
-}

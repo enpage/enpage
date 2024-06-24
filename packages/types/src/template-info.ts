@@ -1,6 +1,6 @@
 import z from "zod";
 
-const templateMetadataSchema = z.object({
+export const templateInfoSchema = z.object({
   id: z.string(),
   version: z.string(),
   name: z.string(),
@@ -11,4 +11,4 @@ const templateMetadataSchema = z.object({
   homepage: z.string().url().optional(),
 });
 
-export type TemplateMetadata = z.infer<typeof templateMetadataSchema>;
+export type TemplateInfo = z.infer<typeof templateInfoSchema>;

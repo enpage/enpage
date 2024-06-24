@@ -17,7 +17,6 @@
   },
   "html.format.wrapAttributes": "aligned-multiple",
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "lit-plugin.strict": true,
   "editor.rulers": [120],
   "html.customData": ["./.vscode/html-custom-data.json"],
   "[properties]": {
@@ -29,5 +28,11 @@
   },
   "[dotenv]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "files.associations": {
+    "*.html": "liquid"
+  },
+  "[liquid]": {
+    "editor.defaultFormatter": "sissel.shopify-liquid"
   }
 }

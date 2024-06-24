@@ -18,7 +18,7 @@
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vite/client", "@enpage/template-utils/custom-attrs.d.ts", "@enpage/sdk/components"]
+    "types": ["vite/client", "@enpage/template-utils/custom-attrs.d.ts"]
   },
   "include": ["*.html", "src"]
 }

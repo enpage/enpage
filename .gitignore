@@ -134,3 +134,6 @@ packages/testing
 
 .nx/cache
 .nx/workspace-data
+
+docs/.vitepress/dist
+docs/.vitepress/cache

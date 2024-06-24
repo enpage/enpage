@@ -1,4 +1,5 @@
-class EnpageSDK {
+export class EnpageSDK {
+  constructor() {}
   goToSection(section: string | number) {}
   nextSection() {
     console.log("next section");
@@ -10,5 +11,3 @@ class EnpageSDK {
     return window._enpageCtx;
   }
 }
-
-export const enpage = new EnpageSDK();

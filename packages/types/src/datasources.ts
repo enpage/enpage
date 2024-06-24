@@ -36,8 +36,6 @@ export const providersSchemaMap: Record<DatasourceProvider, z.ZodTypeAny> = {
   "twitter-feed": twitterFeedSchema,
 };
 
-const never = z.never();
-
 type DatasourceProviderManifest<P extends DatasourceProvider> = {
   provider: P;
   name: string;

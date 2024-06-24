@@ -7,15 +7,15 @@
     "src",
     "env.d.ts"
   ],
-  "module": "./dist/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/sdk.js",
+      "types": "./dist/sdk.d.ts"
     },
     "./env.d.ts": {
-      "import": "./src/env.d.ts",
-      "types": "./src/env.d.ts"
+      "require": "./env.d.ts",
+      "import": "./env.d.ts",
+      "types": "./env.d.ts"
     },
     "./components": {
       "import": "./dist/components.js",
@@ -25,20 +25,27 @@
       "import": "./dist/datasources.js",
       "types": "./dist/datasources.d.ts"
     },
-    "./dev-utils": {
-      "import": "./dist/dev-utils.js",
-      "types": "./dist/dev-utils.d.ts"
+    "./attributes": {
+      "import": "./dist/attributes.js",
+      "types": "./dist/attributes.d.ts"
+    },
+    "./context": {
+      "import": "./dist/context.js",
+      "types": "./dist/context.d.ts"
+    },
+    "./dynamic-css": {
+      "import": "./dist/dynamic-css.js",
+      "types": "./dist/dynamic-css.d.ts"
+    },
+    "./zod": {
+      "import": "./dist/zod.js",
+      "types": "./dist/zod.d.ts"
     }
   },
   "dependencies": {
-    "@lit/context": "1.1.2",
-    "@lit/reactive-element": "2.0.4",
     "@twind/core": "1.1.3",
     "clsx": "2.1.1",
     "immer": "10.1.1",
-    "lit": "^3.1.4",
-    "lit-element": "4.0.6",
-    "lit-html": "3.1.4",
     "nanoid": "5.0.7",
     "tiny-invariant": "1.3.3",
     "zod": "workspace:*"
@@ -48,6 +55,7 @@
     "@enpage/types": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^20.12.12",
     "csstype": "3.1.3",
     "rollup-plugin-visualizer": "5.12.0",
     "vite": "5.2.11",
@@ -55,7 +63,7 @@
     "vite-tsconfig-paths": "workspace:*"
   },
   "scripts": {
-    "build": "nx vite:build",
+    "build": "nx vite:build --verbose",
     "dev": "nx vite:build --watch",
     "lint": "npx nx eslint:lint",
     "preview": "nx vite:preview",
