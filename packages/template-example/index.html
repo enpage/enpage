@@ -15,9 +15,11 @@ Important:
 -->
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ page.title }}</title>
+  <!--
+    Note: Common meta tags will be auto generated!
+    This includes the title, description, keyword, charset, and other meta tags.
+    See the documentation for more details.
+  -->
 
   <!-- Add your own css like this -->
   <!-- <link rel="stylesheet" href="./assets/css/styles.css" /> -->
@@ -47,14 +49,19 @@ Important:
       </p>
       <ul class="mt-10 flex w-full flex-col gap-2">
         <!--
-          Loop over the `links` datasource to display a list of links.
+        <template data-loop="link in data.links">
+          <li class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+            <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+          </li>
+        <template>
         -->
-        {% for link in data.links %}
-        <li
-            class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
-          <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
-        </li>
-        {% endfor %}
+        <template data-template>
+          {% for link in data.links %}
+          <li class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+            <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+          </li>
+          {% endfor %}
+        <template>
       </ul>
     </div>
   </section>

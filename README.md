@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Enpage SDK" src="https://raw.githubusercontent.com/enpage/enpage-sdk/main/enpage-sdk.svg" width="437">
+    <img alt="Enpage SDK" src="https://raw.githubusercontent.com/enpage/enpage-sdk/main/docs/enpage-sdk.svg" width="437">
 </p>
 
 # Enpage SDK
@@ -8,59 +8,10 @@ The Enpage SDK regroups the  core functionality for the Enpage templates.
 It is based on standard web technologies (HTML, CSS, JS) and provides a set of components, utilities and tools
 to help you create templates that are responsive, accessible and easy to use and customize.
 
-## Create a new template
+## Develop templates for Enpage
 
-### Using Stackblitz
+Please visit the documentation at [https://developers.enpage.co](https://developers.enpage.co)
 
-Click on the following link to create a new template using Stackblitz:
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/FlippableSoft/enpage-template)
-
-### Locally
-
-Creating a new template locally is really easy. Just run the following command:
-
-```bash
-npm create enpage@latest my-template
-cd my-template
-npm start
-```
-
-This will create a new template project in the directory `./my-template` and start the development server
-so you can start working on your template right away and have a live preview in your browser.
-
-Once done, you can package the template using the `npm run build` command.
-
-## Publish your template
-
-To publish your template, you run `npm release` command and follow the instructions.
-
-```bash
-npm run release
-```
-
-## Documentation
-
-A template is composed of a set of standard exports:
-
-- `<Template>`: The main component of the template.
-- `metadata`: The metadata of the template.
-- `datasources`: The datasources of the template.
-- `sesttings`: The settings of the template.
-
-The `metadata` export is an object with the following properties:
-
-- `name`: The name of the template.
-- `description`: The description of the template.
-- `tags`: An array of tags for the template.
-- `thumbnail`: The URL of the thumbnail image for the template.
-
-The `datasources` export is a zod schema that defines the shape of the datasources for the template.
-
-### Design notes
-
-It's important to provide a template that is responsive and accessible.
-The SDK facilitates this by providing a custom tailwind configuration and predefined classes that can be used to style the template.
 
 
 ## Contributing

@@ -5,12 +5,12 @@
   "main": "eslint.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm --parallel -r dev",
-    "build": "pnpm exec nx run-many -t build --parallel=false",
+    "dev": "pnpm exec nx run-many -t dev",
+    "build": "pnpm exec nx run-many -t build",
     "changeset": "changeset",
     "publish:packages": "changeset publish",
     "version:packages": "changeset version",
-    "docs:dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs --port 8965",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },

@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const templateInfoSchema = z.object({
+export const templateManifest = z.object({
   id: z.string(),
   version: z.string(),
   name: z.string(),
@@ -11,4 +11,4 @@ export const templateInfoSchema = z.object({
   homepage: z.string().url().optional(),
 });
 
-export type TemplateInfo = z.infer<typeof templateInfoSchema>;
+export type TemplateManifest = z.infer<typeof templateManifest>;

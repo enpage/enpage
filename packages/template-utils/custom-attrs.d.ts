@@ -18,6 +18,11 @@ declare global {
     "data-enpage-allow-reorder"?: Boolish;
 
     /**
+     * A Boolean value indicating whether or not its contents should be parsed by liquid.
+     */
+    "data-template"?: Boolish;
+
+    /**
      * A Boolean value indicating whether or not the element can be **duplicated**.
      */
     "data-enpage-allow-duplicate"?: Boolish;
@@ -43,7 +48,7 @@ declare global {
      * When set to "plain-text", the content will be plain text. When set to "html", the content will be HTML.
      * When set to true, the content will be plain text.
      */
-    "data-enpage-content-editable"?: "plain-text" | "html" | boolean;
+    "data-text-editable"?: "plain" | "html" | boolean;
 
     /**
      * **Enpage custom attribute**

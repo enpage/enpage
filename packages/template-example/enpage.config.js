@@ -38,6 +38,4 @@ export const attributes = defineAttributes({
 // };
 
 // various settings
-export const settings = {
-  disableTailwind: false, // set to true to disable tailwind
-};
+export const settings = {};

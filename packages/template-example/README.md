@@ -9,7 +9,6 @@ This is a simple Enpage template example for you to customize and create your ow
 ├── assets                  # Images, CSS, etc
 ├── enpage.config.js        # Enpage configuration file
 ├── index.html              # Template HTML file
-├── postcss.config.js       # PostCSS configuration file
 ├── src                     # Javascript files
 └── tailwind.config.js      # Tailwind configuration file
 ```

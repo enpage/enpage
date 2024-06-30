@@ -11,7 +11,7 @@ import {
 } from "@enpage/types/attributes";
 
 export function defineAttributes(attrs: AttributesMap) {
-  return attrs;
+  return { defaultAttributes, ...attrs };
 }
 
 export const attr = {
@@ -91,4 +91,9 @@ export const attr = {
       ...opts,
     } as const satisfies AttrColor;
   },
+};
+
+const defaultAttributes: AttributesMap = {
+  $pageTitle: attr.text("Page title"),
+  $pageDescription: attr.text("Page description"),
 };

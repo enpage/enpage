@@ -1,5 +1,33 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "dev": {
+      "dependsOn": ["^dev"],
+      "cache": false
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
+    "dev": [
+      {
+        "target": "dev",
+        "projects": "dependencies"
+      }
+    ]
+  },
   "defaultBase": "main",
   "plugins": [
     {
@@ -7,16 +35,6 @@
       "options": {
         "targetName": "eslint:lint",
         "extensions": ["ts", "tsx", "js", "jsx", "html", "vue"]
-      }
-    },
-    {
-      "plugin": "@nx/vite/plugin",
-      "options": {
-        "buildTargetName": "vite:build",
-        "testTargetName": "test",
-        "serveTargetName": "serve",
-        "previewTargetName": "vite:preview",
-        "serveStaticTargetName": "serve-static"
       }
     }
   ]
