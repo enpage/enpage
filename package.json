@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
+  "license": "AGPL",
   "private": true,
   "workspaces": [
     "packages/*"
