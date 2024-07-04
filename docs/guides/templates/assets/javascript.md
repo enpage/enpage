@@ -35,4 +35,4 @@ Make sure to use relatives paths when referencing JavaScript files in your HTML.
 
 ## Using The Enpage JavaScript API
 
-Enpage provides a JavaScript API that you can use to interact with the Enpage platform. You can use the API to get data from the platform, send data to the platform, and more. To learn more about the Enpage JavaScript API, check out the [API reference](/enpage-api).
+Enpage provides a JavaScript API that you can use to interact with the Enpage platform. You can use the API to get data from the platform, send data to the platform, and more. To learn more about the Enpage JavaScript API, check out the [API reference](/enpage-global/).
