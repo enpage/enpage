@@ -1,5 +1,14 @@
 # @enpage/template-utils
 
+## 0.0.11
+
+### Patch Changes
+
+- da75589: Add context generatiion and fetching
+- Updated dependencies [da75589]
+  - @enpage/sdk@0.0.11
+  - @enpage/types@0.0.11
+
 ## 0.0.10
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@enpage/editor-shared",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "type": "module",
   "module": "./src/index.ts",
