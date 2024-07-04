@@ -6,7 +6,8 @@ We take the security of our projects seriously. If you discover a security vulne
 
 ### How to Report a Vulnerability
 
-Please report any security vulnerabilities to our dedicated security team at: **security@enpage.co**
+1. Go to https://github.com/enpage/enpage/security
+2. Click on "Report a vulnerability"
 
 When reporting a vulnerability, please include:
 
@@ -30,6 +31,4 @@ We appreciate your help in keeping our project secure. Your efforts to responsib
 
 Thank you for contributing to the security of our project.
 
----
 
-If you have any questions about our security policy, please contact us at security@enpage.co.
