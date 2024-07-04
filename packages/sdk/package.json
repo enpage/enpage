@@ -48,9 +48,6 @@
     },
     "./custom-attrs.d.ts": "./custom-attrs.d.ts"
   },
-  "bin": {
-    "ep-ctrl": "dist/builder/scripts/ep-ctrl.js"
-  },
   "dependencies": {
     "@lit/reactive-element": "2.0.4",
     "@twind/core": "1.1.3",
