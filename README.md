@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Enpage SDK" src="https://raw.githubusercontent.com/enpage/enpage/main/docs/enpage.svg" width="437">
+    <img alt="Enpage SDK" src="https://raw.githubusercontent.com/enpage/enpage/main/docs/public/enpage.svg" width="437">
 </p>
 
 # Enpage SDK
