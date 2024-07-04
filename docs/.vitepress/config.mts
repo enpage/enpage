@@ -13,9 +13,9 @@ export default defineConfig({
     },
     siteTitle: false,
     nav: [
-      { text: "Home", link: "/" },
-      { text: "🆘 Getting Help", link: "/help" },
+      { text: "Help", link: "/help" },
       { text: "Contribute", link: "/contribute" },
+      { text: "Enpage.co", link: "https://enpage.co" },
     ],
     sidebar: [
       {
