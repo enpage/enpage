@@ -5,7 +5,8 @@
   "files": [
     "dist",
     "src",
-    "env.d.ts"
+    "env.d.ts",
+    "custom-attrs.d.ts"
   ],
   "exports": {
     ".": {
@@ -44,7 +45,11 @@
     "./zod": {
       "import": "./dist/zod.js",
       "types": "./dist/zod.d.ts"
-    }
+    },
+    "./custom-attrs.d.ts": "./custom-attrs.d.ts"
+  },
+  "bin": {
+    "ep-ctrl": "dist/builder/scripts/ep-ctrl.js"
   },
   "dependencies": {
     "@lit/reactive-element": "2.0.4",

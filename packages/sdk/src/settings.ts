@@ -1,4 +1,4 @@
-import { type TemplateSettings } from "@enpage/types/template-settings";
+import { type TemplateSettings } from "@enpage/types/settings";
 
 const defaultTemplateSettings: TemplateSettings = {
   editorOutlineColor: "#8f93d8",

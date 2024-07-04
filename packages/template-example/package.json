@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "ep-ctrl dev",
+    "start": "ep-ctrl dev",
     "build-template": "ep-ctrl build",
     "preview": "ep-ctrl preview"
   },
@@ -33,7 +34,7 @@
     "zod": "3.23.8"
   },
   "author": "Matthias Etienne",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "keywords": [
     "enpage-template"
   ],

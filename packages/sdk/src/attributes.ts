@@ -11,16 +11,17 @@ import {
 } from "@enpage/types/attributes";
 
 export function defineAttributes(attrs: AttributesMap) {
-  return { defaultAttributes, ...attrs };
+  return { ...defaultAttributes, ...attrs };
 }
 
 export const attr = {
   /**
    * Define a text attribute
    */
-  text(name: string, opts?: Omit<AttrText, "name" | "type">) {
+  text(name: string, defaultValue = "", opts?: Omit<AttrText, "name" | "type" | "defaultValue">) {
     return {
       type: "text",
+      defaultValue,
       name,
       ...opts,
     } as const satisfies AttrText;
@@ -28,10 +29,11 @@ export const attr = {
   /**
    * Define a number attribute
    */
-  number(name: string, opts?: Omit<AttrNumber, "name" | "type">) {
+  number(name: string, defaultValue: number, opts?: Omit<AttrNumber, "name" | "type" | "defaultValue">) {
     return {
       type: "number",
       name,
+      defaultValue,
       displayAs: "input",
       ...opts,
     } as const satisfies AttrNumber;
@@ -39,9 +41,10 @@ export const attr = {
   /**
    * Define a boolean attribute
    */
-  boolean(name: string, opts?: Omit<AttrBoolean, "name" | "type">) {
+  boolean(name: string, defaultValue: boolean, opts?: Omit<AttrBoolean, "name" | "type" | "defaultValue">) {
     return {
       type: "boolean",
+      defaultValue,
       name,
       ...opts,
     } as const satisfies AttrBoolean;
@@ -49,9 +52,10 @@ export const attr = {
   /**
    * Define an enum attribute
    */
-  enum<O extends string>(name: string, opts: Omit<AttrEnum<O>, "name" | "type">) {
+  enum<O extends string>(name: string, defaultValue: O, opts: Omit<AttrEnum<O>, "name" | "type" | "defaultValue">) {
     return {
       type: "enum",
+      defaultValue,
       name,
       ...opts,
     } as const satisfies AttrEnum<O>;
@@ -74,9 +78,10 @@ export const attr = {
   /**
    * Define a URL attribute
    */
-  url(name: string, opts: Omit<AttrUrl, "name" | "type"> = {}) {
+  url(name: string, defaultValue = "", opts: Omit<AttrUrl, "name" | "type" | "defaultValue"> = {}) {
     return {
       type: "url",
+      defaultValue,
       name,
       ...opts,
     } as const satisfies AttrUrl;
@@ -84,9 +89,10 @@ export const attr = {
   /**
    * Define a color attribute
    */
-  color(name: string, opts: Omit<AttrColor, "name" | "type"> = {}) {
+  color(name: string, defaultValue: string, opts: Omit<AttrColor, "name" | "type"> = {}) {
     return {
       type: "color",
+      defaultValue,
       name,
       ...opts,
     } as const satisfies AttrColor;
@@ -94,6 +100,7 @@ export const attr = {
 };
 
 const defaultAttributes: AttributesMap = {
-  $pageTitle: attr.text("Page title"),
+  $pageTitle: attr.text("Page title", "Untitled"),
   $pageDescription: attr.text("Page description"),
+  $pageKeywords: attr.text("Page keywords"),
 };

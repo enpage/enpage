@@ -32,28 +32,6 @@
           "description": "Duration of the disappear animation."
         }
       ]
-    },
-    {
-      "name": "ep-loop",
-      "description": "Custom element that can dynamically render repeated content based on various data sources, including arrays and objects.",
-      "attributes": [
-        {
-          "name": "contextpath",
-          "description": "A dot-separated path to the property in the context data provided by `<enpage-page>` to loop through."
-        },
-        {
-          "name": "source",
-          "description": "The ID of a `<script>` tag containing JSON data to be used as the data source."
-        },
-        {
-          "name": "json",
-          "description": "A JSON string to be used as the data source."
-        },
-        {
-          "name": "range",
-          "description": "A range of numbers specified in the format 'start-end' to generate a sequence of numbers."
-        }
-      ]
     }
   ],
   "globalAttributes": [

@@ -37,15 +37,15 @@ pnpm create enpage my-template
 Then, follow the instructions in the terminal to create your new template.
 You can start building your template by editing the files in the `my-template` directory.
 
-To preview your template, run the following command in your terminal:
+To preview your template, simply fo to your template directory and run `npm start`:
 
 
 ```bash
 cd my-template
-npm run start
+npm start
 ```
 
-This will start a local development server where you can preview your template in the browser.
+This will start a local development server, allowing you to live edit and preview your template directly in the browser.
 
 
 ## Template structure

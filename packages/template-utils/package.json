@@ -3,13 +3,10 @@
   "version": "0.0.11",
   "description": "",
   "type": "module",
-  "types": "dist/vite-plugin.d.ts",
   "files": [
-    "dist",
-    "custom-attrs.d.ts"
+    "dist"
   ],
   "exports": {
-    "./custom-attrs.d.ts": "./custom-attrs.d.ts",
     "./*": {
       "import": "./dist/*.js",
       "require": "./dist/*.js"
@@ -25,18 +22,16 @@
   },
   "keywords": [],
   "author": "Matthias Etienne",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/types": "workspace:*",
-    "@lit-labs/ssr": "3.2.2",
     "chalk": "5.3.0",
     "commander": "12.1.0",
     "cssnano": "7.0.1",
     "html-minifier": "4.0.0",
     "jsdom": "24.1.0",
     "liquidjs": "10.14.0",
-    "lit": "3.1.4",
     "postcss-import": "16.1.0",
     "postcss-preset-env": "9.5.14",
     "vite": "5.2.12",

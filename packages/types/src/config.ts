@@ -5,7 +5,7 @@ import type { TemplateManifest } from "./manifest";
 
 export type EnpageTemplateConfig = {
   datasources?: DatasourceManifestMap;
-  attributes?: AttributesMap;
+  attributes: AttributesMap;
   settings?: TemplateSettings;
   manifest?: TemplateManifest;
 };

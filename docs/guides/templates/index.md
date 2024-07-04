@@ -5,7 +5,7 @@ title: "Writing a template: Overview"
 
 # Enpage Templates Overview
 
-Enpage templates are the building blocks of websites created on the Enpage platform. They are pre-designed layouts that can be used to create a website without any coding.
+Templates are the foundation of websites created on the Enpage platform. They are pre-designed layouts that enable users to build a website without any coding.
 
 ## Open technologies
 
@@ -18,9 +18,8 @@ Templates are not tied to a specific framework or library like React or Vue, so 
 
 ## Dynamic templates
 
-One of the unique aspect of Enpage, as a website builder, is that it allows using data sources to populate the templates. This means that templates can be dynamic and can display different content based on the data source.
+One of the unique features of Enpage as a website builder is its ability to use multiple data sources to populate templates. This enables the templates to be dynamic, displaying different content based on the various data sources.
 
 ## SEO friendly
 
-Enpage templates are designed to be SEO friendly, meaning that they are optimized for search engines and can help improve the visibility of a website in search results. This is even possible with dynamic data sources because the Enpage platform is capable of rendering the templates on the server side.
-
+Enpage templates are designed to be SEO-friendly, meaning they are optimized for search engines to improve a website's visibility in search results. Even with dynamic data sources, Enpage ensures this optimization by rendering the templates on the server side in production. During template development, or within the Enpage Editor, the templates are partially rendered client-side to facilitate live editing and previewing.

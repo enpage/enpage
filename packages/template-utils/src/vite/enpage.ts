@@ -1,6 +1,5 @@
 import { type Plugin } from "vite";
 import { logger } from "./logger";
-import { resolve } from "path";
 
 // return partial config (recommended)
 const viteEnpagePlugin = (): Plugin => {
@@ -10,7 +9,6 @@ const viteEnpagePlugin = (): Plugin => {
       return {
         customLogger: logger,
         esbuild: { legalComments: "none" },
-
         optimizeDeps: {
           exclude: ["@enpage/sdk"],
         },

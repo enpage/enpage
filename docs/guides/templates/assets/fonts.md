@@ -24,7 +24,7 @@ useFonts([
 :::
 
 
-When using Tailwind, you can also add the font to your `tailwind.config.js` file:
+When using Tailwind, you can then reference the font in your `tailwind.config.js` file:
 
 ::: code-group
 

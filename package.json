@@ -5,7 +5,7 @@
   "main": "eslint.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm exec nx run-many -t dev",
+    "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel -r dev",
     "build": "pnpm exec nx run-many -t build",
     "changeset": "changeset",
     "publish:packages": "changeset publish",
@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "AGPL",
+  "license": "AGPL-3.0-only",
   "private": true,
   "workspaces": [
     "packages/*"

@@ -1,6 +1,4 @@
 import type { DatasourceManifestMap, DatasourceResolved } from "@enpage/types/datasources";
-import type { AttributesMap } from "@enpage/types/attributes";
-import type { CSSRegistry } from "./dynamic-css";
 
 export type Customization =
   | "none"
@@ -34,7 +32,7 @@ interface Duplicatable {
 }
 
 interface TextEditable {
-  textEditable?: boolean | "plain-text" | "html" | 'allow-paid-users-only"';
+  textEditable?: boolean | "plain-text" | "html" | "allow-paid-users-only";
 }
 
 interface Reorderable {
@@ -114,16 +112,6 @@ export type PropTypes =
 
 export type EnpageContext = DatasourceResolved<DatasourceManifestMap>;
 
-export type AttributesTemplateProp<S extends AttributesMap> = {
-  [key in keyof S]: S[key]["value"];
-};
-
-export type TemplateProps<Datasources extends DatasourceManifestMap = {}, Settings extends AttributesMap = {}> = {
-  data: EnpageContext;
-  styles: Record<string, unknown>;
-  attributes: Partial<AttributesTemplateProp<Settings>>;
-};
-
 export type CSSVarName = string;
 export type CSSVarValue = string | number;
 
@@ -157,11 +145,3 @@ export type DynamicStylesArg = Record<symbol, ResponsiveValue<CSSVarValue> | und
 export interface Editor {
   onSelectBlock: (blockId: string) => void;
 }
-
-export type RunContextType<
-  Datasources extends DatasourceManifestMap = {},
-  Settings extends AttributesMap = {},
-> = TemplateProps<Datasources, Settings> & {
-  mode: "edit" | "view";
-  cssRegistry: CSSRegistry;
-};

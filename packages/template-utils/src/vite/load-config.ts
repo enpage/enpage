@@ -1,6 +1,7 @@
 import type { EnpageTemplateConfig } from "@enpage/types/config";
-import { templateSettingsSchema } from "@enpage/types/template-settings";
+import { templateSettingsSchema } from "@enpage/types/settings";
 import { logger } from "./logger";
+import { defineAttributes } from "@enpage/sdk/attributes";
 
 export async function loadEnpageConfig(configPath: string) {
   try {
@@ -12,6 +13,10 @@ export async function loadEnpageConfig(configPath: string) {
           `🔴 Warning! Datasource "${key}" is missing sample data - nothing will be rendered during development! Please check your enpage.config.js file and add a "sampleData" key to your ${key} datasource.`,
         );
       }
+    }
+
+    if (!cfg.attributes) {
+      cfg.attributes = defineAttributes({});
     }
 
     const validated = templateSettingsSchema.safeParse(cfg.settings);

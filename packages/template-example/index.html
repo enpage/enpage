@@ -48,14 +48,7 @@ Important:
         General Manager @ Acme Corp
       </p>
       <ul class="mt-10 flex w-full flex-col gap-2">
-        <!--
-        <template data-loop="link in data.links">
-          <li class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
-            <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
-          </li>
         <template>
-        -->
-        <template data-template>
           {% for link in data.links %}
           <li class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
             <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>

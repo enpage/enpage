@@ -7,6 +7,9 @@ import viteEnpagePlugin from "../vite/enpage";
 import { join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { existsSync } from "fs";
+import { createFakeContext, fetchContext } from "@enpage/sdk/context";
+import { logger } from "../vite/logger";
+import { PageContext } from "@enpage/types/context";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -18,9 +21,15 @@ export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Pr
   }
 
   const cfgPath = join(process.cwd(), "enpage.config.js");
-
   const enpageCfg = await loadEnpageConfig(cfgPath);
+
   const env = loadEnv(mode, process.cwd(), "");
+
+  let ctx = command == "build" ? await fetchContext(enpageCfg) : createFakeContext(enpageCfg);
+  if (ctx === false) {
+    logger.error("Failed to fetch context. Using fake context instead.");
+    ctx = createFakeContext(enpageCfg);
+  }
 
   return {
     clearScreen: false,
@@ -29,14 +38,21 @@ export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Pr
     },
     plugins: [
       viteEnpagePlugin(),
-      addTemplateDeps(enpageCfg),
-      renderTemplate(enpageCfg),
+      addTemplateDeps(enpageCfg, ctx as PageContext<any, any>),
+      renderTemplate(enpageCfg, ctx as PageContext<any, any>),
       ...(command === "build" ? [minifyHtml()] : []),
     ],
     resolve: {
       preserveSymlinks: true,
       alias: {
         "@enpage/liquid": resolve(__dirname, "../../node_modules/liquidjs/dist/liquid.browser.esm.js"),
+      },
+    },
+    server: {
+      watch: {
+        // Watch for changes in other packages
+        ignored: ["!**/node_modules/**", "!../*/dist/**"],
+        interval: 800,
       },
     },
     // server: {

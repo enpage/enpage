@@ -33,6 +33,6 @@ Welcome! This is the official documentation for the [Enpage](https://enpage.co) 
 Enpage lets people create amazing websites with ease and without any coding.
 If you are a developer or designer and want to create templates for Enpage, you are in the right place.
 
-Here you will find everything you need to know to get started with the Enpage platform and create amazing templates.
+Here you will find everything you need to know to get started with the Enpage platform and create beautiful templates.
 
-If you haven't already, [create an account](https://enpage.co) on Enpage and start building your first template.
+If you haven't already, [create an account](https://enpage.co) on Enpage and start building your first template!

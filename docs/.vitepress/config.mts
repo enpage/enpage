@@ -14,7 +14,8 @@ export default defineConfig({
     siteTitle: false,
     nav: [
       { text: "Home", link: "/" },
-      { text: "Examples", link: "/markdown-examples" },
+      { text: "🆘 Getting Help", link: "/help" },
+      { text: "Contribute", link: "/contribute" },
     ],
     sidebar: [
       {
@@ -41,9 +42,20 @@ export default defineConfig({
               { text: "Fonts", link: "/guides/templates/assets/fonts" },
             ],
           },
-          { text: "Settings", link: "/guides/templates/settings" },
           { text: "Attributes", link: "/guides/templates/attributes" },
+          { text: "Data Sources", link: "/guides/templates/data-sources" },
+          {
+            text: "Rendering data",
+            collapsed: true,
+            items: [
+              { text: "Templating with Liquid", link: "/guides/templates/rendering/liquid" },
+              { text: "Expressions", link: "/guides/templates/rendering/expressions" },
+              { text: "Loops", link: "/guides/templates/rendering/loops" },
+              { text: "Conditions", link: "/guides/templates/rendering/conditions" },
+            ],
+          },
           { text: "Multiple Pages", link: "/guides/templates/multipages" },
+          { text: "Builder Settings", link: "/guides/templates/builder-settings" },
         ],
       },
       {
@@ -51,24 +63,17 @@ export default defineConfig({
         items: [
           {
             text: "Overview",
-            link: "/guides/data-sources",
-          },
-          {
-            text: "Rendering data",
-            collapsed: true,
-            items: [
-              { text: "Templating with Liquid", link: "/guides/data-sources/rendering/liquid" },
-              { text: "Loops", link: "/guides/data-sources/rendering/loops" },
-              { text: "Conditional renreding", link: "/guides/data-sources/rendering/conditional-rendering" },
-            ],
+            link: "/guides/data-sources/",
           },
           {
             text: "Built-in Data Sources",
-            link: "/guides/data-sources/builtin",
+            link: "/guides/data-sources/built-in/",
             collapsed: true,
-            items: [{ text: "Instagram", link: "data-sources/builtin/instagram" }],
+            items: [
+              { text: "Instagram", link: "/guides/data-sources/built-in/instagram" },
+              { text: "YouTube", link: "/guides/data-sources/built-in/youtube" },
+            ],
           },
-          { text: "Custom Data Sources", link: "/guides/data-sources/custom" },
         ],
       },
       {
@@ -76,58 +81,45 @@ export default defineConfig({
         items: [
           {
             text: "Overview",
-            link: "/data-records",
+            link: "/guides/data-records/",
           },
           {
-            text: "Saving data to Enpage",
-            link: "/data-records/builtin-datasources",
-            collapsed: true,
-            items: [
-              { text: "Contentful", link: "/data-records/contentful" },
-              { text: "Prismic", link: "/data-records/prismic" },
-              { text: "Shopify", link: "/data-records/shopify" },
-              { text: "Wordpress", link: "/data-records/wordpress" },
-            ],
+            text: "Saving Data with Forms",
+            link: "/guides/data-records/forms",
           },
           {
-            text: "Saving data remotely",
-            link: "/data-records/builtin-datasources",
+            text: "Built-in Data Records",
+            link: "/guides/data-records/built-in/",
             collapsed: true,
             items: [
-              { text: "Contentful", link: "/data-records/contentful" },
-              { text: "Prismic", link: "/data-records/prismic" },
-              { text: "Shopify", link: "/data-records/shopify" },
-              { text: "Wordpress", link: "/data-records/wordpress" },
+              { text: "Google Sheets", link: "/guides/data-records/built-in/google-sheets" },
+              { text: "Airtable", link: "/guides/data-records/built-in/airtable" },
+              { text: "HTTP Query", link: "/guides/data-records/built-in/http-query" },
             ],
           },
         ],
       },
       {
-        text: "Enpage API",
+        text: "Enpage Global Object",
         items: [
-          { text: "Overview", link: "/enpage-api" },
-          { text: "Navigation", link: "/enpage-api/navigation" },
-          { text: "Forms", link: "/enpage-api/forms" },
-          { text: "Cookies", link: "/enpage-api/cookies" },
-          { text: "Analytics", link: "/enpage-api/analytics" },
+          { text: "Overview", link: "/enpage-global/" },
+          { text: "Context", link: "/enpage-global/context" },
+          { text: "Data Records", link: "/enpage-global/data-records" },
+          { text: "Navigation", link: "/enpage-global/navigation" },
         ],
       },
       {
-        text: "Contribute",
-        collapsed: true,
-        items: [
-          { text: "Overview", link: "/enpage-api" },
-          { text: "Navigation", link: "/enpage-api/navigation" },
-          { text: "Forms", link: "/enpage-api/forms" },
-          { text: "Cookies", link: "/enpage-api/cookies" },
-          { text: "Analytics", link: "/enpage-api/analytics" },
-        ],
+        text: "🆘 Getting Help",
+        link: "/help",
+      },
+      {
+        text: "❤️ Contribute",
+        link: "/contribute",
       },
     ],
     editLink: {
-      pattern: "https://github.com/enpage/enpage-sdk/edit/main/docs/:path",
+      pattern: "https://github.com/enpage/enpage/edit/main/docs/:path",
     },
-
-    socialLinks: [{ icon: "github", link: "https://github.com/enpage/enpage-sdk" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/enpage/enpage" }],
   },
 });

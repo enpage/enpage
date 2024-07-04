@@ -1,6 +1,7 @@
-import { EnpageTemplateConfig } from "@enpage/types/config";
-import { PageContext } from "@enpage/types/context";
+import type { EnpageTemplateConfig } from "@enpage/types/config";
+import type { PageContext } from "@enpage/types/context";
 import { providersSamples } from "./sample";
+import type { AttributesResolved } from "@enpage/types/attributes";
 
 /**
  * If no datasources or attributes are defined in the config, this function will return void.
@@ -45,14 +46,14 @@ export async function fetchContext(cfg: EnpageTemplateConfig) {
     },
   });
 
-  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
+  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 
   return context;
 }
 
 export function createFakeContext(cfg: EnpageTemplateConfig) {
   let data;
-  let attributes;
+  let attributes: AttributesResolved<any> = {};
 
   if (cfg.datasources) {
     data = {} as Record<string, unknown>;
@@ -66,26 +67,13 @@ export function createFakeContext(cfg: EnpageTemplateConfig) {
     }
   }
 
-  if (cfg.attributes) {
-    attributes = {} as Record<string, unknown>;
-    for (const key in cfg.attributes) {
-      attributes[key] = cfg.attributes[key].value;
-    }
+  for (const key in cfg.attributes) {
+    attributes[key] = {
+      ...cfg.attributes[key],
+      value: cfg.attributes[key].defaultValue,
+      responsiveValue: cfg.attributes[key].responsiveDefaultValue,
+    };
   }
 
-  const page = {
-    title: "Demo Page",
-    metaTags: [
-      {
-        name: "description",
-        content: "Demo Page Description",
-      },
-      {
-        name: "keywords",
-        content: "demo, page",
-      },
-    ],
-  };
-
-  return { data, attributes, page } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return { data, attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 }

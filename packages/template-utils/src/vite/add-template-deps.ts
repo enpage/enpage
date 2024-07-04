@@ -1,12 +1,19 @@
 import type { EnpageTemplateConfig } from "@enpage/types/config";
 import { JSDOM, VirtualConsole } from "jsdom";
+import type { Plugin } from "vite";
+import type { PageContext } from "@enpage/types/context";
 
-export const addTemplateDeps = (cfg: EnpageTemplateConfig | null) => {
+export const addTemplateDeps = (cfg: EnpageTemplateConfig, ctx: PageContext<any, any>): Plugin => {
+  let isBuildMode = false;
+
   return {
     name: "enpage-add-template-deps",
+    configResolved(config) {
+      isBuildMode = config.command === "build";
+    },
     transformIndexHtml: {
       order: "pre" as const,
-      handler: (html: string) => {
+      handler: async (html: string) => {
         const SSR = process.env.ENPAGE_SSR === "true";
 
         // disable JSDOM errors otherwise we'll get a lot of noise
@@ -48,23 +55,26 @@ export const addTemplateDeps = (cfg: EnpageTemplateConfig | null) => {
         // title
         if (!dom.window.document.querySelector("title") && cfg?.attributes?.$pageTitle) {
           const title = dom.window.document.createElement("title");
-          title.textContent = cfg?.attributes.$pageTitle.value;
+          title.textContent = ctx.attributes.$pageTitle.value;
           head?.appendChild(title);
         }
 
         // description
-        if (!dom.window.document.querySelector("meta[name='description']") && cfg?.attributes?.$pageDescription.value) {
+        if (
+          !dom.window.document.querySelector("meta[name='description']") &&
+          ctx?.attributes?.$pageDescription?.value
+        ) {
           const metaDescription = dom.window.document.createElement("meta");
           metaDescription.setAttribute("name", "description");
-          metaDescription.setAttribute("content", cfg?.attributes.$pageDescription.value);
+          metaDescription.setAttribute("content", ctx.attributes.$pageDescription.value);
           head?.appendChild(metaDescription);
         }
 
         // keywords
-        if (!dom.window.document.querySelector("meta[name='keywords']") && cfg?.attributes?.$pageKeywords.value) {
+        if (!dom.window.document.querySelector("meta[name='keywords']") && ctx.attributes.$pageKeywords?.value) {
           const metaKeywords = dom.window.document.createElement("meta");
           metaKeywords.setAttribute("name", "keywords");
-          metaKeywords.setAttribute("content", cfg?.attributes.$pageKeywords.value);
+          metaKeywords.setAttribute("content", ctx.attributes.$pageKeywords.value);
           head?.appendChild(metaKeywords);
         }
 
@@ -82,12 +92,13 @@ export const addTemplateDeps = (cfg: EnpageTemplateConfig | null) => {
         // enpageComponentsScript.textContent = `import "@enpage/sdk/web-components";`;
         // head?.appendChild(enpageComponentsScript);
 
+        // ----------------------------------------------------
         // Add enpage SDK script
         const enpageSdkScript = dom.window.document.createElement("script");
         enpageSdkScript.type = "module";
         enpageSdkScript.textContent = `
           import { EnpageSDK } from "@enpage/sdk";
-          window.enpage = new EnpageSDK();
+          window.enpage = new EnpageSDK(${ctx ? JSON.stringify(ctx) : "null"});
         `;
         head?.appendChild(enpageSdkScript);
 
