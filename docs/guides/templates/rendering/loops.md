@@ -16,7 +16,7 @@ The `data-for` attribute can be used to loop through a list of items and render 
 
 ::: warning Important
 - Datasources are directly accessible in the template using the `data` object.
-- All children of an element using the `data-for` attribute are evaluated by Liquid. There is **no need** to use the `data-liquid` attribute inside the children.
+- All children of an element using the `data-for` attribute are evaluated by Liquid. There is **no need** to use the `data-template` attribute inside the children.
 :::
 
 
@@ -46,7 +46,7 @@ You can also loop through your Data Sources using the `{% for %}` tag.
 ::: warning Important
 - The `{% for %}` tag **must** be enclosed in a `<template>` tag.
 - Datasources are directly accessible in the template using the `data` object.
-- Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `data-liquid` attribute inside any children.
+- Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `data-template` attribute inside any children.
 :::
 
 

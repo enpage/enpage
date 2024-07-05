@@ -52,7 +52,7 @@ This is equivalent to `enpage.goToPage(enpage.totalPages - 1)`.
 Returns the current page number (0-based).
 
 ```html
-<p data-liquid>Current page: {{ enpage.currentPage }}</p>
+<p data-template>Current page: {{ enpage.currentPage }}</p>
 ```
 
 ## `enpage.totalPages`
@@ -60,7 +60,7 @@ Returns the current page number (0-based).
 Returns the total number of pages.
 
 ```html
-<p data-liquid>Total pages: {{ enpage.totalPages }}</p>
+<p data-template>Total pages: {{ enpage.totalPages }}</p>
 ```
 
 ## `enpage.canGoNext()`
