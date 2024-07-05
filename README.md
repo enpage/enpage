@@ -17,16 +17,19 @@ Please visit the documentation at [https://developers.enpage.co](https://develop
 ## Contributing
 
 This monorepo uses changesets to manage versioning and releases.
-Run:
+`pnpm changeset` can be used to create a changeset for a package.
 
-- `pnpm changeset`: Execute the Changeset CLI using npm. This lets you use npm run changeset to invoke the CLI instead of using npx.
-- `pnpm version:packages`: Takes Changesets that have been made, updates versions and dependencies of packages, and writes changelogs. This command handles all file changes related to versions before publishing to npm.
-- `pnpm publish:packages`: This publishes any unpublished packages to npm, and creates git tags.
 
-Read https://brionmario.medium.com/changesets-is-a-game-changer-fe752af6a8cc for more information on changesets.
+### SDK Development
 
+Run `pnpm dev` at the root of the monorepo to start the development server for the SDK.
+This will open a browser window with the `template-example` page.
+
+### Documentation Development
+
+Run `pnpm docs:dev` at the root of the monorepo to start the documentation server.
 
 
 ## License
 
-This project is licensed under the AGPL License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the AGPL License - see the [LICENSE](./LICENSE) file for details.
