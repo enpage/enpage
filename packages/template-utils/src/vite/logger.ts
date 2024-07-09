@@ -1,3 +1,9 @@
-import { createLogger } from "vite";
+import type { TemplateSettings } from "@enpage/types/settings";
+import { createLogger as createLoggerBase, UserConfig } from "vite";
 
-export const logger = createLogger();
+export function createLogger(settings: TemplateSettings) {
+  return createLoggerBase(settings.logLevel, {
+    prefix: "[enpage]",
+    allowClearScreen: settings.clearScreen,
+  });
+}

@@ -4,7 +4,7 @@ We welcome contributions to Enpage! Whether you want to report a bug, request a 
 this guide will help you get started.
 
 
-## Reporing bugs & security vulnerabilities
+## Reporting bugs & security vulnerabilities
 
 ### Reporting a bug
 
@@ -21,7 +21,8 @@ If you find a security vulnerability in Enpage, **do not** open an issue. Instea
 ## Requesting a feature
 
 If you have an idea for a new feature or improvement,
-please [open an issue](https://github.com/enpage/enpage/issues/new/choose) and select the *"Feature Request"* template.
+please [start a discussion](https://github.com/enpage/enpage/discussions/categories/ideas) on GitHub (in the *"Ideas"*
+category).
 
 ## Contributing code
 
@@ -36,6 +37,5 @@ your proposed fix.
 
 ### Feature implementation
 
-If you want to implement a new feature in Enpage, please start by opening an issue (selecting the *"Feature Request"*
-template) to discuss the feature and your proposed implementation. Once the issue is approved, you can open a pull
-request with your changes.
+If you want to implement a new feature in Enpage, please [start a discussion](https://github.com/enpage/enpage/discussions/categories/ideas) on GitHub (in the *"Ideas"*
+category). This will help you get feedback on your idea and discuss the best way to implement it if we decide to move forward.

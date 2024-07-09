@@ -4,7 +4,7 @@ Enpage templates are resonibly simple, and focused on a single page.
 
 However, you can create a multi-pages-like experience by using multiple `<section>` elements in your `index.html` file, each of them representing a different page. This opens up the possibility to create a more complex websites with (simulated) multiple pages.
 
-You can specify page transitions animations easily by using specific data-attributes on the `<section>` elements. Animations can then be customized in the Enpage Editor by the site owner.
+You can specify page transitions animations easily by using specific `ep-*` attributes on the `<section>` elements. Animations can then be customized in the Enpage Editor by the site owner.
 
 ## Example
 
@@ -16,16 +16,16 @@ Here is an example of a multi-pages template:
 <html lang="en">
 <!-- [...] -->
 <body>
-  <section data-animation-appear="fadeIn" data-animation-disappear="fadeOut">
+  <section ep-animation-appear="fadeIn" ep-animation-disappear="fadeOut">
     <h1>Page 1</h1>
     <p>This is the first page</p>
   </section>
-  <section data-animation-appear="slideInRight" data-animation-disappear="slideOutLeft">
+  <section ep-animation-appear="slideInRight" ep-animation-disappear="slideOutLeft">
     <h1>Page 2</h1>
     <p>This is the second page</p>
   </section>
-  <section data-animation-appear="slideInRight" data-animation-disappear="slideOutLeft">
-    <h1>Page 3</h1>
+  <section ep-animation-appear="slideInRight" ep-animation-disappear="slideOutLeft">
+    <h1>Page enpage</h1>
     <p>This is the third page</p>
   </section>
 </body>
@@ -38,8 +38,8 @@ Here is an example of a multi-pages template:
 
 Specify the animation to use when the page appears/disappears by using the following attributes on the `<section>` elements:
 
-- `data-animation-appear="animation-name"`: The animation to use when the page appears.
-- `data-animation-disappear="other-animation"`: The animation to use when the page disappears.
+- `ep-animation-appear="animation-name"`: The animation to use when the page appears.
+- `ep-animation-disappear="other-animation"`: The animation to use when the page disappears.
 
 
 ::: details Click here to see the list of supported animations
@@ -104,10 +104,10 @@ Here is the list of supported animations:
 
 
 You can also use those **optional** attributes to customize the animations:
-- `data-animation-appear-duration`: The duration of the appear animation. (overrides the default duration)
-- `data-animation-disappear-duration`: The duration of the disappear animation. (overrides the default duration)
-- `data-animation-appear-delay`: The delay of the appear animation. (default is no delay)
-- `data-animation-disappear-delay`: The delay of the disappear animation. (default is no delay)
+- `ep-animation-appear-duration`: The duration of the appear animation. (overrides the default duration)
+- `ep-animation-disappear-duration`: The duration of the disappear animation. (overrides the default duration)
+- `ep-animation-appear-delay`: The delay of the appear animation. (default is no delay)
+- `ep-animation-disappear-delay`: The delay of the disappear animation. (default is no delay)
 
 
 

@@ -4,12 +4,13 @@
   "description": "",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "exports": {
     "./*": {
       "import": "./dist/*.js",
-      "require": "./dist/*.js"
+      "require": "./dist/*.cjs"
     }
   },
   "bin": {
@@ -32,11 +33,13 @@
     "html-minifier": "4.0.0",
     "jsdom": "24.1.0",
     "liquidjs": "10.14.0",
-    "postcss": "8.4.39",
     "postcss-import": "16.1.0",
     "postcss-preset-env": "9.5.14",
     "vite": "5.2.12",
     "zod": "3.23.8"
+  },
+  "peerDependencies": {
+    "postcss": "8.4.39"
   },
   "devDependencies": {
     "@types/html-minifier": "4.0.5",

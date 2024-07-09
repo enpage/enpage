@@ -10,31 +10,31 @@ You can use expressions in element's text content and HTML attributes.
 
 ### Text Content
 
-To use expressions in text content, you need to put the `data-template` attribute on the element. This tells Enpage to evaluate the content of the element as a Liquid expression.
+To use expressions in text content, you need to put the `ep-template` attribute on the element. This tells Enpage to evaluate the content of the element as a Liquid expression.
 
 ```liquid
-<p data-template>
+<p ep-template>
   {{ data.image.title }}
 </a>
 ```
 
 ### HTML Attributes
 
-Use the `data-bind:<attr>` attribute to bind an attribute to a Liquid expression.
+Use the `ep-bind:<attr>` attribute to bind an attribute to a Liquid expression.
 
 ```liquid
 <!--
   Bind the "src" attribute.
-  There is no need for `data-template` attribute as the <img> tag has no text content.
+  There is no need for `ep-template` attribute as the <img> tag has no text content.
 -->
-<img data-bind:src="{{ data.image.url }}" />
+<img ep-bind:src="{{ data.image.url }}" />
 
 <!--
   Bind the "href" attribute and the text content of the <a> tag.
-  The <a> tag has text content, so we need to add the `data-template` attribute
+  The <a> tag has text content, so we need to add the `ep-template` attribute
   if we want to use Liquid expressions in the text content.
 -->
-<a data-template data-bind:href="{{ data.image.link }}">
+<a ep-template ep-bind:href="{{ data.image.link }}">
   {{ data.image.title }}
 </a>
 ```
@@ -52,8 +52,8 @@ Use the `data-bind:<attr>` attribute to bind an attribute to a Liquid expression
 <!DOCTYPE html>
 <html>
   <body>
-    <h1 data-template>Hello, my name is {{ attributes.firstName }}</h1>
-    <p data-template>
+    <h1 ep-template>Hello, my name is {{ attributes.firstName }}</h1>
+    <p ep-template>
       Checkout my latest video: {{ data.videos[0].title }}
     </p>
   </body>

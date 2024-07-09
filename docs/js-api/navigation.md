@@ -52,7 +52,7 @@ This is equivalent to `enpage.goToPage(enpage.totalPages - 1)`.
 Returns the current page number (0-based).
 
 ```html
-<p data-template>Current page: {{ enpage.currentPage }}</p>
+<p ep-template>Current page: {{ enpage.currentPage }}</p>
 ```
 
 ## `enpage.totalPages`
@@ -60,7 +60,7 @@ Returns the current page number (0-based).
 Returns the total number of pages.
 
 ```html
-<p data-template>Total pages: {{ enpage.totalPages }}</p>
+<p ep-template>Total pages: {{ enpage.totalPages }}</p>
 ```
 
 ## `enpage.canGoNext()`
@@ -68,7 +68,7 @@ Returns the total number of pages.
 Returns `true` if there is a next page available.
 
 ```html
-<button data-disabled="{{ enpage.canGoNext() == false }}" onclick="enpage.nextPage()">Next</button>
+<button ep-disabled="{{ enpage.canGoNext() == false }}" onclick="enpage.nextPage()">Next</button>
 ```
 
 
@@ -78,5 +78,5 @@ Returns `true` if there is a previous page available.
 
 
 ```html
-<button data-disabled="{{ enpage.canGoBack() == false }}" onclick="enpage.previousPage()">Previous</button>
+<button ep-disabled="{{ enpage.canGoBack() == false }}" onclick="enpage.previousPage()">Previous</button>
 ```

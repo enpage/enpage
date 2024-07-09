@@ -32,7 +32,7 @@ export async function renderOnClient() {
     const generatedElements = tempTpl.content.cloneNode(true);
     generatedElements.childNodes.forEach((node) => {
       if (node instanceof HTMLElement) {
-        node.setAttribute("data-generated-from-template-id", templateId);
+        node.setAttribute("ep-generated-from-template-id", templateId);
       }
     });
 
@@ -40,11 +40,11 @@ export async function renderOnClient() {
     template.after(generatedElements);
 
     // add the template id to the parent element
-    template.parentElement?.setAttribute("data-template-id", templateId);
+    template.parentElement?.setAttribute("ep-template-id", templateId);
   });
 
-  // parse all elements with data-template attribute
-  document.querySelectorAll("[data-template]").forEach(async (el) => {
+  // parse all elements with ep-template attribute
+  document.querySelectorAll("[ep-template]").forEach(async (el) => {
     const element = el as HTMLElement;
     if (element.innerHTML) {
       const contents = await engine.parseAndRender(element.innerHTML, window._enpageCtx);

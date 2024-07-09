@@ -78,6 +78,14 @@ interface LayoutStyle
     flexDirection?: string;
     justifyContent?: string;
     alignItems?: string;
+    gridTemplateColumns?: string;
+    gridTemplateRows?: string;
+    gridTemplateAreas?: string;
+    gridColumnGap?: string;
+    gridRowGap?: string;
+    gridColumn?: string;
+    gridRow?: string;
+    gridArea?: string;
   }> {
   type: "layout";
 }
@@ -172,7 +180,7 @@ export const generateCSSVariables = (styles: Styles, prefix = "--"): string => {
           }
           break;
         case "component":
-          css += `[data-style~="${key}"] {\n`;
+          css += `[enpage-style~="${key}"] {\n`;
           for (const [propKey, propValue] of Object.entries(style.defaultValue)) {
             const cssKey = propKey.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
             css += `  ${cssKey}: var(--enpage-${varName}-${propKey}, ${propValue}) !important;\n`;

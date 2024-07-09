@@ -5,18 +5,18 @@
 ## Syntax
 
 `for` loops can appear in two forms:
-- Inside the HTML attribute `data-for`
+- Inside the HTML attribute `ep-for`
 - Inside `<template>` tags
 
 Both syntaxes are valid and can be used interchangeably.
 
-### Usage inside the `data-for` attribute
+### Usage inside the `ep-for` attribute
 
-The `data-for` attribute can be used to loop through a list of items and render them.
+The `ep-for` attribute can be used to loop through a list of items and render them.
 
 ::: warning Important
 - Datasources are directly accessible in the template using the `data` object.
-- All children of an element using the `data-for` attribute are evaluated by Liquid. There is **no need** to use the `data-template` attribute inside the children.
+- All children of an element using the `ep-for` attribute are evaluated by Liquid. There is **no need** to use the `ep-template` attribute inside the children.
 :::
 
 
@@ -30,7 +30,7 @@ The `data-for` attribute can be used to loop through a list of items and render 
       <!--
       Loop through the list of links an repeat the <li> element
       -->
-      <li class="flex items-center gap-3" data-for="link in data.links">
+      <li class="flex items-center gap-3" ep-for="link in data.links">
         <a class="flex-1 p-2.5" href="{{ link.url }}">{{ link.title }}</a>
       </li>
     <ul>
@@ -46,7 +46,7 @@ You can also loop through your Data Sources using the `{% for %}` tag.
 ::: warning Important
 - The `{% for %}` tag **must** be enclosed in a `<template>` tag.
 - Datasources are directly accessible in the template using the `data` object.
-- Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `data-template` attribute inside any children.
+- Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `ep-template` attribute inside any children.
 :::
 
 

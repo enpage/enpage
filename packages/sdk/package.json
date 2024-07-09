@@ -18,35 +18,11 @@
       "import": "./env.d.ts",
       "types": "./env.d.ts"
     },
-    "./web-components": {
-      "import": "./dist/web-components.js",
-      "types": "./dist/web-components.d.ts"
-    },
-    "./datasources": {
-      "import": "./dist/datasources.js",
-      "types": "./dist/datasources.d.ts"
-    },
-    "./attributes": {
-      "import": "./dist/attributes.js",
-      "types": "./dist/attributes.d.ts"
-    },
-    "./client-render": {
-      "import": "./dist/client-render.js",
-      "types": "./dist/client-render.d.ts"
-    },
-    "./context": {
-      "import": "./dist/context.js",
-      "types": "./dist/context.d.ts"
-    },
-    "./dynamic-css": {
-      "import": "./dist/dynamic-css.js",
-      "types": "./dist/dynamic-css.d.ts"
-    },
-    "./zod": {
-      "import": "./dist/zod.js",
-      "types": "./dist/zod.d.ts"
-    },
-    "./custom-attrs.d.ts": "./custom-attrs.d.ts"
+    "./custom-attrs.d.ts": "./custom-attrs.d.ts",
+    "./*": {
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts"
+    }
   },
   "dependencies": {
     "@lit/reactive-element": "2.0.4",

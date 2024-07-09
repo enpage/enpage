@@ -32,7 +32,6 @@ export async function fetchContext(cfg: EnpageTemplateConfig) {
   }
   // Abort if there is no apiHost
   if (!apiBaseUrl) {
-    apiBaseUrl = "http://local.enpage.co:8080/api/v1/pages";
     console.error("ENPAGE_API_HOST is empty. Skipping context fetch.");
     return false;
   }

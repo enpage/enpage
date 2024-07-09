@@ -3,7 +3,8 @@ import { defineConfig } from "tsup";
 export default defineConfig((options) => {
   return {
     entry: ["src"],
-    format: ["esm"],
+    // entry: ["src", "!src/config/postcss.config.cjs"],
+    format: ["esm", "cjs"],
     dts: false,
     clean: true,
     minify: !options.watch,
