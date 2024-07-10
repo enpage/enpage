@@ -4,7 +4,8 @@ export default defineConfig((options) => {
   return {
     entry: ["src"],
     // entry: ["src", "!src/config/postcss.config.cjs"],
-    format: ["esm", "cjs"],
+    format: ["esm"],
+    // format: ["esm", "cjs"],
     dts: false,
     clean: true,
     minify: !options.watch,

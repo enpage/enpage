@@ -12,7 +12,6 @@ Navigates to the next page if available.
 <button onclick="enpage.nextPage()">Next</button>
 ```
 
-
 ## `enpage.previousPage()`
 
 Navigates to the previous page if available.
@@ -20,7 +19,6 @@ Navigates to the previous page if available.
 ```html
 <button onclick="enpage.previousPage()">Previous</button>
 ```
-
 
 ## `enpage.goToPage(page: number)`
 
@@ -30,21 +28,21 @@ Navigates to a specific page. The page number is 0-based.
 <button onclick="enpage.goToPage(2)">Go to page 3</button>
 ```
 
-## `enpage.goToFirstPage()`
+## `enpage.firstPage()`
 
 Navigates to the first page. This is equivalent to `enpage.goToPage(0)`.
 
 ```html
-<button onclick="enpage.goToFirstPage()">Go to first page</button>
+<button onclick="enpage.firstPage()">Go to first page</button>
 ```
 
-## `enpage.goToLastPage()`
+## `enpage.lastPage()`
 
 Navigates to the last page.
 This is equivalent to `enpage.goToPage(enpage.totalPages - 1)`.
 
 ```html
-<button onclick="enpage.goToLastPage()">Go to last page</button>
+<button onclick="enpage.lastPage()">Go to last page</button>
 ```
 
 ## `enpage.currentPage`
@@ -52,7 +50,7 @@ This is equivalent to `enpage.goToPage(enpage.totalPages - 1)`.
 Returns the current page number (0-based).
 
 ```html
-<p ep-template>Current page: {{ enpage.currentPage }}</p>
+<p ep-bind>Current page: {{ enpage.currentPage }}</p>
 ```
 
 ## `enpage.totalPages`
@@ -60,23 +58,21 @@ Returns the current page number (0-based).
 Returns the total number of pages.
 
 ```html
-<p ep-template>Total pages: {{ enpage.totalPages }}</p>
+<p ep-bind>Total pages: {{ enpage.totalPages }}</p>
 ```
 
-## `enpage.canGoNext()`
+## `enpage.canGoForward`
 
-Returns `true` if there is a next page available.
+`true` if there is a next page available.
 
 ```html
-<button ep-disabled="{{ enpage.canGoNext() == false }}" onclick="enpage.nextPage()">Next</button>
+<button ep-bind:disabled="{{ enpage.canGoForward == false }}" onclick="enpage.nextPage()">Next</button>
 ```
 
+## `enpage.canGoBack`
 
-## `enpage.canGoBack()`
-
-Returns `true` if there is a previous page available.
-
+`true` if there is a previous page available.
 
 ```html
-<button ep-disabled="{{ enpage.canGoBack() == false }}" onclick="enpage.previousPage()">Previous</button>
+<button ep-bind:disabled="{{ enpage.canGoBack == false }}" onclick="enpage.previousPage()">Previous</button>
 ```

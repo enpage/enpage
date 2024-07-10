@@ -1,5 +1,5 @@
 {
-  "name": "@enpage/template-utils",
+  "name": "@enpage/builder",
   "version": "0.0.11",
   "description": "",
   "type": "module",
@@ -8,13 +8,10 @@
     "src"
   ],
   "exports": {
-    "./*": {
-      "import": "./dist/*.js",
-      "require": "./dist/*.cjs"
-    }
+    "./*": "./dist/*.js"
   },
   "bin": {
-    "ep-ctrl": "dist/scripts/ep-ctrl.js"
+    "enpage": "dist/scripts/enpage.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -33,6 +30,7 @@
     "html-minifier": "4.0.0",
     "jsdom": "24.1.0",
     "liquidjs": "10.14.0",
+    "nanoid": "5.0.7",
     "postcss-import": "16.1.0",
     "postcss-preset-env": "9.5.14",
     "vite": "5.2.12",

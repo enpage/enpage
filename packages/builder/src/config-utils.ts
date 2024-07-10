@@ -1,21 +1,20 @@
 import type { EnpageTemplateConfig } from "@enpage/types/config";
 import { templateSettingsSchema } from "@enpage/types/settings";
-import { createLogger } from "./vite/logger";
 import { defineAttributes } from "@enpage/sdk/attributes";
 import fs from "fs";
+import { Logger } from "vite";
 
-export async function loadEnpageConfig(configPath: string) {
+export async function loadConfig(configPath: string) {
   if (!fs.existsSync(configPath)) {
     console.error(
       "No enpage.config.js found!\nYour project must have an enpage.config.js file in the root directory.\n\n",
     );
     process.exit(1);
   }
-  const config: EnpageTemplateConfig = await import(configPath);
+  return import(configPath);
+}
 
-  const logger = createLogger(config.settings);
-  //
-
+export function checkConfig(config: EnpageTemplateConfig, logger: Logger) {
   for (const key in config.datasources) {
     if (!config.datasources[key].provider && !config.datasources[key].sampleData) {
       logger.warn(
@@ -34,5 +33,5 @@ export async function loadEnpageConfig(configPath: string) {
     process.exit(1);
   }
 
-  return { config, logger };
+  return config;
 }

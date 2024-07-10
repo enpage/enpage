@@ -25,7 +25,8 @@ export default defineConfig(({ command }) => {
     resolve: {
       preserveSymlinks: true,
     },
-    root: join(__dirname, "src"),
+    // root: join(__dirname, "src"),
+
     build: {
       lib: {
         entry: {

@@ -92,8 +92,5 @@ export type AttributesMap = {
 };
 
 export type AttributesResolved<S extends AttributesMap> = {
-  [key in keyof S]: S[key] & {
-    value: S[key]["defaultValue"];
-    responsiveValue?: S[key]["responsive"] extends true ? S[key]["responsiveDefaultValue"] : never;
-  };
+  [key in keyof S]: S[key]["defaultValue"];
 };

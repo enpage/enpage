@@ -5,6 +5,7 @@
 ## Syntax
 
 `for` loops can appear in two forms:
+
 - Inside the HTML attribute `ep-for`
 - Inside `<template>` tags
 
@@ -15,13 +16,13 @@ Both syntaxes are valid and can be used interchangeably.
 The `ep-for` attribute can be used to loop through a list of items and render them.
 
 ::: warning Important
+
 - Datasources are directly accessible in the template using the `data` object.
-- All children of an element using the `ep-for` attribute are evaluated by Liquid. There is **no need** to use the `ep-template` attribute inside the children.
-:::
-
-
+- All children of an element using the `ep-for` attribute are evaluated by Liquid. There is **no need** to use the `ep-bind` attribute inside the children.
+  :::
 
 ::: code-group
+
 ```liquid [index.html]
 <!DOCTYPE html>
 <html>
@@ -38,26 +39,25 @@ The `ep-for` attribute can be used to loop through a list of items and render th
 </html>
 ```
 
-
 ### Usage inside `<template>` tags
 
 You can also loop through your Data Sources using the `{% for %}` tag.
 
 ::: warning Important
+
 - The `{% for %}` tag **must** be enclosed in a `<template>` tag.
 - Datasources are directly accessible in the template using the `data` object.
-- Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `ep-template` attribute inside any children.
-:::
-
+- Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `ep-bind` attribute inside any children.
+  :::
 
 ::: code-group
+
 ```liquid [index.html]
 <!DOCTYPE html>
 <html>
   <body>
     <!--
-     Loop through the list of links
-     /!\ IMPORTANT: The for loop must be enclosed in a <template> tag!
+     The for loop must be enclosed in a <template> tag!
      -->
     <template>
       {% for link in data.links %}
@@ -65,7 +65,7 @@ You can also loop through your Data Sources using the `{% for %}` tag.
           <a class="flex-1 p-2.5" href="{{ link.url }}">{{ link.title }}</a>
         </li>
       {% endfor %}
-    <template>
+    </template>
 </body>
 </html>
 ```
@@ -93,9 +93,10 @@ export const datasources = defineDataSources({
     sampleData: [
       { title: "Enpage", url: "https://enpage.co" },
       { title: "Google", url: "https://google.com" },
-      { title: "Benj", url: "https://google.com" }
-    ]
-  }
+      { title: "Benj", url: "https://google.com" },
+    ],
+  },
 });
 ```
+
 :::

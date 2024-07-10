@@ -10,10 +10,10 @@
     "./enpage.config.js": "./enpage.config.js"
   },
   "scripts": {
-    "dev": "ep-ctrl dev",
-    "start": "ep-ctrl dev",
-    "build-template": "ep-ctrl build",
-    "preview": "ep-ctrl preview"
+    "dev": "enpage dev",
+    "start": "enpage dev",
+    "build-template": "enpage build",
+    "preview": "enpage preview"
   },
   "devDependencies": {
     "rollup-plugin-visualizer": "5.12.0",
@@ -23,14 +23,14 @@
   "dependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
-    "@enpage/template-utils": "workspace:*",
+    "@enpage/builder": "workspace:*",
     "@enpage/types": "workspace:*",
     "tailwindcss": "3.4.3"
   },
   "peerDependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
-    "@enpage/template-utils": "workspace:*",
+    "@enpage/builder": "workspace:*",
     "zod": "3.23.8"
   },
   "author": "Matthias Etienne",

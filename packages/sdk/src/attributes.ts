@@ -99,6 +99,7 @@ export const attr = {
   },
 };
 
+// Default attributes
 const defaultAttributes: AttributesMap = {
   $siteLanguage: attr.enum("Page language", "en", {
     options: [

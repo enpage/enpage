@@ -5,12 +5,14 @@ Conditions are used to control the rendering of a component based on the value o
 ## Syntax
 
 Conditions can appear in two forms:
+
 - Inside the HTML attribute `ep-if` for simple conditions
 - Inside `<template>` tags for more complex conditions
 
 ### Usage inside the `ep-if` attribute
 
 ::: code-group
+
 ```liquid [index.html]
 <!DOCTYPE html>
 <html>
@@ -19,11 +21,13 @@ Conditions can appear in two forms:
   </body>
 </html>
 ```
+
 :::
 
 ### Usage inside `<template>` tags
 
 ::: code-group
+
 ```liquid [simple.html]
 <!DOCTYPE html>
 <html>
@@ -36,6 +40,7 @@ Conditions can appear in two forms:
   </body>
 </html>
 ```
+
 ```liquid [complex.html]
 <!DOCTYPE html>
 <html>

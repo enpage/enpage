@@ -20,7 +20,7 @@ declare global {
     /**
      * A Boolean value indicating whether or not its contents should be parsed by liquid.
      */
-    "ep-template"?: Boolish;
+    "ep-bind"?: Boolish;
 
     /**
      * A Boolean value indicating whether or not the element can be **duplicated**.

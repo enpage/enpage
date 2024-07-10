@@ -29,6 +29,8 @@ export const datasources = defineDataSources({
 // define your attributes
 export const attributes = defineAttributes({
   // title: attr.text("Title", {}),
+  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
+  testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.text("Customer ID"),
   sidebarPosition: attr.enum("Sidebar Position", "left", {
     options: ["left", "right"],

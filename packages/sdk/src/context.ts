@@ -52,7 +52,6 @@ export async function fetchContext(cfg: EnpageTemplateConfig) {
 
 export function createFakeContext(cfg: EnpageTemplateConfig) {
   let data;
-  let attributes: AttributesResolved<any> = {};
 
   if (cfg.datasources) {
     data = {} as Record<string, unknown>;
@@ -66,12 +65,9 @@ export function createFakeContext(cfg: EnpageTemplateConfig) {
     }
   }
 
+  let attributes: AttributesResolved<any> = {};
   for (const key in cfg.attributes) {
-    attributes[key] = {
-      ...cfg.attributes[key],
-      value: cfg.attributes[key].defaultValue,
-      responsiveValue: cfg.attributes[key].responsiveDefaultValue,
-    };
+    attributes[key] = cfg.attributes[key].defaultValue;
   }
 
   return { data, attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;

@@ -90,6 +90,61 @@ importers:
         specifier: 3.4.30
         version: 3.4.30(typescript@5.4.5)
 
+  packages/builder:
+    dependencies:
+      '@enpage/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@enpage/types':
+        specifier: workspace:*
+        version: link:../types
+      chalk:
+        specifier: 5.3.0
+        version: 5.3.0
+      commander:
+        specifier: 12.1.0
+        version: 12.1.0
+      cssnano:
+        specifier: 7.0.1
+        version: 7.0.1(postcss@8.4.39)
+      html-minifier:
+        specifier: 4.0.0
+        version: 4.0.0
+      jsdom:
+        specifier: 24.1.0
+        version: 24.1.0
+      liquidjs:
+        specifier: 10.14.0
+        version: 10.14.0
+      nanoid:
+        specifier: 5.0.7
+        version: 5.0.7
+      postcss:
+        specifier: 8.4.39
+        version: 8.4.39
+      postcss-import:
+        specifier: 16.1.0
+        version: 16.1.0(postcss@8.4.39)
+      postcss-preset-env:
+        specifier: 9.5.14
+        version: 9.5.14(postcss@8.4.39)
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.12.12)
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/html-minifier':
+        specifier: 4.0.5
+        version: 4.0.5
+      '@types/jsdom':
+        specifier: 21.1.7
+        version: 21.1.7
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(postcss@8.4.39)(typescript@5.4.5)
+
   packages/create-enpage:
     dependencies:
       '@inquirer/prompts':
@@ -153,9 +208,6 @@ importers:
       '@lit/reactive-element':
         specifier: 2.0.4
         version: 2.0.4
-      '@twind/core':
-        specifier: 1.1.3
-        version: 1.1.3(typescript@5.4.5)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -229,15 +281,15 @@ importers:
 
   packages/template-example:
     dependencies:
+      '@enpage/builder':
+        specifier: workspace:*
+        version: link:../builder
       '@enpage/sdk':
         specifier: workspace:*
         version: link:../sdk
       '@enpage/style-system':
         specifier: workspace:*
         version: link:../style-system
-      '@enpage/template-utils':
-        specifier: workspace:*
-        version: link:../template-utils
       '@enpage/types':
         specifier: workspace:*
         version: link:../types
@@ -254,58 +306,6 @@ importers:
       zod:
         specifier: 3.23.8
         version: 3.23.8
-
-  packages/template-utils:
-    dependencies:
-      '@enpage/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@enpage/types':
-        specifier: workspace:*
-        version: link:../types
-      chalk:
-        specifier: 5.3.0
-        version: 5.3.0
-      commander:
-        specifier: 12.1.0
-        version: 12.1.0
-      cssnano:
-        specifier: 7.0.1
-        version: 7.0.1(postcss@8.4.39)
-      html-minifier:
-        specifier: 4.0.0
-        version: 4.0.0
-      jsdom:
-        specifier: 24.1.0
-        version: 24.1.0
-      liquidjs:
-        specifier: 10.14.0
-        version: 10.14.0
-      postcss:
-        specifier: 8.4.39
-        version: 8.4.39
-      postcss-import:
-        specifier: 16.1.0
-        version: 16.1.0(postcss@8.4.39)
-      postcss-preset-env:
-        specifier: 9.5.14
-        version: 9.5.14(postcss@8.4.39)
-      vite:
-        specifier: 5.2.11
-        version: 5.2.11(@types/node@20.12.12)
-      zod:
-        specifier: 3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@types/html-minifier':
-        specifier: 4.0.5
-        version: 4.0.5
-      '@types/jsdom':
-        specifier: 21.1.7
-        version: 21.1.7
-      tsup:
-        specifier: 8.0.2
-        version: 8.0.2(postcss@8.4.39)(typescript@5.4.5)
 
   packages/types:
     dependencies:
@@ -2669,9 +2669,9 @@ packages:
   /@docsearch/react@3.6.0(@algolia/client-search@4.23.3)(search-insights@2.14.0):
     resolution: {integrity: sha512-HUFut4ztcVNmqy9gp/wxNbC7pTOHhgVVkHVGCACTuLhUKUhKAF9KYHJtMiLUJxEqiFLQiuri1fWF8zqwM/cu1w==}
     peerDependencies:
-      '@types/react': 18.3.2
-      react: 18.3.1
-      react-dom: 18.3.1
+      '@types/react': '>= 16.8.0 < 19.0.0'
+      react: '>= 16.8.0 < 19.0.0'
+      react-dom: '>= 16.8.0 < 19.0.0'
       search-insights: '>= 1 < 3'
     peerDependenciesMeta:
       '@types/react':
@@ -3693,7 +3693,7 @@ packages:
   /@nx/vite@19.2.3(@types/node@20.12.12)(nx@19.2.3)(typescript@5.4.5)(vite@5.2.11)(vitest@1.6.0):
     resolution: {integrity: sha512-TtjlOE8pWQCdzk9eDot3jZpb9jswQdAxoEL5OnBx17ZMZF/RMCNqNs4lwo0i+OzzH6jTcKmcZaq6dmt1+OhM0w==}
     peerDependencies:
-      vite: 5.2.11
+      vite: ^5.0.0
       vitest: ^1.3.1
     dependencies:
       '@nrwl/vite': 19.2.3(@types/node@20.12.12)(nx@19.2.3)(typescript@5.4.5)(vite@5.2.11)(vitest@1.6.0)
@@ -3772,7 +3772,7 @@ packages:
   /@phenomnomnominal/tsquery@5.0.1(typescript@5.4.5):
     resolution: {integrity: sha512-3nVv+e2FQwsW8Aw6qTU6f+1rfcJ3hrcnvH/mu9i8YhxO+9sqbOfpL8m6PbET5+xKOlz/VSbp0RoYWYCtIsnmuA==}
     peerDependencies:
-      typescript: 5.4.5
+      typescript: ^3 || ^4 || ^5
     dependencies:
       esquery: 1.5.0
       typescript: 5.4.5
@@ -3939,7 +3939,7 @@ packages:
   /@rushstack/node-core-library@4.0.2(@types/node@20.12.12):
     resolution: {integrity: sha512-hyES82QVpkfQMeBMteQUnrhASL/KHPhd7iJ8euduwNJG4mu2GSOKybf0rOEjOm1Wz7CwJEUm9y0yD7jg2C1bfg==}
     peerDependencies:
-      '@types/node': ^20.0.0
+      '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -3963,7 +3963,7 @@ packages:
   /@rushstack/terminal@0.10.0(@types/node@20.12.12):
     resolution: {integrity: sha512-UbELbXnUdc7EKwfH2sb8ChqNgapUOdqcCIdQP4NGxBpTZV2sQyeekuK3zmfQSa/MN+/7b4kBogl2wq0vpkpYGw==}
     peerDependencies:
-      '@types/node': ^20.0.0
+      '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -4006,7 +4006,7 @@ packages:
   /@tailwindcss/forms@0.5.7(tailwindcss@3.4.3):
     resolution: {integrity: sha512-QE7X69iQI+ZXwldE+rzasvbJiyV/ju1FGHH0Qn2W3FKbuYtqp8LKcy6iSw79fVUT5/Vvf+0XgLCeYVG+UV6hOw==}
     peerDependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.4
       tailwindcss: 3.4.3
@@ -4015,7 +4015,7 @@ packages:
   /@tailwindcss/typography@0.5.13(tailwindcss@3.4.3):
     resolution: {integrity: sha512-ADGcJ8dX21dVVHIwTRgzrcunY6YY9uSlAHHGVKvkA+vLc5qLwEszvKts40lx7z0qc4clpjclwLeK5rVCV2P/uw==}
     peerDependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: '>=3.0.0 || insiders'
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
@@ -4048,19 +4048,6 @@ packages:
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
-
-  /@twind/core@1.1.3(typescript@5.4.5):
-    resolution: {integrity: sha512-/B/aNFerMb2IeyjSJy3SJxqVxhrT77gBDknLMiZqXIRr4vNJqiuhx7KqUSRzDCwUmyGuogkamz+aOLzN6MeSLw==}
-    engines: {node: '>=14.15.0'}
-    peerDependencies:
-      typescript: 5.4.5
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      csstype: 3.1.3
-      typescript: 5.4.5
-    dev: false
 
   /@types/argparse@1.0.38:
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
@@ -4370,7 +4357,7 @@ packages:
     resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: 5.2.11
+      vite: ^4.2.0 || ^5.0.0
     dependencies:
       '@babel/core': 7.24.5
       '@babel/plugin-transform-react-jsx-self': 7.24.5(@babel/core@7.24.5)
@@ -4386,7 +4373,7 @@ packages:
     resolution: {integrity: sha512-LOjm7XeIimLBZyzinBQ6OSm3UBCNVCpLkxGC0oWmm2YPzVZoxMsdvNVimLTBzpAnR9hl/yn1SHGuRfe6/Td9rQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      vite: 5.2.11
+      vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
       vite: 5.2.11(@types/node@20.12.12)
@@ -4531,7 +4518,7 @@ packages:
   /@vue/language-core@1.8.27(typescript@5.4.5):
     resolution: {integrity: sha512-L8Kc27VdQserNaCUNiSFdDl9LWT24ly8Hpwf1ECy3aFb9m6bDhBGQYOujDm21N7EW3moKIOKEanQwe1q5BK+mA==}
     peerDependencies:
-      typescript: 5.4.5
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5444,7 +5431,7 @@ packages:
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
-      typescript: 5.4.5
+      typescript: '>=4.9.5'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5638,6 +5625,7 @@ packages:
 
   /csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
+    dev: true
 
   /csv-generate@3.4.3:
     resolution: {integrity: sha512-w/T+rqR0vwvHqWs/1ZyMDWtHHSJaN06klRqJXBEpDJaM/+dZkso0OKh1VcuuYvK3XM53KysVNq8Ko/epCK8wOw==}
@@ -6056,6 +6044,7 @@ packages:
   /esbuild@0.19.12:
     resolution: {integrity: sha512-aARqgq8roFBj054KvQr5f1sFu0D65G+miZRCuJyJ0G13Zwx7vRar5Zhn2tkQNzIXcBrNVsv/8stehpj+GAjgbg==}
     engines: {node: '>=12'}
+    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.19.12
@@ -6086,6 +6075,7 @@ packages:
   /esbuild@0.20.2:
     resolution: {integrity: sha512-WdOOppmUNU+IbZ0PaDiTst80zjnrOkyJNHoKupIcVyU8Lvla3Ugx94VzkQ32Ijqd7UhHJy75gNWDMUekcrSJ6g==}
     engines: {node: '>=12'}
+    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.20.2
@@ -6851,15 +6841,6 @@ packages:
       - supports-color
     dev: true
 
-  /https-proxy-agent@7.0.4:
-    resolution: {integrity: sha512-wlwpilI7YdjSkWaQ/7omYBMTliDcmCN8OLihO6I9B86g06lMyAoqgoDpV0XqoaPOKj+0DIdAvnsWfyAAhmimcg==}
-    engines: {node: '>= 14'}
-    dependencies:
-      agent-base: 7.1.1
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
-
   /https-proxy-agent@7.0.5:
     resolution: {integrity: sha512-1e4Wqeblerz+tMKPIq2EMGiiWW1dIjZOksyHWSUm1rmuvw/how9hBHZ38lAGj5ID4Ik6EdkOw7NmWPy6LAwalw==}
     engines: {node: '>= 14'}
@@ -6868,7 +6849,6 @@ packages:
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /human-id@1.0.2:
     resolution: {integrity: sha512-UNopramDEhHJD+VR+ehk8rOslwSfByxPIZyJRfV739NDhN5LF1fa1MqnzKm2lGTQRjNrjK19Q5fhkgIfjlVUKw==}
@@ -7261,7 +7241,7 @@ packages:
       form-data: 4.0.0
       html-encoding-sniffer: 4.0.0
       http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.4
+      https-proxy-agent: 7.0.5
       is-potential-custom-element-name: 1.0.1
       nwsapi: 2.2.10
       parse5: 7.1.2
@@ -7765,6 +7745,7 @@ packages:
   /nanoid@5.0.7:
     resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
     engines: {node: ^18 || >=20}
+    hasBin: true
     dev: false
 
   /natural-compare@1.4.0:
@@ -9099,7 +9080,7 @@ packages:
       agent-base: 7.1.1
       debug: 4.3.4
       http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.4
+      https-proxy-agent: 7.0.5
       lru-cache: 7.18.3
       pac-proxy-agent: 7.0.2
       proxy-from-env: 1.1.0
@@ -9192,7 +9173,7 @@ packages:
   /react-dom@18.3.1(react@18.3.1):
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
-      react: 18.3.1
+      react: ^18.3.1
     dependencies:
       loose-envify: 1.4.0
       react: 18.3.1
@@ -9202,7 +9183,7 @@ packages:
   /react-icons@5.1.0(react@18.3.1):
     resolution: {integrity: sha512-D3zug1270S4hbSlIRJ0CUS97QE1yNNKDjzQe3HqY0aefp2CBn9VgzgES27sRR2gOvFK+0CNx/BW0ggOESp6fqQ==}
     peerDependencies:
-      react: 18.3.1
+      react: '*'
     dependencies:
       react: 18.3.1
     dev: true
@@ -9955,7 +9936,7 @@ packages:
     resolution: {integrity: sha512-pmrtDIZeHyu2idTejfV59SbaJyvp1VRjYxAjZBH0jnyrPRo6HL1kD5Glz8VPagasqr6oAx6M05+Tuw429Z8jxg==}
     engines: {node: '>=12.13.0'}
     peerDependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: 3.x
     dependencies:
       tailwindcss: 3.4.3
     dev: false
@@ -9963,7 +9944,7 @@ packages:
   /tailwindcss-3d@1.0.6(tailwindcss@3.4.3):
     resolution: {integrity: sha512-Bym5X7QZr753dIW7UIrF1VaxCmkUEAetI1DmD00xJ6mdwgfMnO5mGILGTrfmupWwasjn8FcQ13R2Wexw75t4XA==}
     peerDependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: '>=3.2.0'
     dependencies:
       '@swc/helpers': 0.5.8
       lodash: 4.17.21
@@ -9973,7 +9954,7 @@ packages:
   /tailwindcss-animate@1.0.7(tailwindcss@3.4.3):
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
     peerDependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: '>=3.0.0 || insiders'
     dependencies:
       tailwindcss: 3.4.3
     dev: false
@@ -9982,7 +9963,7 @@ packages:
     resolution: {integrity: sha512-d/+/oBITS2JX/Nn+20WSfnxQbYNcSHMNrKeBwmgetxf/9Nmi5k1pOae6OJC4WD+5M8jX9Xb8TnLZ2lkp6qv09A==}
     engines: {node: '>=12'}
     peerDependencies:
-      tailwindcss: 3.4.3
+      tailwindcss: '>= 3'
     dependencies:
       tailwindcss: 3.4.3
     dev: false
@@ -10163,7 +10144,7 @@ packages:
     resolution: {integrity: sha512-UQMIo7pb8WRomKR1/+MFVLTroIvDVtMX3K6OUir8ynLyzB8Jeriont2bTAtmNPa1ekAgN7YPDyf6V+ygrdU+eQ==}
     engines: {node: '>=16'}
     peerDependencies:
-      typescript: 5.4.5
+      typescript: '>=4.2.0'
     dependencies:
       typescript: 5.4.5
     dev: true
@@ -10177,8 +10158,8 @@ packages:
     peerDependencies:
       '@swc/core': '>=1.2.50'
       '@swc/wasm': '>=1.2.50'
-      '@types/node': ^20.0.0
-      typescript: 5.4.5
+      '@types/node': '*'
+      typescript: '>=2.7'
     peerDependenciesMeta:
       '@swc/core':
         optional: true
@@ -10207,7 +10188,7 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
     peerDependencies:
-      typescript: 5.4.5
+      typescript: ^5.0.0
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -10239,7 +10220,7 @@ packages:
       '@microsoft/api-extractor': ^7.36.0
       '@swc/core': ^1
       postcss: ^8.4.12
-      typescript: 5.4.5
+      typescript: '>=4.5.0'
     peerDependenciesMeta:
       '@microsoft/api-extractor':
         optional: true
@@ -10387,6 +10368,7 @@ packages:
   /typescript@5.4.5:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
+    dev: true
 
   /ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
@@ -10562,8 +10544,8 @@ packages:
     resolution: {integrity: sha512-rVp2KM9Ue22NGWB8dNtWEr+KekN3rIgz1tWD050QnRGlriUCmaDwa7qA5zDEjbXg5lAXhYMSBJtx3q3hQIJZSg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      typescript: 5.4.5
-      vite: 5.2.11
+      typescript: '*'
+      vite: '*'
     peerDependenciesMeta:
       vite:
         optional: true
@@ -10586,7 +10568,7 @@ packages:
   /vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.11):
     resolution: {integrity: sha512-0Vd/a6po6Q+86rPlntHye7F31zA2URZMbH8M3saAZ/xR9QoGN/L21bxEGfXdWmFdNkqPpRdxFT7nmNe12e9/uA==}
     peerDependencies:
-      vite: 5.2.11
+      vite: '*'
     peerDependenciesMeta:
       vite:
         optional: true
@@ -10605,7 +10587,7 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
-      '@types/node': ^20.0.0
+      '@types/node': ^18.0.0 || >=20.0.0
       less: '*'
       lightningcss: ^1.21.0
       sass: '*'
@@ -10718,7 +10700,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
-      '@types/node': ^20.0.0
+      '@types/node': ^18.0.0 || >=20.0.0
       '@vitest/browser': 1.6.0
       '@vitest/ui': 1.6.0
       happy-dom: '*'
@@ -10795,7 +10777,7 @@ packages:
     resolution: {integrity: sha512-WesKCAZCRAbmmhuGl3+VrdWItEvfoFIPXOvUJkjULi+x+6G/Dy69yO3TBRJDr9eUlmsNAwVmxsNZxvHKzbkKdg==}
     hasBin: true
     peerDependencies:
-      typescript: 5.4.5
+      typescript: '*'
     dependencies:
       '@volar/typescript': 1.11.1
       '@vue/language-core': 1.8.27(typescript@5.4.5)
@@ -10806,7 +10788,7 @@ packages:
   /vue@3.4.30(typescript@5.4.5):
     resolution: {integrity: sha512-NcxtKCwkdf1zPsr7Y8+QlDBCGqxvjLXF2EX+yi76rV5rrz90Y6gK1cq0olIhdWGgrlhs9ElHuhi9t3+W5sG5Xw==}
     peerDependencies:
-      typescript: 5.4.5
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true

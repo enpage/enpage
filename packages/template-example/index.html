@@ -8,7 +8,6 @@ Enpage handles a few specific attributes that are used to control the appearance
 You can also use pre-built web components from the @enpage/sdk package to handle loops and conditions.
 
 Important:
-
 - A template MUST a least have one <section>.
 - Multiple <section> elements allow to simulate a multi-pages website.
 - When using multiple <section> elements, the first one is considered the home page.
@@ -37,7 +36,7 @@ Important:
 </head>
 
 <body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
-  <section class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+  <section ep-slug="my-first-page" class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
     <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
          label="Profile picture" />
     <div class="flex-1">
@@ -54,8 +53,46 @@ Important:
             <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
           </li>
           {% endfor %}
-        <template>
+        </template>
       </ul>
+      <ul class="mt-10 flex w-full flex-col gap-2 border border-t-2 border-black" >
+        <li ep-for="link in data.links" class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+          <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+        </li>
+      </ul>
+
+      <p>
+        <a ep-bind:href="{{ attributes.mainButtonUrl }}" class="bg-blue-700 text-white px-6">Click here</a>
+        <span ep-bind>Main URL: {{ attributes.mainButtonUrl }}</span>
+      </p>
+
+      <template>
+          {% if attributes.testBoolTrue%}
+          <p>Test bool is true</p>
+          {% endif %}
+      </template>
+
+      <p ep-if="{{ attributes.testBoolTrue == false }}">Test bool is false using ep-if</p>
+      <p ep-if="attributes.testBoolTrue == true">Test bool is true using ep-if</p>
+      <p ep-bind>ep-bind should be true: {{ attributes.testBoolTrue }}</p>
+
+      <button onclick="enpage.nextPage()" class="bg-blue-700 text-white px-6">Next page</button>
+    </div>
+  </section>
+  <section ep-slug="second-page" class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
+         label="Profile picture" />
+    <div class="flex-1">
+      <p id="section-2" ep-label="Title" ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
+        John Smith
+      </p>
+      <p id="subtitle" ep-label="Subtitle" class="text-base font-thin" ep-text-editable="plain">
+        General Manager @ Acme Corp
+      </p>
+
+      <button onclick="enpage.previousPage()" class="bg-blue-700 text-white px-6">Prev page</button>
+      <button ep-bind:disabled="{{ enpage.canGoForward == false }}" onclick="enpage.nextPage()">Next</button>
+      <button ep-bind:disabled="{{ enpage.canGoBack == false }}" onclick="enpage.previousPage()">Previous</button>
     </div>
   </section>
 </body>

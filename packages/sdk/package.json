@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@lit/reactive-element": "2.0.4",
-    "@twind/core": "1.1.3",
     "clsx": "2.1.1",
     "immer": "10.1.1",
     "liquidjs": "10.14.0",
