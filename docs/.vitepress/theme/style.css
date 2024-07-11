@@ -147,6 +147,11 @@
   --vp-nav-logo-height: 70px;
 }
 
+.VPNav,
+.VPNavBar {
+  transition: none !important;
+}
+
 .VPNavBarTitle.has-sidebar .title {
   border-bottom-color: transparent !important;
   margin-left: -14px;
@@ -159,16 +164,22 @@ div.VPContent.is-home {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: url("/bg-launch@2x.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 h1.name {
   padding-top: 3rem;
+  font-weight: 800 !important;
 }
 
 h1.name,
 p.tagline {
-  max-width: 100% !important;
+  max-width: minmax(calc(100dvw / 2), 400px) !important;
   text-align: center;
+  margin: auto !important;
 }
 div.actions {
   margin-block: auto;
