@@ -1,5 +1,14 @@
 # @enpage/sdk
 
+## 0.0.12
+
+### Patch Changes
+
+- 1729c7e: Various improvements
+- Updated dependencies [1729c7e]
+  - @enpage/style-system@0.0.12
+  - @enpage/types@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes

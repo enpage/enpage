@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.14
+
+### Patch Changes
+
+- 1729c7e: Various improvements
+
 ## 0.0.13
 
 ### Patch Changes

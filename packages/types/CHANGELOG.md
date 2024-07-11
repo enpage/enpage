@@ -1,5 +1,11 @@
 # @enpage/types
 
+## 0.0.12
+
+### Patch Changes
+
+- 1729c7e: Various improvements
+
 ## 0.0.11
 
 ### Patch Changes
