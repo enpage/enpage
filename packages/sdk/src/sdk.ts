@@ -116,6 +116,21 @@ export class EnpageSDK extends EventTarget {
     return this.pageIndex < this.pagesCount - 1;
   }
 
+  async saveDataRecord(dataRecordId: string, record: Record<string, unknown>) {
+    const res = await fetch(`%ENPAGE_API_BASE_URL%/sites/%ENPAGE_SITE_ID%/data-records/${dataRecordId}`, {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify(record),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (res.ok) {
+      return res.json();
+    }
+    throw new Error(`Failed to save data record: ${res.statusText}`);
+  }
+
   #analysePage() {
     this.pagesCount = document.querySelectorAll("body > section").length;
   }
