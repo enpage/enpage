@@ -1,5 +1,13 @@
 # @enpage/sdk
 
+## 0.0.13
+
+### Patch Changes
+
+- 40aa1ac: New SDK method: saveDataRecord()
+  - @enpage/types@0.0.13
+  - @enpage/style-system@0.0.13
+
 ## 0.0.12
 
 ### Patch Changes
