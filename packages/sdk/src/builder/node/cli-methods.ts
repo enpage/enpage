@@ -7,10 +7,12 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 export async function startDevServer() {
   process.env.NODE_ENV = "development";
+  process.env.ENPAGE_CONTEXT = "template-development";
 
   const server = await createServer({
-    configFile: resolve(__dirname, "./config/vite.config.js"),
+    configFile: resolve(__dirname, "./config-vite.js"),
     cacheDir: process.cwd() + "/.cache",
+    mode: "development",
   });
 
   const logger = server.config.logger;
@@ -18,12 +20,7 @@ export async function startDevServer() {
   await server.listen();
 
   logger.info("Dev Server is running:\n");
-  server.resolvedUrls?.local.forEach((url) => {
-    logger.info(`  ➜  Local:   ${chalk.green(url)}`);
-  });
-  server.resolvedUrls?.network.forEach((url) => {
-    logger.info(`  ➜  Network: ${chalk.gray(url)}`);
-  });
+  server.printUrls();
   server.bindCLIShortcuts({
     print: true,
   });
@@ -32,15 +29,17 @@ export async function startDevServer() {
 
 export async function buildTemplate() {
   process.env.NODE_ENV = "production";
+  process.env.ENPAGE_CONTEXT = "template-build";
   await build({
-    configFile: resolve(__dirname, "./config/vite.config.js"),
+    configFile: resolve(__dirname, "./config-vite.js"),
+    mode: "production",
   });
 }
 
 export async function previewTemplate() {
   process.env.NODE_ENV = "production";
   const server = await preview({
-    configFile: resolve(__dirname, "./config/vite.config.js"),
+    configFile: resolve(__dirname, "./config-vite.js"),
   });
   const logger = server.config.logger;
 

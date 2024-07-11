@@ -1,9 +1,9 @@
 import { defineConfig, UserConfig, loadEnv } from "vite";
-import { loadConfig, checkConfig } from "../config-utils";
-import enpagePlugin from "../vite/enpage";
+import { loadConfig, checkConfig } from "./config";
+import enpagePlugin from "./enpage-plugin";
 import { join, resolve } from "path";
 import { existsSync } from "fs";
-import { createLogger } from "../vite/logger";
+import { createLogger } from "./logger";
 
 export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Promise<UserConfig> => {
   const tailwindCfgPath = join(process.cwd(), "tailwind.config.js");
@@ -20,11 +20,11 @@ export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Pr
 
   return {
     customLogger: logger,
-    plugins: [enpagePlugin(config /*, ctx as PageContext<any, any>*/)],
+    plugins: [enpagePlugin(config)],
     resolve: {
       preserveSymlinks: true,
       alias: {
-        "@enpage/liquid": resolve(__dirname, "../../node_modules/liquidjs/dist/liquid.browser.esm.js"),
+        "@enpage/liquid": resolve(__dirname, "../../../node_modules/liquidjs/dist/liquid.browser.esm.js"),
       },
     },
   };

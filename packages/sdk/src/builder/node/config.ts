@@ -1,8 +1,8 @@
 import type { EnpageTemplateConfig } from "@enpage/types/config";
 import { templateSettingsSchema } from "@enpage/types/settings";
-import { defineAttributes } from "@enpage/sdk/attributes";
+import { defineAttributes } from "../../attributes";
 import fs from "fs";
-import { Logger } from "vite";
+import type { Logger } from "vite";
 
 export async function loadConfig(configPath: string) {
   if (!fs.existsSync(configPath)) {

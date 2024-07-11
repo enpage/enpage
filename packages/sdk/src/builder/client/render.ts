@@ -2,9 +2,17 @@ import { Liquid } from "liquidjs";
 import { nanoid } from "nanoid";
 
 export async function renderOnClient() {
-  console.log("renderOnClient");
   const engine = new Liquid({});
   const ctx = window.enpage.context;
+
+  // This function can be called multiple times, so we need to clean up the previous render
+  // 1. Delete all elements with [ep-builder-template]
+  // 2. Delete all elements with [ep-generated-from-template-id]
+
+  document.querySelectorAll("[ep-builder-template], [ep-generated-from-template-id]").forEach((el) => {
+    console.log("Removing element", el);
+    el.remove();
+  });
 
   document.querySelectorAll("template").forEach(async (template) => {
     const tpl = template as HTMLTemplateElement;
@@ -46,7 +54,6 @@ export async function renderOnClient() {
     template.parentElement?.setAttribute("ep-template-id", templateId);
   });
 
-  // todo: prevent multiple renderings of the same template
   // parse ep-for attribute
   document.querySelectorAll("[ep-for]").forEach(async (el) => {
     const element = el as HTMLElement;
@@ -58,7 +65,7 @@ export async function renderOnClient() {
       const template = document.createElement("template");
       const templateId = nanoid(7);
       template.setAttribute("id", templateId);
-      template.setAttribute("eb-generated-by", "builder");
+      template.setAttribute("ep-builder-template", "");
       template.innerHTML = tplContent;
 
       // add template id to the original element
@@ -80,8 +87,8 @@ export async function renderOnClient() {
         element.after(...nodes);
       }
 
-      // finally remove the original element
-      element.remove();
+      // hide the original element
+      element.setAttribute("hidden", "");
     }
   });
 
@@ -100,7 +107,7 @@ export async function renderOnClient() {
         const template = document.createElement("template");
         const templateId = nanoid(7);
         template.setAttribute("id", templateId);
-        template.setAttribute("eb-generated-by", "builder");
+        template.setAttribute("ep-builder-template", "");
         template.innerHTML = element.outerHTML;
 
         // append the template to the parent element
@@ -142,6 +149,38 @@ export async function renderOnClient() {
       }
     }
   });
+
+  // For now, we only run the accessibility tests on the first page
+  if (import.meta.env.DEV && window.enpage.currentPage === 0) {
+    runAccessibilityTests();
+  }
+}
+
+async function runAccessibilityTests() {
+  const axe = (await import("axe-core")).default;
+  const dontLocateTypes = ["page-has-heading-one"];
+
+  axe.configure({
+    branding: "Enpage",
+  });
+  axe
+    .run({
+      resultTypes: ["violations"],
+    })
+    .then((results) => {
+      for (const violation of results.violations) {
+        const foundIn = dontLocateTypes.includes(violation.id)
+          ? ""
+          : `Found in:\n\t` + violation.nodes.map((node) => `- ${node.html}`).join("\n\n\t") + "\n\n";
+        const message = `${violation.description}\n\n${foundIn}See: ${violation.helpUrl}`;
+        if (violation.impact === "critical") {
+          console.error(`[Accessibility error]: ${message}`);
+        } else if (violation.impact === "serious" || violation.impact === "moderate") {
+          console.warn(`[Accessibility warning]: ${message}`);
+        }
+      }
+    })
+    .catch((err) => {});
 }
 
 function domStringToNode(html: string) {

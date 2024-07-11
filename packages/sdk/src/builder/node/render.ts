@@ -4,10 +4,10 @@ import type { Logger, Plugin } from "vite";
 import type { PageContext } from "@enpage/types/context";
 import { Liquid } from "liquidjs";
 import { minify } from "html-minifier";
-import { createFakeContext, fetchContext } from "@enpage/sdk/context";
+import { createFakeContext, fetchContext } from "../../context";
 import chalk from "chalk";
 import { nanoid } from "nanoid";
-import { version } from "../../package.json";
+import { version } from "../../../package.json";
 
 export const render = (cfg: EnpageTemplateConfig): Plugin => {
   let isBuildMode = false;
@@ -38,9 +38,10 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         const virtualConsole = new VirtualConsole();
         virtualConsole.sendTo(console, { omitJSDOMErrors: true });
 
+        const attrs = (ctx as PageContext<any, any>).attributes;
         const dom = new JSDOM(html, { virtualConsole });
-
-        const head = dom.window.document.querySelector("head");
+        const doc = dom.window.document;
+        const head = doc.querySelector("head");
 
         if (!head) {
           logger.error("No head element found in index.html");
@@ -49,20 +50,22 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
 
         // Add Tailwind CSS
         if (!process.env.DISABLE_TAILWIND) {
-          logger.warnOnce(chalk.gray("render: adding tailwind"));
-          const style = dom.window.document.createElement("style");
-          style.textContent = `@import "@enpage/style-system/tailwind.css";`;
-          head.appendChild(style);
+          // const style = doc.createElement("style");
+          // style.textContent = `@import "@enpage/style-system/tailwind.css";`;
+          // head.appendChild(style);
+        } else {
+          logger.warnOnce(chalk.gray("render: tailwind is disabled"), {
+            timestamp: true,
+          });
         }
 
         // Enpage styles
-        logger.warnOnce(chalk.gray("render: adding enpage styles"));
-        const enpageStyles = dom.window.document.createElement("style");
+        const enpageStyles = doc.createElement("style");
         enpageStyles.textContent = `@import "@enpage/style-system/client.css";`;
         head.appendChild(enpageStyles);
 
         // Add the vite preload error script (to reload the page on preload error)
-        const vitePreloadErrorScript = dom.window.document.createElement("script");
+        const vitePreloadErrorScript = doc.createElement("script");
         vitePreloadErrorScript.textContent = `
           window.addEventListener("vite:preloadError", (event) => {
             window.location.reload();
@@ -70,68 +73,63 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         `;
         head.appendChild(vitePreloadErrorScript);
 
+        // Set site language. Will result in <html lang="xx">
+        doc.documentElement.lang = attrs.$siteLanguage;
+
         // ----------------------------------------------------
         // Add meta tags if they don't exist
 
         // Charset
-        if (!dom.window.document.querySelector("meta[charset]")) {
-          logger.warnOnce(chalk.gray("render: adding charset meta tag"));
-          const metaCharset = dom.window.document.createElement("meta");
-          metaCharset.setAttribute("charset", "UTF-8");
-          head.appendChild(metaCharset);
+        if (!doc.querySelector("meta[charset]")) {
+          const meta = doc.createElement("meta");
+          meta.setAttribute("charset", "UTF-8");
+          head.appendChild(meta);
         }
 
         // title
-        if (!dom.window.document.querySelector("title") && ctx?.attributes?.$siteTitle) {
-          logger.warnOnce(chalk.gray("render: adding title tag"));
-          const title = dom.window.document.createElement("title");
-          title.textContent = ctx.attributes.$siteTitle.value;
+        if (!doc.querySelector("title") && attrs.$siteTitle) {
+          const title = doc.createElement("title");
+          title.textContent = attrs.$siteTitle;
           head.appendChild(title);
         }
 
         // description
-        if (
-          !dom.window.document.querySelector("meta[name='description']") &&
-          ctx?.attributes?.$siteDescription?.value
-        ) {
-          logger.warnOnce(chalk.gray("render: adding description meta tag"));
-          const metaDescription = dom.window.document.createElement("meta");
-          metaDescription.setAttribute("name", "description");
-          metaDescription.setAttribute("content", ctx.attributes.$siteDescription.value);
-          head.appendChild(metaDescription);
+        if (!doc.querySelector("meta[name='description']") && attrs.$siteDescription) {
+          const meta = doc.createElement("meta");
+          meta.setAttribute("name", "description");
+          meta.setAttribute("content", attrs.$siteDescription);
+          head.appendChild(meta);
         }
 
         // keywords
-        if (!dom.window.document.querySelector("meta[name='keywords']") && ctx?.attributes.$siteKeywords?.value) {
-          logger.warnOnce(chalk.gray("render: adding keywords meta tag"));
-          const metaKeywords = dom.window.document.createElement("meta");
-          metaKeywords.setAttribute("name", "keywords");
-          metaKeywords.setAttribute("content", ctx.attributes.$siteKeywords.value);
-          head?.appendChild(metaKeywords);
+        if (!doc.querySelector("meta[name='keywords']") && ctx?.attributes.$siteKeywords) {
+          const meta = doc.createElement("meta");
+          meta.setAttribute("name", "keywords");
+          meta.setAttribute("content", attrs.$siteKeywords);
+          head?.appendChild(meta);
         }
 
         // viewport
-        if (!dom.window.document.querySelector("meta[name='viewport']")) {
-          logger.warnOnce(chalk.gray("render: adding viewport meta tag"));
-          const metaViewport = dom.window.document.createElement("meta");
-          metaViewport.setAttribute("name", "viewport");
-          metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0");
-          head?.appendChild(metaViewport);
+        if (!doc.querySelector("meta[name='viewport']")) {
+          const meta = doc.createElement("meta");
+          meta.setAttribute("name", "viewport");
+          meta.setAttribute("content", "width=device-width, initial-scale=1.0");
+          head?.appendChild(meta);
         }
 
         // generator
-        const metaGenerator = dom.window.document.createElement("meta");
-        metaGenerator.setAttribute("name", "generator");
-        metaGenerator.setAttribute("content", `Enpage v${version}`);
-        head?.appendChild(metaGenerator);
+        const generator = doc.createElement("meta");
+        generator.setAttribute("name", "generator");
+        generator.setAttribute("content", `Enpage v${version}`);
+        head?.appendChild(generator);
 
         // Add enpage web components
-        // const enpageComponentsScript = dom.window.document.createElement("script");
+        // const enpageComponentsScript = doc.createElement("script");
         // enpageComponentsScript.type = "module";
         // enpageComponentsScript.textContent = `import "@enpage/sdk/web-components";`;
         // head?.appendChild(enpageComponentsScript);
         // Hide all sections but the first one
-        const sections = dom.window.document.querySelectorAll("body > section");
+        const sections = doc.querySelectorAll("body > section");
         const slugs: string[] = [];
         sections.forEach((section, index) => {
           let slug = section.getAttribute("ep-slug");
@@ -142,12 +140,15 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
           slugs.push(slug);
           if (index > 0) {
             section.setAttribute("hidden", "");
+          } else {
+            // make sure the first section has role="main"
+            section.setAttribute("role", "main");
           }
         });
 
         // ----------------------------------------------------
         // Add enpage SDK script
-        const enpageSdkScript = dom.window.document.createElement("script");
+        const enpageSdkScript = doc.createElement("script");
         enpageSdkScript.type = "module";
         enpageSdkScript.textContent = `
           import { EnpageSDK } from "@enpage/sdk";
@@ -157,17 +158,16 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
 
         // if not in SSR mode, add liquid js
         if (!isSsrBuild) {
-          const liquidScript = dom.window.document.createElement("script");
+          const liquidScript = doc.createElement("script");
           liquidScript.type = "module";
           // resolved through alias in vite.config.ts
           liquidScript.textContent = `import "@enpage/liquid";`;
           head.appendChild(liquidScript);
 
-          // add script from @enpage/sdk/client-render
-          const clientRenderScript = dom.window.document.createElement("script");
+          const clientRenderScript = doc.createElement("script");
           clientRenderScript.type = "module";
           clientRenderScript.textContent = `
-            import { renderOnClient } from "@enpage/sdk/client-render";
+            import { renderOnClient } from "@enpage/sdk/builder/client/render";
             renderOnClient();
             window.enpage.addEventListener("afternavigate", renderOnClient);
           `;
@@ -175,7 +175,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
           html = dom.serialize();
         } else {
           logger.info("SSR: rendering liquid templates");
-          html = await renderLiquid(dom.serialize(), ctx, cfg);
+          html = await renderLiquid(dom.serialize(), ctx);
         }
 
         if (!isBuildMode) {
@@ -195,7 +195,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
   };
 };
 
-function renderLiquid(html: string, ctx: PageContext<any, any> | undefined, cfg: EnpageTemplateConfig) {
+function renderLiquid(html: string, ctx: PageContext<any, any> | undefined) {
   const engine = new Liquid();
   return engine.parseAndRender(html, ctx, {
     globals: ctx,

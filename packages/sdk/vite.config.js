@@ -15,10 +15,11 @@ export default defineConfig(({ command }) => {
     plugins: [
       tsconfigPaths(),
       dts({
-        rollupTypes: true,
+        // rollupTypes: true,
         compilerOptions: {
           declarationMap: true,
         },
+        exclude: ["src/builder/**/*"],
       }),
       process.env.STATS ? visualizer({ filename: "stats.html", emitFile: true }) : [],
     ],
@@ -28,11 +29,12 @@ export default defineConfig(({ command }) => {
     // root: join(__dirname, "src"),
 
     build: {
+      outDir: join(__dirname, "dist/sdk"),
+      emptyOutDir: true,
       lib: {
         entry: {
           attributes: resolve(__dirname, "src/attributes.ts"),
           // "web-components": resolve(__dirname, "src/web-components/index.ts"),
-          "client-render": resolve(__dirname, "src/client-render.ts"),
           context: resolve(__dirname, "src/context.ts"),
           datasources: resolve(__dirname, "src/datasources.ts"),
           "dynamic-css": resolve(__dirname, "src/dynamic-css.ts"),
@@ -45,7 +47,7 @@ export default defineConfig(({ command }) => {
       rollupOptions: {
         // make sure to externalize deps that shouldn't be bundled
         // into your library
-        external: ["zod", "tailwindcss", "vite", "vite-tsconfig-paths", "@vitejs/plugin-react", "@enpage/style-system"],
+        external: ["zod", "tailwindcss", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
         output: {
           // Provide global variables to use in the UMD build
           globals: {

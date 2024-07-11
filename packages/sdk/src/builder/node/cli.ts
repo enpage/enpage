@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import { startDevServer, buildTemplate, previewTemplate } from "../vite/cli-interface";
+import { startDevServer, buildTemplate, previewTemplate } from "./cli-methods";
 
 program
   .command("dev")

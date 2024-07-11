@@ -1,1 +1,4 @@
-/* css declarations */
+/* If you dont want to use tailwind, just remove the following import */
+@import "@enpage/style-system/tailwind.css";
+
+/* add your custom styles here */

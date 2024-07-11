@@ -6,6 +6,6 @@ body > section:not(:first-child) {
   /* display: none; */
 }
 
-section[hidden] {
+[hidden] {
   display: none !important;
 }

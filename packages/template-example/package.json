@@ -10,7 +10,6 @@
     "./enpage.config.js": "./enpage.config.js"
   },
   "scripts": {
-    "dev": "enpage dev",
     "start": "enpage dev",
     "build-template": "enpage build",
     "preview": "enpage preview"
@@ -23,14 +22,12 @@
   "dependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
-    "@enpage/builder": "workspace:*",
     "@enpage/types": "workspace:*",
     "tailwindcss": "3.4.3"
   },
   "peerDependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
-    "@enpage/builder": "workspace:*",
     "zod": "3.23.8"
   },
   "author": "Matthias Etienne",

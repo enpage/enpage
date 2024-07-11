@@ -18,7 +18,7 @@ const enpagePlugin = (): Plugin => {
           exclude: ["@enpage/sdk"],
         },
         css: {
-          postcss: resolve(__dirname, "../dist/config/postcss.config.js"),
+          postcss: resolve(__dirname, "./postcss.config.js"),
         },
         server: {
           host: true,

@@ -1,7 +1,6 @@
 import type { PageContext } from "@enpage/types/context";
 
-type BeforeNavigateEvent = CustomEvent<{ from: number; to: number }>;
-type AfterNavigateEvent = CustomEvent<{ from: number; to: number }>;
+type NavigateEvent = CustomEvent<{ from: number; to: number }>;
 
 export class EnpageSDK extends EventTarget {
   private pageIndex = 0;
@@ -10,7 +9,6 @@ export class EnpageSDK extends EventTarget {
   constructor(
     private ctx: PageContext<any, any>,
     private pagesSlugs: string[] = [],
-    private mode: "dev" | "edit" | "view" | null = "dev",
   ) {
     super();
     this.#analysePage();
@@ -19,7 +17,7 @@ export class EnpageSDK extends EventTarget {
 
   private setupListeners() {
     this.addEventListener("beforenavigate", (e) => {
-      const evt = e as BeforeNavigateEvent;
+      const evt = e as NavigateEvent;
       const oldIndex = evt.detail.from;
       const newIndex = evt.detail.to;
       document.querySelectorAll("body > section").forEach((section, index) => {
@@ -30,7 +28,12 @@ export class EnpageSDK extends EventTarget {
         }
       });
       this.pageIndex = newIndex;
-      this.dispatchEvent(new CustomEvent("afternavigate", { detail: { from: oldIndex, to: newIndex }, bubbles: true }));
+      this.dispatchEvent(
+        new CustomEvent("afternavigate", {
+          detail: { from: oldIndex, to: newIndex } satisfies NavigateEvent["detail"],
+          bubbles: true,
+        }),
+      );
       const slug = this.pagesSlugs[newIndex];
       history.pushState({ page: newIndex }, "", newIndex === 0 ? "/" : slug ? `/${slug}` : undefined);
     });
@@ -52,7 +55,7 @@ export class EnpageSDK extends EventTarget {
     if (this.canGoForward) {
       this.dispatchEvent(
         new CustomEvent("beforenavigate", {
-          detail: { from: this.currentPage, to: this.currentPage + 1 },
+          detail: { from: this.currentPage, to: this.currentPage + 1 } satisfies NavigateEvent["detail"],
           bubbles: true,
           cancelable: true,
         }),
@@ -64,7 +67,7 @@ export class EnpageSDK extends EventTarget {
     if (this.canGoBack) {
       this.dispatchEvent(
         new CustomEvent("beforenavigate", {
-          detail: { from: this.currentPage, to: this.currentPage - 1 },
+          detail: { from: this.currentPage, to: this.currentPage - 1 } satisfies NavigateEvent["detail"],
           bubbles: true,
           cancelable: true,
         }),
@@ -87,7 +90,11 @@ export class EnpageSDK extends EventTarget {
 
   firstPage() {
     this.dispatchEvent(
-      new CustomEvent("beforenavigate", { detail: { from: this.currentPage, to: 0 }, bubbles: true, cancelable: true }),
+      new CustomEvent("beforenavigate", {
+        detail: { from: this.currentPage, to: 0 } satisfies NavigateEvent["detail"],
+        bubbles: true,
+        cancelable: true,
+      }),
     );
   }
 
