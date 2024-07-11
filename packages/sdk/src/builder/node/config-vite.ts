@@ -20,6 +20,7 @@ export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Pr
 
   return {
     customLogger: logger,
+    envPrefix: ["VITE_", "ENPAGE_"],
     plugins: [enpagePlugin(config)],
     resolve: {
       preserveSymlinks: true,

@@ -4,7 +4,7 @@ import type { Logger, Plugin } from "vite";
 import type { PageContext } from "@enpage/types/context";
 import { Liquid } from "liquidjs";
 import { minify } from "html-minifier";
-import { createFakeContext, fetchContext } from "../../context";
+import { createFakeContext, fetchContext } from "./context";
 import chalk from "chalk";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
