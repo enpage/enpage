@@ -35,7 +35,6 @@ export default defineConfig(({ command }) => {
         entry: {
           attributes: resolve(__dirname, "src/attributes.ts"),
           // "web-components": resolve(__dirname, "src/web-components/index.ts"),
-          context: resolve(__dirname, "src/context.ts"),
           datasources: resolve(__dirname, "src/datasources.ts"),
           "dynamic-css": resolve(__dirname, "src/dynamic-css.ts"),
           sdk: resolve(__dirname, "src/sdk.ts"),
