@@ -1,7 +1,7 @@
 import { Liquid } from "liquidjs";
 import { nanoid } from "nanoid";
 
-export async function renderOnClient() {
+export async function initDevClient() {
   const engine = new Liquid({});
   const ctx = window.enpage.context;
 
