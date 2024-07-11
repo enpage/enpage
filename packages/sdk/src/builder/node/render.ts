@@ -157,7 +157,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         head.appendChild(enpageSdkScript);
 
         // if not in SSR mode, add liquid js
-        if (!isSsrBuild) {
+        if (!isBuildMode) {
           const liquidScript = doc.createElement("script");
           liquidScript.type = "module";
           // resolved through alias in vite.config.ts
@@ -167,13 +167,15 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
           const clientRenderScript = doc.createElement("script");
           clientRenderScript.type = "module";
           clientRenderScript.textContent = `
-            import { renderOnClient } from "@enpage/sdk/builder/client/render";
-            renderOnClient();
-            window.enpage.addEventListener("afternavigate", renderOnClient);
+            import { initDevClient } from "@enpage/sdk/builder/client/dev";
+            initDevClient();
+            window.enpage.addEventListener("afternavigate", initDevClient);
           `;
           head.appendChild(clientRenderScript);
           html = dom.serialize();
-        } else {
+        }
+
+        if (isSsrBuild) {
           logger.info("SSR: rendering liquid templates");
           html = await renderLiquid(dom.serialize(), ctx);
         }
