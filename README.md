@@ -18,12 +18,13 @@ Please visit the documentation at [https://developers.enpage.co](https://develop
 
 This monorepo uses changesets to manage versioning and releases.
 `pnpm changeset` can be used to create a changeset for a package.
-
+When a PR with a changeset is merged, the GitHub action will automatically create a PR for the release.
+Maintainers can then merge the release PR to publish the new version.
 
 ### SDK Development
 
-Run `pnpm dev` at the root of the monorepo to start the development server for the SDK.
-This will open a browser window with the `template-example` page.
+1. Run `pnpm dev` at the root of the monorepo.
+2. In another terminal, run `pnpm start` in the `packages/template-example` directory.
 
 ### Documentation Development
 
