@@ -33,6 +33,12 @@ export async function renderOnClient() {
       }
     });
 
+    // remove old elements with the same ep-generated-from-template-id
+    // that may have been rendered before
+    document.querySelectorAll(`[ep-generated-from-template-id="${templateId}"]`).forEach((el) => {
+      el.remove();
+    });
+
     // insert the generated elements after the original template
     template.after(generatedElements);
 
@@ -40,6 +46,7 @@ export async function renderOnClient() {
     template.parentElement?.setAttribute("ep-template-id", templateId);
   });
 
+  // todo: prevent multiple renderings of the same template
   // parse ep-for attribute
   document.querySelectorAll("[ep-for]").forEach(async (el) => {
     const element = el as HTMLElement;
@@ -53,6 +60,10 @@ export async function renderOnClient() {
       template.setAttribute("id", templateId);
       template.setAttribute("eb-generated-by", "builder");
       template.innerHTML = tplContent;
+
+      // add template id to the original element
+      element.setAttribute("ep-template-id", templateId);
+
       // append the template to the parent element
       element.parentElement?.appendChild(template);
 
@@ -60,6 +71,11 @@ export async function renderOnClient() {
       if (parsed) {
         // element.innerHTML = parsed;
         const nodes = domStringToNode(parsed).childNodes;
+        nodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            node.setAttribute("ep-generated-from-template-id", templateId);
+          }
+        });
         // append nodes to parent element
         element.after(...nodes);
       }
@@ -106,7 +122,6 @@ export async function renderOnClient() {
       if (value) {
         const expression = value.replace(/^{{/, "").replace(/}}$/, "");
         const parsed = await engine.evalValue(expression, ctx);
-        console.log("attrName parsed value", attrName, parsed, value);
         // for boolean attributes, only set the attribute if the value is "true"
         if (parsed === false) {
           el.removeAttribute(attrName);
