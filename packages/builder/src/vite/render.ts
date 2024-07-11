@@ -7,6 +7,7 @@ import { minify } from "html-minifier";
 import { createFakeContext, fetchContext } from "@enpage/sdk/context";
 import chalk from "chalk";
 import { nanoid } from "nanoid";
+import { version } from "../../package.json";
 
 export const render = (cfg: EnpageTemplateConfig): Plugin => {
   let isBuildMode = false;
@@ -117,6 +118,12 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
           metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0");
           head?.appendChild(metaViewport);
         }
+
+        // generator
+        const metaGenerator = dom.window.document.createElement("meta");
+        metaGenerator.setAttribute("name", "generator");
+        metaGenerator.setAttribute("content", `Enpage v${version}`);
+        head?.appendChild(metaGenerator);
 
         // Add enpage web components
         // const enpageComponentsScript = dom.window.document.createElement("script");
