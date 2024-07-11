@@ -1,10 +1,10 @@
 # Using Javascript / Typescript
 
-In Enpage, you can use JavaScript (and/or Typescript) to add interactivity to your templates.
+You can use JavaScript (and/or Typescript) to add interactivity to your templates.
 
 ## Adding JavaScript files
 
-1. Put your JavaScript/Typescript files in the `src/` directory of your template.
+1. Place JavaScript/Typescript files in the `src/` directory.
 
 ```plaintext
 my-template/
@@ -22,8 +22,8 @@ my-template/
 ```html
 <!-- Reference JavaScript files in the <head> -->
 <head>
-  <!-- It is advised to use javascript modules now that it is
-       supported in all modern browsers -->
+  <!-- Now that it is supported in all modern browsers,
+       we strongly advise you to use javascript modules  -->
   <script type="module" src="src/script.js"></script>
   <script type="module" src="src/my-typescript-file.ts"></script>
 </head>
