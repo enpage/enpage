@@ -3,34 +3,34 @@ declare global {
   type Boolish = boolean | "true" | "false" | "1" | "0" | "yes" | "no";
 
   interface HTMLElement {
-    "data-appear-animation"?: string;
-    "data-appear-animation-duration"?: string;
-    "data-hover-animation"?: string;
-    "data-hover-animation-duration"?: string;
+    "ep-appear-animation"?: string;
+    "ep-appear-animation-duration"?: string;
+    "ep-hover-animation"?: string;
+    "ep-hover-animation-duration"?: string;
     /**
      * Label for the element. Will be displayed to the user.
      * If not provided, the element "id" will be used.
      */
-    "data-enpage-label"?: string;
+    "ep-label"?: string;
     /**
      * A Boolean value indicating whether or not the direct children of the element can be **reordered**.
      */
-    "data-enpage-allow-reorder"?: Boolish;
+    "ep-allow-reorder"?: Boolish;
 
     /**
      * A Boolean value indicating whether or not its contents should be parsed by liquid.
      */
-    "data-template"?: Boolish;
+    "ep-bind"?: Boolish;
 
     /**
      * A Boolean value indicating whether or not the element can be **duplicated**.
      */
-    "data-enpage-allow-duplicate"?: Boolish;
+    "ep-allow-duplicate"?: Boolish;
 
     /**
      * A Boolean value indicating whether or not the element can be **deleted**.
      */
-    "data-enpage-allow-delete"?: Boolish;
+    "ep-allow-delete"?: Boolish;
 
     /**
      * The type of the element. When not specified, the default value is "element".
@@ -39,7 +39,7 @@ declare global {
      * - A value of "element" indicates that the element is a regular element.
      * - A value of "container" indicates that the element is a container.
      */
-    "data-enpage-type"?: "page" | "element" | "container";
+    "ep-type"?: "page" | "element" | "container";
 
     /**
      * **Enpage custom attribute**
@@ -48,7 +48,7 @@ declare global {
      * When set to "plain-text", the content will be plain text. When set to "html", the content will be HTML.
      * When set to true, the content will be plain text.
      */
-    "data-text-editable"?: "plain" | "html" | boolean;
+    "ep-text-editable"?: "plain" | "html" | boolean;
 
     /**
      * **Enpage custom attribute**
@@ -58,6 +58,6 @@ declare global {
      * When set to "none", no style properties can be edited.
      * When set to "default", the default style properties can be edited depending on the block type.
      */
-    "data-style-props"?: string;
+    "ep-style-props"?: string;
   }
 }

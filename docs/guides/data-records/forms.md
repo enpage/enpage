@@ -9,7 +9,7 @@ while Enpage will take care of the form validation and submission.
 ::: code-group
 
 ```html [index.html]
-<form data-record="contactFormSubmissions">
+<form ep-record="contactFormSubmissions">
   <p>
     <label for="name">Name</label>
     <!-- No need for a "required" attribute,
@@ -31,12 +31,12 @@ while Enpage will take care of the form validation and submission.
   </p>
 
   <!-- Form error message -->
-  <template data-form-error>
+  <template ep-form-error>
     <p>There was an error submitting the form. Please try again.</p>
   </template>
 
   <!-- confirmation message when data is saved -->
-  <template data-form-success>
+  <template ep-form-success>
     <p>Thank you for your submission!</p>
   </template>
 

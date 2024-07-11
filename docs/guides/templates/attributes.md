@@ -168,8 +168,8 @@ Built-in attributes names start with `$`.
 
 ### List of built-in attributes:
 
-- `$pageTitle` (string): The title of the page (used by default in `<title>`).
-- `$pageDescription` (string): The description of the page (used by default in meta tags).
-- `$pageKeywords` (string): The keywords of the page (used by default in meta tags).
-- `$pageUrl` (string): The URL of the page.
-- `$pageLastUpdated` (date): The date when the page was last updated.
+- `$siteTitle` (string): The title of the page (used by default in `<title>`).
+- `$siteDescription` (string): The description of the page (used by default in meta tags).
+- `$siteKeywords` (string): The keywords of the page (used by default in meta tags).
+- `$siteUrl` (string): The URL of the page.
+- `$lastUpdated` (date): The date when the page was last updated.

@@ -1,0 +1,11 @@
+body > section {
+  /* display: flex; */
+}
+/* hide all sections that are direct children from body but the first one */
+body > section:not(:first-child) {
+  /* display: none; */
+}
+
+[hidden] {
+  display: none !important;
+}

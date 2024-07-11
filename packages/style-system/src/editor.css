@@ -1,10 +1,10 @@
-[data-group],
-[data-editable] {
+[ep-group],
+[ep-editable] {
   position: relative;
 }
 
 /** Outline all over the parent **/
-[data-editable]::before {
+[ep-editable]::before {
   content: "";
   opacity: 0;
   position: absolute;
@@ -23,13 +23,13 @@
 }
 
 /* label */
-[data-editable]::after {
+[ep-editable]::after {
   position: absolute;
   opacity: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  content: attr(data-label) " ";
+  content: attr(ep-label) " ";
   min-width: 3rem;
   height: 1.7rem;
   color: #fff;
@@ -47,13 +47,13 @@
   scale: 0.94;
 }
 
-[data-block-type="page"]::before {
+[ep-block-type="page"]::before {
   inset: 5px !important;
   outline-offset: 0 !important;
   transition-delay: 100ms;
   scale: 1 !important;
 }
-[data-block-type="page"]::after {
+[ep-block-type="page"]::after {
   bottom: calc(100% - 1.7rem - 2px);
   left: 2px;
   border-radius: 0.5rem 0 0.5rem 0;
@@ -61,30 +61,30 @@
   scale: 1 !important;
 }
 
-[data-block-type="page"]:hover:not(:has(*:hover))::before {
+[ep-block-type="page"]:hover:not(:has(*:hover))::before {
   pointer-events: none;
 }
 
-[data-block-type="page"] {
+[ep-block-type="page"] {
   z-index: 2;
 }
 
-[data-editable].active::before,
-[data-editable].active::after,
-[data-editable]:hover:not(:has(*:hover))::before,
-[data-editable]:focus::before,
-[data-editable]:hover:not(:has(*:hover))::after,
-[data-editable]:focus::after {
+[ep-editable].active::before,
+[ep-editable].active::after,
+[ep-editable]:hover:not(:has(*:hover))::before,
+[ep-editable]:focus::before,
+[ep-editable]:hover:not(:has(*:hover))::after,
+[ep-editable]:focus::after {
   opacity: 1;
   scale: 1;
 }
 
-[data-block-type="sections"] {
+[ep-block-type="sections"] {
   display: flex;
   flex-direction: column;
   gap: 3rem;
 }
 
-[data-editor-ui] {
+[ep-editor-ui] {
   z-index: 9999;
 }

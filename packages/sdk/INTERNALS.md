@@ -39,12 +39,12 @@ The main challenge is to keep original HTML document intact to preserve loops,co
 #### Processing flow:
 
 - The entire HTML document is parsed using DOM and `<template>` tags are extracted.
-- For each template tag, an ID is generated and the parent element of the template is set with the attribute `data-template-id`.
+- For each template tag, an ID is generated and the parent element of the template is set with the attribute `ep-template-id`.
 - Then elements with the following attributes are processed:
-  - `data-text={{ expression }}` and `data-text-editable`: The expression is evaluated and the result is set as the textContent of the element.
-  The difference between `data-var` and `data-text-editable` is that `data-var` is used for variables bound directly to the template datasources or attributes, while `data-text-editable` is used for text that can be edited by the user.
-  - `data-bind:<attr>="{{ expression }}"`: The expression is evaluated and the result is set as the value of the attribute `<attr>`.
-  - `data-show="{{ expression }}"`: The expression is evaluated and the element is shown or hidden based on the result.
+  - `ep-text={{ expression }}` and `ep-text-editable`: The expression is evaluated and the result is set as the textContent of the element.
+  The difference between `ep-var` and `ep-text-editable` is that `ep-var` is used for variables bound directly to the template datasources or attributes, while `ep-text-editable` is used for text that can be edited by the user.
+  - `ep-bind:<attr>="{{ expression }}"`: The expression is evaluated and the result is set as the value of the attribute `<attr>`.
+  - `ep-show="{{ expression }}"`: The expression is evaluated and the element is shown or hidden based on the result.
 
 
 

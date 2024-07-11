@@ -30,7 +30,7 @@ program
     }
     process.stdout.write("Cloning template example... ");
 
-    const emitter = degit("enpage/enpage-sdk/packages/template-example");
+    const emitter = degit("enpage/enpage/packages/template-example");
 
     await emitter.clone(directory);
     console.log(chalk.blue("OK"));

@@ -139,3 +139,4 @@ packages/testing
 
 docs/.vitepress/dist
 docs/.vitepress/cache
+docs.pdf

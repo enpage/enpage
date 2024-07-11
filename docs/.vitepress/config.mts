@@ -13,6 +13,8 @@ export default defineConfig({
     },
     siteTitle: false,
     nav: [
+      { text: "Home", link: "/" },
+      { text: "Quick start", link: "/getting-started" },
       { text: "Help", link: "/help" },
       { text: "Contribute", link: "/contribute" },
       { text: "Enpage.co", link: "https://enpage.co" },
@@ -21,8 +23,8 @@ export default defineConfig({
       {
         text: "Introduction",
         items: [
-          { text: "Welcome", link: "/" },
-          { text: "Getting Started", link: "/intro/getting-started" },
+          { text: "What is Enpage?", link: "/what-is-enpage" },
+          { text: "Getting Started", link: "/getting-started" },
         ],
       },
       {
@@ -32,13 +34,13 @@ export default defineConfig({
             text: "Overview",
             link: "/guides/templates/",
           },
+          { text: "Using Javascript / Typescript", link: "/guides/templates/javascript" },
+          { text: "Styling with CSS", link: "/guides/templates/css" },
           {
-            text: "Assets (img, css...)",
+            text: "Assets (images & fonts)",
             collapsed: true,
             items: [
               { text: "Images", link: "/guides/templates/assets/images" },
-              { text: "CSS", link: "/guides/templates/assets/css" },
-              { text: "Javascript", link: "/guides/templates/assets/javascript" },
               { text: "Fonts", link: "/guides/templates/assets/fonts" },
             ],
           },
@@ -100,17 +102,13 @@ export default defineConfig({
         ],
       },
       {
-        text: "Enpage Global Object",
+        text: "Enpage JS API",
         items: [
-          { text: "Overview", link: "/enpage-global/" },
-          { text: "Context", link: "/enpage-global/context" },
-          { text: "Data Records", link: "/enpage-global/data-records" },
-          { text: "Navigation", link: "/enpage-global/navigation" },
+          { text: "Overview", link: "/js-api/" },
+          { text: "Context", link: "/js-api/context" },
+          { text: "Data Records", link: "/js-api/data-records" },
+          { text: "Navigation", link: "/js-api/navigation" },
         ],
-      },
-      {
-        text: "🆘 Getting Help",
-        link: "/help",
       },
       {
         text: "❤️ Contribute",

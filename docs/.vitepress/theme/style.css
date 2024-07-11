@@ -50,8 +50,8 @@
   --vp-c-default-soft: var(--vp-c-gray-soft);
 
   --vp-c-brand-1: var(--vp-c-indigo-1);
-  --vp-c-brand-2: var(--vp-c-indigo-2);
-  --vp-c-brand-3: var(--vp-c-indigo-3);
+  --vp-c-brand-2: #7777c0;
+  --vp-c-brand-3: #817fcc;
   --vp-c-brand-soft: var(--vp-c-indigo-soft);
 
   --vp-c-tip-1: var(--vp-c-brand-1);
@@ -92,7 +92,18 @@
 
 :root {
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #755cdf,
+    #8b58d8,
+    #9d55d0,
+    #c050c2,
+    #db4db3,
+    #ef50a2,
+    #ff6285,
+    #ff806b,
+    #ffa25a
+  );
 
   --vp-home-hero-image-background-image: linear-gradient(-45deg, #bd34fe 50%, #47caff 50%);
   --vp-home-hero-image-filter: blur(44px);
@@ -140,4 +151,26 @@
   border-bottom-color: transparent !important;
   margin-left: -14px;
   margin-top: 3px;
+}
+
+div.VPContent.is-home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h1.name {
+  padding-top: 3rem;
+}
+
+h1.name,
+p.tagline {
+  max-width: 100% !important;
+  text-align: center;
+}
+div.actions {
+  margin-block: auto;
+  place-content: center;
 }

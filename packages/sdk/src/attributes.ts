@@ -99,8 +99,23 @@ export const attr = {
   },
 };
 
+// Default attributes
 const defaultAttributes: AttributesMap = {
-  $pageTitle: attr.text("Page title", "Untitled"),
-  $pageDescription: attr.text("Page description"),
-  $pageKeywords: attr.text("Page keywords"),
+  $siteLanguage: attr.enum("Page language", "en", {
+    options: [
+      { value: "en", label: "English" },
+      { value: "es", label: "Spanish" },
+      { value: "fr", label: "French" },
+      { value: "de", label: "German" },
+      { value: "it", label: "Italian" },
+      { value: "ja", label: "Japanese" },
+      { value: "ko", label: "Korean" },
+      { value: "pt", label: "Portuguese" },
+      { value: "ru", label: "Russian" },
+      { value: "zh", label: "Chinese" },
+    ],
+  }),
+  $siteTitle: attr.text("Page title", "Untitled"),
+  $siteDescription: attr.text("Page description"),
+  $siteKeywords: attr.text("Page keywords"),
 };

@@ -1,38 +1,26 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
-layout: doc
-
+layout: home
 hero:
-  name: "Enpage SDK"
+  name: "Enpage Developer Documentation"
   # text: "Create amazing templates for Enpage"
   tagline: Create amazing templates for Enpage
   actions:
     - theme: brand
       text: What is Enpage?
-      link: /guide/intro
+      link: /what-is-enpage
     - theme: alt
       text: Quick start
-      link: /guide/getting-started
-    - theme: alt
-      text: Github
-      link: https:///github.com/enpage/enpage-sdk
+      link: /getting-started
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Beautiful single-page websites
+    details: Create amazing websites with ease and without any coding.
+  - title: Build your own templates
+    details: Create templates for Enpage. Use them, share them, or make money from them.
+  - title: Vite based
+    details: Based on Vite, the next generation frontend tooling.
+  - title: Open Source
+    details: Enpage SDK is open source and available on GitHub.
+
 ---
-
-# Enpage Docs for Developers & Designers
-
-Welcome! This is the official documentation for the [Enpage](https://enpage.co) Platform.
-
-Enpage lets people create amazing websites with ease and without any coding.
-If you are a developer or designer and want to create templates for Enpage, you are in the right place.
-
-Here you will find everything you need to know to get started with the Enpage platform and create beautiful templates.
-
-If you haven't already, [create an account](https://enpage.co) on Enpage and start building your first template!
