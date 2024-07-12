@@ -1,6 +1,6 @@
 # Loops
 
-`for` loops allow you to iterate over a list of items and render them in your template.
+`for` loops allow to iterate over a list of items and render them in your template.
 
 ## Syntax
 
@@ -17,7 +17,7 @@ The `ep-for` attribute can be used to loop through a list of items and render th
 
 ::: warning Important
 
-- Datasources are directly accessible in the template using the `data` object.
+- Data Sources are directly accessible in the template using the `data` object.
 - All children of an element using the `ep-for` attribute are evaluated by Liquid. There is **no need** to use the `ep-bind` attribute inside the children.
   :::
 
@@ -41,12 +41,12 @@ The `ep-for` attribute can be used to loop through a list of items and render th
 
 ### Usage inside `<template>` tags
 
-You can also loop through your Data Sources using the `{% for %}` tag.
+Loop through your Data Sources using the `{% for %}` tag.
 
 ::: warning Important
 
 - The `{% for %}` tag **must** be enclosed in a `<template>` tag.
-- Datasources are directly accessible in the template using the `data` object.
+- Data Sources are directly accessible in the template using the `data` object.
 - Inside `<template>` tags, all Liquid expressions are evaluated. There is **no need** to use the `ep-bind` attribute inside any children.
   :::
 

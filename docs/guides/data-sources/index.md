@@ -7,11 +7,10 @@ Data Sources are the source of data for the templates. We can distinguish 2 type
 
 For both types of data sources, Enpage provides you with [built-in data sources](./built-in/) that you can use without any additional configuration.
 
-You can also define your own *custom* data sources, being internal or external.
+You can define your own *custom* data sources, being internal or external.
 
 Data Sources are defined in the `enpage.config.js` file using the `defineDataSources()` function.
-You can define as many data sources as you want.
-
+Define as many data sources as you want.
 
 ## Internal Data Sources
 
@@ -33,6 +32,7 @@ export const datasources = defineDataSources({
   }
 });
 ```
+
 :::
 
 ### Using a Custom Internal Data Source
@@ -61,21 +61,20 @@ export const datasources = defineDataSources({
     // or when first loaded in the Enpage Editor
     sampleData: [
       { title: "Enpage", url: "https://enpage.co" },
-      { title: "Google", url: "https://google.com" },
-      { title: "Benj", url: "https://google.com" }
+      { title: "Google", url: "https://google.com" }
     ]
   }
 });
 ```
-:::
 
+:::
 
 ## External Data Sources
 
 There are 2 types of external data sources:
+
 - **Built-in**: These are data sources that are built-in Enpage and can be used without any additional configuration. (such as Youtube, Twitter, Instagram, etc.)
 - **Custom**: These are data sources that are not built-in Enpage and require additional configuration. (such as custom APIs)
-
 
 ### Using a Build-In External Data Source
 
@@ -95,6 +94,7 @@ export const datasources = defineDataSources({
   }
 });
 ```
+
 :::
 
 ### Using a Custom External Data Source
@@ -136,12 +136,9 @@ export const datasources = defineDataSources({
   },
 });
 ```
-:::
 
+:::
 
 > [!TIP]
 > You can reference the attributes of the template in the the `url` and `headers` properties. This way, you can pass dynamic values to your API and have the site owner configure them in the Enpage Editor.
 Use the notation <code v-pre>{{ attributes.attributeName }}</code> to reference an attribute.
-
-
-

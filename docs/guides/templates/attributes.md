@@ -4,7 +4,7 @@ Template attributes are used to let **site owners** customize the appearance or 
 
 **You** are responsible — as a developer / designer — for defining the attributes you want to expose *to the site owner*. The site owner can then set the values of these attributes within the Enpage editor.
 
-Here is an example of how you can define settings in your template:
+Here is an example of how to define settings in your template:
 
 ::: code-group
 
@@ -22,7 +22,7 @@ export const attributes = defineAttributes({
 
 ## Attributes types
 
-There are several types of attributes that you can define in your template.
+There are several types of attributes that can be defined in your template.
 
 ### String
 
@@ -37,7 +37,6 @@ export const attributes = defineAttributes({
   lastName: attr.string("Last Name", "Doe")
 });
 ```
-
 
 ### Number
 
@@ -160,13 +159,12 @@ export const attributes = defineAttributes({
 });
 ```
 
-
 ## Built-in Attributes
 
-Enpage provides a set of built-in attributes that you can use in your templates. These attributes are automatically available in the Enpage editor for the site owner to customize.
+Enpage provides a set of built-in attributes that can be used use in your templates. These attributes are automatically available in the Enpage editor for the site owner to customize.
 Built-in attributes names start with `$`.
 
-### List of built-in attributes:
+### List of built-in attributes
 
 - `$siteTitle` (string): The title of the page (used by default in `<title>`).
 - `$siteDescription` (string): The description of the page (used by default in meta tags).
