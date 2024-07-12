@@ -4,11 +4,11 @@ Liquid expressions can be used to output dynamic content in your templates. They
 
 ## Usage in Text Content vs HTML attributes
 
-You can use expressions in element's text content and HTML attributes.
+Expressions can be used in element's text content and HTML attributes.
 
 ### Text Content
 
-To use expressions in text content, you need to put the `ep-bind` attribute on the element. This tells Enpage to evaluate the content of the element as a Liquid expression.
+To use expressions in text content, put the `ep-bind` attribute on the element. This tells Enpage to evaluate the content of the element as a Liquid expression.
 
 ```liquid
 <p ep-bind>

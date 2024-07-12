@@ -3,26 +3,22 @@
 Data Records allow you to define what users can submit/save from within a website,
 such as contact-form data, newsletter subscriptions, user comments, etc.
 
-
 **There are 2 types of Data Records:**
 
 - **Internal**: Data is saved within Enpage and can be retrieved via the Enpage Dashboard or the Enpage API.
 - **External**: Data is saved in a third-party service (such as an API, Google Sheets, Airtable, etc.).
 
-For both types of data records, Enpage provides you with [built-in data records](./built-in/) that you can use without any additional configuration.
+For both types of Data Records, Enpage provides you with [built-in Data Records](./built-in/) that you can use without any additional configuration.
 
-You can also define your own *custom* data records, being internal or external.
+You can also define your own *custom* Data Records, being internal or external.
 
 Data Records are defined in the `enpage.config.js` file using the `defineDataRecords()` function.
-You can define as many data records as you want.
-
+Define as many Data Records as you want.
 
 :::warning Difference between Data Records and Data Sources
 Data Records are used to save data submitted by users, while Data Sources are used to fetch data from external sources. Data Records
 cannot be consumed by templates, while Data Sources can.
 :::
-
-
 
 ## Internal Data Records
 
@@ -47,8 +43,8 @@ export const datarecords = defineDataRecords({
   }
 });
 ```
-:::
 
+:::
 
 ### Using Custom Internal Data Records
 
@@ -77,12 +73,12 @@ export const datarecords = defineDataRecords({
 });
 
 ```
-:::
 
+:::
 
 ## External Data Records
 
-When using external data records, data is saved in a third-party service (such as an API, Google Sheets, Airtable, etc.).
+When using external Data Records, data is saved in a third-party service (such as an API, Google Sheets, Airtable, etc.).
 No data is saved within Enpage, and data cannot be retrieved via the Enpage Dashboard or the Enpage API.
 
 ### Using Built-In External Data Records
@@ -114,8 +110,8 @@ export const datarecords = defineDataRecords({
   }
 });
 ```
-:::
 
+:::
 
 ### Using Custom External Data Records
 
@@ -157,12 +153,9 @@ export const datarecords = defineDataRecords({
   }
 });
 ```
-:::
 
+:::
 
 > [!TIP]
 > You can reference the attributes of the template in the `url` and `headers` properties. This way, you can pass dynamic values to your API and have the site owner configure them in the Enpage Editor.
 Use the notation <code v-pre>{{ attributes.attributeName }}</code> to reference an attribute.
-
-
-

@@ -1,7 +1,6 @@
 # Context
 
-The context contains information about the current page such as attributes and data sources.
-
+The context contains information about the current page such as attributes and Data Sources.
 
 ## `enpage.context`
 
@@ -21,6 +20,3 @@ interface Context {
   attributes: AttributesRecords;
 }
 ```
-
-
-

@@ -1,6 +1,6 @@
 # Conditions
 
-Conditions are used to control the rendering of a component based on the value of a field (from a data source or from any attribute).
+Conditions are used to control the rendering of a component based on the value of a field (from a Data Source or from any attribute).
 
 ## Syntax
 
@@ -60,7 +60,7 @@ Conditions can appear in two forms:
 
 ### Other tags
 
-You can also use the `case` tag in Liquid to make a switch-case statement.
+Use the `case` tag in Liquid to make a switch-case statement.
 This tag is only available within `<template>` tags. See Liquid's [documentation](https://liquidjs.com/tags/case.html) for more information.
 
 :::

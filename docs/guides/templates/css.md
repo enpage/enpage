@@ -2,13 +2,13 @@
 
 Enpage's styling system is designed to offer maximum flexibility to template designers while providing intuitive customization options for site owners within the Enpage Web Editor.
 
-
 ## Use Tailwind CSS (or not!)
 
-Tailwind CSS is recommended for styling, and bundled by default. You can customize the tailwind theme by editing the `tailwind.config.js` file, and you can use [Tailwind functions and directives](https://tailwindcss.com/docs/functions-and-directives) in your css files.
+Tailwind CSS is recommended for styling and bundled by default. Customize the tailwind theme by editing the `tailwind.config.js` file, and use [Tailwind functions and directives](https://tailwindcss.com/docs/functions-and-directives) in your css files.
 Then simply use tailwind utilities in your HTML files to style your template.
 
 ::: code-group
+
 ```html [index.html]
 <!-- Use Tailwind CSS utilities to style your template -->
 <div class="bg-gray-100 text-gray-800 p-4">
@@ -18,15 +18,16 @@ Then simply use tailwind utilities in your HTML files to style your template.
   </p>
 </div>
 ```
+
 :::
 
 ::: tip Disable Tailwind CSS
-**If you prefer not to use Tailwind CSS**, you can simply remove the `tailwind.config.js` and it will be automatically disabled.
+**If you prefer not to use Tailwind CSS**, simply remove the `tailwind.config.js` and it will be automatically disabled.
 :::
 
 ## Using CSS files to your template
 
-You can also use external CSS files to style your template. Simply put your CSS files in the `assets` directory:
+If you wish, use external CSS files to style your template. Simply put your CSS files in the `assets` directory:
 
 ```plaintext
 my-template/
@@ -38,28 +39,29 @@ my-template/
   └── src/
 ```
 
-To include the CSS file in your template, you can reference it in your HTML file like this:
+To include the CSS file in your template, reference it in your HTML file like this:
 
 ::: code-group
+
 ```html [index.html]
 <!-- Reference CSS files in your template -->
 <head>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 ```
+
 :::
 
 ::: warning Use relative paths
 Make sure to use relatives paths when referencing CSS files in your HTML.
 :::
 
-
-
 ## Customization
 
 The Enpage Editor allows users to customize the template by changing colors, fonts, and other styles.
 
-By default, all the following properties are customizable by the site owner:
+By default, the following properties are customizable by the site owner:
+
 - **Colors** (background, text, links, etc.)
 - **Fonts** (font-family, font-size, font-weight, etc.)
 - **Opacity** (opacity)
@@ -69,15 +71,14 @@ By default, all the following properties are customizable by the site owner:
 - **Borders** (border-radius, border-width, border-color, etc.)
 - **Shadows** (box-shadow)
 
-
 :::tip Specific properties
 The following properties are customizable by the site owner only if you enable it in your template through data attributes:
 
 - **Spacing** (padding, margin, etc.)
 - **Sizes** (width, height, etc.)
 
+Enable those specific cutomizations by adding the following data attributes to your HTML elements:
 
-You can enable those specific cutomizations by adding the following data attributes to your HTML elements:
 - `ep-allow-custom-spacing`
 - `ep-allow-custom-sizes`
 :::
@@ -95,6 +96,7 @@ We recommend using pseudo components for reusable elements like cards, buttons, 
 Simply use the `ep-component` attribute to define a pseudo component.
 
 ::: code-group
+
 ```html [index.html]
 <!-- A pseudo component -->
 <div ep-component="card">I'm a card</div>
@@ -114,6 +116,7 @@ Simply use the `ep-component` attribute to define a pseudo component.
   @apply shadow-md p-6;
 }
 ```
+
 :::
 
 When encountering a pseudo component in the Enpage Editor, the site owner will be able to customize the styles of all elements with the same `ep-component` attribute at once.

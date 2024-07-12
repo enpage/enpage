@@ -1,9 +1,9 @@
 # Fonts
 
 You can use all fonts available on Google Fonts in your Enpage template.
-To use a specific font, you need to declare it in your configuration file `enpage.config.js`.
+To use a specific font, declare it in your configuration file `enpage.config.js`.
 
-Here is an example of how you can add a font to your template:
+Here is an example of how to add a font to your template:
 
 ::: code-group
 
@@ -21,10 +21,10 @@ useFonts([
   },
 ]);
 ```
+
 :::
 
-
-When using Tailwind, you can then reference the font in your `tailwind.config.js` file:
+When using Tailwind, reference the font in your `tailwind.config.js` file:
 
 ::: code-group
 

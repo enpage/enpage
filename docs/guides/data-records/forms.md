@@ -1,7 +1,7 @@
-# Saving Data Records With Forms
+# Saving Data Records with Forms
 
-Enpage makes it really easy to save data records using forms using a few html attributes.
-It is the developer/designer responsibility to write the form and define the data record schema,
+Enpage makes it really easy to save Data Records using forms using a few html attributes.
+It is the developer/designer responsibility to write the form and define the Data Record schema,
 while Enpage will take care of the form validation and submission.
 
 ### Example
@@ -63,6 +63,5 @@ export const datarecords = defineDataRecords({
   }
 });
 ```
+
 :::
-
-

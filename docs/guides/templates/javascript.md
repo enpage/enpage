@@ -1,6 +1,6 @@
 # Using Javascript / Typescript
 
-You can use JavaScript (and/or Typescript) to add interactivity to your templates.
+Use JavaScript (and/or Typescript) to add interactivity to your templates.
 
 ## Adding JavaScript files
 
@@ -31,4 +31,4 @@ my-template/
 
 ## Using The Enpage JavaScript API
 
-Enpage provides a JavaScript API that you can use to interact with the Enpage platform. You can use the API to get data from the platform, send data to the platform, and more. To learn more about the Enpage JavaScript API, check out the [API reference](/js-api/).
+Enpage provides a JavaScript API that you can use to interact with the Enpage platform. Use the API to get data from the platform, send data to the platform, and more. To learn more about the Enpage JavaScript API, check out the [API reference](/js-api/).

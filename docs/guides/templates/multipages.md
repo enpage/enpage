@@ -1,16 +1,17 @@
 # Multiple pages
 
-Enpage templates are resonibly simple, and focused on a single page.
+Enpage templates are reasonably simple, and focused on a single page.
 
 However, you can create a multi-pages-like experience by using multiple `<section>` elements in your `index.html` file, each of them representing a different page. This opens up the possibility to create a more complex websites with (simulated) multiple pages.
 
-You can specify page transitions animations easily by using specific `ep-*` attributes on the `<section>` elements. Animations can then be customized in the Enpage Editor by the site owner.
+Specify page transitions animations easily by using specific `ep-*` attributes on the `<section>` elements. Animations can then be customized in the Enpage Editor by the site owner.
 
 ## Example
 
 Here is an example of a multi-pages template:
 
 ::: code-group
+
 ```html [index.html]
 <!DOCTYPE html>
 <html lang="en">
@@ -31,8 +32,8 @@ Here is an example of a multi-pages template:
 </body>
 </html>
 ```
-:::
 
+:::
 
 ## Animation attributes
 
@@ -40,7 +41,6 @@ Specify the animation to use when the page appears/disappears by using the follo
 
 - `ep-animation-appear="animation-name"`: The animation to use when the page appears.
 - `ep-animation-disappear="other-animation"`: The animation to use when the page disappears.
-
 
 ::: details Click here to see the list of supported animations
 
@@ -102,12 +102,9 @@ Here is the list of supported animations:
 
 :::
 
-
 You can also use those **optional** attributes to customize the animations:
+
 - `ep-animation-appear-duration`: The duration of the appear animation. (overrides the default duration)
 - `ep-animation-disappear-duration`: The duration of the disappear animation. (overrides the default duration)
 - `ep-animation-appear-delay`: The delay of the appear animation. (default is no delay)
 - `ep-animation-disappear-delay`: The delay of the disappear animation. (default is no delay)
-
-
-
