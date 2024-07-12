@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
-import { CSSClassesReg, DynamicStylesArg, ResponsiveValue, CSSVarName, CSSVarRegistry, CSSVarValue } from "./types";
+import { CSSClassesReg, DynamicStylesArg, ResponsiveValue, CSSVarName, CSSVarRegistry, CSSVarValue } from "../types";
 import type * as CSS from "csstype";
 
 export class CSSRegistry {

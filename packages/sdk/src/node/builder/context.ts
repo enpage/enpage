@@ -1,6 +1,6 @@
 import type { EnpageTemplateConfig } from "@enpage/types/config";
 import type { PageContext } from "@enpage/types/context";
-import { providersSamples } from "../../sample";
+import { providersSamples } from "../../shared/data-samples";
 import type { AttributesResolved } from "@enpage/types/attributes";
 
 export function createFakeContext(cfg: EnpageTemplateConfig) {

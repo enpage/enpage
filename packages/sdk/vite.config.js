@@ -19,7 +19,8 @@ export default defineConfig(({ command }) => {
         compilerOptions: {
           declarationMap: true,
         },
-        exclude: ["src/builder/**/*"],
+        include: ["src/shared/**/*"],
+        outDir: "dist",
       }),
       process.env.STATS ? visualizer({ filename: "stats.html", emitFile: true }) : [],
     ],
@@ -29,24 +30,26 @@ export default defineConfig(({ command }) => {
     // root: join(__dirname, "src"),
 
     build: {
-      outDir: join(__dirname, "dist/sdk"),
+      outDir: join(__dirname, "dist/shared"),
       emptyOutDir: true,
       lib: {
         entry: {
-          attributes: resolve(__dirname, "src/attributes.ts"),
-          // "web-components": resolve(__dirname, "src/web-components/index.ts"),
-          datasources: resolve(__dirname, "src/datasources.ts"),
-          "dynamic-css": resolve(__dirname, "src/dynamic-css.ts"),
-          sdk: resolve(__dirname, "src/sdk.ts"),
-          zod: resolve(__dirname, "src/zod.ts"),
-          settings: resolve(__dirname, "src/settings.ts"),
+          // The dev-client is using Vite's import.meta.env.DEV so we bundle it using tsup, not Vite
+          components: resolve(__dirname, "src/shared/components/index.ts"),
+          "component-utils": resolve(__dirname, "src/shared/components/utils/index.ts"),
+          "shadow-polyfill": resolve(__dirname, "src/shared/components/polyfills/shadow-polyfill.ts"),
+          attributes: resolve(__dirname, "src/shared/attributes.ts"),
+          datasources: resolve(__dirname, "src/shared/datasources.ts"),
+          "dynamic-css": resolve(__dirname, "src/shared/dynamic-css.ts"),
+          zod: resolve(__dirname, "src/shared/zod.ts"),
+          settings: resolve(__dirname, "src/shared/settings.ts"),
         },
         formats: ["es"],
       },
       rollupOptions: {
         // make sure to externalize deps that shouldn't be bundled
         // into your library
-        external: ["zod", "tailwindcss", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
+        external: ["zod", "tailwindcss", "jsdom", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
         output: {
           // Provide global variables to use in the UMD build
           globals: {
