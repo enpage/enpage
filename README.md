@@ -4,15 +4,13 @@
 
 # Enpage SDK
 
-The Enpage SDK regroups the  core functionality for the Enpage templates.
-It is based on standard web technologies (HTML, CSS, JS) and provides a set of components, utilities and tools
-to help you create templates that are responsive, accessible and easy to use and customize.
+The Enpage SDK encompasses the  core functionality for the Enpage templates.
+Based on standard web technologies (HTML, CSS, JS), it provides a set of components, utilities, and tools to assist you
+in creating templates that are responsive, accessible, and easy to customize and use.
 
 ## Develop templates for Enpage
 
 Please visit the documentation at [https://developers.enpage.co](https://developers.enpage.co)
-
-
 
 ## Contributing
 
@@ -29,7 +27,6 @@ Maintainers can then merge the release PR to publish the new version.
 ### Documentation Development
 
 Run `pnpm docs:dev` at the root of the monorepo to start the documentation server.
-
 
 ## License
 
@@ -48,4 +45,5 @@ While the Enpage SDK is licensed under the GNU Affero General Public License (AG
 3. However, if the website modifies the AGPL-licensed library, those modifications must be made available under the AGPL.
 4. The AGPL has a "network use" clause: If the modified library is used to provide a service over a network (like a web application), the source code of the modified library must be made available to users of that service.
 5. This doesn't mean the entire website code needs to be open-sourced, just the modifications to the AGPL-licensed library.
+
 </details>
