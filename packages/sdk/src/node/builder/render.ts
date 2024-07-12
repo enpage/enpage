@@ -151,8 +151,8 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         const enpageSdkScript = doc.createElement("script");
         enpageSdkScript.type = "module";
         enpageSdkScript.textContent = `
-          import { EnpageSDK } from "@enpage/sdk";
-          window.enpage = new EnpageSDK(${ctx ? JSON.stringify(ctx) : "null"}, ${JSON.stringify(slugs)});
+          import { EnpageJavascriptAPI } from "@enpage/sdk/browser/js-api";
+          window.enpage = new EnpageJavascriptAPI(${ctx ? JSON.stringify(ctx) : "null"}, ${JSON.stringify(slugs)});
         `;
         head.appendChild(enpageSdkScript);
 
@@ -167,7 +167,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
           const clientRenderScript = doc.createElement("script");
           clientRenderScript.type = "module";
           clientRenderScript.textContent = `
-            import { initDevClient } from "@enpage/sdk/builder/client/dev";
+            import { initDevClient } from "@enpage/sdk/browser/dev-client";
             initDevClient();
             window.enpage.addEventListener("afternavigate", initDevClient);
           `;

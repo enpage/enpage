@@ -1,6 +1,6 @@
 import type { EnpageTemplateConfig } from "@enpage/types/config";
 import { templateSettingsSchema } from "@enpage/types/settings";
-import { defineAttributes } from "../../attributes";
+import { defineAttributes } from "../../shared/attributes";
 import fs from "fs";
 import type { Logger } from "vite";
 

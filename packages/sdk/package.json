@@ -9,9 +9,15 @@
     "custom-attrs.d.ts"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/sdk/sdk.js",
-      "types": "./dist/sdk/sdk.d.ts"
+    "./browser/*": {
+      "import": "./dist/browser/*.js",
+      "types": "./dist/browser/*.d.ts"
+    },
+    "./builder/*": {
+      "import": "./dist/node/builder/*.js"
+    },
+    "./cli/*": {
+      "import": "./dist/node/cli/*.js"
     },
     "./env.d.ts": {
       "require": "./env.d.ts",
@@ -19,16 +25,13 @@
       "types": "./env.d.ts"
     },
     "./custom-attrs.d.ts": "./custom-attrs.d.ts",
-    "./builder/*": {
-      "import": "./dist/builder/*.js"
-    },
     "./*": {
-      "import": "./dist/sdk/*.js",
-      "types": "./dist/sdk/*.d.ts"
+      "import": "./dist/shared/*.js",
+      "types": "./dist/shared/*.d.ts"
     }
   },
   "bin": {
-    "enpage": "dist/builder/node/cli.js"
+    "enpage": "dist/node/cli/program.js"
   },
   "dependencies": {
     "@lit/reactive-element": "2.0.4",

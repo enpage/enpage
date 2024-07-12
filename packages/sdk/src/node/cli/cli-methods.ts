@@ -4,13 +4,14 @@ import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const configFile = resolve(__dirname, "../builder/config-vite.js");
 
 export async function startDevServer() {
   process.env.NODE_ENV = "development";
   process.env.ENPAGE_CONTEXT = "template-development";
 
   const server = await createServer({
-    configFile: resolve(__dirname, "./config-vite.js"),
+    configFile,
     cacheDir: process.cwd() + "/.cache",
     mode: "development",
   });
@@ -31,7 +32,7 @@ export async function buildTemplate() {
   process.env.NODE_ENV = "production";
   process.env.ENPAGE_CONTEXT = "template-build";
   await build({
-    configFile: resolve(__dirname, "./config-vite.js"),
+    configFile,
     mode: "production",
   });
 }
@@ -39,7 +40,7 @@ export async function buildTemplate() {
 export async function previewTemplate() {
   process.env.NODE_ENV = "production";
   const server = await preview({
-    configFile: resolve(__dirname, "./config-vite.js"),
+    configFile,
   });
   const logger = server.config.logger;
 

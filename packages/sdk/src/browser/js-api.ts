@@ -2,7 +2,7 @@ import type { PageContext } from "@enpage/types/context";
 
 type NavigateEvent = CustomEvent<{ from: number; to: number }>;
 
-export class EnpageSDK extends EventTarget {
+export class EnpageJavascriptAPI extends EventTarget {
   private pageIndex = 0;
   private pagesCount = 0;
 

@@ -1,10 +1,9 @@
 import type { AttributesMap } from "@enpage/types/attributes";
-import {
+import type {
   AttrText,
   AttrNumber,
   AttrBoolean,
   AttrEnum,
-  AttrEnumOption,
   AttrFile,
   AttrUrl,
   AttrColor,
