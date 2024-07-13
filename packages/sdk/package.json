@@ -67,12 +67,7 @@
     "vite-tsconfig-paths": "workspace:*"
   },
   "scripts": {
-    "buildold": "pnpm run build:builder && pnpm run build:sdk",
-    "build:sdk": "vite build",
     "build": "tsup",
-    "dev:sdk": "vite build --watch",
-    "dev:builder": "tsup --watch",
-    "devold": "concurrently \"npm:dev:*\"",
     "dev": "tsup --watch",
     "lint": "nx eslint:lint",
     "test": "echo \"Error: no test specified\" && exit 1"
