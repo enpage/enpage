@@ -3,7 +3,7 @@ import type { PageContext } from "@enpage/types/context";
 import { providersSamples } from "../../shared/data-samples";
 import type { AttributesResolved } from "@enpage/types/attributes";
 
-export function createFakeContext(cfg: EnpageTemplateConfig) {
+export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
   let data;
 
   if (cfg.datasources) {
@@ -32,9 +32,9 @@ export function createFakeContext(cfg: EnpageTemplateConfig) {
  * If all is OK, it will fetch the context from the Enpage API and return it.
  */
 
-export async function fetchContext(cfg: EnpageTemplateConfig, env = process.env) {
+export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env = process.env) {
+  const apiToken = env.PRIVATE_ENPAGE_API_TOKEN;
   const siteId = env.ENPAGE_SITE_ID;
-  const apiToken = env.API_TOKEN;
   let apiBaseUrl = env.ENPAGE_API_BASE_URL;
   // Abort if there is no datasources or attributes
   if (
@@ -51,7 +51,7 @@ export async function fetchContext(cfg: EnpageTemplateConfig, env = process.env)
   }
   // Abort if there is no apiToken
   if (!apiToken) {
-    console.error("ENPAGE_API_TOKEN is empty. Skipping context fetch.");
+    console.error("PRIVATE_ENPAGE_API_TOKEN is empty. Skipping context fetch.");
     return false;
   }
   // Abort if there is no apiHost
