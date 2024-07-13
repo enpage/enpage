@@ -3,10 +3,6 @@
 <!--
 This is an example of a Enpage template.
 
-Enpage handles a few specific attributes that are used to control the appearance and behavior of the page.
-
-You can also use pre-built web components from the @enpage/sdk package to handle loops and conditions.
-
 Important:
 - A template MUST a least have one <section>.
 - Multiple <section> elements allow to simulate a multi-pages website.
@@ -24,13 +20,13 @@ Important:
   <link rel="stylesheet" href="./assets/css/styles.css" />
 
   <!--
-    Local scripts MUST be loaded as modules (type="module").
-    Modules being deferrered by default, they can access the DOM immediately.
+    Local scripts should be loaded as modules (type="module").
+    Modules being deferrered by default and can access the DOM immediately.
    -->
   <!-- <script type="module" src="./src/index.js"></script> -->
 
   <!--
-    External scripts can be loaded as regular scripts like this:
+    External scripts can be loaded as regular scripts like this: (or as modules if needed)
   -->
   <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
 </head>
@@ -46,6 +42,7 @@ Important:
       <p id="subtitle" ep-label="Subtitle" class="text-base font-thin" ep-text-editable="plain">
         General Manager @ Acme Corp
       </p>
+
       <ul class="mt-10 flex w-full flex-col gap-2">
         <template>
           {% for link in data.links %}
@@ -55,6 +52,7 @@ Important:
           {% endfor %}
         </template>
       </ul>
+
       <ul class="mt-10 flex w-full flex-col gap-2 border border-t-2 border-black" >
         <li ep-for="link in data.links" class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
           <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
