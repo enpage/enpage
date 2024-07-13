@@ -34,7 +34,7 @@ Edit the markdown files in the `docs` directory to make changes to the documenta
 
 ## License
 
-This project is licensed under the AGPL License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the AGPL License v3 - see the [LICENSE](./LICENSE) file for details.
 
 ### FAQ
 
