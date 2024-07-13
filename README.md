@@ -32,6 +32,7 @@ Maintainers can then merge the release PR to publish the new version.
 ### Documentation Development
 
 Run `pnpm docs:dev` at the root of the monorepo to start the documentation server.
+Edit the markdown files in the `docs` directory to make changes to the documentation.
 
 ## License
 
