@@ -34,7 +34,6 @@
     "enpage": "dist/node/cli/program.js"
   },
   "dependencies": {
-    "@lit/reactive-element": "2.0.4",
     "chalk": "5.3.0",
     "clsx": "2.1.1",
     "commander": "12.1.0",
@@ -42,9 +41,6 @@
     "immer": "10.1.1",
     "jsdom": "24.1.0",
     "liquidjs": "10.14.0",
-    "lit": "3.1.4",
-    "lit-element": "4.0.6",
-    "lit-html": "3.1.4",
     "nanoid": "5.0.7",
     "tiny-invariant": "1.3.3",
     "zod": "workspace:*"
@@ -71,12 +67,13 @@
     "vite-tsconfig-paths": "workspace:*"
   },
   "scripts": {
-    "build": "pnpm run build:builder && pnpm run build:sdk",
+    "buildold": "pnpm run build:builder && pnpm run build:sdk",
     "build:sdk": "vite build",
-    "build:builder": "tsup",
+    "build": "tsup",
     "dev:sdk": "vite build --watch",
     "dev:builder": "tsup --watch",
-    "dev": "concurrently \"npm:dev:*\"",
+    "devold": "concurrently \"npm:dev:*\"",
+    "dev": "tsup --watch",
     "lint": "nx eslint:lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
