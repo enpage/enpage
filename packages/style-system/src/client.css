@@ -1,11 +1,6 @@
-body > section {
-  /* display: flex; */
-}
-/* hide all sections that are direct children from body but the first one */
-body > section:not(:first-child) {
-  /* display: none; */
-}
-
+/**
+  * We need to use important to make sure any other styles don't override this.
+  */
 [hidden] {
   display: none !important;
 }
