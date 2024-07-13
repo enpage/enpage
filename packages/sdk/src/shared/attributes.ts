@@ -1,4 +1,3 @@
-import type { AttributesMap } from "@enpage/types/attributes";
 import type {
   AttrText,
   AttrNumber,
@@ -7,9 +6,20 @@ import type {
   AttrFile,
   AttrUrl,
   AttrColor,
+  AttrDate,
+  AttrDateTime,
+  AttributesMap,
 } from "@enpage/types/attributes";
 
 export function defineAttributes(attrs: AttributesMap) {
+  // Attributes starting with "$" are reserved for internal use
+  for (const key in attrs) {
+    if (key.startsWith("$")) {
+      throw new Error(
+        `Attribute names starting with '$' (like "${key}") are reserved for internal use. Please rename it.`,
+      );
+    }
+  }
   return { ...defaultAttributes, ...attrs };
 }
 
@@ -96,6 +106,22 @@ export const attr = {
       ...opts,
     } as const satisfies AttrColor;
   },
+  date(name: string, defaultValue?: Date, opts: Omit<AttrDate, "name" | "type" | "defaultValue"> = {}) {
+    return {
+      type: "date",
+      defaultValue,
+      name,
+      ...opts,
+    } as const satisfies AttrDate;
+  },
+  datetime(name: string, defaultValue?: Date, opts: Omit<AttrDateTime, "name" | "type" | "defaultValue"> = {}) {
+    return {
+      type: "datetime",
+      defaultValue,
+      name,
+      ...opts,
+    } as const satisfies AttrDateTime;
+  },
 };
 
 // Default attributes
@@ -117,4 +143,5 @@ const defaultAttributes: AttributesMap = {
   $siteTitle: attr.text("Page title", "Untitled"),
   $siteDescription: attr.text("Page description"),
   $siteKeywords: attr.text("Page keywords"),
+  $siteLastUpdated: attr.datetime("Last updated"),
 };
