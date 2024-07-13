@@ -161,13 +161,22 @@ export const attributes = defineAttributes({
 
 ## Built-in Attributes
 
-Enpage provides a set of built-in attributes that can be used use in your templates. These attributes are automatically available in the Enpage editor for the site owner to customize.
-Built-in attributes names start with `$`.
+Enpage also defines a set of built-in attributes. Built-in attributes names start with `$`.
 
 ### List of built-in attributes
 
-- `$siteTitle` (string): The title of the page (used by default in `<title>`).
-- `$siteDescription` (string): The description of the page (used by default in meta tags).
-- `$siteKeywords` (string): The keywords of the page (used by default in meta tags).
-- `$siteUrl` (string): The URL of the page.
-- `$lastUpdated` (date): The date when the page was last updated.
+::: tip Note
+- You don't need to define these attributes in your template. They are automatically populated by Enpage or the site owner through the Enpage editor.
+- Most of these attributes are automatically used to build meta-tags. <ins>You don't need</ins> to add those meta-tags manually.
+:::
+
+- `$siteTitle` (string): The title of the site (used by default in `<title>`).
+- `$siteDescription` (string): The description of the site (used by default in meta tags).
+- `$siteKeywords` (string): The keywords of the site (used by default in meta tags).
+- `$siteLanguage` (string): The language of the site (used by default in meta tags).
+- `$siteUrl` (string): The URL of the site.
+- `$siteLastUpdated` (date): The date when the page was last updated.
+- `$pageTitle` (string): The title of the page. (used in multi-page templates)
+- `$pageDescription` (string): The description of the page. (used in multi-page templates)
+- `$pageKeywords` (string): The keywords of the page. (used in multi-page templates)
+- `$pageUrl` (string): The URL of the page. (used in multi-page templates)
