@@ -49,14 +49,14 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         }
 
         // Add Tailwind CSS
-        if (!process.env.DISABLE_TAILWIND) {
-          // const style = doc.createElement("style");
-          // style.textContent = `@import "@enpage/style-system/tailwind.css";`;
-          // head.appendChild(style);
-        } else {
+        if (cfg.settings.disableTailwind) {
           logger.warnOnce(chalk.gray("render: tailwind is disabled"), {
             timestamp: true,
           });
+        } else {
+          const style = doc.createElement("style");
+          style.textContent = `@import "@enpage/style-system/tailwind.css";`;
+          head.appendChild(style);
         }
 
         // Enpage styles
@@ -123,11 +123,12 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         generator.setAttribute("content", `Enpage v${version}`);
         head?.appendChild(generator);
 
-        // Add enpage web components
-        // const enpageComponentsScript = doc.createElement("script");
-        // enpageComponentsScript.type = "module";
-        // enpageComponentsScript.textContent = `import "@enpage/sdk/web-components";`;
-        // head?.appendChild(enpageComponentsScript);
+        // revised date
+        const revised = doc.createElement("meta");
+        revised.setAttribute("name", "revised");
+        revised.setAttribute("content", new Date().toISOString());
+        head?.appendChild(revised);
+
         // Hide all sections but the first one
         const sections = doc.querySelectorAll("body > section");
         const slugs: string[] = [];
