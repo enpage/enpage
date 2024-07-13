@@ -6,11 +6,14 @@ export class EnpageJavascriptAPI extends EventTarget {
   private pageIndex = 0;
   private pagesCount = 0;
 
+  #ctx: PageContext<any, any>;
+
   constructor(
-    private ctx: PageContext<any, any>,
+    ctx: PageContext<any, any>,
     private pagesSlugs: string[] = [],
   ) {
     super();
+    this.#ctx = ctx;
     this.#analysePage();
     this.setupListeners();
   }
@@ -48,7 +51,7 @@ export class EnpageJavascriptAPI extends EventTarget {
   }
 
   get context() {
-    return this.ctx;
+    return this.#ctx;
   }
 
   nextPage() {
