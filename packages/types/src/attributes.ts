@@ -12,6 +12,16 @@ interface Responsive<T> {
   responsiveDefaultValue?: Record<ResponsiveMode, T>;
 }
 
+export interface AttrDate extends BaseAttribute {
+  type: "date";
+  defaultValue?: Date;
+}
+
+export interface AttrDateTime extends BaseAttribute {
+  type: "datetime";
+  defaultValue?: Date;
+}
+
 export interface AttrText extends BaseAttribute, Responsive<string> {
   type: "text";
   options?: string[];
@@ -79,6 +89,8 @@ export interface AttrColor extends BaseAttribute, Responsive<string> {
 
 export type Attribute =
   | AttrText
+  | AttrDate
+  | AttrDateTime
   | AttrNumber
   | AttrBoolean
   | AttrEnum<any>
