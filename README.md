@@ -19,10 +19,14 @@ Please visit the documentation at [https://developers.enpage.co](https://develop
 
 ## Contributing
 
+See https://developers.enpage.co/contribute.html for more information on how to contribute to the Enpage SDK.
+
+<small>
 This monorepo uses changesets to manage versioning and releases.
 `pnpm changeset` can be used to create a changeset for a package.
 When a PR with a changeset is merged, the GitHub action will automatically create a PR for the release.
 Maintainers can then merge the release PR to publish the new version.
+<small>
 
 ### SDK Development
 
