@@ -17,15 +17,15 @@ Here is an example of a multi-pages template:
 <html lang="en">
 <!-- [...] -->
 <body>
-  <section ep-animation-appear="fadeIn" ep-animation-disappear="fadeOut">
+  <section ep-animate-appear="fadeIn" ep-animate-disappear="fadeOut">
     <h1>Page 1</h1>
     <p>This is the first page</p>
   </section>
-  <section ep-animation-appear="slideInRight" ep-animation-disappear="slideOutLeft">
+  <section ep-animate-appear="slideInRight" ep-animate-disappear="slideOutLeft">
     <h1>Page 2</h1>
     <p>This is the second page</p>
   </section>
-  <section ep-animation-appear="slideInRight" ep-animation-disappear="slideOutLeft">
+  <section ep-animate-appear="slideInRight" ep-animate-disappear="slideOutLeft">
     <h1>Page enpage</h1>
     <p>This is the third page</p>
   </section>
@@ -39,8 +39,8 @@ Here is an example of a multi-pages template:
 
 Specify the animation to use when the page appears/disappears by using the following attributes on the `<section>` elements:
 
-- `ep-animation-appear="animation-name"`: The animation to use when the page appears.
-- `ep-animation-disappear="other-animation"`: The animation to use when the page disappears.
+- `ep-animate-appear="animation-name"`: The animation to use when the page appears.
+- `ep-animate-disappear="other-animation"`: The animation to use when the page disappears.
 
 ::: details Click here to see the list of supported animations
 
@@ -104,7 +104,7 @@ Here is the list of supported animations:
 
 You can also use those **optional** attributes to customize the animations:
 
-- `ep-animation-appear-duration`: The duration of the appear animation. (overrides the default duration)
-- `ep-animation-disappear-duration`: The duration of the disappear animation. (overrides the default duration)
-- `ep-animation-appear-delay`: The delay of the appear animation. (default is no delay)
-- `ep-animation-disappear-delay`: The delay of the disappear animation. (default is no delay)
+- `ep-animate-appear-duration`: The duration of the appear animation. (overrides the default duration)
+- `ep-animate-disappear-duration`: The duration of the disappear animation. (overrides the default duration)
+- `ep-animate-appear-delay`: The delay of the appear animation. (default is no delay)
+- `ep-animate-disappear-delay`: The delay of the disappear animation. (default is no delay)
