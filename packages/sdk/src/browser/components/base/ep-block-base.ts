@@ -1,6 +1,8 @@
 import { CustomElement } from "./custom-element";
 
 export abstract class EPBlockBase extends CustomElement {
+  static baseStyles = ``;
+
   constructor() {
     super();
     if (!this.hasAttribute("ep-type")) {
