@@ -4,14 +4,8 @@
   "description": "Base tailwindcss setup with some extra plugins as well as colors and editor styles",
   "type": "module",
   "exports": {
-    "./client.css": {
-      "import": "./src/client.css"
-    },
-    "./editor.css": {
-      "import": "./src/editor.css"
-    },
-    "./tailwind.css": {
-      "import": "./src/tailwind.css"
+    "./*.css": {
+      "import": "./src/*.css"
     },
     "./tailwind-preset": {
       "import": "./src/tailwind.config.js",
@@ -28,14 +22,13 @@
   "dependencies": {
     "@tailwindcss/forms": "0.5.7",
     "@tailwindcss/typography": "0.5.13",
+    "animate.css": "4.1.1",
     "tailwind-scrollbar": "3.1.0",
     "tailwindcss": "*",
     "tailwindcss-3d": "1.0.6",
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-opentype": "1.1.0"
   },
-  "devDependencies": {},
-  "peerDependencies": {},
   "publishConfig": {
     "access": "public"
   }

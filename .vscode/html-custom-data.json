@@ -6,49 +6,54 @@
       "description": "A section simulates a page within a multi-page document. An Enpage template consists of one or more sections.",
       "attributes": [
         {
-          "name": "--data-appear-animation",
-          "description": "Appear animation for the element.",
+          "name": "ep-animate-appear",
+          "description": "Appear animation. See https://animate.style/ for available animations.",
           "valueSet": "animation-appear"
         },
         {
-          "name": "--data-appear-delay",
+          "name": "ep-animate-appear-delay",
           "description": "Delay before the appear animation starts."
         },
         {
-          "name": "--data-appear-duration",
+          "name": "ep-animate-appear-duration",
           "description": "Duration of the appear animation."
         },
         {
-          "name": "--data-disappear-animation",
-          "description": "Disappear animation for the element.",
+          "name": "ep-animate-disappear",
+          "description": "Disappear animation. See https://animate.style/ for available animations.",
           "valueSet": "animation-disappear"
         },
         {
-          "name": "--data-disappear-delay",
+          "name": "ep-animate-disappear-delay",
           "description": "Delay before the disappear animation starts."
         },
         {
-          "name": "--data-disappear-duration",
+          "name": "ep-animate-disappear-duration",
           "description": "Duration of the disappear animation."
+        },
+        {
+          "name": "ep-animate-appear-mode",
+          "description": "Appear animation mode. Can be 'parallel' or 'sequence'. Default is 'sequence'.",
+          "valueSet": "animate-appear-mode"
         }
       ]
     }
   ],
   "globalAttributes": [
     {
-      "name": "--data-label",
-      "description": "Label for the element. When not set, the element's --data-block-type is used."
+      "name": "ep-label",
+      "description": "Label for the element to appear in the Enpage editor when element is selected."
     },
     {
-      "name": "--data-container",
+      "name": "ep-container",
       "description": "When an element is marked as a container, it will act as a drop zone. Also, the user will be able to change its direction and alignment."
     },
     {
-      "name": "--data-container-accept",
+      "name": "ep-container-accept",
       "description": "Acceptable block types for the container."
     },
     {
-      "name": "--data-text-editable",
+      "name": "ep-text-editable",
       "description": "Enable text editing for the element.",
       "valueSet": "text-editable"
     }
@@ -62,6 +67,17 @@
         },
         {
           "name": "html"
+        }
+      ]
+    },
+    {
+      "name": "animate-appear-mode",
+      "values": [
+        {
+          "name": "parallel"
+        },
+        {
+          "name": "sequence"
         }
       ]
     },

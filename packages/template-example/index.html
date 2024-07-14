@@ -21,7 +21,7 @@ Important:
 
   <!--
     Local scripts should be loaded as modules (type="module").
-    Modules being deferrered by default and can access the DOM immediately.
+    Modules being deferrered by default, the DOM can be immediately accessed.
    -->
   <!-- <script type="module" src="./src/index.js"></script> -->
 
@@ -31,55 +31,69 @@ Important:
   <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
 </head>
 
-<body class="min-h-dvh place-content-center bg-gradient-to-r from-slate-900 to-slate-700 text-white">
-  <section ep-slug="my-first-page" class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
+<body class="min-h-dvh place-content-center text-white">
+  <section ep-animate-appear="zoomIn" ep-animate-disappear="zoomOut"
+   class="mx-auto flex max-w-sm md:max-w-screen-md lg:max-w-screen-lg items-center justify-center
+   gap-10 rounded-3xl bg-gradient-to-tl from-gray-700 to-gray-800
+   p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
          label="Profile picture" alt="My picture" />
     <div class="flex-1">
-      <h1 ep-label="Title" ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
+      <h1 ep-label="Title" ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl text-shadow-md shadow-black/40">
         Samantha Smith
       </h1>
-      <p id="subtitle" ep-label="Subtitle" class="text-base font-thin" ep-text-editable="plain">
+      <p id="subtitle" ep-label="Subtitle" class="text-base font-medium" ep-text-editable="plain">
         General Manager @ Acme Corp
       </p>
 
-      <ul class="mt-10 flex w-full flex-col gap-2">
-        <template>
-          {% for link in data.links %}
-          <li class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
-            <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
-          </li>
-          {% endfor %}
-        </template>
-      </ul>
-
-      <ul class="mt-10 flex w-full flex-col gap-2 border border-t-2 border-black" >
-        <li ep-for="link in data.links" class="flex items-center gap-3 rounded-md bg-white/10 text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+      <ul class="mt-8 flex w-full flex-col gap-2" >
+        <li ep-for="link in data.links" class="flex items-center
+        font-semibold
+        gap-3 rounded-md bg-white/10 text-white hover:bg-white/20 group-hover/editor:bg-white/10">
           <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
         </li>
       </ul>
 
-      <p>
-        <a ep-bind:href="{{ attributes.mainButtonUrl }}" class="bg-blue-700 text-white px-6">Click here</a>
-        <span ep-bind>Main URL: {{ attributes.mainButtonUrl }}</span>
-      </p>
 
+      <!-- Using a template tag to loop through the links
+      <ul class="mt-10 flex w-full flex-col gap-2">
+        <template>
+          {% for link in data.links %}
+          <li class="flex items-center gap-3 text-shadow-sm shadow-black/20 rounded-md bg-white/10
+           text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
+            <a class="flex-1 p-2.5 font-medium " href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+          </li>
+          {% endfor %}
+        </template>
+      </ul>
+      -->
+
+
+      <!-- conditional template
       <template>
           {% if attributes.testBoolTrue%}
           <p>Test bool is true</p>
           {% endif %}
       </template>
+      -->
 
+      <!-- conditions
       <p ep-if="{{ attributes.testBoolTrue == false }}">Test bool is false using ep-if</p>
       <p ep-if="attributes.testBoolTrue == true">Test bool is true using ep-if</p>
-      <p ep-bind>ep-bind should be true: {{ attributes.testBoolTrue }}</p>
+      -->
 
-      <button onclick="enpage.nextPage()" class="bg-blue-700 text-white px-6">Next page</button>
+      <!-- ep-bind
+      <p ep-bind>ep-bind should be true: {{ attributes.testBoolTrue }}</p>
+      -->
+
+      <p class="mt-10 flex justify-end">
+        <button onclick="enpage.nextPage()" class="rounded-md font-bold bg-white/30 text-white px-6 py-3">Next page</button>
+      </p>
     </div>
   </section>
-  <section ep-slug="second-page" class="mx-auto flex max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square max-h-64 w-auto self-start rounded-xl"
-         label="Profile picture" />
+  <section ep-animate-appear="zoomIn" ep-animate-appear-mode="parallel" ep-slug="second-page" class="mx-auto flex max-w-sm md:max-w-screen-md lg:max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
+         label="Profile picture" alt="My picture" />
     <div class="flex-1">
       <p id="section-2" ep-label="Title" ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
         John Smith
@@ -87,10 +101,9 @@ Important:
       <p id="subtitle" ep-label="Subtitle" class="text-base font-thin" ep-text-editable="plain">
         General Manager @ Acme Corp
       </p>
-
-      <button onclick="enpage.previousPage()" class="bg-blue-700 text-white px-6">Prev page</button>
-      <button ep-bind:disabled="{{ enpage.canGoForward == false }}" onclick="enpage.nextPage()">Next</button>
-      <button ep-bind:disabled="{{ enpage.canGoBack == false }}" onclick="enpage.previousPage()">Previous</button>
+      <p class="pt-4">
+        <button onclick="enpage.previousPage()" class="bg-blue-700 text-white px-6">Previous page</button>
+      </p>
     </div>
   </section>
 </body>

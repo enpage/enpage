@@ -61,8 +61,13 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
 
         // Enpage styles
         const enpageStyles = doc.createElement("style");
-        enpageStyles.textContent = `@import "@enpage/style-system/client.css";`;
+        enpageStyles.textContent = '@import "@enpage/style-system/client.css";';
         head.appendChild(enpageStyles);
+
+        // animate.css
+        const animateStyles = doc.createElement("style");
+        animateStyles.textContent = '@import "@enpage/style-system/anim.css";';
+        head.appendChild(animateStyles);
 
         // Add the vite preload error script (to reload the page on preload error)
         const vitePreloadErrorScript = doc.createElement("script");
@@ -129,21 +134,42 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         revised.setAttribute("content", new Date().toISOString());
         head?.appendChild(revised);
 
-        // Hide all sections but the first one
+        // Hide sections when needed
         const sections = doc.querySelectorAll("body > section");
+
+        if (!sections.length) {
+          throw Error("No sections found in the document");
+        }
+
         const slugs: string[] = [];
         sections.forEach((section, index) => {
-          let slug = section.getAttribute("ep-slug");
-          if (!slug) {
-            slug = nanoid(7);
-            section.setAttribute("ep-slug", slug);
+          if (!section.getAttribute("id")) {
+            section.setAttribute("id", nanoid(7));
           }
-          slugs.push(slug);
+          if (!section.getAttribute("ep-animate-appear")) {
+            section.setAttribute("ep-animate-appear", "fadeIn");
+          }
+          if (!section.getAttribute("ep-animate-disappear")) {
+            section.setAttribute("ep-animate-disappear", "fadeOut");
+          }
+          // hide all sections except the first one
           if (index > 0) {
             section.setAttribute("hidden", "");
+            let slug = section.getAttribute("ep-slug");
+            if (!slug) {
+              slug = nanoid(7);
+              section.setAttribute("ep-slug", slug);
+            }
+            slugs.push(slug);
           } else {
             // make sure the first section has role="main"
             section.setAttribute("role", "main");
+            // make sure the first section has no slug
+            section.removeAttribute("ep-slug");
+            // hide it by default if it as an animation
+            if (section.hasAttribute("ep-animate-appear")) {
+              section.setAttribute("hidden", "");
+            }
           }
         });
 
@@ -153,9 +179,23 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         enpageSdkScript.type = "module";
         enpageSdkScript.textContent = `
           import { EnpageJavascriptAPI } from "@enpage/sdk/browser/js-api";
-          window.enpage = new EnpageJavascriptAPI(${ctx ? JSON.stringify(ctx) : "null"}, ${JSON.stringify(slugs)});
+          const slugs =  ${JSON.stringify(slugs)};
+          const pathname = window.location.pathname.slice(1);
+          const pageId = pathname === '' ? 0 : slugs.indexOf(pathname);
+          window.enpage = new EnpageJavascriptAPI(
+            ${ctx ? JSON.stringify(ctx) : "null"},
+            pageId > -1 ? pageId : 0,
+            ${sections.length},
+            ${JSON.stringify(slugs)}
+          );
         `;
         head.appendChild(enpageSdkScript);
+
+        // add animate script
+        const animateScript = doc.createElement("script");
+        animateScript.type = "module";
+        animateScript.textContent = 'import "@enpage/sdk/browser/animate";';
+        head.appendChild(animateScript);
 
         // if not in SSR mode, add liquid js
         if (!isBuildMode) {

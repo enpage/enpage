@@ -1,0 +1,10 @@
+@import "animate.css";
+
+body {
+  position: relative;
+}
+
+body > section {
+  --animate-duration: 0.8s;
+  --animate-delay: 80ms;
+}
