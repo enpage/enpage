@@ -10,7 +10,7 @@ export async function initDevClient() {
   // 2. Delete all elements with [ep-generated-from-template-id]
 
   document.querySelectorAll("[ep-builder-template], [ep-generated-from-template-id]").forEach((el) => {
-    console.log("Removing element", el);
+    // console.debug("Removing temp element", el);
     el.remove();
   });
 
