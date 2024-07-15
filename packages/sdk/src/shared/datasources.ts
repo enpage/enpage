@@ -62,6 +62,7 @@ export type DatasourceGenericManifest<S extends z.ZodTypeAny> = {
 
 export type DatasourceManifestMap = Record<
   string,
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   DatasourceGenericManifest<any> | DatasourceProviderManifest<DatasourceProvider>
 >;
 

@@ -1,4 +1,4 @@
-import { NavigateEvent } from "./NavigateEvent";
+import type { NavigateEvent } from "./NavigateEvent";
 
 /**
  * Initialize animations for elements with `ep-animate-appear` and `ep-animate-disappear` attributes.
@@ -27,15 +27,18 @@ function initAnimations() {
 function animateSectionOnLoad() {
   // get the section corresponding to the current page
   const currentPage = window.enpage.currentPage;
-  const section = document.querySelector<HTMLElement>(`body > section:nth-child(${currentPage + 1})`)!;
-  if (section.hasAttribute("ep-animate-appear")) {
+  const section = document.querySelector<HTMLElement>(`body > section:nth-child(${currentPage + 1})`);
+  if (section?.hasAttribute("ep-animate-appear")) {
     section.setAttribute("ep-animating-in", "");
   }
 }
 
 function monitorTransitions() {
   const observer = getMutationObserver();
-  const observerConfig = { attributeFilter: ["ep-animating-in", "ep-animating-out"], attributeOldValue: true };
+  const observerConfig = {
+    attributeFilter: ["ep-animating-in", "ep-animating-out"],
+    attributeOldValue: true,
+  };
   const elements = document.querySelectorAll<HTMLElement>("[ep-animate-appear], [ep-animate-disappear]");
   elements.forEach((el) => {
     observer.observe(el, observerConfig);
@@ -45,9 +48,12 @@ function monitorTransitions() {
 function monitorNavigation() {
   window.enpage.addEventListener("beforenavigate", (event) => {
     const detail = (event as NavigateEvent).detail;
-    const fromElement = document.querySelector<HTMLElement>(`body > section:nth-child(${detail.from + 1})`)!;
+    const fromElement = document.querySelector<HTMLElement>(`body > section:nth-child(${detail.from + 1})`);
+    const toElement = document.querySelector<HTMLElement>(`body > section:nth-child(${detail.to + 1})`);
 
-    const toElement = document.querySelector<HTMLElement>(`body > section:nth-child(${detail.to + 1})`)!;
+    if (!toElement || !fromElement) {
+      throw new Error("Could not find the elements to animate");
+    }
 
     if (toElement.getAttribute("ep-animate-appear-mode") === "parallel") {
       const top = fromElement.style.top;
@@ -126,7 +132,8 @@ function getElementAnimations(el: HTMLElement) {
 function getMutationObserver() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      const newValue = (mutation.target as HTMLElement).getAttribute(mutation.attributeName!);
+      if (!mutation.attributeName) return;
+      const newValue = (mutation.target as HTMLElement).getAttribute(mutation.attributeName);
       if (newValue === null) return;
       animate(mutation.target as HTMLElement, mutation.attributeName === "ep-animating-in" ? "in" : "out");
     });

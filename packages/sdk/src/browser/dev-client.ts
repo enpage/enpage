@@ -171,7 +171,7 @@ async function runAccessibilityTests() {
       for (const violation of results.violations) {
         const foundIn = dontLocateTypes.includes(violation.id)
           ? ""
-          : `Found in:\n\t` + violation.nodes.map((node) => `- ${node.html}`).join("\n\n\t") + "\n\n";
+          : `Found in:\n\t${violation.nodes.map((node) => `- ${node.html}`).join("\n\n\t")}\n\n`;
         const message = `${violation.description}\n\n${foundIn}See: ${violation.helpUrl}`;
         if (violation.impact === "critical") {
           console.error(`[Accessibility error]: ${message}`);

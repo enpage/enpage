@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 import { defineConfig } from "tsup";
 
 const bannerText = readFileSync("./banner.txt", "utf-8");
@@ -46,7 +46,12 @@ export default defineConfig((options) => {
       },
     },
     {
-      entry: ["src/shared", "!src/shared/**/*.md", "!src/shared/**/__tests__/**/*", "!src/shared/**/__mocks__/**/*"],
+      entry: [
+        "src/shared",
+        "!src/shared/**/*.md",
+        "!src/shared/**/__tests__/**/*",
+        "!src/shared/**/__mocks__/**/*",
+      ],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],

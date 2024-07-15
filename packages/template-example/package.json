@@ -12,7 +12,8 @@
   "scripts": {
     "start": "enpage dev",
     "build-template": "enpage build",
-    "preview": "enpage preview"
+    "preview": "enpage preview",
+    "lint": "biome check --write ."
   },
   "devDependencies": {
     "rollup-plugin-visualizer": "5.12.0",

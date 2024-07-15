@@ -38,6 +38,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         const virtualConsole = new VirtualConsole();
         virtualConsole.sendTo(console, { omitJSDOMErrors: true });
 
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const attrs = (ctx as SiteContext<any, any>).attributes;
         const dom = new JSDOM(html, { virtualConsole });
         const doc = dom.window.document;
@@ -238,6 +239,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
   };
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: we don't know the type of the context
 function renderLiquid(html: string, ctx: SiteContext<any, any> | undefined) {
   const engine = new Liquid();
   return engine.parseAndRender(html, ctx, {

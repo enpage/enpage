@@ -72,7 +72,7 @@
     "preinstall": "pnpm build",
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "nx eslint:lint",
+    "lint": "biome check --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Matthias Etienne",

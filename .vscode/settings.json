@@ -1,9 +1,6 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
-  },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "files.eol": "\n",
   "tailwindCSS.includeLanguages": {
     "typescript": "javascript",
@@ -15,9 +12,15 @@
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
   },
+  "[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
   "html.format.wrapAttributes": "aligned-multiple",
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "editor.rulers": [120],
+  "editor.rulers": [110],
   "html.customData": ["./.vscode/html-custom-data.json"],
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
@@ -34,5 +37,12 @@
   },
   "[liquid]": {
     "editor.defaultFormatter": "sissel.shopify-liquid"
-  }
+  },
+  "biome.enabled": true,
+  "prettier.enable": false,
+  "biome.lspBin": "node_modules/@biomejs/biome/bin/biome",
+	"editor.codeActionsOnSave": {
+		"quickfix.biome": "explicit",
+		"source.organizeImports.biome": "explicit",
+	},
 }

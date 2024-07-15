@@ -19,7 +19,7 @@ export abstract class EPBlockBase extends CustomElement {
     return this.getAttribute("ep-type") || "";
   }
 
-  abstract toJSON(): Record<string, any>;
+  abstract toJSON(): Record<string, unknown>;
 
   protected get template(): string {
     return "<slot></slot>";

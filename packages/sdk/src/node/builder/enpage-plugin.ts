@@ -1,7 +1,7 @@
 import { loadEnv, type Plugin } from "vite";
 import type { EnpageTemplateConfig } from "~/shared/config";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { render } from "./render";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -45,9 +45,8 @@ const enpagePlugin = (): Plugin => {
                 renderBuiltUrl(filename, { hostId, hostType, type }) {
                   if (type === "public") {
                     return `/${filename}`;
-                  } else {
-                    return `https://cdn.enpage.co/sites/${env.SITE_SLUG}/${filename}`;
                   }
+                  return `https://cdn.enpage.co/sites/${env.SITE_SLUG}/${filename}`;
                 },
               }
             : {},

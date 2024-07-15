@@ -1,15 +1,15 @@
 // worker-css-processor.ts
 import postcss, {
-  Plugin,
-  Root,
-  Rule,
-  AtRule,
-  Declaration,
-  Result,
-  ChildNode,
-  Container,
+  type Plugin,
+  type Root,
+  type Rule,
+  type AtRule,
+  type Declaration,
+  type Result,
+  type ChildNode,
+  type Container,
   Document,
-  AnyNode,
+  type AnyNode,
 } from "postcss";
 import autoprefixer from "autoprefixer";
 
@@ -88,10 +88,10 @@ export class WorkerCSSProcessor {
           }
         });
 
-        for (let selector in overrides) {
+        for (const selector in overrides) {
           if (!root.some((node) => node.type === "rule" && (node as Rule).selector === selector)) {
             const rule = postcss.rule({ selector });
-            for (let prop in overrides[selector]) {
+            for (const prop in overrides[selector]) {
               rule.append({ prop, value: overrides[selector][prop] });
             }
             root.append(rule);
@@ -107,7 +107,7 @@ export class WorkerCSSProcessor {
   }
 
   private cacheASTNodes(): void {
-    this.ast!.walk((node) => {
+    this.ast?.walk((node) => {
       if (node.type === "rule" || node.type === "atrule") {
         this.cache.set(this.getNodeKey(node), node as Rule | AtRule);
       }
@@ -117,7 +117,8 @@ export class WorkerCSSProcessor {
   private getNodeKey(node: AnyNode): string {
     if (node.type === "atrule") {
       return `@${(node as AtRule).name} ${(node as AtRule).params}`;
-    } else if (node.type === "rule") {
+    }
+    if (node.type === "rule") {
       const rule = node as Rule;
       const parentKey = this.getParentKey(rule.parent);
       return parentKey + rule.selector;
@@ -129,12 +130,13 @@ export class WorkerCSSProcessor {
     if (!parent || parent.type === "root" || parent.type === "document") {
       return "";
     }
+    // biome-ignore lint/style/useTemplate: let the space here as it is more visually clear
     return this.getNodeKey(parent as AnyNode) + " ";
   }
 
   private findAffectedNodes(change: Change): (Rule | AtRule)[] {
     const affectedNodes: (Rule | AtRule)[] = [];
-    this.ast!.walk((node) => {
+    this.ast?.walk((node) => {
       if (node.type === "rule") {
         const rule = node as Rule;
         if (rule.selector === change.selector) {
@@ -173,7 +175,7 @@ export class WorkerCSSProcessor {
 
   private updateASTNode(oldNode: Rule | AtRule, newNode: Rule | AtRule): void {
     oldNode.removeAll();
-    newNode.nodes!.forEach((child) => oldNode.append(child.clone()));
+    newNode.nodes?.forEach((child) => oldNode.append(child.clone()));
   }
 
   private getWarnings(): string[] {
@@ -182,7 +184,7 @@ export class WorkerCSSProcessor {
 
   private getChanges(): { [selector: string]: string } {
     const changes: { [selector: string]: string } = {};
-    this.ast!.walk((node) => {
+    this.ast?.walk((node) => {
       if (node.type === "rule") {
         const rule = node as Rule;
         const key = this.getNodeKey(rule);

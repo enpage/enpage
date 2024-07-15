@@ -50,19 +50,22 @@ class EPFor extends CustomElement {
   }
 
   private updateItems() {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     let items: any[] = [];
 
     if (this.hasAttribute("datasource")) {
       const path = this.getAttribute("datasource")!.split(".");
-      let data = (window as any).enpage.context.data;
-
-      for (const key of path) {
-        data = data?.[key];
+      let data = window.enpage.context.data;
+      if (data) {
+        for (const key of path) {
+          // @ts-ignore ignore for now but we should fix this type error
+          data = data?.[key];
+        }
       }
       items = Array.isArray(data) ? data : Object.entries(data || {});
     } else if (this.hasAttribute("source")) {
       const sourceElement = document.getElementById(this.getAttribute("source")!);
-      if (sourceElement && sourceElement.textContent) {
+      if (sourceElement?.textContent) {
         items = JSON.parse(sourceElement.textContent);
       }
     } else if (this.hasAttribute("json")) {
@@ -75,6 +78,7 @@ class EPFor extends CustomElement {
     this.render(items);
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   private bindElement(element: Element, item: any, index: number) {
     if (element.hasAttribute("ep-bind")) {
       const prop = element.getAttribute("ep-bind")!;
@@ -112,6 +116,7 @@ class EPFor extends CustomElement {
     return "<slot></slot>";
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   protected render(items: any[] = []): void {
     super.render();
 

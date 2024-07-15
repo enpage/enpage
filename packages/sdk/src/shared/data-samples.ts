@@ -1,7 +1,7 @@
-import { DatasourceProvider, providersSchemaMap } from "./datasources";
-import z from "zod";
+import type { DatasourceProvider, providersSchemaMap } from "./datasources";
+import type z from "zod";
 
-export const providersSamples: Record<DatasourceProvider, any> = {
+export const providersSamples: Record<DatasourceProvider, unknown> = {
   "youtube-video": {
     id: "dQw4w9WgXcQ",
     publishedAt: "2009-10-25",

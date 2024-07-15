@@ -2,13 +2,13 @@
 
 import degit from "degit";
 import { program } from "commander";
-import { resolve } from "path";
-import path from "path";
+import { resolve } from "node:path";
+import path from "node:path";
 import chalk from "chalk";
-import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { input } from "@inquirer/prompts";
-import { randomUUID } from "crypto";
-import { execSync } from "child_process";
+import { randomUUID } from "node:crypto";
+import { execSync } from "node:child_process";
 
 program
   .description("Create a new Enpage template")
@@ -91,7 +91,7 @@ program
       }
     }
 
-    pkgJson.name = "enpage-template-" + path.basename(directory);
+    pkgJson.name = `enpage-template-${path.basename(directory)}`;
     pkgJson.enpage = template;
     pkgJson.author = author;
     pkgJson.keywords = [...new Set([...pkgJson.keywords, ...tagsArray])];

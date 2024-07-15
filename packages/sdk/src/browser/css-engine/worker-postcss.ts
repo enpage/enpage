@@ -24,6 +24,7 @@ interface Change {
 
 self.onmessage = async function (e: MessageEvent<WorkerMessage>) {
   try {
+    // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
     let result;
     switch (e.data.type) {
       case "init":

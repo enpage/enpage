@@ -1,4 +1,4 @@
-export {};
+export type {};
 declare global {
   type Boolish = boolean | "true" | "false" | "1" | "0" | "yes" | "no";
 

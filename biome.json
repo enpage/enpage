@@ -1,0 +1,76 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.1/schema.json",
+  "organizeImports": {
+    "enabled": false
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "lineWidth": 110,
+    "ignore": [
+      "**/package.json",
+      "node_modules/**/*",
+      "**/dist/**/*",
+      "**/tsconfig.app.json",
+      "**/tsconfig.node.json"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noUnusedTemplateLiteral": "off",
+        "useTemplate": "info",
+        "noUselessElse": "off",
+        "noParameterAssign": "off",
+        "noNonNullAssertion": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "warn"
+      },
+      "complexity": {
+        "noBannedTypes": "warn",
+        "useArrowFunction": "off",
+        "noForEach": "off",
+        "noThisInStatic": "off"
+      }
+    },
+    "ignore": [
+      "**/package.json",
+      "**/tsconfig.app.json",
+      "**/tsconfig.node.json",
+      "**/tsconfig.json",
+      "./config/nats/*.json",
+      "node_modules/**/*",
+      "dist/**/*",
+      "**/extension/**/*",
+      "packages/sdks/**/*"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "overrides": [
+    {
+      "include": [".vscode/**", "**/tsconfig.json", "**/tsconfig.lint.json"],
+      "json": {
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
+        }
+      }
+    }
+  ]
+}

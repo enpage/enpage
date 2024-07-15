@@ -4,7 +4,7 @@ import { providersSamples } from "~/shared/data-samples";
 import type { AttributesResolved } from "~/shared/attributes";
 
 export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
-  let data;
+  let data: Record<string, unknown> | undefined;
 
   if (cfg.datasources) {
     data = {} as Record<string, unknown>;
@@ -18,12 +18,13 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     }
   }
 
-  let attributes: AttributesResolved<any> = {};
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const attributes: AttributesResolved<any> = {};
   for (const key in cfg.attributes) {
     attributes[key] = cfg.attributes[key].defaultValue;
   }
 
-  return { data, attributes } as SiteContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  return { data, attributes } as SiteContext<typeof cfg.datasources, typeof cfg.attributes>;
 }
 
 /**
@@ -35,7 +36,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
 export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env = process.env) {
   const apiToken = env.PRIVATE_ENPAGE_API_TOKEN;
   const siteId = env.ENPAGE_SITE_ID;
-  let apiBaseUrl = env.ENPAGE_API_BASE_URL;
+  const apiBaseUrl = env.ENPAGE_API_BASE_URL;
   // Abort if there is no datasources or attributes
   if (
     (!cfg.datasources || !Object.keys(cfg.datasources).length) &&
@@ -68,6 +69,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
     },
   });
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const context = (await response.json()) as SiteContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 
   return context;

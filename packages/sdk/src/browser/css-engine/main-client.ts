@@ -1,3 +1,6 @@
+import postcss from "postcss";
+import type { Root, Rule, Declaration, AtRule } from "postcss";
+
 /**
  * CSS Processing Utility Functions
  *
@@ -96,7 +99,7 @@ export function getAllPageCSS(): string {
     try {
       const rules = sheet.cssRules || sheet.rules;
       for (const rule of rules) {
-        css += rule.cssText + "\n";
+        css += `${rule.cssText}\n`;
       }
     } catch (e) {
       console.warn("Cannot access stylesheet", sheet, e);
@@ -133,100 +136,88 @@ export function getChange(oldCSS: string, newCSS: string): Change | null {
   return changes[0];
 }
 
-interface CSSRule {
-  selector: string;
-  properties: { property: string; value: string }[];
-  parent: string | null;
+function parseCSS(css: string): Root {
+  return postcss.parse(css);
 }
 
-interface CSSAST {
-  rules: CSSRule[];
-}
-
-function parseCSS(css: string): CSSAST {
-  const ast: CSSAST = { rules: [] };
-  const lines = css.split("\n");
-  let currentRule: CSSRule | null = null;
-  let currentMedia: string | null = null;
-
-  for (const line of lines) {
-    if (line.trim().startsWith("@media")) {
-      currentMedia = line.trim();
-    } else if (line.includes("{")) {
-      currentRule = { selector: line.split("{")[0].trim(), properties: [], parent: currentMedia };
-      ast.rules.push(currentRule);
-    } else if (line.includes("}")) {
-      currentRule = null;
-      if (currentMedia) {
-        currentMedia = null;
-      }
-    } else if (currentRule && line.includes(":")) {
-      const [property, value] = line.split(":").map((s) => s.trim());
-      currentRule.properties.push({ property, value: value.replace(";", "") });
-    }
-  }
-
-  return ast;
-}
-
-function diffAST(oldAst: any, newAst: any): Change[] {
+function diffAST(oldAst: Root, newAst: Root): Change[] {
   const changes: Change[] = [];
 
-  for (const newRule of newAst.rules) {
-    const oldRule = oldAst.rules.find((r: any) => r.selector === newRule.selector && r.parent === newRule.parent);
+  newAst.walkRules((newRule: Rule) => {
+    const oldRule = oldAst.nodes.find(
+      (node): node is Rule =>
+        node.type === "rule" &&
+        node.selector === newRule.selector &&
+        node.parent?.type === newRule.parent?.type &&
+        node.parent?.toString() === newRule.parent?.toString(),
+    );
 
     if (!oldRule) {
       changes.push({
         type: "ruleAdded",
         selector: newRule.selector,
-        parent: newRule.parent,
+        parent: newRule.parent?.type === "atrule" ? (newRule.parent as AtRule).name : undefined,
       });
     } else {
-      for (const newProp of newRule.properties) {
-        const oldProp = oldRule.properties.find((p: any) => p.property === newProp.property);
-        if (!oldProp) {
+      newRule.walkDecls((newDecl: Declaration) => {
+        const oldDecl = oldRule.nodes.find(
+          (node): node is Declaration => node.type === "decl" && node.prop === newDecl.prop,
+        );
+
+        if (!oldDecl) {
           changes.push({
             type: "propertyAdded",
             selector: newRule.selector,
-            property: newProp.property,
-            value: newProp.value,
-            parent: newRule.parent,
+            property: newDecl.prop,
+            value: newDecl.value,
+            parent: newRule.parent?.type === "atrule" ? (newRule.parent as AtRule).name : undefined,
           });
-        } else if (oldProp.value !== newProp.value) {
+        } else if (oldDecl.value !== newDecl.value) {
           changes.push({
             type: "propertyChanged",
             selector: newRule.selector,
-            property: newProp.property,
-            value: newProp.value,
-            parent: newRule.parent,
+            property: newDecl.prop,
+            value: newDecl.value,
+            parent: newRule.parent?.type === "atrule" ? (newRule.parent as AtRule).name : undefined,
           });
         }
-      }
+      });
     }
-  }
+  });
 
   // Check for removed rules and properties
-  for (const oldRule of oldAst.rules) {
-    const newRule = newAst.rules.find((r: any) => r.selector === oldRule.selector && r.parent === oldRule.parent);
+  oldAst.walkRules((oldRule: Rule) => {
+    const newRule = newAst.nodes.find(
+      (node): node is Rule =>
+        node.type === "rule" &&
+        node.selector === oldRule.selector &&
+        node.parent?.type === oldRule.parent?.type &&
+        node.parent?.toString() === oldRule.parent?.toString(),
+    );
+
     if (!newRule) {
       changes.push({
         type: "ruleRemoved",
         selector: oldRule.selector,
-        parent: oldRule.parent,
+        parent: oldRule.parent?.type === "atrule" ? (oldRule.parent as AtRule).name : undefined,
       });
     } else {
-      for (const oldProp of oldRule.properties) {
-        if (!newRule.properties.find((p: any) => p.property === oldProp.property)) {
+      oldRule.walkDecls((oldDecl: Declaration) => {
+        const newDecl = newRule.nodes.find(
+          (node): node is Declaration => node.type === "decl" && node.prop === oldDecl.prop,
+        );
+
+        if (!newDecl) {
           changes.push({
             type: "propertyRemoved",
             selector: oldRule.selector,
-            property: oldProp.property,
-            parent: oldRule.parent,
+            property: oldDecl.prop,
+            parent: oldRule.parent?.type === "atrule" ? (oldRule.parent as AtRule).name : undefined,
           });
         }
-      }
+      });
     }
-  }
+  });
 
   return changes;
 }

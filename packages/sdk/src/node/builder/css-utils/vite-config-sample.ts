@@ -1,7 +1,7 @@
 // vite.config.ts
 import { defineConfig } from "vite";
 import { extractStyles } from "./html-style-extractor";
-import fs from "fs/promises";
+import fs from "node:fs/promises";
 import { JSDOM } from "jsdom";
 
 export default defineConfig({

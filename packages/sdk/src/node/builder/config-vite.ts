@@ -1,8 +1,8 @@
-import { defineConfig, UserConfig, loadEnv } from "vite";
+import { defineConfig, type UserConfig, loadEnv } from "vite";
 import { loadConfig, checkConfig } from "./config";
 import enpagePlugin from "./enpage-plugin";
-import { join, resolve } from "path";
-import { existsSync } from "fs";
+import { join, resolve } from "node:path";
+import { existsSync } from "node:fs";
 import { createLogger } from "./logger";
 
 export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Promise<UserConfig> => {

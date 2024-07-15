@@ -1,7 +1,7 @@
 import type { EnpageTemplateConfig } from "~/shared/config";
 import { templateSettingsSchema } from "~/shared/settings";
 import { defineAttributes } from "~/shared/attributes";
-import fs from "fs";
+import fs from "node:fs";
 import type { Logger } from "vite";
 
 export async function loadConfig(configPath: string) {

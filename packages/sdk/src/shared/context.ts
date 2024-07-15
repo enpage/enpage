@@ -1,5 +1,5 @@
-import { DatasourceManifestMap, DatasourceResolved } from "./datasources";
-import { AttributesMap, AttributesResolved } from "./attributes";
+import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
+import type { AttributesMap, AttributesResolved } from "./attributes";
 
 /**
  * The Site Context represents the data needed to build/render a page.

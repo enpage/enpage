@@ -1,5 +1,5 @@
 import { createServer, build, preview } from "vite";
-import { resolve } from "path";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 
@@ -12,7 +12,7 @@ export async function startDevServer() {
 
   const server = await createServer({
     configFile,
-    cacheDir: process.cwd() + "/.cache",
+    cacheDir: `${process.cwd()}/.cache`,
     mode: "development",
   });
 
@@ -43,12 +43,10 @@ export async function previewTemplate() {
     configFile,
   });
   const logger = server.config.logger;
-
   logger.info(chalk.blue("Preview your template at:"));
-  server.resolvedUrls?.local.forEach((url) => {
-    logger.info(`  ➜  Local:   ${chalk.green(url)}`);
+  server.printUrls();
+  server.bindCLIShortcuts({
+    print: true,
   });
-  server.resolvedUrls?.network.forEach((url) => {
-    logger.info(`  ➜  Network: ${chalk.gray(url)}`);
-  });
+  logger.info("");
 }

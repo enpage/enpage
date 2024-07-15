@@ -1,6 +1,6 @@
 interface Task {
-  resolve: (value: any) => void;
-  reject: (reason?: any) => void;
+  resolve: (value: ProcessingResult | PromiseLike<ProcessingResult>) => void;
+  reject: (reason?: unknown) => void;
   change?: Change;
   overrides?: StyleOverrides;
 }
@@ -32,7 +32,7 @@ interface ProcessingResult {
 
 export class CSSProcessor {
   private worker: Worker;
-  private initialized: boolean = false;
+  private initialized = false;
   private pendingTasks: Task[] = [];
 
   constructor() {

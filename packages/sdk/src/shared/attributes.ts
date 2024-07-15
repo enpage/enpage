@@ -1,4 +1,4 @@
-import { ResponsiveMode } from "./types";
+import type { ResponsiveMode } from "./types";
 
 export interface BaseAttribute {
   name: string;
@@ -48,10 +48,12 @@ export interface AttrBoolean extends BaseAttribute, Responsive<boolean> {
   defaultValue?: boolean;
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type AttrEnumOption = string | { label: string; icon?: () => any; value: string };
 
 export interface AttrEnum<O extends string> extends BaseAttribute, Responsive<string> {
   type: "enum";
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   options: (O | { label: string; icon?: () => any; value: O })[];
   displayAs?: "radio" | "select" | "button-group" | "icon-group";
   placeholder?: string;
@@ -93,6 +95,7 @@ export type Attribute =
   | AttrDateTime
   | AttrNumber
   | AttrBoolean
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   | AttrEnum<any>
   | AttrGeoAddress
   | AttrUrl
@@ -157,7 +160,11 @@ export const attr = {
   /**
    * Define an enum attribute
    */
-  enum<O extends string>(name: string, defaultValue: O, opts: Omit<AttrEnum<O>, "name" | "type" | "defaultValue">) {
+  enum<O extends string>(
+    name: string,
+    defaultValue: O,
+    opts: Omit<AttrEnum<O>, "name" | "type" | "defaultValue">,
+  ) {
     return {
       type: "enum",
       defaultValue,
@@ -210,7 +217,11 @@ export const attr = {
       ...opts,
     } as const satisfies AttrDate;
   },
-  datetime(name: string, defaultValue?: Date, opts: Omit<AttrDateTime, "name" | "type" | "defaultValue"> = {}) {
+  datetime(
+    name: string,
+    defaultValue?: Date,
+    opts: Omit<AttrDateTime, "name" | "type" | "defaultValue"> = {},
+  ) {
     return {
       type: "datetime",
       defaultValue,

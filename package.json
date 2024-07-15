@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel -r dev",
     "build": "pnpm exec nx run-many -t build",
+    "lint": "pnpm --parallel --recursive lint",
+    "ci:lint": "pnpm --parallel --recursive ci:lint",
     "changeset": "changeset",
     "publish:packages": "changeset publish",
     "version:packages": "changeset version",
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "2.27.5",
+    "@biomejs/biome": "1.8.1",
     "@eslint/js": "9.4.0",
     "@nx/eslint": "19",
     "@nx/vite": "19",
