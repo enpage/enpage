@@ -69,7 +69,6 @@
     "vite-tsconfig-paths": "workspace:*"
   },
   "scripts": {
-    "preinstall": "pnpm build",
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome check --write .",
