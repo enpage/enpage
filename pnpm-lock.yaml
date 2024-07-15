@@ -96,12 +96,18 @@ importers:
 
   packages/editor:
     dependencies:
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
       react:
         specifier: 18.3.1
         version: 18.3.1
       react-dom:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
+      react-icons:
+        specifier: 5.1.0
+        version: 5.1.0(react@18.3.1)
     devDependencies:
       '@types/react':
         specifier: 18.3.2
@@ -9033,7 +9039,6 @@ packages:
       react: '*'
     dependencies:
       react: 18.3.1
-    dev: true
 
   /react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}

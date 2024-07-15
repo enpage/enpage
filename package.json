@@ -1,8 +1,7 @@
 {
-  "name": "enpage-sdk-monorepo",
-  "version": "1.0.0",
+  "name": "enpage",
+  "version": "0.0.1",
   "description": "The Enpage SDK is a library that provides the core functionality for the Enpage templates. It is developed using React, Vanilla Extract, and TypeScript.",
-  "main": "eslint.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel -r dev",
@@ -16,15 +15,19 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:pdf": "press-export-pdf export docs --outFile docs.pdf",
-    "preinstall": "pnpm --filter 'sdk' build"
+    "postinstall": "node ./scripts/postinstall.cjs"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matthias Etienne",
   "license": "AGPL-3.0-only",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
+  "engines" : { 
+    "pnpm" : ">=8.0.0",
+    "node" : ">=18.0.0"
+  },
   "pnpm": {
     "overrides": {
       "@vitejs/plugin-react": "4.2.1",
