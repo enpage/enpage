@@ -1,7 +1,7 @@
-import type { EnpageTemplateConfig } from "@enpage/types/config";
-import type { PageContext } from "@enpage/types/context";
-import { providersSamples } from "../../shared/data-samples";
-import type { AttributesResolved } from "@enpage/types/attributes";
+import type { EnpageTemplateConfig } from "~/shared/config";
+import type { SiteContext } from "~/shared/context";
+import { providersSamples } from "~/shared/data-samples";
+import type { AttributesResolved } from "~/shared/attributes";
 
 export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
   let data;
@@ -23,7 +23,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     attributes[key] = cfg.attributes[key].defaultValue;
   }
 
-  return { data, attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  return { data, attributes } as SiteContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 }
 
 /**
@@ -68,7 +68,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
     },
   });
 
-  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  const context = (await response.json()) as SiteContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 
   return context;
 }

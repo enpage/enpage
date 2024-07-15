@@ -1,4 +1,4 @@
-import { DatasourceProvider, providersSchemaMap } from "@enpage/types/datasources";
+import { DatasourceProvider, providersSchemaMap } from "./datasources";
 import z from "zod";
 
 export const providersSamples: Record<DatasourceProvider, any> = {

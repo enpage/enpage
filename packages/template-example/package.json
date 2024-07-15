@@ -22,7 +22,6 @@
   "dependencies": {
     "@enpage/sdk": "workspace:*",
     "@enpage/style-system": "workspace:*",
-    "@enpage/types": "workspace:*",
     "tailwindcss": "3.4.3"
   },
   "peerDependencies": {

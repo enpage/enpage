@@ -1,5 +1,5 @@
 import { loadEnv, type Plugin } from "vite";
-import type { EnpageTemplateConfig } from "@enpage/types/config";
+import type { EnpageTemplateConfig } from "~/shared/config";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
 import { render } from "./render";

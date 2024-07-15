@@ -10,7 +10,7 @@ const banner = {
 export default defineConfig((options) => {
   return [
     {
-      entry: ["src/node"],
+      entry: ["src/node", "!src/node/**/*.md", "!src/node/**/__tests__/**/*", "!src/node/**/__mocks__/**/*"],
       outDir: "dist/node",
       target: "node18",
       format: ["esm"],
@@ -27,7 +27,12 @@ export default defineConfig((options) => {
     // The dev-client uses Vite's import.meta.env.DEV
     // We bundle it using tsup to avoid the automatic replacement at build time
     {
-      entry: ["src/browser"],
+      entry: [
+        "src/browser",
+        "!src/browser/**/*.md",
+        "!src/browser/**/__tests__/**/*",
+        "!src/browser/**/__mocks__/**/*",
+      ],
       outDir: "dist/browser",
       target: "es2020",
       format: ["esm"],
@@ -41,7 +46,7 @@ export default defineConfig((options) => {
       },
     },
     {
-      entry: ["src/shared"],
+      entry: ["src/shared", "!src/shared/**/*.md", "!src/shared/**/__tests__/**/*", "!src/shared/**/__mocks__/**/*"],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],

@@ -1,4 +1,4 @@
-import type { TemplateSettings } from "@enpage/types/settings";
+import type { TemplateSettings } from "~/shared/settings";
 import { createLogger as createLoggerBase, UserConfig } from "vite";
 import { version } from "../../../package.json";
 import chalk from "chalk";

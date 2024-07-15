@@ -1,7 +1,7 @@
-import type { EnpageTemplateConfig } from "@enpage/types/config";
+import type { EnpageTemplateConfig } from "~/shared/config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { Logger, Plugin } from "vite";
-import type { PageContext } from "@enpage/types/context";
+import type { SiteContext } from "~/shared/context";
 import { Liquid } from "liquidjs";
 import { minify } from "html-minifier";
 import { createFakeContext, fetchContext } from "./context";
@@ -38,7 +38,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         const virtualConsole = new VirtualConsole();
         virtualConsole.sendTo(console, { omitJSDOMErrors: true });
 
-        const attrs = (ctx as PageContext<any, any>).attributes;
+        const attrs = (ctx as SiteContext<any, any>).attributes;
         const dom = new JSDOM(html, { virtualConsole });
         const doc = dom.window.document;
         const head = doc.querySelector("head");
@@ -238,7 +238,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
   };
 };
 
-function renderLiquid(html: string, ctx: PageContext<any, any> | undefined) {
+function renderLiquid(html: string, ctx: SiteContext<any, any> | undefined) {
   const engine = new Liquid();
   return engine.parseAndRender(html, ctx, {
     globals: ctx,

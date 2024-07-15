@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "linked": [],
-  "fixed": [["@enpage/sdk", "@enpage/types", "@enpage/style-system", "@enpage/template-example"]],
+  "fixed": [["@enpage/sdk", "@enpage/style-system", "@enpage/template-example"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

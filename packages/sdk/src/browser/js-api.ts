@@ -1,11 +1,11 @@
-import type { PageContext } from "@enpage/types/context";
+import type { SiteContext } from "../shared/context";
 import type { NavigateEvent } from "./NavigateEvent";
 
 export class EnpageJavascriptAPI extends EventTarget {
-  #ctx: PageContext<any, any>;
+  #ctx: SiteContext<any, any>;
 
   constructor(
-    ctx: PageContext<any, any>,
+    ctx: SiteContext<any, any>,
     private pageIndex = 0,
     private pagesCount = 1,
     private pagesSlugs: string[] = [],

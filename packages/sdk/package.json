@@ -46,8 +46,7 @@
     "zod": "workspace:*"
   },
   "peerDependencies": {
-    "@enpage/style-system": "workspace:*",
-    "@enpage/types": "workspace:*"
+    "@enpage/style-system": "workspace:*"
   },
   "devDependencies": {
     "@types/html-minifier": "4.0.5",
@@ -70,6 +69,7 @@
     "vite-tsconfig-paths": "workspace:*"
   },
   "scripts": {
+    "preinstall": "pnpm build",
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "nx eslint:lint",
