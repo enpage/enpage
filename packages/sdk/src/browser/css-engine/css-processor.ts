@@ -48,7 +48,7 @@ export class CSSProcessor {
     } else if (e.data.type === "processed") {
       const task = this.pendingTasks.shift();
       if (task) {
-        task.resolve(e.data.result);
+        task.resolve(e.data.result!);
       }
       this.processPendingTasks();
     }
