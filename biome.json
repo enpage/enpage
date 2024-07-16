@@ -47,14 +47,11 @@
     },
     "ignore": [
       "**/package.json",
-      "**/tsconfig.app.json",
-      "**/tsconfig.node.json",
       "**/tsconfig.json",
-      "./config/nats/*.json",
-      "node_modules/**/*",
-      "dist/**/*",
-      "**/extension/**/*",
-      "packages/sdks/**/*"
+      "**/node_modules/**/*",
+      "**/dist/**/*",
+      "**/.template-dist/**/*",
+      ".vscode/**"
     ]
   },
   "javascript": {
@@ -64,7 +61,7 @@
   },
   "overrides": [
     {
-      "include": [".vscode/**", "**/tsconfig.json", "**/tsconfig.lint.json"],
+      "include": ["**/tsconfig.json"],
       "json": {
         "parser": {
           "allowComments": true,
