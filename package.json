@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel -r dev",
-    "build": "pnpm exec nx run-many -t build",
+    "build": "nx run-many -t build --exclude=@enpage/template-example",
     "lint": "pnpm --parallel --recursive lint",
     "ci:lint": "pnpm --parallel --recursive ci:lint",
     "changeset": "changeset",

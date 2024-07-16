@@ -2,8 +2,9 @@ import type { EnpageTemplateConfig } from "~/shared/config";
 import type { SiteContext } from "~/shared/context";
 import { providersSamples } from "~/shared/data-samples";
 import type { AttributesResolved } from "~/shared/attributes";
+import type { Logger } from "vite";
 
-export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
+export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config, logger: Logger) {
   let data: Record<string, unknown> | undefined;
 
   if (cfg.datasources) {
@@ -33,7 +34,11 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
  * If all is OK, it will fetch the context from the Enpage API and return it.
  */
 
-export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env = process.env) {
+export async function fetchContext<Config extends EnpageTemplateConfig>(
+  cfg: Config,
+  logger: Logger,
+  env = process.env,
+) {
   const apiToken = env.PRIVATE_ENPAGE_API_TOKEN;
   const siteId = env.ENPAGE_SITE_ID;
   const apiBaseUrl = env.ENPAGE_API_BASE_URL;

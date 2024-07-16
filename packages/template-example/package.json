@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "enpage dev",
-    "build-template": "enpage build",
+    "build": "enpage build",
     "preview": "enpage preview",
     "lint": "biome check --write ."
   },

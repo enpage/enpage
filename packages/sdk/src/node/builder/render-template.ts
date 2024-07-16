@@ -9,7 +9,7 @@ import chalk from "chalk";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 
-export const render = (cfg: EnpageTemplateConfig): Plugin => {
+export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
   let isBuildMode = false;
   let isSsrBuild = false;
   let logger: Logger;
@@ -25,11 +25,17 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
     },
     transformIndexHtml: {
       order: "pre" as const,
-      handler: async (html: string) => {
-        let ctx = isBuildMode ? await fetchContext(cfg) : createFakeContext(cfg);
-        if (ctx === false) {
+      handler: async (html: string, viteCtx) => {
+        console.log("viteCtx", viteCtx);
+        if (viteCtx.path.endsWith("editor.html")) {
+          logger.info("Skipping editor.html");
+          return html;
+        }
+
+        let context = isBuildMode ? await fetchContext(cfg, logger) : createFakeContext(cfg, logger);
+        if (context === false) {
           logger.error("Failed to fetch context. Using fake context instead.");
-          ctx = createFakeContext(cfg);
+          context = createFakeContext(cfg, logger);
         }
 
         // disable JSDOM errors otherwise we'll get a lot of noise
@@ -39,7 +45,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         virtualConsole.sendTo(console, { omitJSDOMErrors: true });
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const attrs = (ctx as SiteContext<any, any>).attributes;
+        const attrs = (context as SiteContext<any, any>).attributes;
         const dom = new JSDOM(html, { virtualConsole });
         const doc = dom.window.document;
         const head = doc.querySelector("head");
@@ -108,7 +114,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
         }
 
         // keywords
-        if (!doc.querySelector("meta[name='keywords']") && ctx?.attributes.$siteKeywords) {
+        if (!doc.querySelector("meta[name='keywords']") && context?.attributes.$siteKeywords) {
           const meta = doc.createElement("meta");
           meta.setAttribute("name", "keywords");
           meta.setAttribute("content", attrs.$siteKeywords);
@@ -184,7 +190,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
           const pathname = window.location.pathname.slice(1);
           const pageId = pathname === '' ? 0 : slugs.indexOf(pathname);
           window.enpage = new EnpageJavascriptAPI(
-            ${ctx ? JSON.stringify(ctx) : "null"},
+            ${context ? JSON.stringify(context) : "null"},
             pageId > -1 ? pageId : 0,
             ${sections.length},
             ${JSON.stringify(slugs)}
@@ -219,7 +225,7 @@ export const render = (cfg: EnpageTemplateConfig): Plugin => {
 
         if (isSsrBuild) {
           logger.info("SSR: rendering liquid templates");
-          html = await renderLiquid(dom.serialize(), ctx);
+          html = await renderLiquid(dom.serialize(), context);
         }
 
         if (!isBuildMode) {

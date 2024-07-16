@@ -5,7 +5,7 @@ import { join, resolve } from "node:path";
 import { existsSync } from "node:fs";
 import { createLogger } from "./logger";
 
-export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Promise<UserConfig> => {
+export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   const tailwindCfgPath = join(process.cwd(), "tailwind.config.js");
 
   if (!existsSync(tailwindCfgPath)) {
@@ -21,7 +21,7 @@ export default defineConfig(async ({ command, mode, isSsrBuild, isPreview }): Pr
   return {
     customLogger: logger,
     envPrefix: ["VITE_", "ENPAGE_"],
-    plugins: [enpagePlugin(config)],
+    plugins: [enpagePlugin(config, viteConfigEnv)],
     resolve: {
       preserveSymlinks: true,
       alias: {

@@ -1,19 +1,21 @@
-import { loadEnv, type Plugin } from "vite";
+import { build, type ConfigEnv, loadEnv, type Plugin } from "vite";
 import type { EnpageTemplateConfig } from "~/shared/config";
-import { resolve } from "node:path";
+import { resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { render } from "./render";
+import fs from "node:fs";
+import { renderTemplate } from "./render-template";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // return partial config (recommended)
 const enpagePlugin = (): Plugin => {
+  console.log("enpage cdw %s", process.cwd());
+
   return {
     name: "enpage",
     config: async (cfg, { command, mode, isSsrBuild }) => {
       const env = loadEnv(mode, process.cwd(), "");
       return {
-        esbuild: { legalComments: "none" },
         optimizeDeps: {
           exclude: ["@enpage/sdk"],
         },
@@ -37,6 +39,10 @@ const enpagePlugin = (): Plugin => {
             output: {
               esModule: true,
             },
+            input: {
+              main: resolve(process.cwd(), "index.html"),
+              editor: relative(process.cwd(), "./node_modules/@enpage/sdk/dist/node/builder/editor.html"),
+            },
           },
         },
         experimental:
@@ -55,6 +61,7 @@ const enpagePlugin = (): Plugin => {
   };
 };
 
-export default async function enpageMetaPlugin(config: EnpageTemplateConfig) {
-  return [enpagePlugin(), render(config)];
+export default async function enpageMetaPlugin(config: EnpageTemplateConfig, viteConfigEnv: ConfigEnv) {
+  console.log("viteConfigEnv", viteConfigEnv);
+  return [enpagePlugin(), renderTemplate(config)];
 }

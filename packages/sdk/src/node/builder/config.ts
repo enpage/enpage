@@ -4,7 +4,7 @@ import { defineAttributes } from "~/shared/attributes";
 import fs from "node:fs";
 import type { Logger } from "vite";
 
-export async function loadConfig(configPath: string) {
+export async function loadConfig(configPath: string): Promise<EnpageTemplateConfig> {
   if (!fs.existsSync(configPath)) {
     console.error(
       "No enpage.config.js found!\nYour project must have an enpage.config.js file in the root directory.\n\n",

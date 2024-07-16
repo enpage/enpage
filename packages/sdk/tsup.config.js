@@ -7,6 +7,10 @@ const banner = {
   css: bannerText,
 };
 
+const loader = {
+  ".html": "copy",
+};
+
 export default defineConfig((options) => {
   return [
     {
@@ -23,6 +27,7 @@ export default defineConfig((options) => {
       esbuildOptions(input) {
         input.banner = banner;
       },
+      loader,
     },
     // The dev-client uses Vite's import.meta.env.DEV
     // We bundle it using tsup to avoid the automatic replacement at build time
@@ -44,6 +49,7 @@ export default defineConfig((options) => {
       esbuildOptions(input) {
         input.banner = banner;
       },
+      loader,
     },
     {
       entry: [
@@ -63,6 +69,7 @@ export default defineConfig((options) => {
       esbuildOptions(input) {
         input.banner = banner;
       },
+      loader,
     },
   ];
 });

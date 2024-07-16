@@ -1,12 +1,12 @@
-import { LuPlus, LuUndo, LuRedo, LuRocket, LuMenu } from "react-icons/lu";
+import { LuPlus, LuUndo, LuRedo, /*LuRocket,*/ LuMenu } from "react-icons/lu";
 import { RxMobile } from "react-icons/rx";
-import { RxDesktop } from "react-icons/rx";
-import { BsTablet } from "react-icons/bs";
+// import { RxDesktop } from "react-icons/rx";
+// import { BsTablet } from "react-icons/bs";
 import clsx from "clsx";
 
 export function EditorToolbar() {
   const standardBtn = `bg-enpage-600/95 hover:bg-enpage-700/90 disabled:text-white/40 disabled:hover:bg-enpage-600/95`;
-  const rocketBtn = `bg-orange-600/85 hover:bg-orange-700/90 px-4`;
+  // const rocketBtn = `bg-orange-600/85 hover:bg-orange-700/90 px-4`;
   const btnClass = `flex flex-auto items-center justify-center py-2 px-5 gap-x-1.5
     md:first:rounded-l-lg md:last:rounded-r-lg hover:bg-gradient-to-t`;
   return (
