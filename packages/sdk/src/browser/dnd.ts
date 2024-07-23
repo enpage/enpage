@@ -1,3 +1,4 @@
+import throttle from "lodash-es/throttle";
 import { canContain, type Tag } from "./tag-containment-rules";
 
 type Coordinates = { x: number; y: number };
@@ -12,6 +13,7 @@ type Side = {
 
 let indicator: HTMLElement | null = null;
 let indicatorTimeout: unknown = null;
+let rafId: number | null = null;
 
 /**
  * Finds the HTML element closest to given coordinates (x, y).
@@ -204,107 +206,151 @@ function createIndicator(): HTMLElement {
 }
 
 function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
-  // console.log('Updating indicator with insert position:', insertPosition);
-  if (!indicator) {
-    indicator = createIndicator();
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
   }
 
-  if (!insertPosition) {
-    // console.log('No valid insert position, hiding indicator');
-    // indicator.style.display = "none";
-    delayHideIndicator();
-    return;
-  }
+  rafId = requestAnimationFrame(() => {
+    if (!indicator) {
+      indicator = createIndicator();
+    }
 
-  const { container, referenceElement, isContainerHorizontal, side, coordinates } = insertPosition;
+    if (!insertPosition) {
+      delayHideIndicator();
+      return;
+    }
 
-  let rect: DOMRect;
-  if (referenceElement) {
-    rect = referenceElement.getBoundingClientRect();
-  } else {
-    console.warn("No reference element, using container");
-    rect = container.getBoundingClientRect();
-  }
+    const { container, referenceElement, isContainerHorizontal, side, coordinates } = insertPosition;
 
-  const lineWidth = 4; // 3px line width
-  const spacing = 1; // 2px spacing
+    console.log({ container, referenceElement, isContainerHorizontal, side, coordinates });
+    // // console.log('Updating indicator with insert position:', insertPosition);
+    // if (!indicator) {
+    //   indicator = createIndicator();
+    // }
 
-  let width: string, height: string, top: string, left: string, right: string, bottom: string;
+    // if (!insertPosition) {
+    //   // console.log('No valid insert position, hiding indicator');
+    //   // indicator.style.display = "none";
+    //   delayHideIndicator();
+    //   return;
+    // }
 
-  if (isContainerHorizontal) {
-    // take size.horizontal into account
-    width = "0";
-    height = `${rect.height + spacing * 2}px`;
-    top = `${rect.top - spacing}px`;
-    left =
-      side.horizontal === "left"
-        ? referenceElement
-          ? `${rect.left - spacing - lineWidth / 2}px`
-          : `${rect.right + spacing - lineWidth / 2}px`
-        : "unset";
+    // const { container, referenceElement, isContainerHorizontal, side, coordinates } = insertPosition;
 
-    right = side.horizontal === "right" ? `${rect.right + spacing - lineWidth / 2}px` : "unset";
-    indicator.style.borderLeftWidth = `${lineWidth}px`;
-    indicator.style.borderRightWidth = "0";
-    indicator.style.borderTopWidth = "0";
-    indicator.style.borderBottomWidth = "0";
-  } else {
-    width = `${rect.width + spacing * 2}px`;
-    height = "0";
-    top = referenceElement
-      ? `${rect.top - spacing - lineWidth / 2}px`
-      : `${rect.bottom + spacing - lineWidth / 2}px`;
-    left = `${rect.left - spacing}px`;
-    right = "unset";
-    indicator.style.borderLeftWidth = "0";
-    indicator.style.borderRightWidth = "0";
-    indicator.style.borderTopWidth = `${lineWidth}px`;
-    indicator.style.borderBottomWidth = "0";
-  }
+    let rect: DOMRect;
+    if (referenceElement) {
+      rect = referenceElement.getBoundingClientRect();
+    } else {
+      console.warn("No reference element, using container");
+      rect = container.getBoundingClientRect();
+    }
 
-  const OPACITY = 0.8;
-  // if the indicator line if farer than the coordinates of the mouse (with 30px treshold), skip the update
-  const DISTANCE_TRESHOLD = 60;
+    const lineWidth = 4; // 3px line width
+    const spacing = 1; // 2px spacing
 
-  if (
-    isContainerHorizontal
-      ? Math.abs(coordinates.x - rect.left) > DISTANCE_TRESHOLD
-      : Math.abs(coordinates.y - rect.top) > DISTANCE_TRESHOLD
-  ) {
-    // indicator.style.display = "none";
-    console.log("Indicator too far, skipping update");
-    delayHideIndicator();
-    return;
-  }
+    let width: string, height: string, top: string, left: string, right: string, bottom: string;
 
-  cancelHideIndicator();
+    if (isContainerHorizontal) {
+      // take size.horizontal into account
+      width = "0";
+      height = `${rect.height + spacing * 2}px`;
+      top = `${rect.top - spacing}px`;
+      left =
+        side.horizontal === "left"
+          ? referenceElement
+            ? `${rect.left - spacing - lineWidth / 2}px`
+            : `${rect.right + spacing - lineWidth / 2}px`
+          : "unset";
 
-  Object.assign(indicator.style, {
-    display: "block",
-    width,
-    height,
-    top,
-    left,
-    right,
-    opacity: OPACITY,
+      // right = side.horizontal === "right" ? `${rect.right + spacing - lineWidth / 2}px` : "unset";
+      right = `${window.innerWidth - rect.right - spacing - lineWidth / 2}px`;
+
+      indicator.style.borderLeftWidth = `${lineWidth}px`;
+      indicator.style.borderRightWidth = "0";
+      indicator.style.borderTopWidth = "0";
+      indicator.style.borderBottomWidth = "0";
+    } else {
+      width = `${rect.width + spacing * 2}px`;
+      height = "0";
+      top = referenceElement
+        ? `${rect.top - spacing - lineWidth / 2}px`
+        : `${rect.bottom + spacing - lineWidth / 2}px`;
+      left = `${rect.left - spacing}px`;
+      right = "unset";
+      indicator.style.borderLeftWidth = "0";
+      indicator.style.borderRightWidth = "0";
+      indicator.style.borderTopWidth = `${lineWidth}px`;
+      indicator.style.borderBottomWidth = "0";
+    }
+
+    const OPACITY = 0.8;
+    // if the indicator line if farer than the coordinates of the mouse (with 30px treshold), skip the update
+    const DISTANCE_THRESHOLD = 60;
+    let skipUpdate = false;
+
+    if (isContainerHorizontal) {
+      // Check distance from both left and right edges
+      const distanceFromLeft = Math.abs(coordinates.x - rect.left);
+      const distanceFromRight = Math.abs(coordinates.x - rect.right);
+      skipUpdate = Math.min(distanceFromLeft, distanceFromRight) > DISTANCE_THRESHOLD;
+    } else {
+      // For vertical containers, check distance from top and bottom
+      const distanceFromTop = Math.abs(coordinates.y - rect.top);
+      const distanceFromBottom = Math.abs(coordinates.y - rect.bottom);
+      skipUpdate = Math.min(distanceFromTop, distanceFromBottom) > DISTANCE_THRESHOLD;
+    }
+
+    // if (
+    //   isContainerHorizontal
+    //     ? Math.abs(coordinates.x - rect.left) > DISTANCE_THRESHOLD
+    //     : Math.abs(coordinates.y - rect.top) > DISTANCE_THRESHOLD
+    // ) {
+    //   console.log("Indicator too far, skipping update");
+    //   delayHideIndicator();
+    //   return;
+    // }
+
+    if (skipUpdate) {
+      console.log("Indicator too far, skipping update");
+      delayHideIndicator();
+      return;
+    }
+
+    cancelHideIndicator();
+
+    Object.assign(indicator.style, {
+      display: "block",
+      width,
+      height,
+      top,
+      left,
+      right,
+      opacity: OPACITY,
+    });
+
+    rafId = null;
   });
 }
 
-export function onDragOver(dragElement: HTMLElement, coordinates: Coordinates): void {
-  const insertPosition = getInsertPosition({
-    dragElement,
-    coordinates,
-  });
-
+const throttledUpdateIndicator = throttle((params: Params) => {
+  const insertPosition = getInsertPosition(params);
   updateIndicator(insertPosition);
+}, 16); // Throttle to roughly 60fps
+
+export function onDragOver(dragElement: HTMLElement, coordinates: Coordinates): void {
+  throttledUpdateIndicator({ dragElement, coordinates });
 }
 
 export function onDragEnd(): void {
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
   if (indicator) {
     indicator.style.display = "none";
   }
 }
-
 // Call this function once to create the indicator
 function initializeDragAndDrop() {
   createIndicator();
