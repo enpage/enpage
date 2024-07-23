@@ -2,6 +2,7 @@ import throttle from "lodash-es/throttle";
 import { canContain, type Tag } from "./tag-containment-rules";
 
 type Coordinates = { x: number; y: number };
+
 type Params = {
   dragElement: HTMLElement;
   coordinates: Coordinates;
@@ -187,23 +188,32 @@ function cancelHideIndicator() {
   }
 }
 
+const INDICATOR_TRANSITION = "all 0.5s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.15s ease";
+const INDICATOR_TRANSITION_2WAY_1 = "all 0.15s ease-in";
+const INDICATOR_TRANSITION_2WAY_2 = "all 0.25s cubic-bezier(0.34, 1.3, 0.64, 1)";
+
 function createIndicator(): HTMLElement {
   console.log("Creating indicator");
   const indicator = document.createElement("div");
   indicator.className = "dnd-indicator";
-  indicator.style.position = "fixed";
-  indicator.style.pointerEvents = "none";
-  indicator.style.borderStyle = "solid";
-  indicator.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2)";
-  indicator.style.opacity = "0.8";
-  indicator.style.borderColor = "#8f93d8";
-  indicator.style.borderWidth = "0";
-  indicator.style.transition = "top 0.3s ease, left 0.3s ease, opacity 0.15s ease, transform 0.3s ease";
-  indicator.style.transformOrigin = "0 0";
-  indicator.style.zIndex = "1000";
+
+  Object.assign(indicator.style, {
+    position: "fixed",
+    display: "block",
+    pointerEvents: "none",
+    backgroundColor: "#8f93d8",
+    opacity: "0",
+    transition: INDICATOR_TRANSITION,
+    zIndex: "1000",
+    borderRadius: "9999px",
+    transformOrigin: "0 0",
+  });
   document.body.appendChild(indicator);
   return indicator;
 }
+
+let lastPosition: { width: string; height: string; top: string; left: string; horizontal: boolean } | null =
+  null;
 
 function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
   if (rafId !== null) {
@@ -222,20 +232,18 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
 
     const { container, referenceElement, isContainerHorizontal, side, coordinates } = insertPosition;
 
-    console.log({ container, referenceElement, isContainerHorizontal, side, coordinates });
-    // // console.log('Updating indicator with insert position:', insertPosition);
-    // if (!indicator) {
-    //   indicator = createIndicator();
-    // }
+    const containerRect = container.getBoundingClientRect();
+    const contentLeft = containerRect.left;
+    const contentTop = containerRect.top;
+    const contentRight = containerRect.right;
+    const contentBottom = containerRect.bottom;
 
-    // if (!insertPosition) {
-    //   // console.log('No valid insert position, hiding indicator');
-    //   // indicator.style.display = "none";
-    //   delayHideIndicator();
-    //   return;
-    // }
-
-    // const { container, referenceElement, isContainerHorizontal, side, coordinates } = insertPosition;
+    const children = Array.from(container.children) as HTMLElement[];
+    children.sort((a, b) => {
+      const rectA = a.getBoundingClientRect();
+      const rectB = b.getBoundingClientRect();
+      return isContainerHorizontal ? rectA.left - rectB.left : rectA.top - rectB.top;
+    });
 
     let rect: DOMRect;
     if (referenceElement) {
@@ -245,70 +253,79 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
       rect = container.getBoundingClientRect();
     }
 
-    const lineWidth = 4; // 3px line width
-    const spacing = 1; // 2px spacing
-
-    let width: string, height: string, top: string, left: string, right: string, bottom: string;
+    const lineWidth = 10;
+    let width: string, height: string, top: string, left: string;
 
     if (isContainerHorizontal) {
-      // take size.horizontal into account
-      width = "0";
-      height = `${rect.height + spacing * 2}px`;
-      top = `${rect.top - spacing}px`;
-      left =
-        side.horizontal === "left"
-          ? referenceElement
-            ? `${rect.left - spacing - lineWidth / 2}px`
-            : `${rect.right + spacing - lineWidth / 2}px`
-          : "unset";
+      console.log("isContainerHorizontal = true");
+      height = `${contentBottom - contentTop}px`;
+      top = `${contentTop}px`;
+      width = `${lineWidth}px`;
 
-      // right = side.horizontal === "right" ? `${rect.right + spacing - lineWidth / 2}px` : "unset";
-      right = `${window.innerWidth - rect.right - spacing - lineWidth / 2}px`;
+      if (!referenceElement || side.horizontal === "left") {
+        const nextElement = referenceElement || children[0];
+        const nextRect = nextElement.getBoundingClientRect();
+        console.log("side is left, next element: %o", nextElement);
+        if (referenceElement.previousElementSibling) {
+          console.log("has previous sibling");
+          const prevRect = referenceElement.previousElementSibling.getBoundingClientRect();
+          left = `${(prevRect.right + nextRect.left) / 2}px`;
+        } else {
+          console.log("no previous sibling");
+          console.log("container: %o", container);
+          console.log("nextElement: %o", nextElement);
+          console.log("nextRect: %o", nextRect);
 
-      indicator.style.borderLeftWidth = `${lineWidth}px`;
-      indicator.style.borderRightWidth = "0";
-      indicator.style.borderTopWidth = "0";
-      indicator.style.borderBottomWidth = "0";
+          console.log("contentLeft: %o, nextRect.left: %o", contentLeft, nextRect.left);
+          left = `${(contentLeft + nextRect.left) / 2}px`;
+        }
+      } else {
+        const prevRect = referenceElement.getBoundingClientRect();
+        if (referenceElement.nextElementSibling) {
+          const nextRect = referenceElement.nextElementSibling.getBoundingClientRect();
+          left = `${(prevRect.right + nextRect.left) / 2}px`;
+        } else {
+          left = `${(prevRect.right + contentRight) / 2}px`;
+        }
+      }
     } else {
-      width = `${rect.width + spacing * 2}px`;
-      height = "0";
-      top = referenceElement
-        ? `${rect.top - spacing - lineWidth / 2}px`
-        : `${rect.bottom + spacing - lineWidth / 2}px`;
-      left = `${rect.left - spacing}px`;
-      right = "unset";
-      indicator.style.borderLeftWidth = "0";
-      indicator.style.borderRightWidth = "0";
-      indicator.style.borderTopWidth = `${lineWidth}px`;
-      indicator.style.borderBottomWidth = "0";
+      width = `${contentRight - contentLeft}px`;
+      left = `${contentLeft}px`;
+      height = `${lineWidth}px`;
+
+      if (!referenceElement || side.vertical === "top") {
+        const nextElement = referenceElement || children[0];
+        const nextRect = nextElement.getBoundingClientRect();
+        if (referenceElement.previousElementSibling) {
+          const prevRect = referenceElement.previousElementSibling.getBoundingClientRect();
+          top = `${(prevRect.bottom + nextRect.top) / 2}px`;
+        } else {
+          top = `${(contentTop + nextRect.top) / 2}px`;
+        }
+      } else {
+        const prevRect = referenceElement.getBoundingClientRect();
+        if (referenceElement.nextElementSibling) {
+          const nextRect = referenceElement.nextElementSibling.getBoundingClientRect();
+          top = `${(prevRect.bottom + nextRect.top) / 2}px`;
+        } else {
+          top = `${(prevRect.bottom + contentBottom) / 2}px`;
+        }
+      }
     }
 
-    const OPACITY = 0.8;
-    // if the indicator line if farer than the coordinates of the mouse (with 30px treshold), skip the update
+    const OPACITY = 0.5;
     const DISTANCE_THRESHOLD = 60;
     let skipUpdate = false;
 
     if (isContainerHorizontal) {
-      // Check distance from both left and right edges
       const distanceFromLeft = Math.abs(coordinates.x - rect.left);
       const distanceFromRight = Math.abs(coordinates.x - rect.right);
       skipUpdate = Math.min(distanceFromLeft, distanceFromRight) > DISTANCE_THRESHOLD;
     } else {
-      // For vertical containers, check distance from top and bottom
       const distanceFromTop = Math.abs(coordinates.y - rect.top);
       const distanceFromBottom = Math.abs(coordinates.y - rect.bottom);
       skipUpdate = Math.min(distanceFromTop, distanceFromBottom) > DISTANCE_THRESHOLD;
     }
-
-    // if (
-    //   isContainerHorizontal
-    //     ? Math.abs(coordinates.x - rect.left) > DISTANCE_THRESHOLD
-    //     : Math.abs(coordinates.y - rect.top) > DISTANCE_THRESHOLD
-    // ) {
-    //   console.log("Indicator too far, skipping update");
-    //   delayHideIndicator();
-    //   return;
-    // }
 
     if (skipUpdate) {
       console.log("Indicator too far, skipping update");
@@ -318,16 +335,46 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
 
     cancelHideIndicator();
 
-    Object.assign(indicator.style, {
-      display: "block",
-      width,
-      height,
-      top,
-      left,
-      right,
-      opacity: OPACITY,
-    });
+    // Check if we're switching orientation
+    const isOrientationSwitch = lastPosition && lastPosition.horizontal !== isContainerHorizontal;
+    // const isOrientationSwitch = lastPosition && lastPosition.width !== `${lineWidth}px`;
 
+    if (isOrientationSwitch) {
+      console.warn("Orientation switch detected. lastPosition = %o, lineWidth = %s", lastPosition, lineWidth);
+      // First, transition to a small square
+      Object.assign(indicator.style, {
+        transition: INDICATOR_TRANSITION_2WAY_1,
+        width: `${lineWidth}px`,
+        height: `${lineWidth}px`,
+        top: lastPosition!.top,
+        left: lastPosition!.left,
+        opacity: OPACITY.toString(),
+      });
+
+      // Then, after a short delay, transition to the new position and size
+      setTimeout(() => {
+        Object.assign(indicator!.style, {
+          transition: INDICATOR_TRANSITION_2WAY_2,
+          width,
+          height,
+          top,
+          left,
+        });
+      }, 150);
+    } else {
+      // If we're not switching orientation, just update normally
+      Object.assign(indicator.style, {
+        transition: INDICATOR_TRANSITION,
+        width,
+        height,
+        top,
+        left,
+        opacity: OPACITY.toString(),
+        display: "block",
+      });
+    }
+
+    lastPosition = { width, height, top, left, horizontal: isContainerHorizontal };
     rafId = null;
   });
 }
@@ -348,8 +395,12 @@ export function onDragEnd(): void {
   }
 
   if (indicator) {
-    indicator.style.display = "none";
+    // indicator.style.display = "none";
+    indicator.remove();
+    indicator = null;
   }
+
+  indicatorTimeout = null;
 }
 // Call this function once to create the indicator
 function initializeDragAndDrop() {
