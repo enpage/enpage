@@ -3,6 +3,7 @@ import scrollbars from "tailwind-scrollbar";
 import typography from "@tailwindcss/typography";
 import transform3d from "tailwindcss-3d";
 import plugin from "tailwindcss/plugin";
+import easing from '@whiterussianstudio/tailwind-easing'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -37,6 +38,7 @@ export default {
     typography,
     scrollbars,
     transform3d,
+    easing,
     plugin(function ({ matchUtilities, theme }) {
       matchUtilities(
         {

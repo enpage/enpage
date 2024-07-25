@@ -5,11 +5,6 @@ class VideoBlock extends EPBlockBase {
     return ["src", "poster", "autoplay", "controls", "loop", "muted"];
   }
 
-  constructor() {
-    super();
-    this.setAttribute("ep-type", "video");
-  }
-
   get src() {
     return this.getAttribute("src") || "";
   }
@@ -74,7 +69,7 @@ class VideoBlock extends EPBlockBase {
     }
   }
 
-  protected get template() {
+  protected get contents() {
     return `
       <video
         src="${this.src}"
@@ -90,7 +85,7 @@ class VideoBlock extends EPBlockBase {
   toJSON() {
     return {
       id: this.id,
-      type: this.epType,
+      type: this.blockType,
       src: this.src,
       poster: this.poster,
       autoplay: this.autoplay,

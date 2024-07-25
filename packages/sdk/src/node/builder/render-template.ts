@@ -13,6 +13,7 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
   let isBuildMode = false;
   let isSsrBuild = false;
   let logger: Logger;
+  let serverHostname = process.env.ENPAGE_SITE_HOST;
 
   return {
     name: "enpage:render",
@@ -23,15 +24,15 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
     config(_, env) {
       isSsrBuild = !!env.isSsrBuild;
     },
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        serverHostname = req.headers.host;
+        next();
+      });
+    },
     transformIndexHtml: {
       order: "pre" as const,
       handler: async (html: string, viteCtx) => {
-        console.log("viteCtx", viteCtx);
-        if (viteCtx.path.endsWith("editor.html")) {
-          logger.info("Skipping editor.html");
-          return html;
-        }
-
         let context = isBuildMode ? await fetchContext(cfg, logger) : createFakeContext(cfg, logger);
         if (context === false) {
           logger.error("Failed to fetch context. Using fake context instead.");
@@ -87,6 +88,13 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
 
         // Set site language. Will result in <html lang="xx">
         doc.documentElement.lang = attrs.$siteLanguage;
+
+        // add base if not build
+        if (!isBuildMode) {
+          const base = doc.createElement("base");
+          base.href = `http://${serverHostname}`;
+          head.prepend(base);
+        }
 
         // ----------------------------------------------------
         // Add meta tags if they don't exist
@@ -150,6 +158,7 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
 
         const slugs: string[] = [];
         sections.forEach((section, index) => {
+          section.setAttribute("ep-label", `Page ${index + 1}`);
           if (!section.getAttribute("id")) {
             section.setAttribute("id", nanoid(7));
           }
@@ -158,6 +167,10 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
           }
           if (!section.getAttribute("ep-animate-disappear")) {
             section.setAttribute("ep-animate-disappear", "fadeOut");
+          }
+          // add [ep-editable] if not present
+          if (!section.getAttribute("ep-editable")) {
+            section.setAttribute("ep-editable", "");
           }
           // hide all sections except the first one
           if (index > 0) {
@@ -180,6 +193,42 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
           }
         });
 
+        // rerwrite stadalone <img> tags to <picture> tags
+        const images = doc.querySelectorAll("img");
+        images.forEach((img) => {
+          // check if the image is standalone
+          if (img.parentElement?.tagName !== "picture") {
+            const picture = doc.createElement("picture");
+            img.parentNode?.replaceChild(picture, img);
+            // copy all attributes except src
+            for (let i = 0; i < img.attributes.length; i++) {
+              const attr = img.attributes[i];
+              if (attr.name !== "src") {
+                picture.setAttribute(attr.name, attr.value);
+                img.removeAttribute(attr.name);
+              }
+            }
+            picture.appendChild(img);
+          }
+        });
+
+        // set body attributes ep-block-type="page" and ep-editable, ep-label
+        if (!cfg.settings.disableBodyCustomization) {
+          const body = doc.querySelector("body") as HTMLBodyElement;
+          body.setAttribute("ep-block-type", "site-background");
+          body.setAttribute("ep-editable", "");
+          body.setAttribute("ep-label", "Background");
+        }
+
+        // for all editable elements ([ep-editable]), add a ep-label attribute if not present
+        // the label will describe the tag
+        const editableElements = doc.querySelectorAll("[ep-editable]");
+        editableElements.forEach((el) => {
+          if (!el.getAttribute("ep-label")) {
+            el.setAttribute("ep-label", el.tagName.toLowerCase());
+          }
+        });
+
         // ----------------------------------------------------
         // Add enpage SDK script
         const enpageSdkScript = doc.createElement("script");
@@ -197,6 +246,15 @@ export const renderTemplate = (cfg: EnpageTemplateConfig): Plugin => {
           );
         `;
         head.appendChild(enpageSdkScript);
+
+        // add custom elements
+        const customElementsScript = doc.createElement("script");
+        customElementsScript.type = "module";
+        customElementsScript.textContent = `
+          import "@enpage/sdk/browser/components/directives/all";
+          import "@enpage/sdk/browser/components/blocks/all";
+        `;
+        head.appendChild(customElementsScript);
 
         // add animate script
         const animateScript = doc.createElement("script");

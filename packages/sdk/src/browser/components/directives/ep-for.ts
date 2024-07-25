@@ -6,6 +6,7 @@ class EPFor extends CustomElement {
   }
 
   private _template: HTMLTemplateElement | null = null;
+  private _items: unknown[] = [];
   private _boundHandleDataChange: (event: CustomEvent<{ path: string }>) => void;
 
   constructor() {
@@ -15,22 +16,19 @@ class EPFor extends CustomElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._template = this.querySelector("template");
-    if (!this._template) {
-      console.error("ep-for: <template> element is required");
-      return;
-    }
     this.updateItems();
     this.setupEventListener();
-    this.render();
   }
 
   disconnectedCallback() {
     this.removeCustomEventListener();
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    // ignore initiliazation
+    if (oldValue === null) {
+      return;
+    }
     this.updateItems();
   }
 
@@ -50,8 +48,7 @@ class EPFor extends CustomElement {
   }
 
   private updateItems() {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    let items: any[] = [];
+    this._items = [];
 
     if (this.hasAttribute("datasource")) {
       const path = this.getAttribute("datasource")!.split(".");
@@ -62,20 +59,23 @@ class EPFor extends CustomElement {
           data = data?.[key];
         }
       }
-      items = Array.isArray(data) ? data : Object.entries(data || {});
+      if (!data) {
+        console.error(`[ep-for] Data source not found: ${this.getAttribute("datasource")}`);
+      }
+      this._items = Array.isArray(data) ? data : Object.entries(data || {});
     } else if (this.hasAttribute("source")) {
       const sourceElement = document.getElementById(this.getAttribute("source")!);
       if (sourceElement?.textContent) {
-        items = JSON.parse(sourceElement.textContent);
+        this._items = JSON.parse(sourceElement.textContent);
       }
     } else if (this.hasAttribute("json")) {
-      items = JSON.parse(this.getAttribute("json")!);
+      this._items = JSON.parse(this.getAttribute("json")!);
     } else if (this.hasAttribute("range")) {
       const [start, end] = this.getAttribute("range")!.split("-").map(Number);
-      items = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+      this._items = Array.from({ length: end - start + 1 }, (_, i) => start + i);
     }
 
-    this.render(items);
+    this.render();
   }
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -86,9 +86,12 @@ class EPFor extends CustomElement {
     }
 
     if (element.hasAttribute("ep-bind-attr")) {
-      const bindings = element.getAttribute("ep-bind-attr")!.split(",");
+      const bindings = element
+        .getAttribute("ep-bind-attr")!
+        .split(",")
+        .map((s) => s.trim());
       bindings.forEach((binding) => {
-        const [attr, prop] = binding.trim().split(":");
+        const [attr, prop] = binding.split(":").map((s) => s.trim());
         element.setAttribute(attr, item[prop] || "");
       });
     }
@@ -98,9 +101,12 @@ class EPFor extends CustomElement {
     }
 
     if (element.hasAttribute("ep-bind-key-attr")) {
-      const bindings = element.getAttribute("ep-bind-key-attr")!.split(",");
+      const bindings = element
+        .getAttribute("ep-bind-key-attr")!
+        .split(",")
+        .map((s) => s.trim());
       bindings.forEach((binding) => {
-        const [attr, _] = binding.trim().split(":");
+        const [attr, _] = binding.split(":").map((s) => s.trim());
         element.setAttribute(attr, Array.isArray(item) ? index.toString() : Object.keys(item)[0]);
       });
     }
@@ -112,22 +118,27 @@ class EPFor extends CustomElement {
     });
   }
 
-  protected get template(): string {
-    return "<slot></slot>";
+  get template(): HTMLTemplateElement {
+    if (this._template) {
+      return this._template;
+    }
+    this._template = this.querySelector("template[ep-for-template]");
+    if (!this._template) {
+      const template = document.createElement("template");
+      template.setAttribute("ep-for-template", this.getAttribute("id") as string);
+      template.innerHTML = this.innerHTML;
+      this.appendChild(template);
+      this._template = template;
+      // clear innerHTML to prevent duplicate rendering
+      this.querySelectorAll(":not(template[ep-for-template])").forEach((el) => el.remove());
+    }
+    return this._template;
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  protected render(items: any[] = []): void {
-    super.render();
-
-    if (!this._template) {
-      this.innerHTML = "Template is missing";
-      return;
-    }
-
+  protected get contents(): string {
     const fragment = document.createDocumentFragment();
-    items.forEach((item, index) => {
-      const clone = this._template!.content.cloneNode(true) as DocumentFragment;
+    this._items.forEach((item, index) => {
+      const clone = this.template.content.cloneNode(true) as DocumentFragment;
       clone.childNodes.forEach((child) => {
         if (child.nodeType === Node.ELEMENT_NODE) {
           this.bindElement(child as Element, item, index);
@@ -136,8 +147,29 @@ class EPFor extends CustomElement {
       fragment.appendChild(clone);
     });
 
-    this.innerHTML = "";
-    this.appendChild(fragment);
+    // create string from fragment
+    const temp = document.createElement("div");
+    temp.appendChild(fragment);
+    temp.childNodes.forEach((child) => {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        (child as HTMLElement).setAttribute("ep-generated-by", this.getAttribute("id") as string);
+      }
+    });
+    return temp.innerHTML;
+  }
+
+  // custom render for this element because we need to append the contents to the parent
+  protected render() {
+    // Create temporary container
+    const temp = document.createElement("div");
+    temp.innerHTML = this.contents;
+    // clean previous rendering
+    this.parentElement?.querySelectorAll(`[ep-generated-by="${this.getAttribute("id")}"]`).forEach((el) => {
+      el.remove();
+    });
+    // append the contents to the parent
+    this.parentElement?.append(...temp.childNodes);
+    this.parentElement?.setAttribute("ep-editable", "");
   }
 }
 

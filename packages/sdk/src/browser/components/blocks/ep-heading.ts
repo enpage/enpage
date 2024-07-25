@@ -7,11 +7,6 @@ class HeadingBlock extends TextBlock {
     return [...super.observedAttributes, "level"];
   }
 
-  constructor() {
-    super();
-    this.setAttribute("ep-type", "heading");
-  }
-
   get level() {
     return (this.getAttribute("level") as Level) || "1";
   }
@@ -20,7 +15,7 @@ class HeadingBlock extends TextBlock {
     this.setAttribute("level", value);
   }
 
-  protected get template() {
+  protected get contents() {
     return `<h${this.level}>${this.content}</h${this.level}>`;
   }
 

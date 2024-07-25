@@ -7,6 +7,7 @@ type Params = {
   dragElement: HTMLElement;
   coordinates: Coordinates;
 };
+
 type Side = {
   horizontal: "left" | "right";
   vertical: "top" | "bottom";
@@ -61,7 +62,7 @@ function getElementSideForCoordinates(element: HTMLElement, coordinates: Coordin
   return { horizontal, vertical };
 }
 
-function getInsertPosition(params: Params) {
+export function getInsertPosition(params: Params) {
   const { dragElement, coordinates } = params;
 
   // all elements at the coordinates
@@ -77,11 +78,11 @@ function getInsertPosition(params: Params) {
   if (!dropTarget) return null;
 
   const isContainer = dropTarget.hasAttribute("ep-container");
-  const isContainerChild = dropTarget.closest("[ep-container]") !== null;
-  // const isContainerChild = dropTarget.parentElement?.hasAttribute("ep-container");
+  // const isContainerChild = dropTarget.closest("[ep-container]") !== null;
+  const isContainerChild = dropTarget.parentElement?.hasAttribute("ep-container");
 
   if (!isContainer && !isContainerChild) {
-    console.warn("No valid container found for element %o", dropTarget);
+    console.debug("No container found for element %o", dropTarget);
     return null;
   }
 
@@ -110,7 +111,6 @@ function getInsertPosition(params: Params) {
     console.log("using container child as reference element, with side = %o", side);
   }
 
-  // let container = (isContainerChild ? dropTarget.parentElement : dropTarget) as HTMLElement;
   const container = (isContainerChild ? referenceElement.parentElement : dropTarget) as HTMLElement;
 
   console.log("--");
@@ -162,11 +162,6 @@ function getInsertPosition(params: Params) {
     }
     console.log("unknown container horizontal:", isContainerHorizontal);
   }
-
-  // console.log('Container orientation:', isHorizontal ? 'horizontal' : 'vertical');
-  // console.log('Using next sibling:', useNextSibling);
-
-  // console.log('Insert index:', insertIndex);
 
   return { container, referenceElement, isContainerHorizontal, side, coordinates };
 }
@@ -233,10 +228,11 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
     const { container, referenceElement, isContainerHorizontal, side, coordinates } = insertPosition;
 
     const containerRect = container.getBoundingClientRect();
+    const containerStyles = window.getComputedStyle(container);
     const contentLeft = containerRect.left;
-    const contentTop = containerRect.top;
+    const contentTop = containerRect.top + parseFloat(containerStyles.paddingTop);
     const contentRight = containerRect.right;
-    const contentBottom = containerRect.bottom;
+    const contentBottom = containerRect.bottom - parseFloat(containerStyles.paddingBottom);
 
     const children = Array.from(container.children) as HTMLElement[];
     children.sort((a, b) => {
@@ -249,7 +245,7 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
     if (referenceElement) {
       rect = referenceElement.getBoundingClientRect();
     } else {
-      console.warn("No reference element, using container");
+      console.error("No reference element, using container");
       rect = container.getBoundingClientRect();
     }
 

@@ -6,11 +6,6 @@ class ImageBlock extends EPBlockBase {
     return ["src", "alt", "sources"];
   }
 
-  constructor() {
-    super();
-    this.setAttribute("ep-type", "image");
-  }
-
   get src() {
     return this.getAttribute("src") || "";
   }
@@ -39,7 +34,7 @@ class ImageBlock extends EPBlockBase {
     this.setAttribute("sources", JSON.stringify(value));
   }
 
-  protected get template() {
+  protected get contents() {
     const sourcesHtml = this.sources
       .map(
         (source) =>
@@ -58,7 +53,7 @@ class ImageBlock extends EPBlockBase {
   toJSON() {
     return {
       id: this.id,
-      type: this.epType,
+      type: this.blockType,
       src: this.src,
       alt: this.alt,
       sources: this.sources,
@@ -71,5 +66,4 @@ declare global {
     "ep-image": ImageBlock;
   }
 }
-
 customElements.define("ep-image", ImageBlock);

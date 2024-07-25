@@ -1,0 +1,6 @@
+@import "@enpage/style-system/ui.css";
+
+.dragging {
+  cursor: grabbing !important;
+}
+

@@ -9,11 +9,17 @@ const configFile = resolve(__dirname, "../builder/config-vite.js");
 export async function startDevServer() {
   process.env.NODE_ENV = "development";
   process.env.ENPAGE_CONTEXT = "template-development";
+  process.env.ENPAGE_SITE_HOST ??= `${process.env.HOST ?? "localhost"}:${process.env.PORT ?? 3000}`;
+
+  const [, port] = process.env.ENPAGE_SITE_HOST.split(":");
 
   const server = await createServer({
     configFile,
     cacheDir: `${process.cwd()}/.cache`,
     mode: "development",
+    server: {
+      port: +port,
+    },
   });
 
   const logger = server.config.logger;

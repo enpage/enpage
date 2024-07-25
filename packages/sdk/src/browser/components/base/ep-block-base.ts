@@ -5,9 +5,7 @@ export abstract class EPBlockBase extends CustomElement {
 
   constructor() {
     super();
-    if (!this.hasAttribute("ep-type")) {
-      throw new Error("ep-type attribute must be set");
-    }
+    this.setAttribute("ep-block-type", this.tagName.toLowerCase());
   }
 
   connectedCallback() {
@@ -15,13 +13,13 @@ export abstract class EPBlockBase extends CustomElement {
     this.render();
   }
 
-  get epType(): string {
-    return this.getAttribute("ep-type") || "";
+  get blockType(): string {
+    return this.getAttribute("ep-block-type") || "";
   }
 
   abstract toJSON(): Record<string, unknown>;
 
-  protected get template(): string {
+  protected get contents(): string {
     return "<slot></slot>";
   }
 }

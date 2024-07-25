@@ -23,7 +23,7 @@ export default defineConfig((options) => {
       metafile: !options.watch,
       sourcemap: options.watch ? "inline" : false,
       splitting: false,
-      external: ["zod", "tailwindcss", "jsdom", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
+      external: ["zod", "tailwindcss", "jsdom", "vite", "@vitejs/plugin-react", "vite-tsconfig-paths", "@enpage/style-system"],
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -45,7 +45,7 @@ export default defineConfig((options) => {
       metafile: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: ["zod", "tailwindcss", "jsdom", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
+      external: ["zod", "tailwindcss", "jsdom", "vite", "vite-tsconfig-paths", "@enpage/style-system", "postcss", "autoprefixer"],
       esbuildOptions(input) {
         input.banner = banner;
       },

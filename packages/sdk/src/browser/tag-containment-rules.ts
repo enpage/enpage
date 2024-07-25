@@ -1,7 +1,7 @@
 // tag-containment-rules.ts
 
 // all valid HTML tags
-type Tag = keyof HTMLElementTagNameMap | "svg";
+export type Tag = keyof HTMLElementTagNameMap | "svg";
 
 // Define a type for the rules
 type ContainmentRules = {
@@ -40,7 +40,6 @@ const flowContent = createSet(
   "video",
   "audio",
   "canvas",
-  "iframe",
 );
 const inlineContent = createSet(
   "span",
@@ -60,6 +59,7 @@ const inlineContent = createSet(
   "abbr",
   "svg",
 );
+
 const headingContent = createSet("h1", "h2", "h3", "h4", "h5", "h6");
 
 // Define the actual rules
@@ -111,8 +111,9 @@ export const tagContainmentRules: ContainmentRules = {
 
 // Function to check if one tag can be contained within another
 export function canContain(parentTag: Tag, childTag: Tag): boolean {
-  const allowedChildren = tagContainmentRules[parentTag];
-  return allowedChildren ? allowedChildren.includes(childTag) : false;
+  return true;
+  // const allowedChildren = tagContainmentRules[parentTag];
+  // return allowedChildren ? allowedChildren.includes(childTag) : false;
 }
 
 // Function to get all tags that can contain a given tag

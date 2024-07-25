@@ -44,5 +44,8 @@
 	"editor.codeActionsOnSave": {
 		"quickfix.biome": "explicit",
 		"source.organizeImports.biome": "explicit",
-	},
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
 }

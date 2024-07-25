@@ -5,6 +5,7 @@ export const templateSettingsSchema = z.object({
   logLevel: z.enum(["info", "warn", "error", "silent"]).optional(),
   clearScreen: z.boolean().optional(),
   disableTailwind: z.boolean().optional(),
+  disableBodyCustomization: z.boolean().optional(),
 });
 
 export type TemplateSettings = z.infer<typeof templateSettingsSchema>;

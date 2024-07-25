@@ -22,7 +22,6 @@ class EPIf extends CustomElement {
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "condition") {
       this.render();
     }
@@ -60,7 +59,7 @@ class EPIf extends CustomElement {
     }
   }
 
-  protected get template(): string {
+  protected get contents(): string {
     return "<slot></slot>";
   }
 

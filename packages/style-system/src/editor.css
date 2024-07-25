@@ -4,6 +4,10 @@
 }
 
 /** Outline all over the parent **/
+/*
+!important Do not put a z-index to this pseudo-element as
+it will capture clicks events instead of its children
+*/
 [ep-editable]::before {
   content: "";
   opacity: 0;
@@ -20,6 +24,7 @@
     opacity 0.2s,
     scale 0.2s;
   scale: 0.94;
+  text-shadow: none;
 }
 
 /* label */
@@ -45,27 +50,31 @@
     opacity 0.2s,
     scale 0.2s;
   scale: 0.94;
+  text-transform: capitalize;
+  text-shadow: none;
 }
 
-[ep-block-type="page"]::before {
+[ep-block-type="site-background"]::before {
   inset: 5px !important;
   outline-offset: 0 !important;
   transition-delay: 100ms;
   scale: 1 !important;
 }
-[ep-block-type="page"]::after {
+[ep-block-type="site-background"]::after {
   bottom: calc(100% - 1.7rem - 2px);
-  left: 2px;
+  left: unset;
+  right: 2px;
   border-radius: 0.5rem 0 0.5rem 0;
   transition-delay: 100ms;
   scale: 1 !important;
+  border-radius: 0 0 0 0.5rem !important;
 }
 
-[ep-block-type="page"]:hover:not(:has(*:hover))::before {
+[ep-block-type="site-background"]:hover:not(:has(*:hover))::before {
   pointer-events: none;
 }
 
-[ep-block-type="page"] {
+[ep-block-type="site-background"] {
   z-index: 2;
 }
 
@@ -79,12 +88,49 @@
   scale: 1;
 }
 
-[ep-block-type="sections"] {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
+
+/* Hide scrollbar for tablet and larger screens */
+@media screen and (max-width: 1023px) {
+  body {
+      scrollbar-width: 0; /* Firefox */
+  }
+  body::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none; /* Chrome, Safari, and Opera */
+  }
 }
 
-[ep-editor-ui] {
-  z-index: 9999;
+/* Show thin scrollbar for desktop */
+@media screen and (min-width: 1024px) {
+  /* Webkit scrollbar styles */
+  ::-webkit-scrollbar {
+      width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+      background: #999;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+  }
+  /* Standard scrollbar styles */
+  * {
+      scrollbar-width: thin;
+      scrollbar-color: #888 #f1f1f1;
+  }
 }
+
+[ep-container]:hover > * {
+  outline: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+/* dnd-styles.css */
+/* .dnd-indicator {
+  position: absolute;
+  background-color: #3498db;
+  transition: all 0.1s ease;
+  pointer-events: none;
+} */
