@@ -1,8 +1,9 @@
 import { useEditor } from "./use-editor-store";
-import { type RefObject, useEffect, useState, useRef } from "react";
-import type { IframeMessage, EditorMessage } from "@enpage/sdk/browser/dev-client";
+import { type RefObject, useEffect, useRef } from "react";
+import type { IframeMessage } from "@enpage/sdk/browser/dev-client";
 import isEqual from "lodash-es/isEqual";
 import { isChromeLike } from "../utils/is-safari";
+import invariant from "tiny-invariant";
 
 export default function useIframeMonitor(iframeRef: RefObject<HTMLIFrameElement>) {
   const editor = useEditor();
@@ -34,19 +35,15 @@ export default function useIframeMonitor(iframeRef: RefObject<HTMLIFrameElement>
   }, [iframeRef.current, editor.setSelectedElement]);
 }
 
-const sendIframeMessageThrottle = throttleDedup((iframe: HTMLIFrameElement, payload: EditorMessage) => {
-  sendIframeMessage(iframe, payload);
-}, 20);
+const sendIframeMessageThrottle = dedup(sendIframeMessage);
 
 export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
-  const [dragging, setDragging] = useState(false);
   const draggedElement = useRef<HTMLElement | null>(null);
   const touchGhost = useRef<HTMLDivElement | null>(null);
   const editor = useEditor();
 
   useEffect(() => {
     const touchListener = (e: TouchEvent) => {
-      console.log(e.type, e);
       switch (e.type) {
         case "touchstart": {
           if (e.targetTouches.length > 1) {
@@ -55,77 +52,100 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
             return;
           }
 
-          if (e.target instanceof HTMLElement && e.target.getAttribute("draggable") === "true") {
-            setDragging(true);
-            draggedElement.current = e.target;
-            const touchLocation = e.targetTouches[0];
-            touchGhost.current = createMobileDragGhost(
-              e.target,
-              touchLocation.clientX,
-              touchLocation.clientY,
-            );
-            document.body.appendChild(touchGhost.current);
+          if (e.target instanceof HTMLElement && e.target.getAttribute("data-block-type")) {
+            invariant(iframe.current, "[touchstart] iframe must be present");
 
-            setTimeout(() => {
-              // clone the original dragged element, make it absolute, and append it to the body
-              editor.setLibraryVisible(false);
-            }, 200);
+            iframe.current.style.pointerEvents = "none";
+            draggedElement.current = e.target;
+            const touchLocation = e.touches[0];
+            const ghost = createMobileDragGhost(e.target, touchLocation.clientX, touchLocation.clientY);
+            if (touchGhost.current) {
+              document.body.replaceChild(ghost, touchGhost.current);
+            } else {
+              document.body.appendChild(ghost);
+            }
+            touchGhost.current = ghost;
+            editor.setLibraryVisible(false);
           }
           break;
         }
 
         case "touchmove": {
-          // e.preventDefault();
-          // if (e.type === "drop") {
-          //   console.debug("%s: %o", e.type, e);
-          // }
-          const touchLocation = e.targetTouches[0];
+          invariant(iframe.current, "[touchmove] iframe must be present");
+          invariant(draggedElement.current, "[touchmove] draggedElement must be present");
 
-          // ignore if the mouse is over the dialog panel
-          const hoveredElement = document.elementFromPoint(touchLocation.pageX, touchLocation.pageY);
-          if (hoveredElement?.classList.contains("dialog-panel")) {
-            console.warn("hovered dialog panel, skipping");
-            // return true;
-          }
+          const touchLocation = e.touches[0];
 
           if (touchGhost.current) {
-            touchGhost.current.style.top = `${touchLocation.clientY}px`;
-            touchGhost.current.style.left = `${touchLocation.clientX}px`;
+            const top = touchLocation.clientY - parseFloat(touchGhost.current.style.height) - 6;
+            const left = touchLocation.clientX - parseFloat(touchGhost.current.style.width) / 2;
+            touchGhost.current.style.top = `${top}px`;
+            touchGhost.current.style.left = `${left}px`;
           }
+
           // ignore if the mouse is outside the iframe
           const coordinates = translateToIframeCoords(
-            iframe.current!,
-            touchLocation.clientX,
-            touchLocation.clientY,
+            iframe.current,
+            touchLocation.pageX,
+            touchLocation.pageY,
           );
+
+          // don't send dragover events if the mouse is not over the iframe
           if (coordinates.x < 0 || coordinates.y < 0) {
-            console.warn("outside iframe", coordinates);
             return true;
           }
+
           sendIframeMessageThrottle(iframe.current!, {
             type: `editor-dragover`,
-            template: draggedElement.current!.dataset.blockTemplate!,
+            template: draggedElement.current.dataset.blockTemplate!,
             coordinates,
           });
-          // e.preventDefault();
           break;
         }
 
         case "touchend":
-        case "touchcancel":
+        case "touchcancel": {
+          invariant(iframe.current, `[${e.type}] iframe must be present`);
+          invariant(draggedElement.current, `[${e.type}] draggedElement must be present`);
+
           if (touchGhost.current) {
+            console.log("removing touch ghost");
             document.body.removeChild(touchGhost.current);
             touchGhost.current = null;
           }
-          setDragging(false);
+
+          iframe.current.style.pointerEvents = "auto";
+
+          if (e.type === "touchend") {
+            const touchLocation = e.changedTouches[0];
+            if (draggedElement.current) {
+              const coordinates = translateToIframeCoords(
+                iframe.current,
+                touchLocation.pageX,
+                touchLocation.pageY,
+              );
+              sendIframeMessage(iframe.current, {
+                type: `editor-drop`,
+                coordinates,
+                template: draggedElement.current.dataset.blockTemplate!,
+              });
+            }
+          }
+
+          // when using touch, also send dragend event
+          sendIframeMessage(iframe.current, { type: "editor-dragend" });
+
+          draggedElement.current = null;
           break;
+        }
       }
     };
     const mouseListener = (e: DragEvent) => {
       // console.log(e.type);
       switch (e.type) {
         case "dragstart": {
-          setDragging(true);
+          invariant(iframe.current, `[${e.type}] iframe must be present`);
+          iframe.current.style.pointerEvents = "none";
           if (isChromeLike() && e.dataTransfer) {
             e.dataTransfer.dropEffect = "copy";
             e.dataTransfer.effectAllowed = "copyMove";
@@ -137,36 +157,40 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
         case "drop":
         case "dragover": {
           e.preventDefault();
-          // if (e.type === "drop") {
-          //   console.debug("%s: %o", e.type, e);
-          // }
+          invariant(iframe.current, `[${e.type}] iframe must be present`);
+          invariant(draggedElement.current, `[${e.type}] draggedElement must be present`);
+
           // ignore if the mouse is over the dialog panel
           const hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
           if (hoveredElement?.classList.contains("dialog-panel")) {
-            console.debug("hovered dialog panel, skipping");
             return true;
           }
+
           // ignore if the mouse is outside the iframe
-          const coordinates = translateToIframeCoords(iframe.current!, e.clientX, e.clientY);
+          const coordinates = translateToIframeCoords(iframe.current, e.clientX, e.clientY);
           if (coordinates.x < 0 || coordinates.y < 0) {
             return true;
           }
-          sendIframeMessageThrottle(iframe.current!, {
+
+          sendIframeMessageThrottle(iframe.current, {
             type: `editor-${e.type}`,
-            template: draggedElement.current!.dataset.blockTemplate!,
+            template: draggedElement.current.dataset.blockTemplate!,
             coordinates,
           });
-          // e.preventDefault();
+
+          if (e.type === "drop") {
+            iframe.current.style.pointerEvents = "none";
+          }
           break;
         }
 
         case "dragend":
-          document.body.classList.remove("dragging");
+          invariant(iframe.current, `[${e.type}] iframe must be present`);
           draggedElement.current = null;
-          setDragging(false);
           sendIframeMessage(iframe.current!, {
             type: `editor-dragend`,
           });
+          iframe.current.style.pointerEvents = "none";
           break;
 
         case "dragenter":
@@ -200,13 +224,7 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
     };
   }, [iframe.current, editor.setLibraryVisible]);
 
-  useEffect(() => {
-    if (iframe.current) {
-      iframe.current.style.pointerEvents = dragging ? "none" : "auto";
-    }
-  }, [dragging, iframe.current]);
-
-  return { dragging };
+  return null;
 }
 
 /**
@@ -221,10 +239,15 @@ function createMobileDragGhost(from: HTMLElement, x: number, y: number) {
   if (clone) {
     ghost.appendChild(clone);
   }
+  // Put the ghost at the same position as the original element but a bit higher to make it look like it's being dragged by the finger
+  const top = y - targetBox.height - 6;
+  // center the ghost horizontally
+  const left = x - targetBox.width / 2;
+
   Object.assign(ghost.style, {
     position: "fixed",
-    top: `${x}px`,
-    left: `${y}px`,
+    top: `${top}px`,
+    left: `${left}px`,
     borderRadius: targetStyle.borderRadius,
     width: `${targetBox.width}px`,
     minWidth: `${targetBox.width}px`,
@@ -243,7 +266,6 @@ function createMobileDragGhost(from: HTMLElement, x: number, y: number) {
 }
 
 export function sendIframeMessage(iframe: HTMLIFrameElement, payload: unknown, targetOrigin = "*") {
-  console.log("iframe payload", payload);
   iframe.contentWindow?.postMessage(payload, targetOrigin);
 }
 
@@ -252,49 +274,18 @@ function translateToIframeCoords(iframe: HTMLIFrameElement, x: number, y: number
   return { x: x - rect.left, y: y - rect.top };
 }
 
-/**
- * Creates a throttled function that only invokes the provided function at most once per every `wait` milliseconds,
- * and prevents calling the function twice in a row with deeply equal arguments.
- *
- * @param func The function to throttle.
- * @param wait The number of milliseconds to throttle invocations to.
- * @return Returns the new throttled function.
- */
-function throttleDedup<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number,
-): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  let lastExecuted = 0;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function dedup<T extends (...args: any[]) => any>(func: T): (...args: Parameters<T>) => void {
   let lastArgs: Parameters<T> | null = null;
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   return function (this: any, ...args: Parameters<T>): void {
-    const now = Date.now();
-
     // If the arguments are deeply equal to last time, don't execute
     if (lastArgs && isEqual(lastArgs, args)) {
       return;
     }
 
-    if (!lastExecuted || now - lastExecuted >= wait) {
-      func.apply(this, args);
-      lastExecuted = now;
-      lastArgs = args;
-    } else {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-
-      timeout = setTimeout(
-        () => {
-          if (now - lastExecuted >= wait) {
-            func.apply(this, args);
-            lastExecuted = now;
-            lastArgs = args;
-          }
-        },
-        wait - (now - lastExecuted),
-      );
-    }
+    func.apply(this, args);
+    lastArgs = args;
   };
 }
