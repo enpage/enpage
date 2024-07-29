@@ -25,6 +25,7 @@
     "@uidotdev/usehooks": "2.4.1",
     "clsx": "2.1.1",
     "compression": "^1.7.4",
+    "debug": "4.3.5",
     "express": "^4.19.2",
     "immer": "10.1.1",
     "nanoid": "5.0.7",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@enpage/sdk": "workspace:*",
+    "@types/debug": "4.1.12",
     "@types/express": "^4.17.21",
     "@types/lodash-es": "4.17.12",
     "@types/node": "^20.12.7",
