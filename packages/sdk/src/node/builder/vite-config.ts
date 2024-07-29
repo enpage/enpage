@@ -4,6 +4,9 @@ import enpagePlugin from "./plugin-enpage";
 import { join, resolve } from "node:path";
 import { existsSync } from "node:fs";
 import { createLogger } from "./logger";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   const tailwindCfgPath = join(process.cwd(), "tailwind.config.js");
@@ -15,14 +18,20 @@ export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   const config = await loadConfig(cfgPath);
 
   return {
-    // Keep VITE_ prefix for portability with Vite and for plugins using Vite's env
-    envPrefix: ["VITE_", "ENPAGE_"],
+    envPrefix: ["PUBLIC_"],
     plugins: [enpagePlugin(config, viteConfigEnv)],
     resolve: {
       preserveSymlinks: true,
-      alias: {
-        "@enpage/liquid": resolve(__dirname, "../../../node_modules/liquidjs/dist/liquid.browser.esm.js"),
-      },
+      alias: [
+        {
+          find: "@enpage/liquid",
+          replacement: resolve(__dirname, "../../../node_modules/liquidjs/dist/liquid.browser.esm.js"),
+        },
+        {
+          find: /@enpage\/style-system\/(.*)/,
+          replacement: `${resolve(__dirname, "../../../node_modules/@enpage/style-system/src")}/$1`,
+        },
+      ],
     },
   };
 });

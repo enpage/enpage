@@ -43,9 +43,23 @@ type DatasourceProviderManifest<P extends DatasourceProvider> = {
   schema?: never;
   sampleData?: never;
   refresh?: {
-    method: "interval" | "manual";
+    method: "interval" | "manual" | "live";
     interval?: number;
   };
+};
+
+export type DatasourceHttpProviderManifest<S extends z.ZodTypeAny> = {
+  provider: "http-json";
+  name: string;
+  description?: string;
+  url: string;
+  headers?: Record<string, string>;
+  schema: S;
+  refresh?: {
+    method: "interval" | "manual" | "live";
+    interval?: number;
+  };
+  sampleData?: z.infer<S>;
 };
 
 export type DatasourceGenericManifest<S extends z.ZodTypeAny> = {
@@ -63,7 +77,10 @@ export type DatasourceGenericManifest<S extends z.ZodTypeAny> = {
 export type DatasourceManifestMap = Record<
   string,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  DatasourceGenericManifest<any> | DatasourceProviderManifest<DatasourceProvider>
+  | DatasourceGenericManifest<any>
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  | DatasourceHttpProviderManifest<any>
+  | DatasourceProviderManifest<DatasourceProvider>
 >;
 
 // Full datasource definition

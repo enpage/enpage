@@ -1,4 +1,4 @@
-import type { EnpageTemplateConfig } from "~/shared/config";
+import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { templateManifestSchema } from "~/shared/manifest";
 import { defineAttributes } from "~/shared/attributes";
 import fs from "node:fs";

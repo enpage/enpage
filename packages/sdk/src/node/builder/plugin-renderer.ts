@@ -1,26 +1,34 @@
-import type { EnpageTemplateConfig } from "~/shared/config";
+import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { PageContext } from "~/shared/context";
+import type { PageContext } from "~/shared/page-context";
 import { Liquid } from "liquidjs";
 import { minify } from "html-minifier";
 import { createFakeContext, fetchContext } from "./context";
-import chalk from "chalk";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 import type { AttributesResolved } from "~/shared/attributes";
+import invariant from "tiny-invariant";
 
+/**
+ * Renders the template based on the provided configuration and Vite environment.
+ * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
+ * @param {ConfigEnv} viteEnv - The Vite environment configuration.
+ */
 export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
   const isSsrBuild = viteEnv.isSsrBuild;
   let logger: Logger;
 
   let serverHostname = process.env.ENPAGE_SITE_HOST;
+  let enpageCtx: PageContext<any, any> | undefined | false = false;
 
   return {
     name: "enpage:render",
     configResolved(config) {
       logger = config.logger;
+      // @ts-ignore
+      enpageCtx = config.enpageContext;
     },
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
@@ -31,11 +39,9 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
     transformIndexHtml: {
       order: "pre",
       handler: async (html: string, viteCtx) => {
-        let context = isBuildMode ? await fetchContext(cfg, logger) : createFakeContext(cfg, logger);
-        if (context === false) {
-          logger.error("Failed to fetch context. Using fake context instead.");
-          context = createFakeContext(cfg, logger);
-        }
+        const context = enpageCtx;
+
+        invariant(context, "No context found");
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const attrs = (context as PageContext<any, any>).attributes;
@@ -45,16 +51,11 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
         // not recognized by JSDOM
         const { head, doc, body, dom } = createJSDOM(html);
 
-        if (!head) {
-          logger.error("No head element found in index.html");
-          process.exit(1);
-        }
+        invariant(head, "No head element found in index.html");
+        invariant(body, "No body element found in index.html");
 
         // Add Tailwind CSS
         addStylesheets(cfg, logger, doc, head);
-
-        // Add the vite preload error script (to reload the page on preload error)
-        attachVitePreloadErrorScript(doc, head);
 
         // Set site language. Will result in <html lang="xx">
         addMetaTags(doc, attrs, head, context);
@@ -73,32 +74,36 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
         // the label will describe the tag
         addMissingLabels(doc);
 
-        // Add enpage SDK script
-        addEnpageSdkScript(doc, slugs, context, sections, head);
+        // Add the vite preload error script (to reload the page on preload error)
+        attachVitePreloadErrorScript(doc, head);
+
+        // if not in SSR mode, add liquid js
+        if (!isBuildMode) {
+          // Add enpage SDK dev script
+          addEnpageSdkScriptDev(doc, slugs, context, sections, head);
+
+          // const liquidScript = doc.createElement("script");
+          // liquidScript.type = "module";
+          // // resolved through alias in vite.config.ts
+          // liquidScript.textContent = `import "@enpage/liquid";`;
+          // head.appendChild(liquidScript);
+          addDevClient(doc, head);
+        } else {
+          // Add a state placeholder for hydration
+          const stateScript = doc.createElement("script");
+          stateScript.id = "enpage-state";
+          stateScript.textContent = `// ENPAGE_STATE_PLACEHOLDER`;
+          body.appendChild(stateScript);
+
+          // add the import of the entry client script
+          addViteEntryClient(doc, head);
+        }
 
         // add custom elements
         addCustomElements(doc, head);
 
         // add animate script
         addAnimationScript(doc, head);
-
-        // if not in SSR mode, add liquid js
-        if (!isBuildMode) {
-          const liquidScript = doc.createElement("script");
-          liquidScript.type = "module";
-          // resolved through alias in vite.config.ts
-          liquidScript.textContent = `import "@enpage/liquid";`;
-          head.appendChild(liquidScript);
-
-          const clientRenderScript = doc.createElement("script");
-          clientRenderScript.type = "module";
-          clientRenderScript.textContent = `
-            import { initDevClient } from "@enpage/sdk/browser/dev-client";
-            initDevClient();
-            window.enpage.addEventListener("afternavigate", initDevClient);
-          `;
-          head.appendChild(clientRenderScript);
-        }
 
         // if (isSsrBuild) {
         //   logger.info("SSR: rendering liquid templates");
@@ -119,6 +124,27 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
   };
 };
 
+function addViteEntryClient(doc: Document, head: HTMLHeadElement) {
+  const entryClient = doc.createElement("script");
+  entryClient.type = "module";
+  entryClient.id = "enpage-sdk";
+  entryClient.textContent = `import "@enpage/sdk/browser/vite-entry-client";`;
+  head.appendChild(entryClient);
+}
+
+function addDevClient(doc: Document, head: HTMLHeadElement) {
+  const devClientScript = doc.createElement("script");
+  devClientScript.type = "module";
+  devClientScript.textContent = `import { initDevClient } from "@enpage/sdk/browser/dev-client";
+initDevClient();
+window.enpage.addEventListener("afternavigate", initDevClient);`;
+  head.appendChild(devClientScript);
+}
+
+/**
+ * Creates a JSDOM instance from the provided HTML.
+ * @param {string} html - The HTML string to create the JSDOM from.
+ */
 function createJSDOM(html: string) {
   const virtualConsole = new VirtualConsole();
   virtualConsole.sendTo(console, { omitJSDOMErrors: true });
@@ -130,6 +156,11 @@ function createJSDOM(html: string) {
   return { head, doc, body, dom };
 }
 
+/**
+ * Processes the body element, setting custom attributes.
+ * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
+ * @param {HTMLBodyElement} body - The body element to process.
+ */
 function processBody(cfg: EnpageTemplateConfig, body: HTMLBodyElement) {
   if (!cfg.manifest.settings?.disableBodyCustomization) {
     body.setAttribute("ep-block-type", "site-background");
@@ -138,6 +169,10 @@ function processBody(cfg: EnpageTemplateConfig, body: HTMLBodyElement) {
   }
 }
 
+/**
+ * Retrieves all page sections from the document.
+ * @param {Document} doc - The document to search for sections.
+ */
 function getPageSections(doc: Document) {
   const sections = doc.querySelectorAll("body > section");
   if (!sections.length) {
@@ -146,6 +181,10 @@ function getPageSections(doc: Document) {
   return sections;
 }
 
+/**
+ * Processes page sections, setting attributes and generating slugs.
+ * @param {NodeListOf<Element>} sections - The list of section elements to process.
+ */
 function processPageSections(sections: NodeListOf<Element>) {
   const slugs: string[] = [];
   sections.forEach((section, index) => {
@@ -186,6 +225,11 @@ function processPageSections(sections: NodeListOf<Element>) {
   return { slugs };
 }
 
+/**
+ * Adds the animation script to the document head.
+ * @param {Document} doc - The document to modify.
+ * @param {HTMLHeadElement} head - The head element to append the script to.
+ */
 function addAnimationScript(doc: Document, head: HTMLHeadElement) {
   const animateScript = doc.createElement("script");
   animateScript.type = "module";
@@ -193,6 +237,11 @@ function addAnimationScript(doc: Document, head: HTMLHeadElement) {
   head.appendChild(animateScript);
 }
 
+/**
+ * Adds custom elements scripts to the document head.
+ * @param {Document} doc - The document to modify.
+ * @param {HTMLHeadElement} head - The head element to append the script to.
+ */
 function addCustomElements(doc: Document, head: HTMLHeadElement) {
   const customElementsScript = doc.createElement("script");
   customElementsScript.type = "module";
@@ -203,6 +252,10 @@ function addCustomElements(doc: Document, head: HTMLHeadElement) {
   head.appendChild(customElementsScript);
 }
 
+/**
+ * Rewrites standalone image tags to picture tags.
+ * @param {Document} doc - The document to modify.
+ */
 function rewriteImageTags(doc: Document) {
   const images = doc.querySelectorAll("img");
   images.forEach((img) => {
@@ -223,6 +276,10 @@ function rewriteImageTags(doc: Document) {
   });
 }
 
+/**
+ * Adds missing labels to editable elements.
+ * @param {Document} doc - The document to modify.
+ */
 function addMissingLabels(doc: Document) {
   doc.querySelectorAll("[ep-editable]").forEach((el) => {
     if (!el.getAttribute("ep-label")) {
@@ -231,7 +288,15 @@ function addMissingLabels(doc: Document) {
   });
 }
 
-function addEnpageSdkScript(
+/**
+ * Adds the Enpage SDK script to the document head.
+ * @param {Document} doc - The document to modify.
+ * @param {string[]} slugs - The list of slugs for the pages.
+ * @param {PageContext<any, any>} context - The page context.
+ * @param {NodeListOf<Element>} sections - The list of page sections.
+ * @param {HTMLHeadElement} head - The head element to append the script to.
+ */
+function addEnpageSdkScriptDev(
   doc: Document,
   slugs: string[],
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -256,6 +321,11 @@ window.enpage = new EnpageJavascriptAPI(
   head.appendChild(enpageSdkScript);
 }
 
+/**
+ * Attaches the Vite preload error script to the document head.
+ * @param {Document} doc - The document to modify.
+ * @param {HTMLHeadElement} head - The head element to append the script to.
+ */
 function attachVitePreloadErrorScript(doc: Document, head: HTMLHeadElement) {
   const vitePreloadErrorScript = doc.createElement("script");
   vitePreloadErrorScript.textContent = `
@@ -266,6 +336,13 @@ function attachVitePreloadErrorScript(doc: Document, head: HTMLHeadElement) {
   head.appendChild(vitePreloadErrorScript);
 }
 
+/**
+ * Adds meta tags to the document head.
+ * @param {Document} doc - The document to modify.
+ * @param {AttributesResolved<any>} attrs - The resolved attributes.
+ * @param {HTMLHeadElement} head - The head element to append the meta tags to.
+ * @param {PageContext<any, any>} context - The page context.
+ */
 function addMetaTags(
   doc: Document,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -329,28 +406,27 @@ function addMetaTags(
   head?.appendChild(revised);
 }
 
+/**
+ * Adds stylesheets to the document head.
+ * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
+ * @param {Logger} logger - The logger instance.
+ * @param {Document} doc - The document to modify.
+ * @param {HTMLHeadElement} head - The head element to append the stylesheets to.
+ */
 function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document, head: HTMLHeadElement) {
-  if (cfg.manifest.settings?.disableTailwind) {
-    logger.warnOnce(chalk.gray("render: tailwind is disabled"), {
-      timestamp: true,
-    });
-  } else {
-    const style = doc.createElement("style");
-    style.textContent = `@import "@enpage/style-system/tailwind.css";`;
-    head.appendChild(style);
+  const styles = ["tailwind", "client", "anim"];
+  for (const style of styles) {
+    if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
+    const link = doc.createElement("link");
+    link.rel = "stylesheet";
+    link.href = `/@enpage/style-system/${style}.css`;
+    head.appendChild(link);
   }
-
-  // Enpage styles
-  const enpageStyles = doc.createElement("style");
-  enpageStyles.textContent = '@import "@enpage/style-system/client.css";';
-  head.appendChild(enpageStyles);
-
-  // animate.css
-  const animateStyles = doc.createElement("style");
-  animateStyles.textContent = '@import "@enpage/style-system/anim.css";';
-  head.appendChild(animateStyles);
 }
 
+/**
+ * @deprecated
+ */
 // biome-ignore lint/suspicious/noExplicitAny: we don't know the type of the context
 function renderLiquid(html: string, ctx: PageContext<any, any> | undefined) {
   const engine = new Liquid();

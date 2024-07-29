@@ -4,7 +4,7 @@ import { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-worker
 declare module "@hattip/compose" {
   interface Locals {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    pageContext: import("@enpage/sdk/context").PageContext<any, any>;
+    pageConfig: import("@enpage/sdk/page-config").PageConfig<any, any>;
   }
 }
 

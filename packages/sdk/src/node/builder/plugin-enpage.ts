@@ -1,10 +1,11 @@
 import { type ConfigEnv, loadEnv, type Plugin } from "vite";
 import stripBanner from "rollup-plugin-strip-banner";
-import type { EnpageTemplateConfig } from "~/shared/config";
+import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { renderTemplate } from "./plugin-render";
+import { renderTemplate } from "./plugin-renderer";
 import { insertBase } from "./plugin-base-url";
+import { contextPlugin } from "./plugin-context";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -67,8 +68,9 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin 
 export default async function enpageMetaPlugin(config: EnpageTemplateConfig, viteEnv: ConfigEnv) {
   return [
     enpagePlugin(config, viteEnv),
+    contextPlugin(config, viteEnv),
     renderTemplate(config, viteEnv),
     insertBase(config, viteEnv),
-    stripBanner({}),
+    // stripBanner({}),
   ];
 }

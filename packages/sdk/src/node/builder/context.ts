@@ -1,17 +1,16 @@
-import type { EnpageTemplateConfig } from "~/shared/config";
-import type { PageContext } from "~/shared/context";
+import type { EnpageTemplateConfig } from "~/shared/template-config";
+import type { PageContext } from "~/shared/page-context";
 import { providersSamples } from "~/shared/data-samples";
 import type { AttributesResolved } from "~/shared/attributes";
-import type { Logger } from "vite";
 
-export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config, logger: Logger) {
+export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
   let data: Record<string, unknown> | undefined;
 
   if (cfg.datasources) {
     data = {} as Record<string, unknown>;
     for (const key in cfg.datasources) {
       const provider = cfg.datasources[key].provider;
-      if (typeof provider === "string") {
+      if (provider && provider !== "http-json") {
         data[key] = providersSamples[provider];
       } else if ("sampleData" in cfg.datasources[key] && cfg.datasources[key].sampleData) {
         data[key] = cfg.datasources[key].sampleData;
@@ -34,12 +33,8 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
  * If all is OK, it will fetch the context from the Enpage API and return it.
  */
 
-export async function fetchContext<Config extends EnpageTemplateConfig>(
-  cfg: Config,
-  logger: Logger,
-  env = process.env,
-) {
-  const apiToken = env.PRIVATE_ENPAGE_API_TOKEN;
+export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env = process.env) {
+  const apiToken = env.ENPAGE_API_TOKEN;
   const siteHost = env.ENPAGE_SITE_HOST;
   const apiBaseUrl = env.ENPAGE_API_BASE_URL;
   // Abort if there is no datasources or attributes
@@ -52,12 +47,12 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(
   }
   // Abort if there is no siteHost
   if (!siteHost) {
-    logger.error("ENPAGE_SITE_HOST is empty. Skipping context fetch.");
+    console.error("ENPAGE_SITE_HOST is empty. Skipping context fetch.");
     return false;
   }
   // Abort if there is no apiToken
   if (!apiToken) {
-    console.error("PRIVATE_ENPAGE_API_TOKEN is empty. Skipping context fetch.");
+    console.error("ENPAGE_API_TOKEN is empty. Skipping context fetch.");
     return false;
   }
   // Abort if there is no apiHost

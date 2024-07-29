@@ -1,6 +1,6 @@
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { EnpageTemplateConfig } from "~/shared/config";
+import type { EnpageTemplateConfig } from "~/shared/template-config";
 
 export const insertBase = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";

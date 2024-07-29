@@ -18,7 +18,7 @@ export default defineConfig((options) => {
       outDir: "dist/node",
       target: "node18",
       format: ["esm"],
-      dts: false,
+      dts: true,
       minify: !options.watch,
       metafile: !options.watch,
       sourcemap: options.watch ? "inline" : false,

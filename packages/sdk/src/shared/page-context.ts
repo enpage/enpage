@@ -1,9 +1,8 @@
 import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
 import type { AttributesMap, AttributesResolved } from "./attributes";
-import type { Manifest } from "vite";
 
 /**
- * The Site Context represents the data needed to build/render a page.
+ * The Page Context represents the datasources and attributes resolved
  */
 export type PageContext<D extends DatasourceManifestMap | undefined, A extends AttributesMap> = {
   /**
@@ -14,8 +13,7 @@ export type PageContext<D extends DatasourceManifestMap | undefined, A extends A
    * Attributes for the page. Always defined because of Enpage default attributes.
    */
   attributes: AttributesResolved<A>;
-
-  siteConfig: Record<string, unknown>;
-
-  ssrManifest?: Manifest;
 };
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type GenericPageContext = PageContext<any, any>;

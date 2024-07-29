@@ -18,7 +18,8 @@
     "@hattip/core": "0.0.46",
     "commander": "12.1.0",
     "debug": "4.3.5",
-    "http-cache-semantics": "4.1.1"
+    "http-cache-semantics": "4.1.1",
+    "unstorage": "1.10.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20240725.0",

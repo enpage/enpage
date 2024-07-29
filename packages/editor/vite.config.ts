@@ -8,7 +8,7 @@ const [, port] = process.env.ENPAGE_SITE_HOST.split(":");
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  envPrefix: ["VITE_", "ENPAGE_"],
+  envPrefix: ["PUBLIC_"],
   plugins: [Inspect(), react()],
   server: {
     port: 3008,

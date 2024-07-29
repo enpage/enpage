@@ -1,30 +1,38 @@
-import type { PageContext } from "@enpage/sdk/context";
+import type { PageConfig } from "@enpage/sdk/page-config";
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import type { RequestContext } from "@hattip/compose";
+import { cache } from "./cache";
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type GenericPageConfig = PageConfig<any, any>;
 
 export default async function pageInfoHandler(ctx: RequestContext<CloudflareWorkersPlatformInfo>) {
-  const { pathname, hostname } = new URL(ctx.request.url);
+  let pageConfig: GenericPageConfig | null = null;
 
-  // Use D1 to get page info
-  const db = ctx.platform.env;
+  // try to use the cache first
+  pageConfig = (await cache.getItem<GenericPageConfig>("sites")) || (await getConfigFromAPI(ctx));
 
-  // 1. Get page info from API
+  // Get page info from API
+  if (!pageConfig) {
+    throw new Response("Not found.", { status: 404 });
+  }
+
+  ctx.locals.pageConfig = pageConfig;
+}
+
+async function getConfigFromAPI(ctx: RequestContext<CloudflareWorkersPlatformInfo>) {
+  const url = new URL(ctx.request.url);
   const apiUrl = ctx.env("ENPAGE_API_BASE_URL");
-  const res = await fetch(`https://${apiUrl}/sites/${hostname}${pathname}`, {
+  const res = await fetch(`https://${apiUrl}/sites/${url.hostname}${url.pathname}`, {
     headers: {
-      Authorization: `Bearer ${ctx.env("PRIVATE_ENPAGE_API_TOKEN")}`,
+      Authorization: `Bearer ${ctx.env("ENPAGE_API_TOKEN")}`,
     },
     cf: {
       cacheEverything: true,
     },
   });
-
   if (!res.ok) {
-    throw new Response("Not found.", { status: 404 });
+    return null;
   }
-
-  // biome-ignore lint/suspicious/noExplicitAny: we don't know the shape of the page context yet
-  const pageContext = (await res.json()) as PageContext<any, any>;
-
-  ctx.locals.pageContext = pageContext;
+  return res.json() as Promise<GenericPageConfig>;
 }

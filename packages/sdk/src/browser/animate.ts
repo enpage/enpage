@@ -1,4 +1,4 @@
-import type { NavigateEvent } from "./NavigateEvent";
+import type { NavigateEvent } from "./events";
 
 /**
  * Initialize animations for elements with `ep-animate-appear` and `ep-animate-disappear` attributes.
@@ -18,7 +18,6 @@ import type { NavigateEvent } from "./NavigateEvent";
  *
  */
 function initAnimations() {
-  console.debug("initAnimations");
   monitorTransitions();
   monitorNavigation();
   animateSectionOnLoad();

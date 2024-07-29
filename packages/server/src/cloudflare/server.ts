@@ -1,4 +1,3 @@
-import type { HattipHandler } from "@hattip/core";
 import cfwAdapterStatic, { type CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import cfwAdapter from "@hattip/adapter-cloudflare-workers/no-static";
 import enpageHandler from "./render-handler";
