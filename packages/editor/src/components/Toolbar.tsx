@@ -56,7 +56,7 @@ export default function Toolbar() {
 
   const tooltipCls = `absolute -bottom-7 py-0.5 px-2.5 bg-enpage-600/60 left-auto right-auto
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-y-1.5
-  group-hover:block group-hover:opacity-100 group-hover:translate-y-0 text-nowrap whitespace-nowrap`;
+  group-hover:block group-hover:opacity-100 group-hover:translate-y-0 text-nowrap whitespace-nowrap pointer-events-none`;
 
   // const tooltipCls = clsx(
   //   styles["toolbar-tooltip"],
@@ -65,17 +65,20 @@ export default function Toolbar() {
 
   return (
     <nav
-      className="xl:mx-auto min-w-fit max-sm:w-full xl:max-w-fit
+      className="xl:mx-auto min-w-fit max-sm:w-full xl:max-w-fit bg-white
                   flex h-[3.6rem]  justify-start shadow-2xl
-                  text-xl text-white rounded-lg
-                  "
+                  text-xl text-white xl:rounded-lg"
     >
       {isSmallDevice === false && (
-        <button type="button" className={clsx("min-w-[140px] px-0.5", btnClass, standardBtn)}>
+        <button type="button" className={clsx("min-w-[140px] px-0.5 order-first", btnClass, standardBtn)}>
           <img src={logo} alt="Enpage" className="h-14 w-auto" />
         </button>
       )}
-      <button type="button" onClick={editor.toggleLibraryVisible} className={clsx(btnClass, standardBtn)}>
+      <button
+        type="button"
+        onClick={editor.toggleLibraryVisible}
+        className={clsx(btnClass, standardBtn, "max-md:order-10 order-1")}
+      >
         <LuPlus className="h-7 w-auto" />
         <span className={tooltipCls}>Add elements</span>
       </button>
@@ -89,23 +92,23 @@ export default function Toolbar() {
           { label: "Schedule publish", shortcut: "⌘⇧D" },
         ]}
       >
-        <button type="button" className={clsx(btnClass, standardBtn, btnWithArrow)}>
+        <button type="button" className={clsx(btnClass, standardBtn, btnWithArrow, "order-2 max-sm:order-3")}>
           <LiaCopy className="h-7 w-auto" />
           {/* <LuMenu className="h-7 w-auto" /> */}
           <RiArrowDownSLine className="h-4 w-4 opacity-60  -mr-1" />
           <span className={tooltipCls}>Pages</span>
         </button>
       </ToolbarMenu>
-      <button disabled type="button" className={clsx(btnClass, standardBtn)}>
+      <button disabled type="button" className={clsx(btnClass, standardBtn, "order-3 max-md:order-1")}>
         <LuUndo className="h-7 w-auto" />
         <span className={tooltipCls}>Undo</span>
       </button>
-      <button disabled type="button" className={clsx(btnClass, standardBtn)}>
+      <button disabled type="button" className={clsx(btnClass, standardBtn, "order-4 max-md:order-2")}>
         <LuRedo className="h-7 w-auto" />
         <span className={tooltipCls}>Redo</span>
       </button>
       {isSmallDevice === false && (
-        <button type="button" className={clsx(btnClass, standardBtn)} onClick={switchPreviewMode}>
+        <button type="button" className={clsx(btnClass, standardBtn, "order-5")} onClick={switchPreviewMode}>
           {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
           {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
           {editor.previewMode === "tablet" && <BsTablet className="h-7 w-auto" />}
@@ -113,7 +116,7 @@ export default function Toolbar() {
         </button>
       )}
 
-      <button type="button" className={clsx(btnClass, standardBtn)}>
+      <button type="button" className={clsx(btnClass, standardBtn, "order-6")}>
         <IoSettingsOutline className="h-7 w-auto" />
         <span className={tooltipCls}>Site settings</span>
       </button>
@@ -122,7 +125,7 @@ export default function Toolbar() {
         anchor="bottom end"
         items={[{ label: "Publish on web" }, { label: "Schedule publish", shortcut: "⌘⇧D" }]}
       >
-        <button type="button" className={clsx(btnClass, rocketBtn, btnWithArrow)}>
+        <button type="button" className={clsx(btnClass, rocketBtn, btnWithArrow, "order-last")}>
           <RxRocket className="h-7 w-auto" />
           <RiArrowDownSLine className="h-4 w-4 opacity-60 -mr-1" />
           <span className={tooltipCls}>Deploy</span>
@@ -154,9 +157,9 @@ function ToolbarMenu(
       <MenuItems
         anchor={props.anchor}
         transition
-        className="rounded-md bg-white/85 backdrop-blur p-2.5 min-w-44 mt-1 text-sm shadow-xl
+        className="rounded-md bg-white/85 backdrop-blur p-2.5 min-w-44 mt-1 shadow-xl
                   shadow-black/10 origin-top flex flex-col gap-y-px transition duration-[50ms]
-                    ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+                    ease-out data-[closed]:scale-95 data-[closed]:opacity-0 select-none z-[9999]"
       >
         {props.items.map((item, index) =>
           item.type === "separator" ? (
@@ -165,13 +168,16 @@ function ToolbarMenu(
             <MenuItem key={index}>
               <button
                 type="button"
-                className="group flex items-center text-nowrap rounded-[inherit] gap-5 p-1.5 px-2.5 w-full
+                className="group flex items-center text-nowrap rounded-[inherit] gap-5
+                py-1.5 px-2.5
+                max-sm:py-2.5 max-sm:text-lg
+                w-full
                     text-left data-[focus]:bg-enpage-600 data-[focus]:text-white"
               >
                 {item.label}
                 {item.shortcut && (
                   <kbd
-                    className="ml-auto font-sans text-right text-xs text-black/50
+                    className="ml-auto font-sans text-right text-[smaller] text-black/50
                       group-data-[focus]:text-white/70 group-data-[active]:text-white/70"
                   >
                     {item.shortcut}

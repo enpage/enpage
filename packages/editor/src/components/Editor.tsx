@@ -25,8 +25,8 @@ export default function Editor() {
 
 function Main() {
   const editor = useEditor();
-
   usePreviewModeInit();
+
   return (
     <main className="flex flex-col flex-1 max-lg:flex-col-reverse">
       <section role="toolbar" className="xl:py-8">
@@ -34,11 +34,11 @@ function Main() {
       </section>
       <section role="application" className="flex-1 xl:px-4">
         <div className="grid place-items-center h-full">
-          {editor.html && editor.previewMode && (
+          {(editor.html || editor.templateUrl) && editor.previewMode && (
             <DeviceFrame previewMode={editor.previewMode}>
-              <PreviewIframe html={editor.html} previewMode={editor.previewMode} />
+              <PreviewIframe url={editor.templateUrl} html={editor.html} previewMode={editor.previewMode} />
               {/* hack */}
-              <div id="frame-over-buster" className="absolute inset-0 z-10 pointer-events-none" />
+              <div id="frame-over-buster" className="absolute inset-0 z-50 pointer-events-auto" />
             </DeviceFrame>
           )}
         </div>

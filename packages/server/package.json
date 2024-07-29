@@ -1,0 +1,41 @@
+{
+  "name": "@enpage/server",
+  "version": "0.0.13",
+  "type": "module",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    "./*": {
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts"
+    }
+  },
+  "dependencies": {
+    "@enpage/sdk": "workspace:*",
+    "@hattip/compose": "0.0.46",
+    "@hattip/core": "0.0.46",
+    "commander": "12.1.0",
+    "debug": "4.3.5",
+    "http-cache-semantics": "4.1.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20240725.0",
+    "tsup": "8.1.0"
+  },
+  "scripts": {
+    "buildNOTYET": "tsup --clean",
+    "dev": "tsup --watch",
+    "lint": "biome check --write .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthias Etienne",
+  "publishConfig": {
+    "access": "public"
+  },
+  "optionalDependencies": {
+    "@hattip/adapter-cloudflare-workers": "0.0.46",
+    "@hattip/adapter-node": "0.0.46"
+  }
+}

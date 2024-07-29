@@ -3,6 +3,8 @@ import ReactDOMServer from "react-dom/server";
 import App from "./App";
 import type { Request } from "express";
 
+const IFRAME_MODE: "url" | "srcdoc" = "srcdoc";
+
 function bytesToBase64(bytes: Uint8Array) {
   const binString = Array.from(bytes, (byte) => String.fromCodePoint(byte)).join("");
   return btoa(binString);
@@ -14,23 +16,31 @@ const ERROR_CONTENTS = `<!DOCTYPE html><html><head><style>
 }</style></head><body>Cannot load template</body></html>`;
 
 export async function render(req: Request) {
-  let contents = ERROR_CONTENTS;
+  if (!req.query.templateUrl) {
+    throw new Error("templateUrl query param is required");
+  }
+  let contents: string | undefined;
+  const templateUrl = new URL(req.query.templateUrl as string).href;
 
   // fetch contents from templateUrl query param
   try {
-    const templateUrl = new URL(req.query.templateUrl as string);
-    contents = await fetch(templateUrl.toString()).then((res) => res.text());
+    if (IFRAME_MODE === "srcdoc") {
+      contents = await fetch(templateUrl).then((res) => res.text());
+    }
   } catch (e) {
     contents = ERROR_CONTENTS;
   }
   // render the app
   const html = ReactDOMServer.renderToString(
     <React.StrictMode>
-      <App html={contents} />
+      <App html={contents} templateUrl={templateUrl} />
     </React.StrictMode>,
   );
   return {
     html,
-    state: JSON.stringify({ templateContents: bytesToBase64(new TextEncoder().encode(contents)) }),
+    state: JSON.stringify({
+      templateContents: bytesToBase64(new TextEncoder().encode(contents)),
+      templateUrl,
+    }),
   };
 }

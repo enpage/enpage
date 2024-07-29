@@ -5,11 +5,13 @@ import { useRef } from "react";
 
 type EditorWrapperProps = {
   html?: string;
+  templateUrl?: string;
 };
 export function EditorWrapper(props: EditorWrapperProps) {
   const store = useRef(
     createEditorStore({
       html: props.html,
+      templateUrl: props.templateUrl,
     }),
   ).current;
 

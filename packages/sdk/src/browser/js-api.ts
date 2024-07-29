@@ -1,13 +1,13 @@
-import type { SiteContext } from "../shared/context";
+import type { PageContext } from "../shared/context";
 import type { NavigateEvent } from "./NavigateEvent";
 
 export class EnpageJavascriptAPI extends EventTarget {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  #ctx: SiteContext<any, any>;
+  #ctx: PageContext<any, any>;
 
   constructor(
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    ctx: SiteContext<any, any>,
+    ctx: PageContext<any, any>,
     private pageIndex = 0,
     private pagesCount = 1,
     private pagesSlugs: string[] = [],

@@ -2,6 +2,7 @@
 import z from "zod";
 import { defineDataSources } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
+import { defineManifest } from "@enpage/sdk/manifest";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -46,4 +47,9 @@ export const attributes = defineAttributes({
 // };
 
 // various settings
-export const settings = {};
+export const manifest = defineManifest({
+  author: "John Doe",
+  name: "Example Template",
+  description: "Description of the template",
+  homepage: "https://enpage.co",
+});

@@ -1,4 +1,4 @@
-import type { ResponsiveMode } from "./types";
+import type { ResponsiveMode } from "./responsive";
 
 // Base interfaces
 export interface BaseToken {

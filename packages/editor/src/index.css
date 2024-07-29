@@ -1,6 +1,5 @@
 @import "@enpage/style-system/ui.css";
 
-.dragging {
-  cursor: grabbing !important;
+html, body {
+  overscroll-behavior: none;
 }
-

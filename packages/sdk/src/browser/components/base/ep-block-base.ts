@@ -3,9 +3,8 @@ import { CustomElement } from "./custom-element";
 export abstract class EPBlockBase extends CustomElement {
   static baseStyles = ``;
 
-  constructor() {
-    super();
-    this.setAttribute("ep-block-type", this.tagName.toLowerCase());
+  static get observedAttributes() {
+    return ["ep-label"];
   }
 
   connectedCallback() {
@@ -17,7 +16,19 @@ export abstract class EPBlockBase extends CustomElement {
     return this.getAttribute("ep-block-type") || "";
   }
 
-  abstract toJSON(): Record<string, unknown>;
+  toJSON(): Record<string, unknown> {
+    const attrs = this.getAttributeNames().reduce(
+      (acc, name) => {
+        acc[name] = this.getAttribute(name);
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
+    return {
+      $tag: this.tagName.toLowerCase(),
+      ...attrs,
+    };
+  }
 
   protected get contents(): string {
     return "<slot></slot>";

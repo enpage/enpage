@@ -2,7 +2,7 @@ import "./index.css";
 import { EditorWrapper } from "./components/EditorWrapper";
 import { useEffect, useState } from "react";
 
-export default function App({ html }: { html?: string }) {
+export default function App({ html, templateUrl }: { html?: string; templateUrl?: string }) {
   const [client, setClient] = useState(false);
   useEffect(() => {
     setClient(true);
@@ -11,7 +11,7 @@ export default function App({ html }: { html?: string }) {
 
   return (
     <div className="h-dvh flex">
-      <EditorWrapper html={html} />
+      <EditorWrapper html={html} templateUrl={templateUrl} />
     </div>
   );
 }

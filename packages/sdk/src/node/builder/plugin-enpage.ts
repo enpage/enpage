@@ -1,17 +1,18 @@
-import { build, type ConfigEnv, loadEnv, type Plugin, UserConfig, ViteDevServer } from "vite";
+import { type ConfigEnv, loadEnv, type Plugin } from "vite";
+import stripBanner from "rollup-plugin-strip-banner";
 import type { EnpageTemplateConfig } from "~/shared/config";
-import { resolve, relative } from "node:path";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readFileSync } from "node:fs";
-import { renderTemplate } from "./render-template";
+import { renderTemplate } from "./plugin-render";
+import { insertBase } from "./plugin-base-url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // return partial config (recommended)
-const enpagePlugin = (): Plugin => {
+const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
   return {
     name: "enpage",
-    config: async (cfg, { command, mode, isSsrBuild }) => {
+    config: async (cfg, { command, mode }) => {
       const env = loadEnv(mode, process.cwd(), "");
       return {
         optimizeDeps: {
@@ -31,7 +32,12 @@ const enpagePlugin = (): Plugin => {
         },
         build: {
           manifest: true,
-          outDir: ".template-dist",
+          // ssrManifest: true,
+          outDir: cfg.build?.ssrManifest
+            ? ".enpage/dist/client"
+            : cfg.ssr
+              ? ".enpage/dist/server"
+              : ".enpage/dist",
           rollupOptions: {
             external: ["zod"],
             output: {
@@ -58,6 +64,11 @@ const enpagePlugin = (): Plugin => {
   };
 };
 
-export default async function enpageMetaPlugin(config: EnpageTemplateConfig, viteConfigEnv: ConfigEnv) {
-  return [enpagePlugin(), renderTemplate(config)];
+export default async function enpageMetaPlugin(config: EnpageTemplateConfig, viteEnv: ConfigEnv) {
+  return [
+    enpagePlugin(config, viteEnv),
+    renderTemplate(config, viteEnv),
+    insertBase(config, viteEnv),
+    stripBanner({}),
+  ];
 }

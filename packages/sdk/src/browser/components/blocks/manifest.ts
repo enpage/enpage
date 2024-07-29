@@ -34,7 +34,7 @@ export const allBlocks = {
       <circle cx="8.5" cy="8.5" r="1.5"></circle>
       <polyline points="21 15 16 10 5 21"></polyline>
     </svg>`,
-    template: "<ep-image src='https://example.com/image.jpg'></ep-image>",
+    template: '<ep-image ep-editable ep-label="Image"></ep-image>',
   },
   video: {
     title: "Video",

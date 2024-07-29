@@ -4,7 +4,7 @@ import { immer } from "zustand/middleware/immer";
 import { createContext, useContext } from "react";
 import { temporal } from "zundo";
 import invariant from "tiny-invariant";
-import type { ResponsiveMode } from "@enpage/sdk/types";
+import type { ResponsiveMode } from "@enpage/sdk/responsive";
 import type { ElementSelectedPayload } from "@enpage/sdk/browser/dev-client";
 export { type Immer } from "immer";
 
@@ -41,7 +41,6 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             set((state) => {
               state.selectedElement = element;
             }),
-
           setLibraryVisible: (visible) =>
             set((state) => {
               state.libraryVisible = visible;

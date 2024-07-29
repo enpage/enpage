@@ -11,7 +11,7 @@ function Inspector() {
   const editor = useEditor();
   return (
     <div
-      className={clsx("bg-white dark:bg-gray-700 min-w-[300px] w-[18dvw] max-w-[360px] flex-1", {
+      className={clsx("bg-white dark:bg-gray-800/50 min-w-[300px] w-[18dvw] max-w-[360px] flex-1 z-50", {
         "opacity-0": !editor.selectedElement,
       })}
     >

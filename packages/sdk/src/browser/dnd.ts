@@ -82,7 +82,6 @@ export function getInsertPosition(params: Params) {
   const isContainerChild = dropTarget.parentElement?.hasAttribute("ep-container");
 
   if (!isContainer && !isContainerChild) {
-    console.debug("No container found for element %o", dropTarget);
     return null;
   }
 
@@ -99,7 +98,6 @@ export function getInsertPosition(params: Params) {
       side = getElementSideForCoordinates(closestChild, coordinates);
       // if the closest child is on the right or bottom side of the child, we want to insert after the child
       referenceElement = closestChild;
-      console.log("using closest child the reference element, with side = %o", side);
     } else {
       // container has no children, we want to insert at the beginning of the container
       side = getElementSideForCoordinates(dropTarget, coordinates);
@@ -108,22 +106,12 @@ export function getInsertPosition(params: Params) {
     // we are dragging over a child of a container
     // we need to know which side of the child we are dragging over
     side = getElementSideForCoordinates(dropTarget, coordinates);
-    console.log("using container child as reference element, with side = %o", side);
   }
 
   const container = (isContainerChild ? referenceElement.parentElement : dropTarget) as HTMLElement;
 
-  console.log("--");
-  console.log("container: %o", container);
-  console.log("referenceElement: %o", referenceElement);
-  console.log("isContainer: %o", isContainer);
-  console.log("isContainerChild: %o", isContainerChild);
-  console.log("side: %o", side);
-  console.log("--");
-
   // Check if the dragged element can be contained in the container
   if (!canContain(container.tagName.toLowerCase() as Tag, dragElement.tagName.toLowerCase() as Tag)) {
-    console.warn("Dragged element cannot be contained in this container");
     return null;
   }
 
@@ -133,13 +121,11 @@ export function getInsertPosition(params: Params) {
   // Check for flex container
   if (computedStyle.display === "flex" || computedStyle.display === "inline-flex") {
     isContainerHorizontal = computedStyle.flexDirection.startsWith("row");
-    console.log("Flex/Block container horizontal:", isContainerHorizontal);
   }
   // Check for grid container
   else if (computedStyle.display === "grid" || computedStyle.display === "inline-grid") {
     const gridAutoFlow = computedStyle.gridAutoFlow;
     isContainerHorizontal = !gridAutoFlow.includes("column"); // 'row', 'dense', or 'row dense' are horizontal
-    console.log("grid container horizontal:", isContainerHorizontal);
   }
   // For other layouts, check the container's dimensions and childNodes
   else {
@@ -160,13 +146,12 @@ export function getInsertPosition(params: Params) {
       //todo: change this, this is not reliable
       isContainerHorizontal = container.offsetWidth > container.offsetHeight;
     }
-    console.log("unknown container horizontal:", isContainerHorizontal);
   }
 
   return { container, referenceElement, isContainerHorizontal, side, coordinates };
 }
 
-function delayHideIndicator(delay = 500) {
+function delayHideIndicator(delay = 400) {
   if (indicatorTimeout) {
     clearTimeout(indicatorTimeout as number);
   }
@@ -183,12 +168,11 @@ function cancelHideIndicator() {
   }
 }
 
-const INDICATOR_TRANSITION = "all 0.5s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.15s ease";
+const INDICATOR_TRANSITION = "all 0.35s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.15s ease";
 const INDICATOR_TRANSITION_2WAY_1 = "all 0.15s ease-in";
 const INDICATOR_TRANSITION_2WAY_2 = "all 0.25s cubic-bezier(0.34, 1.3, 0.64, 1)";
 
 function createIndicator(): HTMLElement {
-  console.log("Creating indicator");
   const indicator = document.createElement("div");
   indicator.className = "dnd-indicator";
 
@@ -245,7 +229,6 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
     if (referenceElement) {
       rect = referenceElement.getBoundingClientRect();
     } else {
-      console.error("No reference element, using container");
       rect = container.getBoundingClientRect();
     }
 
@@ -253,7 +236,6 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
     let width: string, height: string, top: string, left: string;
 
     if (isContainerHorizontal) {
-      console.log("isContainerHorizontal = true");
       height = `${contentBottom - contentTop}px`;
       top = `${contentTop}px`;
       width = `${lineWidth}px`;
@@ -261,18 +243,10 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
       if (!referenceElement || side.horizontal === "left") {
         const nextElement = referenceElement || children[0];
         const nextRect = nextElement.getBoundingClientRect();
-        console.log("side is left, next element: %o", nextElement);
         if (referenceElement.previousElementSibling) {
-          console.log("has previous sibling");
           const prevRect = referenceElement.previousElementSibling.getBoundingClientRect();
           left = `${(prevRect.right + nextRect.left) / 2}px`;
         } else {
-          console.log("no previous sibling");
-          console.log("container: %o", container);
-          console.log("nextElement: %o", nextElement);
-          console.log("nextRect: %o", nextRect);
-
-          console.log("contentLeft: %o, nextRect.left: %o", contentLeft, nextRect.left);
           left = `${(contentLeft + nextRect.left) / 2}px`;
         }
       } else {
@@ -324,7 +298,7 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
     }
 
     if (skipUpdate) {
-      console.log("Indicator too far, skipping update");
+      // console.log("Indicator too far, skipping update");
       delayHideIndicator();
       return;
     }
@@ -336,7 +310,6 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
     // const isOrientationSwitch = lastPosition && lastPosition.width !== `${lineWidth}px`;
 
     if (isOrientationSwitch) {
-      console.warn("Orientation switch detected. lastPosition = %o, lineWidth = %s", lastPosition, lineWidth);
       // First, transition to a small square
       Object.assign(indicator.style, {
         transition: INDICATOR_TRANSITION_2WAY_1,
@@ -375,13 +348,9 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
   });
 }
 
-const throttledUpdateIndicator = throttle((params: Params) => {
-  const insertPosition = getInsertPosition(params);
-  updateIndicator(insertPosition);
-}, 16); // Throttle to roughly 60fps
-
 export function onDragOver(dragElement: HTMLElement, coordinates: Coordinates): void {
-  throttledUpdateIndicator({ dragElement, coordinates });
+  const insertPosition = getInsertPosition({ dragElement, coordinates });
+  updateIndicator(insertPosition);
 }
 
 export function onDragEnd(): void {

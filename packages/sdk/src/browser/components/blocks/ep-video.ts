@@ -2,7 +2,7 @@ import { EPBlockBase } from "../base/ep-block-base";
 
 class VideoBlock extends EPBlockBase {
   static get observedAttributes() {
-    return ["src", "poster", "autoplay", "controls", "loop", "muted"];
+    return [...super.observedAttributes, "src", "poster", "autoplay", "controls", "loop", "muted"];
   }
 
   get src() {
@@ -80,19 +80,6 @@ class VideoBlock extends EPBlockBase {
         ${this.muted ? "muted" : ""}
       ></video>
     `;
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      type: this.blockType,
-      src: this.src,
-      poster: this.poster,
-      autoplay: this.autoplay,
-      controls: this.controls,
-      loop: this.loop,
-      muted: this.muted,
-    };
   }
 }
 

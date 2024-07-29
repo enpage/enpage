@@ -1,4 +1,4 @@
-import type { ResponsiveMode } from "./types";
+import type { ResponsiveMode } from "./responsive";
 
 export interface BaseAttribute {
   name: string;

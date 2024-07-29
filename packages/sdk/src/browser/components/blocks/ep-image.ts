@@ -3,11 +3,14 @@ import { EPBlockBase } from "../base/ep-block-base";
 
 class ImageBlock extends EPBlockBase {
   static get observedAttributes() {
-    return ["src", "alt", "sources"];
+    return [...super.observedAttributes, "src", "alt", "sources"];
   }
 
   get src() {
-    return this.getAttribute("src") || "";
+    return (
+      this.getAttribute("src") ||
+      "data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
+    );
   }
 
   set src(value: string) {
@@ -48,16 +51,6 @@ class ImageBlock extends EPBlockBase {
         <img src="${this.src}" alt="${this.alt}">
       </picture>
     `;
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      type: this.blockType,
-      src: this.src,
-      alt: this.alt,
-      sources: this.sources,
-    };
   }
 }
 

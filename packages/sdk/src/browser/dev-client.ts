@@ -352,7 +352,6 @@ export async function initDevClient() {
           // handle drop
           const dragElement = createDragElement(data);
           const insertPosition = getInsertPosition({ dragElement, coordinates: data.coordinates });
-          console.log("droppppp", insertPosition);
           if (insertPosition) {
             const { referenceElement, side } = insertPosition;
             if (side.horizontal === "left" || side.vertical === "top") {

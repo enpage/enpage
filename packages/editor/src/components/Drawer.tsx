@@ -1,6 +1,7 @@
 import { Fragment, type PropsWithChildren } from "react";
 import { Dialog, Transition, TransitionChild, DialogPanel } from "@headlessui/react";
 import { cn } from "../utils/component-utils";
+import { useEditor } from "../hooks/use-editor-store";
 
 type VDrawerProps = PropsWithChildren<{
   className?: string;
@@ -20,7 +21,7 @@ export default function VerticalDrawer({
   open,
 }: VDrawerProps) {
   return (
-    <Transition appear show={open} as={Fragment}>
+    <Transition show={open} as={Fragment} unmount={false} appear={true}>
       <Dialog as="div" className="relative z-20" onClose={() => dismissable && onClosed?.()}>
         {!noBackdrop && (
           <TransitionChild
@@ -37,6 +38,7 @@ export default function VerticalDrawer({
         )}
         <div className={cn("fixed left-0 right-0 bottom-0 h-[50dvh] max-h-[50dvh] flex flex-col", className)}>
           <TransitionChild
+            unmount={false}
             as={Fragment}
             enter="ease-out duration-200"
             enterFrom="opacity-0 translate-y-full"
@@ -84,16 +86,18 @@ export function HorizontalDrawer({
   dismissable,
   noBackdrop,
 }: HDrawerProps) {
-  const enterFrom = from === "right" ? "opacity-0 translate-x-full" : "opacity-0 -translate-x-full";
-  const enterTo = from === "right" ? "opacity-100 translate-x-0" : "opacity-100 translate-x-0";
+  const enterFrom =
+    from === "right" ? "opacity-0 translate-x-full scale-90" : "opacity-0 -translate-x-full scale-90";
+  const enterTo =
+    from === "right" ? "opacity-100 translate-x-0 scale-100" : "opacity-100 translate-x-0 scale-100";
   const leaveTo = from === "right" ? "opacity-0 translate-x-full" : "opacity-0 -translate-x-full";
-  const basePosition = from === "right" ? "right-0 justify-right" : "left-0";
+  const basePosition = from === "right" ? "right-0" : "left-0";
 
   return (
-    <Transition appear show={open} as={Fragment}>
+    <Transition show={open} as={Fragment} unmount={false} appear={true}>
       <Dialog
         as="div"
-        className="relative z-20"
+        className={"relative z-20"}
         id={id}
         onClose={() => {
           setTimeout(() => dismissable && onClosed?.(), 0);
@@ -105,7 +109,7 @@ export function HorizontalDrawer({
             enter="ease-out duration-200"
             enterFrom="opacity-0"
             enterTo="opacity-100"
-            leave="ease-in duration-100"
+            leave="ease-in duration-200"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
@@ -121,22 +125,18 @@ export function HorizontalDrawer({
         >
           <TransitionChild
             as={Fragment}
-            enter="ease-in-elastic duration-200"
+            enter="ease-out duration-[150ms]"
             enterFrom={enterFrom}
             enterTo={enterTo}
-            leave="ease-in duration-75"
+            leave="ease-in duration-100"
             leaveFrom="opacity-100"
             leaveTo={leaveTo}
+            unmount={false}
           >
-            {/* max-w-md
-                md:max-w-lg
-                lg:max-w-xl
-                xl:max-w-2xl */}
             <DialogPanel
               className="w-full relative flex-1 dialog-panel
-
-                transform  rounded-2xl rounded-b-none bg-white
-                shadow-[0_-35px_45px_rgba(0,0,0,0.2)] transition-all"
+                rounded-2xl rounded-b-none bg-white
+                shadow-[0_-35px_45px_rgba(0,0,0,0.2)]"
             >
               {children}
             </DialogPanel>

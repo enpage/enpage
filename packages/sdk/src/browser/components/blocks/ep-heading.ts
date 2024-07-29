@@ -18,13 +18,6 @@ class HeadingBlock extends TextBlock {
   protected get contents() {
     return `<h${this.level}>${this.content}</h${this.level}>`;
   }
-
-  toJSON() {
-    return {
-      ...super.toJSON(),
-      level: this.level,
-    };
-  }
 }
 
 declare global {

@@ -23,16 +23,7 @@ export default defineConfig((options) => {
       metafile: !options.watch,
       sourcemap: options.watch ? "inline" : false,
       splitting: false,
-      external: [
-        "zod",
-        "tailwindcss",
-        "jsdom",
-        "vite",
-        "@vitejs/plugin-react",
-        "vite-tsconfig-paths",
-        "@enpage/style-system",
-        "axe-core",
-      ],
+      external: [],
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -42,28 +33,19 @@ export default defineConfig((options) => {
     // We bundle it using tsup to avoid the automatic replacement at build time
     {
       entry: [
-        "src/browser",
-        "!src/browser/**/*.md",
-        "!src/browser/**/__tests__/**/*",
-        "!src/browser/**/__mocks__/**/*",
+        "src/cloudflare",
+        "!src/cloudflare/**/*.md",
+        "!src/cloudflare/**/__tests__/**/*",
+        "!src/cloudflare/**/__mocks__/**/*",
       ],
-      outDir: "dist/browser",
+      outDir: "dist/cloudflare",
       target: "es2020",
       format: ["esm"],
       dts: true,
       metafile: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: [
-        "zod",
-        "tailwindcss",
-        "jsdom",
-        "vite",
-        "vite-tsconfig-paths",
-        "@enpage/style-system",
-        "postcss",
-        "autoprefixer",
-      ],
+      external: ["__STATIC_CONTENT_MANIFEST"],
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -83,7 +65,7 @@ export default defineConfig((options) => {
       metafile: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: ["zod", "tailwindcss", "jsdom", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
+      external: [],
       esbuildOptions(input) {
         input.banner = banner;
       },

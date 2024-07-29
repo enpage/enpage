@@ -1,5 +1,5 @@
 import type { EnpageTemplateConfig } from "~/shared/config";
-import type { SiteContext } from "~/shared/context";
+import type { PageContext } from "~/shared/context";
 import { providersSamples } from "~/shared/data-samples";
 import type { AttributesResolved } from "~/shared/attributes";
 import type { Logger } from "vite";
@@ -25,7 +25,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     attributes[key] = cfg.attributes[key].defaultValue;
   }
 
-  return { data, attributes } as SiteContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return { data, attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
 }
 
 /**
@@ -40,7 +40,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(
   env = process.env,
 ) {
   const apiToken = env.PRIVATE_ENPAGE_API_TOKEN;
-  const siteId = env.ENPAGE_SITE_ID;
+  const siteHost = env.ENPAGE_SITE_HOST;
   const apiBaseUrl = env.ENPAGE_API_BASE_URL;
   // Abort if there is no datasources or attributes
   if (
@@ -50,9 +50,9 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(
     console.error("No datasources or attributes found in config. Skipping context fetch.");
     return;
   }
-  // Abort if there is no siteId
-  if (!siteId) {
-    console.error("ENPAGE_SITE_ID is empty. Skipping context fetch.");
+  // Abort if there is no siteHost
+  if (!siteHost) {
+    logger.error("ENPAGE_SITE_HOST is empty. Skipping context fetch.");
     return false;
   }
   // Abort if there is no apiToken
@@ -66,7 +66,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(
     return false;
   }
 
-  const url = `${apiBaseUrl}/sites/${siteId}/context`;
+  const url = `${apiBaseUrl}/sites/${siteHost}/context`;
   const response = await fetch(url, {
     headers: {
       Accept: "application/json",
@@ -75,7 +75,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(
   });
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const context = (await response.json()) as SiteContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 
   return context;
 }

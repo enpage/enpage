@@ -1,18 +1,16 @@
 /* Inspired by https://gist.github.com/jarthod/8719db9fef8deb937f4f */
 .desktop {
-  @apply h-[88dvh] aspect-[16/9];
+  @apply h-[88dvh] aspect-[16/9] bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600;
   /* @apply max-h-[75dvh] aspect-[16/9] max-w-[85dvw] w-[80dvw]; */
   box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.2);
   border-radius: 6px 6px 0 0;
-  background-color: #efefef;
-  border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 6px 6px 0 0;
 }
 
 .desktopBar {
-  @apply w-full h-10;
+  @apply w-full h-10 bg-gradient-to-t from-gray-300 to-gray-100 dark:from-gray-700 dark:to-gray-600;
   position: relative;
-  background: linear-gradient(to top, #CCC, #EEE);
+  /* background: linear-gradient(to top, #CCC, #EEE); */
   backdrop-filter: blur(10px);
   border-radius: inherit;
 
@@ -28,7 +26,7 @@
     background-color: #f44;
     box-shadow: 0 0 0 2px #f44, 1.5em 0 0 2px #9b3, 3em 0 0 2px #fb5;
   }
-
+  /* address bar */
   &:after {
     display: block;
     position: absolute;
@@ -40,7 +38,7 @@
     width: calc(100% - 6em);
     border-radius: 9999px;
     border: 1px inset rgba(0, 0, 0, 0.2);
-    background-color: white;
+    @apply bg-white dark:bg-gray-700 text-gray-800 dark:text-white/60;
   }
 }
 
@@ -52,6 +50,7 @@
   /* transition: all .1s linear; */
   outline: 14px solid #000;
   border-radius: 24px;
+
 }
 
 .tablet{
@@ -60,7 +59,7 @@
 
 .mobile {
   /* max-sm:w-[86dvw] md:w-[390px]*/
-  @apply h-[88dvh] md:h-[70dvh] md:max-h-[800px] aspect-[9/19.5];
+  @apply md:h-[70dvh] md:max-h-[800px] md:aspect-[9/19.5] max-sm:w-full max-sm:h-full max-sm:outline-none max-sm:shadow-none max-sm:rounded-none;
 }
 
 

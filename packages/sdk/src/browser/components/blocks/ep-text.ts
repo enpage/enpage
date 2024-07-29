@@ -4,7 +4,7 @@ type Mode = "plain" | "html" | "markdown";
 
 export class TextBlock extends EPBlockBase {
   static get observedAttributes() {
-    return ["content", "mode", "ep-label"];
+    return [...super.observedAttributes, "content", "mode"];
   }
 
   get content() {
@@ -27,15 +27,6 @@ export class TextBlock extends EPBlockBase {
     // For now, we'll just render the content as-is
     // In the future, we'll handle HTML and Markdown rendering here
     return `<div>${this.content}</div>`;
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      type: this.blockType,
-      content: this.content,
-      mode: this.mode,
-    };
   }
 }
 

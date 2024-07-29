@@ -1,5 +1,5 @@
 import type { EnpageTemplateConfig } from "~/shared/config";
-import { templateSettingsSchema } from "~/shared/settings";
+import { templateManifestSchema } from "~/shared/manifest";
 import { defineAttributes } from "~/shared/attributes";
 import fs from "node:fs";
 import type { Logger } from "vite";
@@ -7,7 +7,7 @@ import type { Logger } from "vite";
 export async function loadConfig(configPath: string): Promise<EnpageTemplateConfig> {
   if (!fs.existsSync(configPath)) {
     console.error(
-      "No enpage.config.js found!\nYour project must have an enpage.config.js file in the root directory.\n\n",
+      "🔴 No enpage.config.js found!\nYour project must have an enpage.config.js file in the root directory.\n\n",
     );
     process.exit(1);
   }
@@ -27,9 +27,9 @@ export function checkConfig(config: EnpageTemplateConfig, logger: Logger) {
     config.attributes = defineAttributes({});
   }
 
-  const validated = templateSettingsSchema.safeParse(config.settings);
+  const validated = templateManifestSchema.safeParse(config.manifest);
   if (!validated.success) {
-    logger.error(`🔴 Error! enpage.config.js settings are invalid. Check your call to defineSettings().\n\n`);
+    logger.error(`🔴 Error! enpage.config.js manifest is invalid. Check your call to defineManifest().\n\n`);
     process.exit(1);
   }
 

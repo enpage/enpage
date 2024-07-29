@@ -1,11 +1,18 @@
 import type { DatasourceManifestMap } from "./datasources";
 import type { AttributesMap } from "./attributes";
-import type { TemplateSettings } from "./settings";
 import type { TemplateManifest } from "./manifest";
 
 export type EnpageTemplateConfig = {
-  datasources?: DatasourceManifestMap;
+  /**
+   * The template manifest and settings
+   */
+  manifest: TemplateManifest;
+  /**
+   * The attributes declared for the template
+   */
   attributes: AttributesMap;
-  settings: TemplateSettings;
-  manifest?: TemplateManifest;
+  /**
+   * The datasources declared for the template
+   */
+  datasources?: DatasourceManifestMap;
 };
