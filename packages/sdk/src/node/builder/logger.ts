@@ -9,7 +9,7 @@ export function createLogger(level?: LogLevel, allowClearScreen?: boolean, showV
   });
 
   if (showVersion) {
-    logger.info(chalk.bold.green(`🚀 Enpage v${version}\n`));
+    logger.info(chalk.hex("#7270c6").bold(`🚀 Enpage v${version}\n`));
   }
 
   return logger;

@@ -7,6 +7,7 @@ import {
   type ArgOpts,
   type CommonOptions,
 } from "./cli-methods";
+import createServer from "~/server/node/server";
 
 program
   .option("-l, --logLevel <level>", `[string] info | warn | error | silent`)
@@ -17,14 +18,22 @@ program
   .description("Start Enpage development server")
   .action((...args) => {
     startDevServer(getArgsOptions(args) as ArgOpts<CommonOptions>);
+    // createServer().listen(process.env.PORT || 3000);
   });
+
 program
   .command("build")
-  .description("Build Enpage teplate")
-  .option("--ssr", `[boolean] enable server side rendering`)
+  .description("Build template")
+  .option(
+    "--ssr [type]",
+    `Enable server side rendering.
+Pass --ssr to generate a SSR-enabled build.
+Pass --ssr=local to generate a SSR-enabled build that can be tested locally.`,
+  )
   .action((...args) => {
     buildTemplate(getArgsOptions(args) as ArgOpts<CommonOptions>);
   });
+
 program
   .command("preview")
   .description("Preview Enpage template")

@@ -1,10 +1,9 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { PageContext } from "~/shared/page-context";
+import type { GenericPageContext, PageContext } from "~/shared/page-context";
 import { Liquid } from "liquidjs";
 import { minify } from "html-minifier";
-import { createFakeContext, fetchContext } from "./context";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 import type { AttributesResolved } from "~/shared/attributes";
@@ -15,13 +14,13 @@ import invariant from "tiny-invariant";
  * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
  * @param {ConfigEnv} viteEnv - The Vite environment configuration.
  */
-export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
+export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
   const isSsrBuild = viteEnv.isSsrBuild;
   let logger: Logger;
 
   let serverHostname = process.env.ENPAGE_SITE_HOST;
-  let enpageCtx: PageContext<any, any> | undefined | false = false;
+  let enpageCtx: GenericPageContext | undefined | false = false;
 
   return {
     name: "enpage:render",
@@ -77,10 +76,20 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
         // Add the vite preload error script (to reload the page on preload error)
         attachVitePreloadErrorScript(doc, head);
 
+        // ---- SSR stuff ----
+        // Add a state placeholder for hydration
+        const stateScript = doc.createElement("script");
+        stateScript.id = "enpage-state";
+        stateScript.textContent = `// ENPAGE_STATE_PLACEHOLDER`;
+        head.appendChild(stateScript);
+        // add the import of the entry client script
+        addViteEntryClient(doc, head, body);
+        // ---- End of SSR stuff ----
+
         // if not in SSR mode, add liquid js
         if (!isBuildMode) {
           // Add enpage SDK dev script
-          addEnpageSdkScriptDev(doc, slugs, context, sections, head);
+          // addEnpageSdkScriptDev(doc, slugs, context, sections, head);
 
           // const liquidScript = doc.createElement("script");
           // liquidScript.type = "module";
@@ -89,14 +98,15 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
           // head.appendChild(liquidScript);
           addDevClient(doc, head);
         } else {
+          // ---- SSR stuff ----
           // Add a state placeholder for hydration
-          const stateScript = doc.createElement("script");
-          stateScript.id = "enpage-state";
-          stateScript.textContent = `// ENPAGE_STATE_PLACEHOLDER`;
-          body.appendChild(stateScript);
-
-          // add the import of the entry client script
-          addViteEntryClient(doc, head);
+          // const stateScript = doc.createElement("script");
+          // stateScript.id = "enpage-state";
+          // stateScript.textContent = `// ENPAGE_STATE_PLACEHOLDER`;
+          // body.appendChild(stateScript);
+          // // add the import of the entry client script
+          // addViteEntryClient(doc, head);
+          // ---- End of SSR stuff ----
         }
 
         // add custom elements
@@ -124,7 +134,7 @@ export const renderTemplate = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): P
   };
 };
 
-function addViteEntryClient(doc: Document, head: HTMLHeadElement) {
+function addViteEntryClient(doc: Document, head: HTMLHeadElement, body: HTMLBodyElement) {
   const entryClient = doc.createElement("script");
   entryClient.type = "module";
   entryClient.id = "enpage-sdk";

@@ -1,6 +1,7 @@
 import cfwAdapterStatic, { type CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import cfwAdapter from "@hattip/adapter-cloudflare-workers/no-static";
-import enpageHandler from "../shared/render-handler";
+import renderHandler from "../common/render-handler";
+import pageConfigHdl from "./page-config-handler";
 import { compose, type RequestHandler } from "@hattip/compose";
 
 /**
@@ -16,17 +17,17 @@ import { compose, type RequestHandler } from "@hattip/compose";
  * };
  * ```
  *
- * @param pageInfoHandler Handler in charge of fetching page info & data.
+ * @param pageConfigHandler Handler in charge of fetching page info & data.
  * @param renderHandler Handler in charge of rendering pages. Defaults to enpageHandler.
  * @param useStatic Whether to use static adapter or not. Defaults to false.
  *
  * @see https://github.com/hattipjs/hattip/tree/main/packages/adapter/adapter-cloudflare-workers
  */
 export default function createFetchHandler(
-  pageInfoHandler: RequestHandler<CloudflareWorkersPlatformInfo>,
-  renderHandler: RequestHandler<CloudflareWorkersPlatformInfo> = enpageHandler,
   useStatic = false,
+  pageConfigHandler: RequestHandler<CloudflareWorkersPlatformInfo> = pageConfigHdl,
+  renderingHandler: RequestHandler<CloudflareWorkersPlatformInfo> = renderHandler,
 ) {
-  const handler = compose(pageInfoHandler, renderHandler);
+  const handler = compose(pageConfigHandler, renderingHandler);
   return useStatic ? cfwAdapterStatic(handler) : cfwAdapter(handler);
 }

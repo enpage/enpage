@@ -20,7 +20,7 @@ export default defineConfig((options) => {
       format: ["esm"],
       dts: true,
       minify: !options.watch,
-      metafile: !options.watch,
+      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
       splitting: false,
       external: [
@@ -29,9 +29,12 @@ export default defineConfig((options) => {
         "jsdom",
         "vite",
         "@vitejs/plugin-react",
+        "vite-plugin-inspect",
         "vite-tsconfig-paths",
         "@enpage/style-system",
         "axe-core",
+        "virtual:enpage-template:index.html",
+        "virtual:enpage-page-config.json",
       ],
       esbuildOptions(input) {
         input.banner = banner;
@@ -51,7 +54,7 @@ export default defineConfig((options) => {
       target: "es2020",
       format: ["esm"],
       dts: true,
-      metafile: !options.watch,
+      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
       external: [
@@ -80,14 +83,60 @@ export default defineConfig((options) => {
       target: "es2020",
       format: ["esm"],
       dts: true,
-      metafile: !options.watch,
+      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: ["zod", "tailwindcss", "jsdom", "vite", "vite-tsconfig-paths", "@enpage/style-system"],
+      external: [
+        "zod",
+        "tailwindcss",
+        "jsdom",
+        "vite",
+        "vite-tsconfig-paths",
+        "@enpage/style-system",
+        "virtual:enpage-template:index.html",
+        "virtual:enpage-page-config.json",
+      ],
       esbuildOptions(input) {
         input.banner = banner;
       },
       loader,
+    },
+    {
+      entry: ["src/server/node/server.ts"],
+      outDir: "dist/server/node",
+      target: "node18",
+      format: ["esm"],
+      dts: false,
+      minify: !options.watch,
+      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      sourcemap: options.watch ? "inline" : false,
+      splitting: false,
+      external: ["vite", "virtual:enpage-template:index.html", "virtual:enpage-page-config.json"],
+      clean: true,
+      esbuildOptions(input) {
+        input.banner = banner;
+      },
+    },
+    {
+      entry: ["src/server/cloudflare/server.ts"],
+      outDir: "dist/server/cloudflare",
+      target: "es2020",
+      format: ["esm"],
+      dts: false,
+      clean: true,
+      splitting: false,
+      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      minify: !options.watch,
+      sourcemap: options.watch ? "inline" : false,
+      external: [
+        "__STATIC_CONTENT_MANIFEST",
+        "vite",
+        "virtual:enpage-template:index.html",
+        "virtual:enpage-page-config.json",
+      ],
+      esbuildOptions(input) {
+        input.banner = banner;
+      },
     },
   ];
 });

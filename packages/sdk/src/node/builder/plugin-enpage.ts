@@ -3,9 +3,10 @@ import stripBanner from "rollup-plugin-strip-banner";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { renderTemplate } from "./plugin-renderer";
-import { insertBase } from "./plugin-base-url";
+import { renderTemplatePlugin } from "./plugin-renderer";
+import { insertBasePlugin } from "./plugin-base-url";
 import { contextPlugin } from "./plugin-context";
+import { virtualFilesPlugin } from "./plugin-virtual-files";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -67,10 +68,11 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin 
 
 export default async function enpageMetaPlugin(config: EnpageTemplateConfig, viteEnv: ConfigEnv) {
   return [
+    virtualFilesPlugin(config, viteEnv),
     enpagePlugin(config, viteEnv),
     contextPlugin(config, viteEnv),
-    renderTemplate(config, viteEnv),
-    insertBase(config, viteEnv),
+    renderTemplatePlugin(config, viteEnv),
+    insertBasePlugin(config, viteEnv),
     // stripBanner({}),
   ];
 }

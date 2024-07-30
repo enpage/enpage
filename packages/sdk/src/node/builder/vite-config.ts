@@ -3,10 +3,11 @@ import { loadConfig, checkConfig } from "./config";
 import enpagePlugin from "./plugin-enpage";
 import { join, resolve } from "node:path";
 import { existsSync } from "node:fs";
-import { createLogger } from "./logger";
+// import { createLogger } from "./logger";
 import { createRequire } from "node:module";
+import inspectPlugin from "vite-plugin-inspect";
 
-const require = createRequire(import.meta.url);
+// const require = createRequire(import.meta.url);
 
 export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   const tailwindCfgPath = join(process.cwd(), "tailwind.config.js");
@@ -19,7 +20,7 @@ export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
 
   return {
     envPrefix: ["PUBLIC_"],
-    plugins: [enpagePlugin(config, viteConfigEnv)],
+    plugins: [inspectPlugin(), enpagePlugin(config, viteConfigEnv)],
     resolve: {
       preserveSymlinks: true,
       alias: [

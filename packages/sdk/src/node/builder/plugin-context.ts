@@ -20,11 +20,12 @@ export const contextPlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Pl
 
       // If in dev mode, use fake context
       if (!isBuildMode) {
-        console.warn("Using fake context.");
+        // console.warn("Using fake context.");
         context = createFakeContext(cfg);
 
         // If in build mode, fetch context from API if not SSR build
       } else if (!isSsrBuild) {
+        // if config.build?.ssrManifest === true, only fetch attributes
         context = (await fetchContext(cfg)) || createFakeContext(cfg);
       }
       // @ts-expect-error

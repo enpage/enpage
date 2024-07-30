@@ -2,7 +2,7 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 
-export const insertBase = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
+export const insertBasePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
   let logger: Logger;
   let serverHostname = process.env.ENPAGE_SITE_HOST;
@@ -35,6 +35,7 @@ export const insertBase = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugi
         if (!isBuildMode && head) {
           const base = doc.createElement("base");
           base.href = `http://${serverHostname}`;
+          // @ts-ignore
           head.prepend(base);
 
           return dom.serialize();
