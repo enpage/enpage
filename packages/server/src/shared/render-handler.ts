@@ -1,23 +1,22 @@
-// <reference types="@cloudflare/workers-types" />
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
+import type { NodePlatformInfo } from "@hattip/adapter-node";
 import type { RequestContext } from "@hattip/compose";
 import type { EnpageEnv } from "~/shared/types";
 import type { GenericPageContext } from "@enpage/sdk/page-context";
-import {
-  type DatasourceGenericManifest,
-  type DatasourceGenericResolved,
-  DatasourceResolved,
-} from "@enpage/sdk/datasources";
-import { MAX_LIVE_DATASOURCES } from "../shared/constants";
+import type { DatasourceGenericResolved } from "@enpage/sdk/datasources";
+import { MAX_LIVE_DATASOURCES } from "./constants";
 
-export default async function renderHandler(ctx: RequestContext<CloudflareWorkersPlatformInfo>) {
+export default async function renderHandler(
+  ctx: RequestContext<CloudflareWorkersPlatformInfo | NodePlatformInfo>,
+) {
   // At this point we should have access to ctx.locals.pageContext
   // If not, this is an internal error
   if (!ctx.locals.pageConfig) {
     throw new Response("Page config not found.", { status: 500 });
   }
 
-  const env = ctx.platform.env as EnpageEnv;
+  const isCF = isCloudflare(ctx);
+  const env = isCF ? (ctx.platform.env as EnpageEnv) : (process.env as unknown as EnpageEnv);
   const url = new URL(ctx.request.url);
   const isProduction = process.env.NODE_ENV === "production";
 
@@ -55,7 +54,10 @@ export default async function renderHandler(ctx: RequestContext<CloudflareWorker
 
   if (isProduction) {
     render = (await import("@enpage/sdk/builder/vite-entry-server")).render;
-    let { html, state } = await render(url, ctx.locals.pageConfig, pageContext, env.SITES_R2_BUCKET);
+    // todo: differentiate between node and cf to use the right S3 client
+    let { html, state } = isCF
+      ? await render(url, ctx.locals.pageConfig, pageContext, (ctx.platform.env as EnpageEnv).SITES_R2_BUCKET)
+      : await render(url, ctx.locals.pageConfig, pageContext, env.SITES_R2_BUCKET);
     html = html.replace("// ENPAGE_STATE_PLACEHOLDER", `window.__ENPAGE_STATE__ = ${JSON.stringify(state)};`);
     return new Response(html, {
       headers: {
@@ -65,4 +67,10 @@ export default async function renderHandler(ctx: RequestContext<CloudflareWorker
   }
 
   return new Response("Not found.", { status: 404 });
+}
+
+function isCloudflare(
+  ctx: RequestContext<CloudflareWorkersPlatformInfo | NodePlatformInfo>,
+): ctx is RequestContext<CloudflareWorkersPlatformInfo> {
+  return "name" in ctx.platform && ctx.platform.name === "cloudflare-workers";
 }

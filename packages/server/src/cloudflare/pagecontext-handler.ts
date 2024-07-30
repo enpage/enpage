@@ -1,38 +1,26 @@
 import type { PageConfig } from "@enpage/sdk/page-config";
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import type { RequestContext } from "@hattip/compose";
-import { cache } from "./cache";
+import { kv } from "./kv-cache";
+import { getConfigFromAPI } from "~/shared/api";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type GenericPageConfig = PageConfig<any, any>;
 
 export default async function pageInfoHandler(ctx: RequestContext<CloudflareWorkersPlatformInfo>) {
-  let pageConfig: GenericPageConfig | null = null;
+  const url = new URL(ctx.request.url);
+  const cacheKey = `sites:${url.hostname}${url.pathname}`;
+  // try to use the cache first, then fallback to the API
+  const pageConfig = (await kv.getItem<GenericPageConfig>(cacheKey)) || (await getConfigFromAPI(ctx));
 
-  // try to use the cache first
-  pageConfig = (await cache.getItem<GenericPageConfig>("sites")) || (await getConfigFromAPI(ctx));
-
-  // Get page info from API
   if (!pageConfig) {
     throw new Response("Not found.", { status: 404 });
   }
 
-  ctx.locals.pageConfig = pageConfig;
-}
-
-async function getConfigFromAPI(ctx: RequestContext<CloudflareWorkersPlatformInfo>) {
-  const url = new URL(ctx.request.url);
-  const apiUrl = ctx.env("ENPAGE_API_BASE_URL");
-  const res = await fetch(`https://${apiUrl}/sites/${url.hostname}${url.pathname}`, {
-    headers: {
-      Authorization: `Bearer ${ctx.env("ENPAGE_API_TOKEN")}`,
-    },
-    cf: {
-      cacheEverything: true,
-    },
-  });
-  if (!res.ok) {
-    return null;
+  if ("fromAPI" in pageConfig) {
+    // cache the API response for 7 days
+    ctx.waitUntil(kv.setItem(cacheKey, pageConfig, { expirationTtl: 3600 * 24 * 7 }));
   }
-  return res.json() as Promise<GenericPageConfig>;
+
+  ctx.locals.pageConfig = pageConfig;
 }

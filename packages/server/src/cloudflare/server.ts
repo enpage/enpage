@@ -1,6 +1,6 @@
 import cfwAdapterStatic, { type CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import cfwAdapter from "@hattip/adapter-cloudflare-workers/no-static";
-import enpageHandler from "./render-handler";
+import enpageHandler from "../shared/render-handler";
 import { compose, type RequestHandler } from "@hattip/compose";
 
 /**
