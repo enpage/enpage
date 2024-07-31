@@ -1,8 +1,9 @@
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
+import type { EnpageEnv } from "~/shared/env";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 
-export const insertBasePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
+export const insertBasePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, env: EnpageEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
   let logger: Logger;
   let serverHostname = process.env.ENPAGE_SITE_HOST;

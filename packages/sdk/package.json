@@ -33,6 +33,7 @@
     "enpage": "dist/node/cli/program.js"
   },
   "dependencies": {
+    "@fullhuman/postcss-purgecss": "6.0.0",
     "@hattip/adapter-cloudflare-workers": "0.0.46",
     "@hattip/adapter-node": "0.0.46",
     "@hattip/compose": "0.0.46",
@@ -51,9 +52,13 @@
     "nanoid": "5.0.7",
     "rimraf": "6.0.1",
     "rollup-plugin-strip-banner": "3.1.0",
+    "sharp": "0.33.4",
+    "svgo": "3.3.2",
     "tiny-invariant": "1.3.3",
     "unstorage": "1.10.2",
-    "zod": "workspace:*"
+    "vite-plugin-image-optimizer": "1.1.8",
+    "zod": "workspace:*",
+    "zod-to-json-schema": "3.23.2"
   },
   "peerDependencies": {
     "@enpage/style-system": "workspace:*",

@@ -1,5 +1,5 @@
-import { Locals } from "@hattip/compose";
-import { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
+import type { Locals } from "@hattip/compose";
+import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 
 // augment window object with custom properties
 declare global {

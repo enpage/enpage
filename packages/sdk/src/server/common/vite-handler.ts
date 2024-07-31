@@ -5,10 +5,8 @@ import type { ViteDevServer } from "vite";
 
 type PlatformInfo = CloudflareWorkersPlatformInfo | NodePlatformInfo;
 
-export default function viteHandler(viteDevServer?: ViteDevServer) {
+export default function viteHandler(viteDevServer: ViteDevServer) {
   return async (ctx: RequestContext<PlatformInfo>) => {
-    if (viteDevServer) {
-      ctx.locals.vite = viteDevServer;
-    }
+    ctx.locals.vite = viteDevServer;
   };
 }

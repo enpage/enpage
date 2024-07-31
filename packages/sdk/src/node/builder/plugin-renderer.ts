@@ -8,19 +8,24 @@ import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 import type { AttributesResolved } from "~/shared/attributes";
 import invariant from "tiny-invariant";
+import type { EnpageEnv } from "~/shared/env";
 
 /**
  * Renders the template based on the provided configuration and Vite environment.
  * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
  * @param {ConfigEnv} viteEnv - The Vite environment configuration.
  */
-export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
+export const renderTemplatePlugin = (
+  cfg: EnpageTemplateConfig,
+  viteEnv: ConfigEnv,
+  env: EnpageEnv,
+): Plugin => {
   const isBuildMode = viteEnv.command === "build";
-  const isSsrBuild = viteEnv.isSsrBuild;
+  const envMode = viteEnv.mode;
   let logger: Logger;
 
   let serverHostname = process.env.ENPAGE_SITE_HOST;
-  let enpageCtx: GenericPageContext | undefined | false = false;
+  let enpageCtx: GenericPageContext | undefined;
 
   return {
     name: "enpage:render",
@@ -40,11 +45,6 @@ export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigE
       handler: async (html: string, viteCtx) => {
         const context = enpageCtx;
 
-        invariant(context, "No context found");
-
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const attrs = (context as PageContext<any, any>).attributes;
-
         // disable JSDOM errors otherwise we'll get a lot of noise
         // for things like CSS imports or other new CSS features
         // not recognized by JSDOM
@@ -53,67 +53,39 @@ export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigE
         invariant(head, "No head element found in index.html");
         invariant(body, "No body element found in index.html");
 
-        // Add Tailwind CSS
-        addStylesheets(cfg, logger, doc, head);
-
+        // ----------------------------
+        // [always] Always there
+        addStatePlaceholderScript(doc, head);
         // Set site language. Will result in <html lang="xx">
-        addMetaTags(doc, attrs, head, context);
+        renderMetaTags(doc, head, context);
+
+        // ----------------------------
+        // [build-only] Add stylesheets to the document head
+        if (isBuildMode) {
+          addStylesheets(cfg, logger, doc, head);
+          // Add the vite preload error script (to reload the page on preload error)
+          attachVitePreloadErrorScript(doc, head);
+          // rerwrite stadalone <img> tags to <picture> tags
+          rewriteImageTags(doc);
+          // set body attributes ep-block-type="page" and ep-editable, ep-label
+          processBody(cfg, body);
+          // for all editable elements ([ep-editable]), add a ep-label attribute if not present
+          // the label will describe the tag
+          addMissingLabels(doc);
+          // add custom elements
+          addCustomElements(doc, head);
+          // add animate script
+          addAnimationScript(doc, head);
+
+          // ----------------------------
+          // [dev only]
+        } else {
+          addDevClient(doc, head);
+        }
 
         // Hide sections when needed
         const sections = getPageSections(doc);
         const { slugs } = processPageSections(sections);
-
-        // rerwrite stadalone <img> tags to <picture> tags
-        rewriteImageTags(doc);
-
-        // set body attributes ep-block-type="page" and ep-editable, ep-label
-        processBody(cfg, body);
-
-        // for all editable elements ([ep-editable]), add a ep-label attribute if not present
-        // the label will describe the tag
-        addMissingLabels(doc);
-
-        // Add the vite preload error script (to reload the page on preload error)
-        attachVitePreloadErrorScript(doc, head);
-
-        // ---- SSR stuff ----
-        // Add a state placeholder for hydration
-        const stateScript = doc.createElement("script");
-        stateScript.id = "enpage-state";
-        stateScript.textContent = `// ENPAGE_STATE_PLACEHOLDER`;
-        head.appendChild(stateScript);
-        // add the import of the entry client script
-        addViteEntryClient(doc, head, body);
-        // ---- End of SSR stuff ----
-
-        // if not in SSR mode, add liquid js
-        if (!isBuildMode) {
-          // Add enpage SDK dev script
-          // addEnpageSdkScriptDev(doc, slugs, context, sections, head);
-
-          // const liquidScript = doc.createElement("script");
-          // liquidScript.type = "module";
-          // // resolved through alias in vite.config.ts
-          // liquidScript.textContent = `import "@enpage/liquid";`;
-          // head.appendChild(liquidScript);
-          addDevClient(doc, head);
-        } else {
-          // ---- SSR stuff ----
-          // Add a state placeholder for hydration
-          // const stateScript = doc.createElement("script");
-          // stateScript.id = "enpage-state";
-          // stateScript.textContent = `// ENPAGE_STATE_PLACEHOLDER`;
-          // body.appendChild(stateScript);
-          // // add the import of the entry client script
-          // addViteEntryClient(doc, head);
-          // ---- End of SSR stuff ----
-        }
-
-        // add custom elements
-        addCustomElements(doc, head);
-
-        // add animate script
-        addAnimationScript(doc, head);
 
         // if (isSsrBuild) {
         //   logger.info("SSR: rendering liquid templates");
@@ -122,7 +94,7 @@ export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigE
         if (!isBuildMode) {
           return dom.serialize();
         } else {
-          logger.info("[render] Minifying HTML");
+          logger.info("render: Minifying HTML", { timestamp: true });
           return minify(dom.serialize(), {
             removeComments: true,
             collapseWhitespace: true,
@@ -134,7 +106,14 @@ export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigE
   };
 };
 
-function addViteEntryClient(doc: Document, head: HTMLHeadElement, body: HTMLBodyElement) {
+function addStatePlaceholderScript(doc: Document, head: HTMLHeadElement) {
+  const stateScript = doc.createElement("script");
+  stateScript.id = "enpage-state";
+  stateScript.textContent = `/* ENPAGE_STATE_PLACEHOLDER_DONT_REMOVE */`;
+  head.appendChild(stateScript);
+}
+
+function addEntryClient(doc: Document, head: HTMLHeadElement, body: HTMLBodyElement) {
   const entryClient = doc.createElement("script");
   entryClient.type = "module";
   entryClient.id = "enpage-sdk";
@@ -346,23 +325,34 @@ function attachVitePreloadErrorScript(doc: Document, head: HTMLHeadElement) {
   head.appendChild(vitePreloadErrorScript);
 }
 
-/**
- * Adds meta tags to the document head.
- * @param {Document} doc - The document to modify.
- * @param {AttributesResolved<any>} attrs - The resolved attributes.
- * @param {HTMLHeadElement} head - The head element to append the meta tags to.
- * @param {PageContext<any, any>} context - The page context.
- */
-function addMetaTags(
+function upsertHtmlElement(
+  tagName: string,
+  selector: string,
   doc: Document,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  attrs: AttributesResolved<any>,
-  head: HTMLHeadElement,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  context: PageContext<any, any> | undefined,
+  parent: HTMLElement,
+  attributes: Record<string, string>,
 ) {
-  doc.documentElement.lang = attrs.$siteLanguage;
+  let el = parent.querySelector(selector);
+  if (!el) {
+    el = doc.createElement(tagName);
+    for (const key in attributes) {
+      el.setAttribute(key, attributes[key]);
+    }
+    parent.appendChild(el);
+  } else {
+    for (const key in attributes) {
+      el.setAttribute(key, attributes[key]);
+    }
+  }
+}
 
+/**
+ * Add/update meta tags to the document head.
+ */
+function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPageContext | undefined) {
+  if (context?.attrs.$siteLanguage) {
+    doc.documentElement.lang = context?.attrs.$siteLanguage;
+  }
   // ----------------------------------------------------
   // Add meta tags if they don't exist
   // Charset
@@ -372,27 +362,23 @@ function addMetaTags(
     head.appendChild(meta);
   }
 
-  // title
-  if (!doc.querySelector("title") && attrs.$siteTitle) {
-    const title = doc.createElement("title");
-    title.textContent = attrs.$siteTitle;
-    head.appendChild(title);
-  }
+  // title (always update)
+  if (context?.attrs.$siteTitle)
+    upsertHtmlElement("title", "title", doc, head, { textContent: context.attrs.$siteTitle });
 
-  // description
-  if (!doc.querySelector("meta[name='description']") && attrs.$siteDescription) {
-    const meta = doc.createElement("meta");
-    meta.setAttribute("name", "description");
-    meta.setAttribute("content", attrs.$siteDescription);
-    head.appendChild(meta);
-  }
+  // description (always update)
+  if (context?.attrs.$siteDescription)
+    upsertHtmlElement("meta", "meta[name='description']", doc, head, {
+      name: "description",
+      content: context.attrs.$siteDescription,
+    });
 
-  // keywords
-  if (!doc.querySelector("meta[name='keywords']") && context?.attributes.$siteKeywords) {
-    const meta = doc.createElement("meta");
-    meta.setAttribute("name", "keywords");
-    meta.setAttribute("content", attrs.$siteKeywords);
-    head?.appendChild(meta);
+  // keywords (always update)
+  if (context?.attrs.$siteKeywords) {
+    upsertHtmlElement("meta", "meta[name='keywords']", doc, head, {
+      name: "keywords",
+      content: context.attrs.$siteKeywords,
+    });
   }
 
   // viewport
@@ -403,25 +389,21 @@ function addMetaTags(
     head?.appendChild(meta);
   }
 
-  // generator
-  const generator = doc.createElement("meta");
-  generator.setAttribute("name", "generator");
-  generator.setAttribute("content", `Enpage v${version}`);
-  head?.appendChild(generator);
+  // generator (always update with current version)
+  upsertHtmlElement("meta", "meta[name='generator']", doc, head, {
+    name: "generator",
+    content: `Enpage v${version}`,
+  });
 
-  // revised date
-  const revised = doc.createElement("meta");
-  revised.setAttribute("name", "revised");
-  revised.setAttribute("content", new Date().toISOString());
-  head?.appendChild(revised);
+  // revised date (always update)
+  upsertHtmlElement("meta", "meta[name='revised']", doc, head, {
+    name: "revised",
+    content: new Date().toISOString(),
+  });
 }
 
 /**
  * Adds stylesheets to the document head.
- * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
- * @param {Logger} logger - The logger instance.
- * @param {Document} doc - The document to modify.
- * @param {HTMLHeadElement} head - The head element to append the stylesheets to.
  */
 function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document, head: HTMLHeadElement) {
   const styles = ["tailwind", "client", "anim"];

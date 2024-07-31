@@ -1,19 +1,36 @@
 import type { PageConfig } from "@enpage/sdk/page-config";
 import type { RequestContext } from "@hattip/compose";
 import { fsCache, memoryCache } from "./cache";
-import { getConfigFromAPI } from "../common/api";
+import { getPageConfigFromAPI } from "../common/get-page-config";
 import type { NodePlatformInfo } from "@hattip/adapter-node";
+import { getPageConfigFromLocalFiles } from "./local-page-config";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type GenericPageConfig = PageConfig<any, any>;
 
 export default async function pageConfigHandler(ctx: RequestContext<NodePlatformInfo>) {
   const url = new URL(ctx.request.url);
-  const cacheDriver = process.env.CACHE_DRIVER === "fs" ? fsCache : memoryCache;
+  const cacheDriver = getCacheDriver();
   const cacheKey = `sites:${url.hostname}${url.pathname}`;
-  // try to use the cache first, then fallback to the API
-  const pageConfig =
-    (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getConfigFromAPI(ctx));
+
+  let pageConfig: GenericPageConfig | null = null;
+
+  // *Development*
+  // When in vite dev server, we can load the page config from a virtual module instead of the API
+  if (ctx.locals.vite) {
+    pageConfig = (await ctx.locals.vite.ssrLoadModule("virtual:enpage-page-config.json"))
+      .default as GenericPageConfig;
+  } else {
+    // *Production* or local production server testing
+    if (process.env.NODE_ENV === "local-preview") {
+      pageConfig =
+        (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getPageConfigFromLocalFiles(ctx));
+    } else {
+      // try to use the cache first, then fallback to the API
+      pageConfig =
+        (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getPageConfigFromAPI(ctx));
+    }
+  }
 
   if (!pageConfig) {
     throw new Response("Not found.", {
@@ -28,4 +45,12 @@ export default async function pageConfigHandler(ctx: RequestContext<NodePlatform
   }
 
   ctx.locals.pageConfig = pageConfig;
+}
+
+function getCacheDriver() {
+  return process.env.NODE_ENV === "development"
+    ? memoryCache
+    : process.env.CACHE_DRIVER === "fs"
+      ? fsCache
+      : memoryCache;
 }

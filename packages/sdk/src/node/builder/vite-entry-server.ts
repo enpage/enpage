@@ -3,7 +3,7 @@ import type { GenericPageConfig } from "~/shared/page-config";
 import invariant from "tiny-invariant";
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { ViteDevServer } from "vite";
-import type { S3Client } from "~/server/common/s3-client";
+import type { S3Client } from "~/server/common/node-s3-client";
 
 export type RenderOptions = {
   pageConfig: GenericPageConfig;
@@ -14,10 +14,10 @@ export type RenderOptions = {
 
 export async function render(url: URL, options: RenderOptions) {
   // when rendering server-side, we expect the page context to contain the SSR manifest
-  invariant(options.pageConfig.ssrManifest, "SSR manifest not found in page config.");
+  // invariant(options.pageConfig.ssrManifest, "SSR manifest not found in page config.");
 
   const { pageConfig, pageContext, s3Client, vite } = options;
-  const isProduction = process.env.NODE_ENV === "production";
+  const isProduction = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "local-preview";
   let html = "";
 
   // fetch index.html from R2

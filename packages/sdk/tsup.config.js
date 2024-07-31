@@ -102,7 +102,7 @@ export default defineConfig((options) => {
       loader,
     },
     {
-      entry: ["src/server/node/server.ts"],
+      entry: ["src/server/node/dev-server.ts"],
       outDir: "dist/server/node",
       target: "node18",
       format: ["esm"],

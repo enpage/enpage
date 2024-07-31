@@ -7,7 +7,6 @@ import {
   type ArgOpts,
   type CommonOptions,
 } from "./cli-methods";
-import createServer from "~/server/node/server";
 
 program
   .option("-l, --logLevel <level>", `[string] info | warn | error | silent`)
@@ -36,7 +35,7 @@ Pass --ssr=local to generate a SSR-enabled build that can be tested locally.`,
 
 program
   .command("preview")
-  .description("Preview Enpage template")
+  .description("Preview Enpage template using production-like server")
   .action((...args) => {
     previewTemplate(getArgsOptions(args) as ArgOpts<CommonOptions>);
   });

@@ -4,6 +4,7 @@ import type { ConfigEnv, Logger, Plugin } from "vite";
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
 import type { PageContext } from "~/shared/page-context";
+import type { EnpageEnv } from "~/shared/env";
 
 const virtualIndexId = "virtual:enpage-template:index.html";
 const resolvedVirtualIndexId = `\0${virtualIndexId}`;
@@ -20,7 +21,14 @@ const virtualFilesMap = new Map([
   [virtualEnpagePageConfig, resolvedVirtualEnpagePageConfig],
 ]);
 
-export const virtualFilesPlugin = (templateConfig: EnpageTemplateConfig, _viteEnv: ConfigEnv): Plugin => {
+/**
+ * @todo migrate to https://github.com/patak-dev/vite-plugin-virtual
+ */
+export const virtualFilesPlugin = (
+  templateConfig: EnpageTemplateConfig,
+  _viteEnv: ConfigEnv,
+  env: EnpageEnv,
+): Plugin => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   let pageContext: PageContext<any, any> | undefined = undefined;
   return {
@@ -51,6 +59,7 @@ export const virtualFilesPlugin = (templateConfig: EnpageTemplateConfig, _viteEn
             attributes: templateConfig.attributes,
             datasources: templateConfig.datasources,
             data: pageContext?.data,
+            attrs: pageContext?.attrs,
             // todo: add siteConfig and ssrManifest
             siteConfig: {},
             ssrManifest: {},

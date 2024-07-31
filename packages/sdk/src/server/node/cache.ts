@@ -7,5 +7,5 @@ export const memoryCache = createStorage({
 });
 
 export const fsCache = createStorage({
-  driver: fsLiteDriver({ base: "./tmp" }),
+  driver: fsLiteDriver({ base: "/tmp" }),
 });

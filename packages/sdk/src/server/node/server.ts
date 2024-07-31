@@ -1,28 +1,17 @@
-import {
-  createServer as createNodeServer,
-  type NodePlatformInfo,
-  createMiddleware as createHattipMiddleware,
-} from "@hattip/adapter-node/native-fetch";
-import renderHandler from "../common/render-handler";
-import { compose, type RequestHandler } from "@hattip/compose";
-import pageConfigHdl from "./page-config-handler";
-import type { ViteDevServer } from "vite";
-import viteHandler from "../common/vite-handler";
+import express from "express";
+import { createMiddleware } from "./middleware";
+import type { Logger } from "vite";
+import { join } from "node:path";
+import { displayServerUrls } from "./network-utils";
 
-export default function createServer(
-  viteDevServer?: ViteDevServer,
-  pageConfigHandler: RequestHandler<NodePlatformInfo> = pageConfigHdl,
-  renderingHandler: RequestHandler<NodePlatformInfo> = renderHandler,
-) {
-  const handler = compose(viteHandler(viteDevServer), pageConfigHandler, renderingHandler);
-  return createNodeServer(handler);
-}
-
-export function createNodeMiddleware(
-  viteDevServer?: ViteDevServer,
-  pageConfigHandler: RequestHandler<NodePlatformInfo> = pageConfigHdl,
-  renderingHandler: RequestHandler<NodePlatformInfo> = renderHandler,
-) {
-  const handler = compose(viteHandler(viteDevServer), pageConfigHandler, renderingHandler);
-  return createHattipMiddleware(handler);
+export async function createServer(port: number | string, logger: Logger) {
+  const app = express();
+  const assetsDir = join(process.cwd(), ".enpage", "dist", "assets");
+  app.use("/assets", express.static(assetsDir));
+  app.use(createMiddleware());
+  app.listen(port, () => {
+    logger.info("Enpage Server listening:\n");
+    displayServerUrls(port);
+    logger.info("");
+  });
 }

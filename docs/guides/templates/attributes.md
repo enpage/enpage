@@ -177,6 +177,7 @@ Enpage also defines a set of built-in attributes. Built-in attributes names star
 - `$siteUrl` (string): The URL of the site.
 - `$siteLastUpdated` (date): The date when the page was last updated.
 - `$pageTitle` (string): The title of the page. (used in multi-page templates)
+- `$pageLanguage` (string): The language of the page.
 - `$pageDescription` (string): The description of the page. (used in multi-page templates)
 - `$pageKeywords` (string): The keywords of the page. (used in multi-page templates)
 - `$pageUrl` (string): The URL of the page. (used in multi-page templates)

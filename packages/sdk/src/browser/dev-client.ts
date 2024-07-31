@@ -355,8 +355,10 @@ export async function initDevClient() {
           if (insertPosition) {
             const { referenceElement, side } = insertPosition;
             if (side.horizontal === "left" || side.vertical === "top") {
+              // @ts-ignore before is wrongly typed by cloudflare/worker-types
               referenceElement.before(dragElement);
             } else {
+              // @ts-ignore after is wrongly typed by cloudflare/worker-types
               referenceElement.after(dragElement);
             }
             setTimeout(() => {

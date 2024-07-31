@@ -21,6 +21,19 @@ export const datasources = defineDataSources({
       { title: "Developers docs", url: "https://developers.enpage.co" },
     ],
   },
+  tasks: {
+    name: "Tasks",
+    provider: "http-json",
+    url: "https://jsonplaceholder.typicode.com/todos?userId=1",
+    schema: z.array(
+      z.object({
+        id: z.number(),
+        userId: z.number(),
+        title: z.string(),
+        completed: z.boolean(),
+      }),
+    ),
+  },
   videos: {
     provider: "youtube-feed",
     name: "My Videos",

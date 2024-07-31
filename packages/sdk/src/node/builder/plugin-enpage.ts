@@ -7,11 +7,13 @@ import { renderTemplatePlugin } from "./plugin-renderer";
 import { insertBasePlugin } from "./plugin-base-url";
 import { contextPlugin } from "./plugin-context";
 import { virtualFilesPlugin } from "./plugin-virtual-files";
+import { manifestPlugin } from "./plugin-manifest";
+import type { EnpageEnv } from "~/shared/env";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // return partial config (recommended)
-const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
+const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: EnpageEnv): Plugin => {
   return {
     name: "enpage",
     config: async (cfg, { command, mode }) => {
@@ -50,8 +52,9 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin 
             },
           },
         },
+
         experimental:
-          command === "build"
+          command === "build" && !env.NO_CDN
             ? {
                 renderBuiltUrl(filename, { hostId, hostType, type }) {
                   if (type === "public") {
@@ -66,13 +69,18 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin 
   };
 };
 
-export default async function enpageMetaPlugin(config: EnpageTemplateConfig, viteEnv: ConfigEnv) {
+export default async function enpageMetaPlugin(
+  config: EnpageTemplateConfig,
+  viteEnv: ConfigEnv,
+  env: EnpageEnv,
+) {
   return [
-    virtualFilesPlugin(config, viteEnv),
-    enpagePlugin(config, viteEnv),
-    contextPlugin(config, viteEnv),
-    renderTemplatePlugin(config, viteEnv),
-    insertBasePlugin(config, viteEnv),
+    virtualFilesPlugin(config, viteEnv, env),
+    enpagePlugin(config, viteEnv, env),
+    contextPlugin(config, viteEnv, env),
+    renderTemplatePlugin(config, viteEnv, env),
+    insertBasePlugin(config, viteEnv, env),
+    manifestPlugin(config, viteEnv, env),
     // stripBanner({}),
   ];
 }

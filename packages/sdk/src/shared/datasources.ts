@@ -48,7 +48,7 @@ type DatasourceProviderManifest<P extends DatasourceProvider> = {
   };
 };
 
-export type DatasourceHttpProviderManifest<S extends z.ZodTypeAny> = {
+export type DatasourceHttpJsonProviderManifest<S extends z.ZodTypeAny> = {
   provider: "http-json";
   name: string;
   description?: string;
@@ -79,7 +79,7 @@ export type DatasourceManifestMap = Record<
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   | DatasourceGenericManifest<any>
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  | DatasourceHttpProviderManifest<any>
+  | DatasourceHttpJsonProviderManifest<any>
   | DatasourceProviderManifest<DatasourceProvider>
 >;
 

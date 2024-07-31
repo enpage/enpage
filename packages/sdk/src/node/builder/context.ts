@@ -3,6 +3,7 @@ import type { PageContext } from "~/shared/page-context";
 import { providersSamples } from "~/shared/data-samples";
 import type { AttributesResolved } from "~/shared/attributes";
 import invariant from "tiny-invariant";
+import type { EnpageEnv } from "~/shared/env";
 
 export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
   let data: Record<string, unknown> | undefined;
@@ -25,7 +26,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     attributes[key] = cfg.attributes[key].defaultValue;
   }
 
-  return { data, attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return { data, attrs: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
 }
 
 /**
@@ -34,14 +35,21 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
  * If all is OK, it will fetch the context from the Enpage API and return it.
  */
 
-export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env = process.env) {
+export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env: EnpageEnv) {
   const apiToken = env.ENPAGE_API_TOKEN;
-  const siteHost = env.ENPAGE_SITE_HOST;
-  const apiBaseUrl = env.ENPAGE_API_BASE_URL;
+  const siteHost = env.PUBLIC_ENPAGE_SITE_HOST;
+  const apiBaseUrl = env.PUBLIC_ENPAGE_API_BASE_URL;
 
-  invariant(siteHost, "ENPAGE_SITE_HOST is empty.");
-  invariant(apiToken, "ENPAGE_API_TOKEN is empty.");
-  invariant(apiBaseUrl, "ENPAGE_API_BASE_URL is empty.");
+  // console.log("import env", import.meta.env);
+  // console.log("process env", env);
+
+  if (!apiToken) {
+    console.warn("ENPAGE_API_TOKEN is empty. Skipping context fetch.");
+    return false;
+  }
+
+  invariant(siteHost, "PUBLIC_ENPAGE_SITE_HOST is empty.");
+  invariant(apiBaseUrl, "PUBLIC_ENPAGE_API_BASE_URL is empty.");
 
   const url = `${apiBaseUrl}/sites/${siteHost}/context`;
   const response = await fetch(url, {

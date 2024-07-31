@@ -2,16 +2,19 @@ import type { PageConfig } from "@enpage/sdk/page-config";
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import type { RequestContext } from "@hattip/compose";
 import { kv } from "./cache";
-import { getConfigFromAPI } from "../common/api";
+import { getPageConfigFromAPI } from "../common/get-page-config";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type GenericPageConfig = PageConfig<any, any>;
 
+/**
+ * Not usable in dev for now
+ */
 export default async function pageConfigHandler(ctx: RequestContext<CloudflareWorkersPlatformInfo>) {
   const url = new URL(ctx.request.url);
   const cacheKey = `sites:${url.hostname}${url.pathname}`;
   // try to use the cache first, then fallback to the API
-  const pageConfig = (await kv.getItem<GenericPageConfig>(cacheKey)) || (await getConfigFromAPI(ctx));
+  const pageConfig = (await kv.getItem<GenericPageConfig>(cacheKey)) || (await getPageConfigFromAPI(ctx));
 
   if (!pageConfig) {
     throw new Response("Not found.", { status: 404, headers: { "x-enpage-error": "Page config not Found" } });
