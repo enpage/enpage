@@ -16,9 +16,9 @@ This is a simple Enpage template example for you to customize and create your ow
 ### Assets management (images, css)
 
 - Images & CSS files should be placed in the `assets/` folder and referenced using relative path in your `index.html` file (e.g. `./assets/my-file.css`).
-- Javascript files should be placed in the `src/` folder and rreferenced using relative path in your `index.html` file  (e.g. `./src/my-file.js`).
-- Tailwind is included by default with some usefull plugins (forms, typography, scrollbars, animate, transform3d). You can customize the default tailwind theme in the `tailwind.config.js` file if needed. If you wish to disable Tailwind, you can remove it from the `index.html` file.
-- PostCSS is included by default with some plugins (autoprefixer, tailwindcss, cssnano). You can customize the PostCSS configuration in the `postcss.config.js` file if needed.
+- Javascript files should be placed in the `src/` folder and referenced using relative path in your `index.html` file  (e.g. `./src/my-file.js`).
+- Tailwind is included by default with some usefull plugins (forms, typography, scrollbars, animate, transform3d). You can customize the default tailwind theme in the `tailwind.config.js` file if needed. If you wish to disable Tailwind, remove it from the `index.html` file.
+- PostCSS is included by default with some plugins (autoprefixer, tailwindcss, cssnano). Customize the PostCSS configuration in the `postcss.config.js` file if needed.
 
 ### `enpage.config.js` configuration file
 
