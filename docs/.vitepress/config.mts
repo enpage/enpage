@@ -3,12 +3,13 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Enpage Developer Docs",
-  description: "Enpage documentation for designers and developers to help them creating amazing one page websites",
+  description:
+    "Enpage documentation for designers and developers to help them creating amazing one page websites",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: {
-      dark: "/enpage-dark.svg",
-      light: "/enpage.svg",
+      dark: "/enpage-developers-dark.svg",
+      light: "/enpage-developers.svg",
       alt: "Enpage Developer Documentation",
     },
     siteTitle: false,
@@ -73,7 +74,12 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: "Instagram", link: "/guides/data-sources/built-in/instagram" },
+              { text: "Mastodon", link: "/guides/data-sources/built-in/mastodon" },
+              { text: "Threads", link: "/guides/data-sources/built-in/threads" },
+              { text: "TikTok", link: "/guides/data-sources/built-in/tiktok" },
               { text: "YouTube", link: "/guides/data-sources/built-in/youtube" },
+              { text: "RSS", link: "/guides/data-sources/built-in/rss" },
+              { text: "HTTP-JSON", link: "/guides/data-sources/built-in/http-json" },
             ],
           },
         ],

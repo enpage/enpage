@@ -1,10 +1,23 @@
+import type { Locals } from "@hattip/compose";
+import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
+
 // augment window object with custom properties
 declare global {
   interface Window {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    _enpageCtx: import("./src/shared/context").SiteContext<any, any>;
     enpage: import("./src/browser/js-api").EnpageJavascriptAPI;
+    __ENPAGE_STATE__: ConstructorParameters<typeof import("./src/browser/js-api").EnpageJavascriptAPI>;
   }
 }
 
-export type {};
+declare module "@hattip/compose" {
+  interface Locals {
+    pageConfig: import("@enpage/sdk/page-config").GenericPageConfig;
+    vite: import("vite").ViteDevServer;
+  }
+}
+
+declare module "@hattip/adapter-cloudflare-workers" {
+  interface CloudflareWorkersPlatformInfo {
+    env: import("./src/shared/env").EnpageEnv;
+  }
+}

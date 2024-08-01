@@ -4,3 +4,36 @@
 [hidden] {
   display: none !important;
 }
+
+body > section {
+  transition: all 0.3s;
+}
+
+
+.ep-editor-link {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  padding: 0.8rem 1.3rem;
+  background-color: #7270c6;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    transform: scale(1.05);
+    border-color:rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 1);
+  }
+}
+
+ep-for {
+  display: none;
+}

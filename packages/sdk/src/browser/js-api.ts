@@ -1,19 +1,15 @@
-import type { SiteContext } from "../shared/context";
-import type { NavigateEvent } from "./NavigateEvent";
+import type { PageContext } from "../shared/page-context";
+import type { NavigateEvent } from "./events";
 
 export class EnpageJavascriptAPI extends EventTarget {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  #ctx: SiteContext<any, any>;
-
   constructor(
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    ctx: SiteContext<any, any>,
+    private ctx: PageContext<any, any>,
     private pageIndex = 0,
     private pagesCount = 1,
     private pagesSlugs: string[] = [],
   ) {
     super();
-    this.#ctx = ctx;
     this.setupListeners();
   }
 
@@ -45,7 +41,7 @@ export class EnpageJavascriptAPI extends EventTarget {
   }
 
   get context() {
-    return this.#ctx;
+    return this.ctx;
   }
 
   nextPage() {
@@ -118,14 +114,17 @@ export class EnpageJavascriptAPI extends EventTarget {
   }
 
   async saveDataRecord(dataRecordId: string, record: Record<string, unknown>) {
-    const res = await fetch(`%ENPAGE_API_BASE_URL%/sites/%ENPAGE_SITE_ID%/data-records/${dataRecordId}`, {
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify(record),
-      headers: {
-        "content-type": "application/json",
+    const res = await fetch(
+      `%PUBLIC_ENPAGE_API_BASE_URL%/sites/${window.location.hostname}/data-records/${dataRecordId}`,
+      {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(record),
+        headers: {
+          "content-type": "application/json",
+        },
       },
-    });
+    );
     if (res.ok) {
       return res.json();
     }

@@ -1,17 +1,18 @@
-import type { EnpageTemplateConfig } from "~/shared/config";
-import type { SiteContext } from "~/shared/context";
+import type { EnpageTemplateConfig } from "~/shared/template-config";
+import type { PageContext } from "~/shared/page-context";
 import { providersSamples } from "~/shared/data-samples";
 import type { AttributesResolved } from "~/shared/attributes";
-import type { Logger } from "vite";
+import invariant from "tiny-invariant";
+import type { EnpageEnv } from "~/shared/env";
 
-export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config, logger: Logger) {
+export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
   let data: Record<string, unknown> | undefined;
 
   if (cfg.datasources) {
     data = {} as Record<string, unknown>;
     for (const key in cfg.datasources) {
       const provider = cfg.datasources[key].provider;
-      if (typeof provider === "string") {
+      if (provider && provider !== "http-json") {
         data[key] = providersSamples[provider];
       } else if ("sampleData" in cfg.datasources[key] && cfg.datasources[key].sampleData) {
         data[key] = cfg.datasources[key].sampleData;
@@ -25,7 +26,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     attributes[key] = cfg.attributes[key].defaultValue;
   }
 
-  return { data, attributes } as SiteContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return { data, attr: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
 }
 
 /**
@@ -34,39 +35,23 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
  * If all is OK, it will fetch the context from the Enpage API and return it.
  */
 
-export async function fetchContext<Config extends EnpageTemplateConfig>(
-  cfg: Config,
-  logger: Logger,
-  env = process.env,
-) {
-  const apiToken = env.PRIVATE_ENPAGE_API_TOKEN;
-  const siteId = env.ENPAGE_SITE_ID;
-  const apiBaseUrl = env.ENPAGE_API_BASE_URL;
-  // Abort if there is no datasources or attributes
-  if (
-    (!cfg.datasources || !Object.keys(cfg.datasources).length) &&
-    (!cfg.attributes || !Object.keys(cfg.attributes).length)
-  ) {
-    console.error("No datasources or attributes found in config. Skipping context fetch.");
-    return;
-  }
-  // Abort if there is no siteId
-  if (!siteId) {
-    console.error("ENPAGE_SITE_ID is empty. Skipping context fetch.");
-    return false;
-  }
-  // Abort if there is no apiToken
+export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Config, env: EnpageEnv) {
+  const apiToken = env.ENPAGE_API_TOKEN;
+  const siteHost = env.PUBLIC_ENPAGE_SITE_HOST;
+  const apiBaseUrl = env.PUBLIC_ENPAGE_API_BASE_URL;
+
+  // console.log("import env", import.meta.env);
+  // console.log("process env", env);
+
   if (!apiToken) {
-    console.error("PRIVATE_ENPAGE_API_TOKEN is empty. Skipping context fetch.");
-    return false;
-  }
-  // Abort if there is no apiHost
-  if (!apiBaseUrl) {
-    console.error("ENPAGE_API_BASE_URL is empty. Skipping context fetch.");
+    console.warn("ENPAGE_API_TOKEN is empty. Skipping context fetch.");
     return false;
   }
 
-  const url = `${apiBaseUrl}/sites/${siteId}/context`;
+  invariant(siteHost, "PUBLIC_ENPAGE_SITE_HOST is empty.");
+  invariant(apiBaseUrl, "PUBLIC_ENPAGE_API_BASE_URL is empty.");
+
+  const url = `${apiBaseUrl}/sites/${siteHost}/context`;
   const response = await fetch(url, {
     headers: {
       Accept: "application/json",
@@ -75,7 +60,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(
   });
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const context = (await response.json()) as SiteContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
 
   return context;
 }

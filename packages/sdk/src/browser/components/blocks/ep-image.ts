@@ -3,16 +3,14 @@ import { EPBlockBase } from "../base/ep-block-base";
 
 class ImageBlock extends EPBlockBase {
   static get observedAttributes() {
-    return ["src", "alt", "sources"];
-  }
-
-  constructor() {
-    super();
-    this.setAttribute("ep-type", "image");
+    return [...super.observedAttributes, "src", "alt", "sources"];
   }
 
   get src() {
-    return this.getAttribute("src") || "";
+    return (
+      this.getAttribute("src") ||
+      "data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
+    );
   }
 
   set src(value: string) {
@@ -39,7 +37,7 @@ class ImageBlock extends EPBlockBase {
     this.setAttribute("sources", JSON.stringify(value));
   }
 
-  protected get template() {
+  protected get contents() {
     const sourcesHtml = this.sources
       .map(
         (source) =>
@@ -54,16 +52,6 @@ class ImageBlock extends EPBlockBase {
       </picture>
     `;
   }
-
-  toJSON() {
-    return {
-      id: this.id,
-      type: this.epType,
-      src: this.src,
-      alt: this.alt,
-      sources: this.sources,
-    };
-  }
 }
 
 declare global {
@@ -71,5 +59,4 @@ declare global {
     "ep-image": ImageBlock;
   }
 }
-
 customElements.define("ep-image", ImageBlock);

@@ -2,7 +2,7 @@
 
 /* dark radial gradient from light gray at the center to black at the edges */
 body {
-  background: radial-gradient(circle, #555, #000);
+  background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
 }
 /* gradient generator: https://csshero.org/mesher/ */
 body > section:first-child {

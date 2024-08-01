@@ -1,17 +1,17 @@
 // @ts-check
-import z from "zod";
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
+import { defineManifest } from "@enpage/sdk/manifest";
 
 // define your datasources
 export const datasources = defineDataSources({
   links: {
     name: "Links",
-    schema: z.array(
-      z.object({
-        title: z.string(),
-        url: z.string().url(),
-        icon: z.string().optional(),
+    schema: ds.Array(
+      ds.Object({
+        title: ds.String(),
+        url: ds.String({ format: "uri", pattern: "^https?://" }),
+        icon: ds.Optional(ds.String()),
       }),
     ),
     sampleData: [
@@ -19,6 +19,19 @@ export const datasources = defineDataSources({
       { title: "Github", url: "https://github.com/enpage/enpage" },
       { title: "Developers docs", url: "https://developers.enpage.co" },
     ],
+  },
+  tasks: {
+    name: "Tasks",
+    provider: "http-json",
+    url: "https://jsonplaceholder.typicode.com/todos?userId=1",
+    schema: ds.Array(
+      ds.Object({
+        id: ds.Number(),
+        userId: ds.Number(),
+        title: ds.String(),
+        completed: ds.Boolean(),
+      }),
+    ),
   },
   videos: {
     provider: "youtube-feed",
@@ -46,4 +59,9 @@ export const attributes = defineAttributes({
 // };
 
 // various settings
-export const settings = {};
+export const manifest = defineManifest({
+  author: "John Doe",
+  name: "Example Template",
+  description: "Description of the template",
+  homepage: "https://enpage.co",
+});

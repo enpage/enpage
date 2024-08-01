@@ -15,7 +15,7 @@ class EPSwitch extends CustomElement {
     this._default = this.querySelector("ep-case[default]") as EPCase | null;
   }
 
-  protected get template(): string {
+  protected get contents(): string {
     return "<slot></slot>";
   }
 
@@ -51,7 +51,6 @@ class EPCase extends CustomElement {
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "value") {
       (this.parentElement as EPSwitch)?.render();
     }
@@ -92,7 +91,7 @@ class EPCase extends CustomElement {
     }
   }
 
-  protected get template(): string {
+  protected get contents(): string {
     return "<slot></slot>";
   }
 }

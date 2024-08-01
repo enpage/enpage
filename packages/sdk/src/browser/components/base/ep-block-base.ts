@@ -3,11 +3,8 @@ import { CustomElement } from "./custom-element";
 export abstract class EPBlockBase extends CustomElement {
   static baseStyles = ``;
 
-  constructor() {
-    super();
-    if (!this.hasAttribute("ep-type")) {
-      throw new Error("ep-type attribute must be set");
-    }
+  static get observedAttributes() {
+    return ["ep-label"];
   }
 
   connectedCallback() {
@@ -15,13 +12,25 @@ export abstract class EPBlockBase extends CustomElement {
     this.render();
   }
 
-  get epType(): string {
-    return this.getAttribute("ep-type") || "";
+  get blockType(): string {
+    return this.getAttribute("ep-block-type") || "";
   }
 
-  abstract toJSON(): Record<string, unknown>;
+  toJSON(): Record<string, unknown> {
+    const attrs = this.getAttributeNames().reduce(
+      (acc, name) => {
+        acc[name] = this.getAttribute(name);
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
+    return {
+      $tag: this.tagName.toLowerCase(),
+      ...attrs,
+    };
+  }
 
-  protected get template(): string {
+  protected get contents(): string {
     return "<slot></slot>";
   }
 }

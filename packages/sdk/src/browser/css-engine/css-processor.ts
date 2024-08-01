@@ -40,7 +40,6 @@ export class CSSProcessor {
     this.worker.onmessage = this.handleWorkerMessage.bind(this);
     this.worker.onerror = this.handleWorkerError.bind(this);
   }
-
   private handleWorkerMessage(e: MessageEvent<WorkerMessage>): void {
     if (e.data.type === "initialized") {
       this.initialized = true;

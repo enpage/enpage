@@ -1,15 +1,16 @@
-import type { TemplateSettings } from "~/shared/settings";
-import { createLogger as createLoggerBase, UserConfig } from "vite";
+import { createLogger as createLoggerBase, type LogLevel } from "vite";
 import { version } from "../../../package.json";
 import chalk from "chalk";
 
-export function createLogger(settings: TemplateSettings) {
-  const logger = createLoggerBase(settings.logLevel, {
+export function createLogger(level?: LogLevel, allowClearScreen?: boolean, showVersion = false) {
+  const logger = createLoggerBase(level, {
     prefix: "[enpage]",
-    allowClearScreen: settings.clearScreen,
+    allowClearScreen,
   });
 
-  logger.info(chalk.bold.green(`🚀 Enpage v${version}\n`));
+  if (showVersion) {
+    logger.info(chalk.hex("#7270c6").bold(`🚀 Enpage v${version}\n`));
+  }
 
   return logger;
 }

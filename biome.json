@@ -29,7 +29,9 @@
         "useTemplate": "info",
         "noUselessElse": "off",
         "noParameterAssign": "off",
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useNumberNamespace": "off",
+        "useSingleVarDeclarator": "off"
       },
       "a11y": {
         "useKeyWithClickEvents": "off"

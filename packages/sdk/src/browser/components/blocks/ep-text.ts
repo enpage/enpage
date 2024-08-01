@@ -4,16 +4,11 @@ type Mode = "plain" | "html" | "markdown";
 
 export class TextBlock extends EPBlockBase {
   static get observedAttributes() {
-    return ["content", "mode"];
-  }
-
-  constructor() {
-    super();
-    this.setAttribute("ep-type", "text");
+    return [...super.observedAttributes, "content", "mode"];
   }
 
   get content() {
-    return this.getAttribute("content") || "";
+    return this.getAttribute("content") || "Click to edit";
   }
 
   set content(value: string) {
@@ -28,19 +23,10 @@ export class TextBlock extends EPBlockBase {
     this.setAttribute("mode", value);
   }
 
-  protected get template() {
+  protected get contents() {
     // For now, we'll just render the content as-is
     // In the future, we'll handle HTML and Markdown rendering here
     return `<div>${this.content}</div>`;
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      type: this.epType,
-      content: this.content,
-      mode: this.mode,
-    };
   }
 }
 
