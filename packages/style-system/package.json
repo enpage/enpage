@@ -1,6 +1,6 @@
 {
   "name": "@enpage/style-system",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Base tailwindcss setup with some extra plugins as well as colors and editor styles",
   "type": "module",
   "exports": {
@@ -34,8 +34,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
-  },
-  "peerDependencies": {
-  }
+  "devDependencies": {},
+  "peerDependencies": {}
 }

@@ -1,5 +1,14 @@
 # @enpage/style-system
 
+## 0.0.14
+
+### Patch Changes
+
+- 558b52d: More implemented features including:
+
+  - Editor
+  - Local and production server
+
 ## 0.0.13
 
 ## 0.0.12
