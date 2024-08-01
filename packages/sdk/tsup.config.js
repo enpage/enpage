@@ -11,6 +11,29 @@ const loader = {
   ".html": "copy",
 };
 
+const external = [
+  // "zod",
+  // "tailwindcss",
+  // "jsdom",
+
+  // "vite",
+  // "@vitejs/plugin-react",
+  // "vite-plugin-inspect",
+  // "vite-tsconfig-paths",
+  // "postcss",
+  // "postcss-preset-env",
+  // "cssnano",
+  // "autoprefixer",
+  // "@fullhuman/postcss-purgecss",
+
+  // "axe-core",
+  "fsevents",
+  "lightningcss",
+  "virtual:enpage-template:index.html",
+  "virtual:enpage-page-config.json",
+  "__STATIC_CONTENT_MANIFEST",
+];
+
 export default defineConfig((options) => {
   return [
     {
@@ -18,24 +41,13 @@ export default defineConfig((options) => {
       outDir: "dist/node",
       target: "node18",
       format: ["esm"],
-      dts: true,
+      dts: false,
       minify: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
+      // Important: force splitting to false to avoid issues with dynamic imports and __dirname resolutions
       splitting: false,
-      external: [
-        "zod",
-        "tailwindcss",
-        "jsdom",
-        "vite",
-        "@vitejs/plugin-react",
-        "vite-plugin-inspect",
-        "vite-tsconfig-paths",
-        "@enpage/style-system",
-        "axe-core",
-        "virtual:enpage-template:index.html",
-        "virtual:enpage-page-config.json",
-      ],
+      external,
       // Force bundling of lodash-es for the CLI
       noExternal: ["lodash-es"],
       esbuildOptions(input) {
@@ -59,16 +71,7 @@ export default defineConfig((options) => {
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: [
-        "zod",
-        "tailwindcss",
-        "jsdom",
-        "vite",
-        "vite-tsconfig-paths",
-        "@enpage/style-system",
-        "postcss",
-        "autoprefixer",
-      ],
+      external,
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -88,16 +91,7 @@ export default defineConfig((options) => {
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: [
-        "zod",
-        "tailwindcss",
-        "jsdom",
-        "vite",
-        "vite-tsconfig-paths",
-        "@enpage/style-system",
-        "virtual:enpage-template:index.html",
-        "virtual:enpage-page-config.json",
-      ],
+      external,
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -113,7 +107,7 @@ export default defineConfig((options) => {
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
       splitting: false,
-      external: ["vite", "virtual:enpage-template:index.html", "virtual:enpage-page-config.json"],
+      external,
       clean: true,
       esbuildOptions(input) {
         input.banner = banner;
@@ -130,12 +124,7 @@ export default defineConfig((options) => {
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      external: [
-        "__STATIC_CONTENT_MANIFEST",
-        "vite",
-        "virtual:enpage-template:index.html",
-        "virtual:enpage-page-config.json",
-      ],
+      external,
       esbuildOptions(input) {
         input.banner = banner;
       },

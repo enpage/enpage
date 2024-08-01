@@ -44,7 +44,7 @@ type DatasourceProviderManifest<
   O extends DatasourceProviderOptions | null = null,
 > = {
   provider: P;
-  options: O extends DatasourceProviderOptions ? Static<O> : never;
+  options?: O extends DatasourceProviderOptions ? Static<O> : never;
   name: string;
   description?: string;
   schema?: never;

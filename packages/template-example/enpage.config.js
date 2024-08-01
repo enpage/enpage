@@ -23,7 +23,9 @@ export const datasources = defineDataSources({
   tasks: {
     name: "Tasks",
     provider: "http-json",
-    url: "https://jsonplaceholder.typicode.com/todos?userId=1",
+    options: {
+      url: "https://jsonplaceholder.typicode.com/todos?userId=1",
+    },
     schema: ds.Array(
       ds.Object({
         id: ds.Number(),

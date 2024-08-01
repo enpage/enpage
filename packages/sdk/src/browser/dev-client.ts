@@ -1,5 +1,4 @@
-import { Liquid } from "liquidjs";
-import { nanoid } from "nanoid";
+// import { Liquid } from "liquidjs";
 import { onDragOver, onDragEnd, getInsertPosition } from "./dnd";
 import editorCss from "@enpage/style-system/editor.css?url";
 import debounce from "lodash-es/debounce";
@@ -55,7 +54,7 @@ export type EditorDropPayload = {
 export type EditorMessage = EditorDragEndPayload | EditorDragOverPayload | EditorDropPayload;
 
 export async function initDevClient() {
-  const engine = new Liquid({});
+  // const engine = new Liquid({});
   const ctx = window.enpage.context;
 
   // This function can be called multiple times, so we need to clean up the previous render
@@ -146,62 +145,62 @@ export async function initDevClient() {
   // });
 
   // ep-if attribute
-  document.querySelectorAll("[ep-if]").forEach(async (el) => {
-    const element = el as HTMLElement;
-    const ifValue = element.getAttribute("ep-if");
-    if (ifValue) {
-      // ep-if should not contain an expression (no {{ }}), but remove them just in case
-      const expression = ifValue.replace(/^{{/, "").replace(/}}$/, "");
-      // just evaluate the expression
-      // const shouldRender = Boolean(await engine.parseAndRender(`{% if ${expression} %}true{% endif %}`, ctx));
-      const shouldRender = await engine.evalValue(expression, ctx);
-      if (!shouldRender) {
-        // save the element in a template element
-        const template = document.createElement("template");
-        const templateId = nanoid(7);
-        template.setAttribute("id", templateId);
-        template.setAttribute("ep-builder-template", "");
-        template.innerHTML = element.outerHTML;
+  // document.querySelectorAll("[ep-if]").forEach(async (el) => {
+  //   const element = el as HTMLElement;
+  //   const ifValue = element.getAttribute("ep-if");
+  //   if (ifValue) {
+  //     // ep-if should not contain an expression (no {{ }}), but remove them just in case
+  //     const expression = ifValue.replace(/^{{/, "").replace(/}}$/, "");
+  //     // just evaluate the expression
+  //     // const shouldRender = Boolean(await engine.parseAndRender(`{% if ${expression} %}true{% endif %}`, ctx));
+  //     const shouldRender = await engine.evalValue(expression, ctx);
+  //     if (!shouldRender) {
+  //       // save the element in a template element
+  //       const template = document.createElement("template");
+  //       const templateId = nanoid(7);
+  //       template.setAttribute("id", templateId);
+  //       template.setAttribute("ep-builder-template", "");
+  //       template.innerHTML = element.outerHTML;
 
-        // append the template to the parent element
-        element.parentElement?.appendChild(template);
-        element.remove();
-      }
-    }
-  });
+  //       // append the template to the parent element
+  //       element.parentElement?.appendChild(template);
+  //       element.remove();
+  //     }
+  //   }
+  // });
 
   // parse all elements to find ep-bind:* attributes
-  document.body.querySelectorAll("*").forEach(async (el) => {
-    // filter elements that have the ep-bind:* attribute
-    const attrs = el.getAttributeNames();
+  // document.body.querySelectorAll("*").forEach(async (el) => {
+  //   // filter elements that have the ep-bind:* attribute
+  //   const attrs = el.getAttributeNames();
 
-    const bindAttributes = attrs.filter((attr) => attr.startsWith("ep-bind:"));
-    bindAttributes.forEach(async (attr) => {
-      const attrName = attr.split(":")[1];
-      const value = el.getAttribute(attr);
-      if (value) {
-        const expression = value.replace(/^{{/, "").replace(/}}$/, "");
-        const parsed = await engine.evalValue(expression, ctx);
-        // for boolean attributes, only set the attribute if the value is "true"
-        if (parsed === false) {
-          el.removeAttribute(attrName);
-          return;
-        }
-        el.setAttribute(attrName, parsed);
-      }
-    });
-  });
+  //   const bindAttributes = attrs.filter((attr) => attr.startsWith("ep-bind:"));
+  //   bindAttributes.forEach(async (attr) => {
+  //     const attrName = attr.split(":")[1];
+  //     const value = el.getAttribute(attr);
+  //     if (value) {
+  //       const expression = value.replace(/^{{/, "").replace(/}}$/, "");
+  //       const parsed = await engine.evalValue(expression, ctx);
+  //       // for boolean attributes, only set the attribute if the value is "true"
+  //       if (parsed === false) {
+  //         el.removeAttribute(attrName);
+  //         return;
+  //       }
+  //       el.setAttribute(attrName, parsed);
+  //     }
+  //   });
+  // });
 
   // parse all elements with ep-bind attribute
-  document.querySelectorAll("[ep-bind]").forEach(async (el) => {
-    const element = el as HTMLElement;
-    if (element.innerHTML) {
-      const contents = await engine.parseAndRender(element.innerHTML, ctx);
-      if (contents !== element.innerHTML) {
-        element.innerHTML = contents;
-      }
-    }
-  });
+  // document.querySelectorAll("[ep-bind]").forEach(async (el) => {
+  //   const element = el as HTMLElement;
+  //   if (element.innerHTML) {
+  //     const contents = await engine.parseAndRender(element.innerHTML, ctx);
+  //     if (contents !== element.innerHTML) {
+  //       element.innerHTML = contents;
+  //     }
+  //   }
+  // });
 
   // enable drag and drop on touch devices
 
@@ -224,7 +223,7 @@ export async function initDevClient() {
     document.body.appendChild(pill);
 
     // For now, we only run the accessibility tests on the first page
-    if (import.meta.env.DEV && window.enpage.currentPage === 0) {
+    if (import.meta.env.DEV && window.location.search.includes("runtests")) {
       runAccessibilityTests();
     }
 
@@ -232,12 +231,6 @@ export async function initDevClient() {
     // Editor context!
     //-----------------------------------
   } else {
-    // add meta csp
-    const csp = document.createElement("meta");
-    csp.httpEquiv = "Content-Security-Policy";
-    csp.content = `script-src 'self' 'unsafe-eval' 'unsafe-inline' ${editorOrigin};`;
-    document.head.appendChild(csp);
-
     // add editor.css
     const editorCssEl = document.createElement("link");
     editorCssEl.rel = "stylesheet";

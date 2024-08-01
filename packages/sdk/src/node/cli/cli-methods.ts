@@ -1,7 +1,6 @@
-import { build, preview } from "vite";
+import { build } from "vite";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import chalk from "chalk";
 import { createLogger } from "../builder/logger";
 import { createDevServer } from "~/server/node/dev-server";
 import { createServer } from "~/server/node/server";

@@ -18,7 +18,9 @@
   "devDependencies": {
     "@vitejs/plugin-react": "4.3.1",
     "rollup-plugin-visualizer": "5.12.0",
-    "vite": "5.2.11",
+    "vite-plugin-inspect": "workspace:*",
+    "postcss-preset-env": "workspace:*",
+    "vite": "5.3.3",
     "zod": "3.23.8"
   },
   "dependencies": {
@@ -28,7 +30,6 @@
   },
   "peerDependencies": {
     "@enpage/sdk": "workspace:*",
-    "@enpage/style-system": "workspace:*",
     "zod": "3.23.8"
   },
   "author": "Matthias Etienne",

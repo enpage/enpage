@@ -21,7 +21,7 @@ export const renderTemplatePlugin = (
   env: EnpageEnv,
 ): Plugin => {
   const isBuildMode = viteEnv.command === "build";
-  const envMode = viteEnv.mode;
+  const viteMode = viteEnv.mode;
   let logger: Logger;
 
   let serverHostname = process.env.ENPAGE_SITE_HOST;
@@ -56,28 +56,31 @@ export const renderTemplatePlugin = (
         // ----------------------------
         // [always] Always there
         addStatePlaceholderScript(doc, head);
+        // Add the Enpage SDK entry client script
         addEntryClient(doc, head, body);
         // Set site language. Will result in <html lang="xx">
         renderMetaTags(doc, head, context);
+        // Add stylesheets to the document head
+        addStylesheets(cfg, logger, doc, head);
+        // Add the vite preload error script (to reload the page on preload error)
+        attachVitePreloadErrorScript(doc, head);
+        // rerwrite stadalone <img> tags to <picture> tags
+        rewriteImageTags(doc);
+        // set body attributes ep-block-type="page" and ep-editable, ep-label
+        processBody(cfg, body);
+        // for all editable elements ([ep-editable]), add a ep-label attribute if not present
+        // the label will describe the tag
+        addMissingLabels(doc);
+        // add custom elements
+        addCustomElements(doc, head);
+        // add animate script
+        addAnimationScript(doc, head);
+        // add meta csp
+        addContentSecurityPolicy(doc, head);
 
         // ----------------------------
         // [build-only] Add stylesheets to the document head
         if (isBuildMode) {
-          addStylesheets(cfg, logger, doc, head);
-          // Add the vite preload error script (to reload the page on preload error)
-          attachVitePreloadErrorScript(doc, head);
-          // rerwrite stadalone <img> tags to <picture> tags
-          rewriteImageTags(doc);
-          // set body attributes ep-block-type="page" and ep-editable, ep-label
-          processBody(cfg, body);
-          // for all editable elements ([ep-editable]), add a ep-label attribute if not present
-          // the label will describe the tag
-          addMissingLabels(doc);
-          // add custom elements
-          addCustomElements(doc, head);
-          // add animate script
-          addAnimationScript(doc, head);
-
           // ----------------------------
           // [dev only]
         } else {
@@ -106,6 +109,23 @@ export const renderTemplatePlugin = (
     },
   };
 };
+
+function addContentSecurityPolicy(doc: Document, head: HTMLHeadElement) {
+  const csp = doc.createElement("meta");
+  csp.httpEquiv = "Content-Security-Policy";
+  csp.content = [
+    `default-src 'self'`,
+    "img-src 'self' https://*",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*",
+    "style-src 'self' 'unsafe-inline' https://*",
+    "font-src 'self' https://*",
+    "connect-src 'self' https://*",
+    "frame-src 'self' https://*",
+    "child-src 'self' https://*",
+    "frame-ancestors 'self' http://localhost:* https://enpage.co",
+  ].join(";");
+  head.appendChild(csp);
+}
 
 function addStatePlaceholderScript(doc: Document, head: HTMLHeadElement) {
   const stateScript = doc.createElement("script");

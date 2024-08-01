@@ -24,7 +24,8 @@ export async function fetchDatasources(pageConfig: GenericPageConfig) {
         const result = await fetchJsonDataSource(datasource, pageConfig);
         return { key, result };
       } catch (error) {
-        throw new Error(`Error fetching datasource ${key}: ${(error as Error).message}`);
+        console.log({ datasource, pageConfig });
+        throw new Error(`Error fetching datasource "${key}": ${(error as Error).message}`);
       }
     }),
   );
@@ -74,7 +75,7 @@ async function fetchJsonDataSource(
 }
 
 function replacePlaceholderReplacer(pageConfig: GenericPageConfig) {
-  return function replacePlaceholders(_: any, p1: string) {
+  return function replacePlaceholders(_: unknown, p1: string) {
     const varName = (p1 as string).trim();
     return get(pageConfig, varName) ?? "";
   };

@@ -108,12 +108,21 @@ program
     console.log("Installing dependencies... ");
 
     const pm = getPackageManager();
+
+    if (pm === "pnpm") {
+      const workspacePath = resolve(directory, "pnpm-workspace.yaml");
+      writeFileSync(workspacePath, "\n");
+    }
+
     execSync(`${pm} install`, { cwd: directory });
 
     console.log(chalk.blue("All done!"));
-    console.log("\n\nYou can now develop your template:\n");
-    console.log(chalk.blue(`   cd ${directory}`));
-    console.log(chalk.blue(`   ${pm} start`));
+    console.log("You can now develop your template:\n");
+    console.log(chalk.blue(`  cd ${dir}`));
+    console.log(chalk.blue(`  ${pm} start`));
+    console.log("");
+
+    process.exit(0);
   });
 
 program.parse();
