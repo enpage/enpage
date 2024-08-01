@@ -1,6 +1,5 @@
 // @ts-check
-import z from "zod";
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources, Type } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
 
@@ -8,11 +7,11 @@ import { defineManifest } from "@enpage/sdk/manifest";
 export const datasources = defineDataSources({
   links: {
     name: "Links",
-    schema: z.array(
-      z.object({
-        title: z.string(),
-        url: z.string().url(),
-        icon: z.string().optional(),
+    schema: Type.Array(
+      Type.Object({
+        title: Type.String(),
+        url: Type.String().url(),
+        icon: Type.String().optional(),
       }),
     ),
     sampleData: [
@@ -25,12 +24,12 @@ export const datasources = defineDataSources({
     name: "Tasks",
     provider: "http-json",
     url: "https://jsonplaceholder.typicode.com/todos?userId=1",
-    schema: z.array(
-      z.object({
-        id: z.number(),
-        userId: z.number(),
-        title: z.string(),
-        completed: z.boolean(),
+    schema: Type.Array(
+      Type.Object({
+        id: Type.Number(),
+        userId: Type.Number(),
+        title: Type.String(),
+        completed: Type.Boolean(),
       }),
     ),
   },

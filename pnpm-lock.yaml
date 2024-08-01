@@ -11,7 +11,6 @@ overrides:
   '@types/react': 18.3.2
   '@types/react-dom': 18.3.0
   '@types/node': ^20.0.0
-  goober: 2.1.14
   zod: 3.23.8
   tailwindcss: 3.4.3
   '@tailwindcss/container-queries': 0.1.1
@@ -20,8 +19,8 @@ overrides:
   vite: 5.3.3
   vite-plugin-dts: 3.9.1
   vite-tsconfig-paths: 4.3.2
-  '@radix-ui/themes': 3.1.1
   '@cloudflare/workers-types': 4.20240725.0
+  '@sinclair/typebox': 0.32.35
 
 importers:
 
@@ -2428,7 +2427,7 @@ packages:
     resolution: {integrity: sha512-mo5j5X+jIZmJQveBKeS/clAueipV7KgiX1vMgCxam1RNYiqE1w62n0/tJJnHtjW8ZHcQco5gY85jA3mi0L+nSA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@sinclair/typebox': 0.27.8
+      '@sinclair/typebox': 0.32.35
     dev: true
 
   /@jridgewell/gen-mapping@0.3.5:
@@ -4293,13 +4292,8 @@ packages:
       shiki: 1.10.3
     dev: true
 
-  /@sinclair/typebox@0.27.8:
-    resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
-    dev: true
-
   /@sinclair/typebox@0.32.35:
     resolution: {integrity: sha512-Ul3YyOTU++to8cgNkttakC0dWvpERr6RYoHO2W47DLbFvrwBDJUY31B1sImH6JZSYc4Kt4PyHtoPNu+vL2r2dA==}
-    dev: false
 
   /@swc/helpers@0.5.8:
     resolution: {integrity: sha512-lruDGw3pnfM3wmZHeW7JuhkGQaJjPyiKjxeGhdmfoOT53Ic9qb5JLDNaK2HUdl1zLDeX28H221UvKjfdvSLVMg==}

@@ -1,5 +1,5 @@
-import type z from "zod";
 import { Type, type Static, type TSchema } from "@sinclair/typebox";
+export * from "@sinclair/typebox";
 
 export type DatasourceProvider = "youtube-video" | "youtube-feed" | "tweet" | "twitter-feed";
 // | "instagram"
