@@ -41,6 +41,9 @@ importers:
       nx:
         specifier: 19.4.3
         version: 19.4.3
+      rimraf:
+        specifier: 6.0.1
+        version: 6.0.1
       tailwindcss:
         specifier: 3.4.3
         version: 3.4.3
@@ -6431,7 +6434,6 @@ packages:
       minipass: 7.1.2
       package-json-from-dist: 1.0.0
       path-scurry: 2.0.0
-    dev: false
 
   /globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
@@ -6766,7 +6768,6 @@ packages:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
-    dev: false
 
   /jest-diff@29.7.0:
     resolution: {integrity: sha512-LMIgiIrhigmPrs03JHpxUh2yISK3vLFPkAodPeo0+BuF7wA2FoQbkEg1u8gBYBThncu7e1oEDUfIXVuTqLRUjw==}
@@ -7033,7 +7034,6 @@ packages:
   /lru-cache@11.0.0:
     resolution: {integrity: sha512-Qv32eSV1RSCfhY3fpPE2GNZ8jgM9X7rdAfemLWqTUxwiyIC4jJ6Sy0fZ8H+oLWevO6i4/bizg7c8d8i6bxrzbA==}
     engines: {node: 20 || >=22}
-    dev: false
 
   /lru-cache@4.1.5:
     resolution: {integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==}
@@ -7143,7 +7143,6 @@ packages:
     engines: {node: 20 || >=22}
     dependencies:
       brace-expansion: 2.0.1
-    dev: false
 
   /minimatch@3.0.8:
     resolution: {integrity: sha512-6FsRAQsxQ61mw+qP1ZzbL9Bc78x2p5OqNgNpnoAFLTrX8n5Kxph0CsnhmKKNXTWjXqU5L0pGPR7hYk+XWZr60Q==}
@@ -7554,7 +7553,6 @@ packages:
     dependencies:
       lru-cache: 11.0.0
       minipass: 7.1.2
-    dev: false
 
   /path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
@@ -8587,7 +8585,6 @@ packages:
     dependencies:
       glob: 11.0.0
       package-json-from-dist: 1.0.0
-    dev: false
 
   /rollup-plugin-strip-banner@3.1.0(rollup@4.18.1):
     resolution: {integrity: sha512-yhqsfjcF0mS6wjUvRJpffQwdsxYxlmp4SLjGxmPdz/iL9jV1lp/vMuIhgho8jLJSD+6TzSzLF0Q8pAFjSVHSZA==}
