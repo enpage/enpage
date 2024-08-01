@@ -49,7 +49,7 @@
     "http-cache-semantics": "4.1.1",
     "immer": "10.1.1",
     "jsdom": "24.1.1",
-    "liquidjs": "10.15.0",
+    "liquidjs": "10.16.1",
     "nanoid": "5.0.7",
     "open": "10.1.0",
     "rimraf": "6.0.1",

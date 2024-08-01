@@ -250,8 +250,8 @@ importers:
         specifier: 24.1.1
         version: 24.1.1
       liquidjs:
-        specifier: 10.15.0
-        version: 10.15.0
+        specifier: 10.16.1
+        version: 10.16.1
       nanoid:
         specifier: 5.0.7
         version: 5.0.7
@@ -3997,8 +3997,8 @@ packages:
     resolution: {integrity: sha512-wM1+Z03eypVAVUCE7QdSqpVIvelbOakn1M0bPDoA4SGWPx3sNDVUiMo3L6To6WWGClB7VyXnhQ4Sn7gxiJbE6A==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  liquidjs@10.15.0:
-    resolution: {integrity: sha512-u5lYWhW8ioT+O3FdCcp5U+hiPEGNO4xASCFlCHA+k5rMTJwDIa2c2KF111ZDKc2xGM7LXPvMoNRIrBfbLNpRBg==}
+  liquidjs@10.16.1:
+    resolution: {integrity: sha512-1JFL/Y7ONoajrfwav37yuz5yQHU3+Pgz1XWsg9E/2T8Fp65KalNfMF8QZ3+tNETqGUIB66waOSLOi64niYZE9A==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -9668,7 +9668,7 @@ snapshots:
 
   lines-and-columns@2.0.4: {}
 
-  liquidjs@10.15.0:
+  liquidjs@10.16.1:
     dependencies:
       commander: 10.0.1
 
