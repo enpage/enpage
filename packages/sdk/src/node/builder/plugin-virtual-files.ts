@@ -59,7 +59,8 @@ export const virtualFilesPlugin = (
             attributes: templateConfig.attributes,
             datasources: templateConfig.datasources,
             data: pageContext?.data,
-            attrs: pageContext?.attrs,
+            attrs: pageContext!.attrs,
+            templateManifest: templateConfig.manifest,
             // todo: add siteConfig and ssrManifest
             siteConfig: {},
             ssrManifest: {},

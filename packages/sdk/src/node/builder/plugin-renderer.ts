@@ -43,6 +43,7 @@ export const renderTemplatePlugin = (
     transformIndexHtml: {
       order: "pre",
       handler: async (html: string, viteCtx) => {
+        console.log("transformIndexHtml", { viteCtx });
         const context = enpageCtx;
 
         // disable JSDOM errors otherwise we'll get a lot of noise
@@ -56,6 +57,7 @@ export const renderTemplatePlugin = (
         // ----------------------------
         // [always] Always there
         addStatePlaceholderScript(doc, head);
+        addEntryClient(doc, head, body);
         // Set site language. Will result in <html lang="xx">
         renderMetaTags(doc, head, context);
 

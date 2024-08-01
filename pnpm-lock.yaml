@@ -215,6 +215,9 @@ importers:
       '@hattip/core':
         specifier: 0.0.46
         version: 0.0.46
+      '@sinclair/typebox':
+        specifier: 0.32.35
+        version: 0.32.35
       aws4fetch:
         specifier: 1.0.19
         version: 1.0.19
@@ -275,9 +278,6 @@ importers:
       zod:
         specifier: 3.23.8
         version: 3.23.8
-      zod-to-json-schema:
-        specifier: 3.23.2
-        version: 3.23.2(zod@3.23.8)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: 4.20240725.0
@@ -4296,6 +4296,10 @@ packages:
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
+
+  /@sinclair/typebox@0.32.35:
+    resolution: {integrity: sha512-Ul3YyOTU++to8cgNkttakC0dWvpERr6RYoHO2W47DLbFvrwBDJUY31B1sImH6JZSYc4Kt4PyHtoPNu+vL2r2dA==}
+    dev: false
 
   /@swc/helpers@0.5.8:
     resolution: {integrity: sha512-lruDGw3pnfM3wmZHeW7JuhkGQaJjPyiKjxeGhdmfoOT53Ic9qb5JLDNaK2HUdl1zLDeX28H221UvKjfdvSLVMg==}
@@ -10241,14 +10245,6 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-  /zod-to-json-schema@3.23.2(zod@3.23.8):
-    resolution: {integrity: sha512-uSt90Gzc/tUfyNqxnjlfBs8W6WSGpNBv0rVsNxP/BVSMHMKGdthPYff4xtCHYloJGM0CFxFsb3NbC0eqPhfImw==}
-    peerDependencies:
-      zod: 3.23.8
-    dependencies:
-      zod: 3.23.8
-    dev: false
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
