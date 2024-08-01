@@ -11,8 +11,7 @@ declare global {
 
 declare module "@hattip/compose" {
   interface Locals {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    pageConfig: import("@enpage/sdk/page-config").PageConfig<any, any>;
+    pageConfig: import("@enpage/sdk/page-config").GenericPageConfig;
     vite: import("vite").ViteDevServer;
   }
 }

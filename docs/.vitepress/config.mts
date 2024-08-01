@@ -74,7 +74,12 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: "Instagram", link: "/guides/data-sources/built-in/instagram" },
+              { text: "Mastodon", link: "/guides/data-sources/built-in/mastodon" },
+              { text: "Threads", link: "/guides/data-sources/built-in/threads" },
+              { text: "TikTok", link: "/guides/data-sources/built-in/tiktok" },
               { text: "YouTube", link: "/guides/data-sources/built-in/youtube" },
+              { text: "RSS", link: "/guides/data-sources/built-in/rss" },
+              { text: "HTTP-JSON", link: "/guides/data-sources/built-in/http-json" },
             ],
           },
         ],

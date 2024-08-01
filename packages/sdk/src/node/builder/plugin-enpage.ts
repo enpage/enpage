@@ -52,9 +52,8 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
             },
           },
         },
-
         experimental:
-          command === "build" && !env.NO_CDN
+          command === "build" && !env.NO_CDN && viteEnv.mode !== "development"
             ? {
                 renderBuiltUrl(filename, { hostId, hostType, type }) {
                   if (type === "public") {

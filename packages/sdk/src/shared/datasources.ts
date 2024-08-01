@@ -1,5 +1,5 @@
 import { Type, type Static, type TSchema } from "@sinclair/typebox";
-export * from "@sinclair/typebox";
+export { Type as ds, type TSchema } from "@sinclair/typebox";
 
 export type DatasourceProvider = "youtube-video" | "youtube-feed" | "tweet" | "twitter-feed";
 // | "instagram"
@@ -13,6 +13,8 @@ export type DatasourceProvider = "youtube-video" | "youtube-feed" | "tweet" | "t
 // | "snapchat"
 // | "pinterest"
 // | "twitch";
+
+export type DatasourceProviderOptions = TSchema;
 
 const youtubeVideoSchema = Type.Object({
   id: Type.String({ minLength: 1 }),
@@ -37,8 +39,12 @@ export const providersSchemaMap: Record<DatasourceProvider, TSchema> = {
   "twitter-feed": twitterFeedSchema,
 };
 
-type DatasourceProviderManifest<P extends DatasourceProvider> = {
+type DatasourceProviderManifest<
+  P extends DatasourceProvider,
+  O extends DatasourceProviderOptions | null = null,
+> = {
   provider: P;
+  options: O extends DatasourceProviderOptions ? Static<O> : never;
   name: string;
   description?: string;
   schema?: never;
@@ -53,8 +59,10 @@ export type DatasourceHttpJsonProviderManifest<S extends TSchema> = {
   provider: "http-json";
   name: string;
   description?: string;
-  url: string;
-  headers?: Record<string, string>;
+  options: {
+    url: string;
+    headers?: Record<string, string>;
+  };
   schema: S;
   refresh?: {
     method: "interval" | "manual" | "live";

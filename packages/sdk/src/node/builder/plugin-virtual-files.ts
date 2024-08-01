@@ -3,7 +3,7 @@ import type { GenericPageConfig } from "~/shared/page-config";
 import type { ConfigEnv, Logger, Plugin } from "vite";
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
-import type { PageContext } from "~/shared/page-context";
+import type { GenericPageContext, PageContext } from "~/shared/page-context";
 import type { EnpageEnv } from "~/shared/env";
 
 const virtualIndexId = "virtual:enpage-template:index.html";
@@ -29,8 +29,8 @@ export const virtualFilesPlugin = (
   _viteEnv: ConfigEnv,
   env: EnpageEnv,
 ): Plugin => {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  let pageContext: PageContext<any, any> | undefined = undefined;
+  let pageContext: GenericPageContext | undefined = undefined;
+
   return {
     name: "enpage:virtual-files",
     configResolved(config) {
@@ -59,7 +59,7 @@ export const virtualFilesPlugin = (
             attributes: templateConfig.attributes,
             datasources: templateConfig.datasources,
             data: pageContext?.data,
-            attrs: pageContext!.attrs,
+            attr: pageContext!.attr,
             templateManifest: templateConfig.manifest,
             // todo: add siteConfig and ssrManifest
             siteConfig: {},

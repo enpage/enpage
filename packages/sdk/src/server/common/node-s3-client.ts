@@ -2,6 +2,7 @@ import { AwsClient } from "aws4fetch";
 import path from "node:path";
 import { readFile, stat } from "node:fs/promises";
 import type { EnpageEnv } from "~/shared/env";
+import { getBuildDirectories } from "../node/path-utils";
 
 export interface S3Client {
   get: (key: string) => Promise<Response>;
@@ -18,15 +19,14 @@ export function createS3Client(env: EnpageEnv): S3Client {
 }
 
 export function createLocalS3Client(env: EnpageEnv): S3Client {
+  const { dist } = getBuildDirectories();
   return {
     get(key: string) {
-      const base = path.join(process.cwd(), ".enpage", "dist");
       const parts = key.split("/");
       if (parts.includes("..") || parts.includes("~")) {
         return Promise.resolve(new Response("Invalid key"));
       }
-      const file = path.join(base, ...parts.slice(2));
-      console.log("requested file", file);
+      const file = path.join(dist, ...parts.slice(2));
       // create new response from file
       return stat(file)
         .then(() =>

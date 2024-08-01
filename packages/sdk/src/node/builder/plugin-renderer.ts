@@ -43,7 +43,6 @@ export const renderTemplatePlugin = (
     transformIndexHtml: {
       order: "pre",
       handler: async (html: string, viteCtx) => {
-        console.log("transformIndexHtml", { viteCtx });
         const context = enpageCtx;
 
         // disable JSDOM errors otherwise we'll get a lot of noise
@@ -352,8 +351,8 @@ function upsertHtmlElement(
  * Add/update meta tags to the document head.
  */
 function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPageContext | undefined) {
-  if (context?.attrs.$siteLanguage) {
-    doc.documentElement.lang = context?.attrs.$siteLanguage;
+  if (context?.attr.$siteLanguage) {
+    doc.documentElement.lang = context?.attr.$siteLanguage;
   }
   // ----------------------------------------------------
   // Add meta tags if they don't exist
@@ -365,21 +364,21 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
   }
 
   // title (always update)
-  if (context?.attrs.$siteTitle)
-    upsertHtmlElement("title", "title", doc, head, { textContent: context.attrs.$siteTitle });
+  if (context?.attr.$siteTitle)
+    upsertHtmlElement("title", "title", doc, head, { textContent: context.attr.$siteTitle });
 
   // description (always update)
-  if (context?.attrs.$siteDescription)
+  if (context?.attr.$siteDescription)
     upsertHtmlElement("meta", "meta[name='description']", doc, head, {
       name: "description",
-      content: context.attrs.$siteDescription,
+      content: context.attr.$siteDescription,
     });
 
   // keywords (always update)
-  if (context?.attrs.$siteKeywords) {
+  if (context?.attr.$siteKeywords) {
     upsertHtmlElement("meta", "meta[name='keywords']", doc, head, {
       name: "keywords",
-      content: context.attrs.$siteKeywords,
+      content: context.attr.$siteKeywords,
     });
   }
 

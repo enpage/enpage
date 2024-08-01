@@ -1,5 +1,5 @@
 // @ts-check
-import { defineDataSources, Type } from "@enpage/sdk/datasources";
+import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
 
@@ -7,11 +7,11 @@ import { defineManifest } from "@enpage/sdk/manifest";
 export const datasources = defineDataSources({
   links: {
     name: "Links",
-    schema: Type.Array(
-      Type.Object({
-        title: Type.String(),
-        url: Type.String().url(),
-        icon: Type.String().optional(),
+    schema: ds.Array(
+      ds.Object({
+        title: ds.String(),
+        url: ds.String({ format: "uri", pattern: "^https?://" }),
+        icon: ds.Optional(ds.String()),
       }),
     ),
     sampleData: [
@@ -24,12 +24,12 @@ export const datasources = defineDataSources({
     name: "Tasks",
     provider: "http-json",
     url: "https://jsonplaceholder.typicode.com/todos?userId=1",
-    schema: Type.Array(
-      Type.Object({
-        id: Type.Number(),
-        userId: Type.Number(),
-        title: Type.String(),
-        completed: Type.Boolean(),
+    schema: ds.Array(
+      ds.Object({
+        id: ds.Number(),
+        userId: ds.Number(),
+        title: ds.String(),
+        completed: ds.Boolean(),
       }),
     ),
   },

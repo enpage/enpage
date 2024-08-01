@@ -1,4 +1,3 @@
-import throttle from "lodash-es/throttle";
 import { canContain, type Tag } from "./tag-containment-rules";
 
 type Coordinates = { x: number; y: number };

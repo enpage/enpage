@@ -36,6 +36,8 @@ export default defineConfig((options) => {
         "virtual:enpage-template:index.html",
         "virtual:enpage-page-config.json",
       ],
+      // Force bundling of lodash-es for the CLI
+      noExternal: ["lodash-es"],
       esbuildOptions(input) {
         input.banner = banner;
       },

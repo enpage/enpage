@@ -12,7 +12,7 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
    */
   datasources?: D;
   /**
-   * Resolved Data sources for the page.
+   * Resolved static data sources for the page.
    * Undefined if no data sources are defined.
    */
   data?: D extends DatasourceManifestMap ? DatasourceResolved<D> : undefined;
@@ -24,7 +24,7 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
   /**
    * Resolved attributes for the page.
    */
-  attrs: AttributesResolved<A>;
+  attr: AttributesResolved<A>;
 
   siteConfig: Record<string, unknown>;
   ssrManifest?: Manifest;

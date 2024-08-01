@@ -152,6 +152,11 @@
   transition: none !important;
 }
 
+.VPSidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0);
+}
+
 .VPNavBarTitle.has-sidebar .title {
   border-bottom-color: transparent !important;
   margin-left: -14px;

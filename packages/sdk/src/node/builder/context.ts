@@ -26,7 +26,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     attributes[key] = cfg.attributes[key].defaultValue;
   }
 
-  return { data, attrs: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return { data, attr: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
 }
 
 /**

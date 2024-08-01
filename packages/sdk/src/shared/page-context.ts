@@ -12,7 +12,7 @@ export type PageContext<D extends DatasourceManifestMap | undefined, A extends A
   /**
    * Attributes for the page. Always defined because of Enpage default attributes.
    */
-  attrs: AttributesResolved<A>;
+  attr: AttributesResolved<A>;
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
