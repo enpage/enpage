@@ -5,7 +5,7 @@ import type { ElementSelectedPayload } from "@enpage/sdk/browser/dev-client";
 import { PanelItemSiteBackground } from "./PanelItemSiteBackground";
 import { HorizontalDrawer } from "../Drawer";
 import { clsx } from "../../utils/component-utils";
-import { useIsLargeDevice, useIsMobileDevice } from "../../hooks/use-is-device-type";
+import { useIsLargeDevice } from "../../hooks/use-is-device-type";
 
 function Inspector() {
   const editor = useEditor();

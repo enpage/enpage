@@ -1,4 +1,3 @@
-"use client";
 import Editor from "./Editor";
 import { EditorStoreContext, createEditorStore } from "../hooks/use-editor-store";
 import { useRef } from "react";

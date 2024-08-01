@@ -1,7 +1,6 @@
 import { Fragment, type PropsWithChildren } from "react";
 import { Dialog, Transition, TransitionChild, DialogPanel } from "@headlessui/react";
 import { cn } from "../utils/component-utils";
-import { useEditor } from "../hooks/use-editor-store";
 
 type VDrawerProps = PropsWithChildren<{
   className?: string;

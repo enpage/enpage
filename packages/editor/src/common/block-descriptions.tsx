@@ -1,8 +1,5 @@
 import type { BlockType } from "@enpage/sdk/browser/components/blocks/types";
 import type { ReactNode } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
-import { BsCardText } from "react-icons/bs";
-import { BiText } from "react-icons/bi";
 import { BsTextLeft } from "react-icons/bs";
 import { BsType } from "react-icons/bs";
 import { RxButton } from "react-icons/rx";

@@ -1,2 +1,2 @@
-export * from "./Editor";
-export * from "./Toolbar";
+// only export EditorWrapper
+export * from "./EditorWrapper";

@@ -1,6 +1,6 @@
 import { useEditor } from "../hooks/use-editor-store";
 import Toolbar from "./Toolbar";
-import { type ComponentProps, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Inspector from "./inspector/Inspector";
 import { DeviceFrame, PreviewIframe } from "./Iframe";
 import BlocksLibrary from "./blocks-library/BlocksLibrary";
