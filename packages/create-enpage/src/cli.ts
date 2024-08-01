@@ -19,7 +19,7 @@ program
     if (!exist) {
       // create the directory
       process.stdout.write(`Creating directory ${directory}... `);
-      mkdirSync(directory);
+      mkdirSync(directory, { recursive: true });
       console.log(chalk.blue("OK"));
     } else if (!lstatSync(directory).isDirectory()) {
       console.log(chalk.red(`${directory} exists but is not a directory. Aborting.`));
