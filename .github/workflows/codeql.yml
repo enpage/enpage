@@ -14,6 +14,11 @@ name: "CodeQL"
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'packages/editor/server.js'
+      - 'docs/**'
+      - '.changeset/**'
+      - 'creatives/**'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
