@@ -11,7 +11,7 @@ export default defineConfig({
   envPrefix: ["PUBLIC_"],
   plugins: [Inspect(), react(), dts()],
   server: {
-    port: 3008,
+    port: +(process.env.PORT ?? 3008),
   },
   build: {
     copyPublicDir: false,
