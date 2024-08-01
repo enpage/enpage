@@ -20,12 +20,16 @@ export async function render(req: Request) {
     throw new Error("templateUrl query param is required");
   }
   let contents: string | undefined;
-  const templateUrl = new URL(req.query.templateUrl as string).href;
+  const templateUrl = new URL(req.query.templateUrl as string);
+
+  if (templateUrl.hostname !== "localhost") {
+    throw new Error("Invalid templateUrl. Only localhost is allowed");
+  }
 
   // fetch contents from templateUrl query param
   try {
     if (IFRAME_MODE === "srcdoc") {
-      contents = await fetch(templateUrl).then((res) => res.text());
+      contents = await fetch(templateUrl.href).then((res) => res.text());
     }
   } catch (e) {
     contents = ERROR_CONTENTS;
@@ -33,7 +37,7 @@ export async function render(req: Request) {
   // render the app
   const html = ReactDOMServer.renderToString(
     <React.StrictMode>
-      <App html={contents} templateUrl={templateUrl} />
+      <App html={contents} templateUrl={templateUrl.href} />
     </React.StrictMode>,
   );
   return {
