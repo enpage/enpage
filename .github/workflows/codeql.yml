@@ -16,8 +16,12 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'packages/editor/server.js'
   schedule:
     - cron: '22 4 * * 6'
+
+
 
 jobs:
   analyze:
