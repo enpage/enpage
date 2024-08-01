@@ -33,8 +33,8 @@ program
     const emitter = degit("enpage/enpage/packages/template-example");
 
     await emitter.clone(directory);
-    console.log(chalk.blue("OK"));
 
+    console.log(chalk.blue("OK"));
     console.log("");
     console.log("Let's set up your new template:");
 
