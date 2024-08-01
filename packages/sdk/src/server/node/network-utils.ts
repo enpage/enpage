@@ -1,13 +1,15 @@
 import chalk from "chalk";
 import os from "node:os";
+import type { Logger } from "vite";
 
-export function displayServerUrls(port: number | string): void {
+export function displayServerUrls(port: number | string, logger: Logger): void {
   const localUrl = `http://localhost:${port}`;
   const networkUrls = getNetworkUrls(port);
-  console.log(`  ▸ Local:    ${chalk.cyan(localUrl)}`);
+  logger.info(`  ▸ Local:    ${chalk.cyan(localUrl)}`);
   for (const url of networkUrls) {
-    console.log(`  ▸ Network:  ${chalk.gray(url)}`);
+    logger.info(`  ▸ Network:  ${chalk.gray(url)}`);
   }
+  logger.info("");
 }
 
 export function getNetworkUrls(port: number | string): string[] {

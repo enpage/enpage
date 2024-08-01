@@ -15,10 +15,9 @@ const external = [
   // "zod",
   // "tailwindcss",
   // "jsdom",
-
-  // "vite",
+  "vite",
+  "vite-plugin-inspect",
   // "@vitejs/plugin-react",
-  // "vite-plugin-inspect",
   // "vite-tsconfig-paths",
   // "postcss",
   // "postcss-preset-env",
@@ -39,7 +38,7 @@ export default defineConfig((options) => {
     {
       entry: ["src/node", "!src/node/**/*.md", "!src/node/**/__tests__/**/*", "!src/node/**/__mocks__/**/*"],
       outDir: "dist/node",
-      target: "node18",
+      target: "node20.10",
       format: ["esm"],
       dts: false,
       minify: !options.watch,

@@ -20,6 +20,8 @@ export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   const cfgPath = join(process.cwd(), "enpage.config.js");
   const config = await loadConfig(cfgPath);
   const env = loadEnv(viteConfigEnv.mode, process.cwd(), ["PUBLIC_"]);
+  const isBuild = viteConfigEnv.command === "build";
+  const isSsrBuild = isBuild && viteConfigEnv.isSsrBuild === true;
 
   return {
     envPrefix: ["PUBLIC_"],
@@ -28,8 +30,8 @@ export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
       inspectPlugin(),
       enpagePlugin(config, viteConfigEnv, env as unknown as EnpageEnv),
       // optimize images only in client build
-      viteConfigEnv.command === "build" &&
-        !viteConfigEnv.isSsrBuild &&
+      isBuild &&
+        !isSsrBuild &&
         ViteImageOptimizer({
           logStats: true,
           cache: true,

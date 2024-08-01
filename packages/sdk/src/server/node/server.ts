@@ -13,7 +13,7 @@ export async function createServer(port: number | string, logger: Logger) {
   app.use(createMiddleware());
   app.listen(port, () => {
     logger.info("Enpage Server listening:\n");
-    displayServerUrls(port);
+    displayServerUrls(port, logger);
     logger.info("");
   });
 }
