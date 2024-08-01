@@ -1,5 +1,12 @@
 # create-enpage
 
+## 0.0.16
+
+### Patch Changes
+
+- e56a7ea: Rework deps bundling
+- 7c96920: test changeset releases
+
 ## 0.0.15
 
 ### Patch Changes

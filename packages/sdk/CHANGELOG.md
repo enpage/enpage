@@ -1,5 +1,15 @@
 # @enpage/sdk
 
+## 0.0.15
+
+### Patch Changes
+
+- e56a7ea: Rework deps bundling
+- 7c96920: test changeset releases
+- Updated dependencies [e56a7ea]
+- Updated dependencies [7c96920]
+  - @enpage/style-system@0.0.15
+
 ## 0.0.14
 
 ### Patch Changes
