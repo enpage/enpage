@@ -16,7 +16,6 @@ export async function getPageConfigFromLocalFiles(ctx: RequestContext): Promise<
     attributes,
     datasources,
     templateManifest: manifest,
-    siteConfig: {},
     attr: resolveAttributes(attributes),
     data: resolveData(datasources ?? {}),
   };
