@@ -14,6 +14,13 @@ export type EnpageEnv = {
   R2_SECRET_ACCESS_KEY: string;
   NODE_ENV: "development" | "production" | "preview" | "local-preview";
   NO_CDN?: string;
+  DATASOURCE_REFRESH_DELAY_IN_MINUTE: string;
+  FACEBOOK_APP_SECRET?: string;
+  INSTAGRAM_APP_SECRET?: string;
+  THREADS_APP_SECRET?: string;
+  TIKTOK_CLIENT_KEY?: string;
+  TIKTOK_CLIENT_SECRET?: string;
+  YOUTUBE_API_KEY?: string;
 };
 
 export type PageInfoHandler = HattipHandler;
