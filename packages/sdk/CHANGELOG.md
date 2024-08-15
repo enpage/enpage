@@ -1,5 +1,13 @@
 # @enpage/sdk
 
+## 0.0.16
+
+### Patch Changes
+
+- d895a3f: Add supported datasources
+- bd21a8e: fix types
+  - @enpage/style-system@0.0.16
+
 ## 0.0.15
 
 ### Patch Changes
