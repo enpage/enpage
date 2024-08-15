@@ -1,5 +1,11 @@
 # @enpage/style-system
 
+## 0.0.17
+
+### Patch Changes
+
+- 0641f43: Update deps
+
 ## 0.0.16
 
 ## 0.0.15

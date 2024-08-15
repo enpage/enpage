@@ -1,5 +1,13 @@
 # @enpage/editor
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [0641f43]
+  - @enpage/style-system@0.0.17
+  - @enpage/sdk@0.0.17
+
 ## 0.0.3
 
 ### Patch Changes
