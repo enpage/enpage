@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "ci:lint": "biome check ."
   },
   "engines": {
     "node": ">=18.14.1"

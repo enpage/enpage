@@ -100,6 +100,7 @@
     "dev": "tsup --watch",
     "sizetest": "pnpm build && du -sh dist",
     "lint": "biome check --write .",
+    "ci:lint": "biome check .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Matthias Etienne",

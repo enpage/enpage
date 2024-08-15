@@ -13,7 +13,8 @@
     "start": "enpage dev",
     "build": "enpage build",
     "preview": "enpage preview",
-    "lint": "biome check --write ."
+    "lint": "biome check --write .",
+    "ci:lint": "biome check ."
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.3.1",
