@@ -19,13 +19,13 @@
   "author": "Matthias Etienne",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "@inquirer/prompts": "5.0.5",
+    "@inquirer/prompts": "5.3.8",
     "chalk": "5.3.0",
     "commander": "12.1.0",
     "degit": "2.8.4"
   },
   "devDependencies": {
     "@types/degit": "2.8.6",
-    "tsup": "8.0.2"
+    "tsup": "8.2.4"
   }
 }
