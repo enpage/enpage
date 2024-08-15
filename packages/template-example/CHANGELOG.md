@@ -1,5 +1,13 @@
 # @enpage/template-example
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [0641f43]
+  - @enpage/style-system@0.0.17
+  - @enpage/sdk@0.0.17
+
 ## 0.0.16
 
 ### Patch Changes
