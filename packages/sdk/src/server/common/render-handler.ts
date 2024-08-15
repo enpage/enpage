@@ -32,7 +32,7 @@ export default async function renderHandler(ctx: RequestContext<PlatformInfo>) {
   const isProduction =
     env.NODE_ENV === "production" || env.NODE_ENV === "preview" || env.NODE_ENV === "local-preview";
 
-  const pageData = await fetchDatasources(pageConfig);
+  const pageData = await fetchDatasources(env, pageConfig);
 
   const pageContext: GenericPageContext = {
     attr: pageConfig.attr,

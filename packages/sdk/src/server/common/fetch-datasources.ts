@@ -7,9 +7,10 @@ import type {
 } from "~/shared/datasources";
 import { MAX_LIVE_DATASOURCES } from "./constants";
 import type { GenericPageConfig } from "~/shared/page-config";
-import get from "lodash-es/get";
+import fetchHttpJSON from "~/shared/datasources/http-json/fetcher";
+import type { EnpageEnv } from "~/shared/env";
 
-export async function fetchDatasources(pageConfig: GenericPageConfig) {
+export async function fetchDatasources(env: EnpageEnv, pageConfig: GenericPageConfig) {
   const datasources = pageConfig.datasources as DatasourceManifestMap;
   let eligibleDatasources = Object.entries(datasources).filter(
     ([, datasource]) => datasource.provider === "http-json",
@@ -21,7 +22,15 @@ export async function fetchDatasources(pageConfig: GenericPageConfig) {
   const fetchResults = await Promise.allSettled(
     eligibleDatasources.map(async ([key, datasource]) => {
       try {
-        const result = await fetchJsonDataSource(datasource, pageConfig);
+        const result = await fetchHttpJSON({
+          options: {
+            url: datasource.options.url,
+            headers: datasource.options.headers,
+            pageConfig,
+          },
+          oauth: null,
+          env,
+        });
         return { key, result };
       } catch (error) {
         console.log({ datasource, pageConfig });
@@ -47,36 +56,4 @@ export async function fetchDatasources(pageConfig: GenericPageConfig) {
   }
 
   return data;
-}
-
-async function fetchJsonDataSource(
-  datasource: DatasourceHttpJsonProviderManifest<TSchema>,
-  pageConfig: GenericPageConfig,
-): Promise<unknown> {
-  let {
-    options: { url, headers },
-  } = datasource;
-
-  const placeholderRx = /{{(.+?)}}/g;
-  const replacer = replacePlaceholderReplacer(pageConfig);
-  url = url.replace(placeholderRx, replacer);
-
-  if (headers) {
-    for (const [key, value] of Object.entries(headers ?? {})) {
-      headers[key] = (value as string).replace(placeholderRx, replacer);
-    }
-  }
-
-  const res = await fetch(url, { headers });
-  if (!res.ok) {
-    throw new Error(`HTTP error fetching data source! status: ${res.status}`);
-  }
-  return res.json();
-}
-
-function replacePlaceholderReplacer(pageConfig: GenericPageConfig) {
-  return function replacePlaceholders(_: unknown, p1: string) {
-    const varName = (p1 as string).trim();
-    return get(pageConfig, varName) ?? "";
-  };
 }
