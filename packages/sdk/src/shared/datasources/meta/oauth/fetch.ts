@@ -24,7 +24,7 @@ async function fetchMetaToken(url: string, params: URLSearchParams) {
   if (!response.ok) {
     throw new Error(`fetchMetaToken Error: Response status: ${response.status}`);
   }
-  return response.json<MetaGetLongLivedTokenResponse>();
+  return response.json() as Promise<MetaGetLongLivedTokenResponse>;
 }
 
 export async function fetchMetaOAuthConfig(

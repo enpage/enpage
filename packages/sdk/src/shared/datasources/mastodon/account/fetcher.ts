@@ -17,7 +17,7 @@ const fetchMastodonAccount: DatasourceFetcher<MastodonAccountSchema, null, Masto
     throw new Error(`fetchMastodonAccount Error: Response status: ${response.status}`);
   }
 
-  const account = await response.json<MastodonAccountSchema>();
+  const account = (await response.json()) as MastodonAccountSchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<MastodonAccountSchema>(mastodonAccountSchema);

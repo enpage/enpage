@@ -21,7 +21,7 @@ const fetchInstagramFeedDatasource: DatasourceFetcher<
     throw new Error(`fetchInstagramFeedDatasource Error: Response status: ${response.status}`);
   }
 
-  const feed = await response.json<InstagramFeedSchema>();
+  const feed = (await response.json()) as InstagramFeedSchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<InstagramFeedSchema>(instagramFeedSchema);

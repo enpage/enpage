@@ -38,7 +38,7 @@ const fetchThreadsMediaDatasource: DatasourceFetcher<
     throw new Error(`fetchThreadsMediaDatasource Error: Response status: ${response.status}`);
   }
 
-  const media = await response.json<ThreadsMediaSchema>();
+  const media = (await response.json()) as ThreadsMediaSchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<ThreadsMediaSchema>(threadsMediaSchema);
