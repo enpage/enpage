@@ -1,6 +1,6 @@
 import type { MastodonStatusOptions } from "./types";
 import { type MastodonStatusArraySchema, mastodonStatusArraySchema } from "./schema";
-import fetchMastodonAccount from "../account/account";
+import fetchMastodonAccount from "../account/fetcher";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 
