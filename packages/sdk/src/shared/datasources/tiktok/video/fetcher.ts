@@ -27,7 +27,7 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   if (!response.ok) {
     throw new Error(`Response status: ${response.status}`);
   }
-  const data = await response.json<TiktokVideoResponseSchema>();
+  const data = (await response.json()) as TiktokVideoResponseSchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<TiktokVideoResponseSchema>(tiktokVideoResponseSchema);

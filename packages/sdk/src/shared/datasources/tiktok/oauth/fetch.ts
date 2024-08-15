@@ -57,7 +57,7 @@ async function fetchTiktokToken(url: string, params: URLSearchParams) {
     throw new Error(`Response status: ${response.status}`);
   }
 
-  const data = await response.json<TiktokOAuthConfig>();
+  const data = (await response.json()) as TiktokOAuthConfig;
 
   if (!data) {
     throw new Error("No data found");

@@ -34,7 +34,7 @@ const fetchYoutubeList: DatasourceFetcher<
     throw new Error(`fetchYoutubeList Error: Response status: ${response.status}`);
   }
 
-  const data = await response.json<YoutubeListSchema>();
+  const data = (await response.json()) as YoutubeListSchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<YoutubeListSchema>(youtubeListSchema);

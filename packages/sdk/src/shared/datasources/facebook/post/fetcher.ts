@@ -41,7 +41,7 @@ const fetchFacebookPostDatasource: DatasourceFetcher<
     throw new Error(`fetchFacebookPostDatasource Error: Response status: ${response.status}`);
   }
 
-  const post = await response.json<FacebookPostSchema>();
+  const post = (await response.json()) as FacebookPostSchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<FacebookPostSchema>(facebookPostSchema);

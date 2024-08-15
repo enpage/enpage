@@ -20,7 +20,7 @@ const fetchMastodonStatus: DatasourceFetcher<
     throw new Error(`fetchMastodonStatus Error: Response status: ${response.status}`);
   }
 
-  const statuses = await response.json<MastodonStatusArraySchema>();
+  const statuses = (await response.json()) as MastodonStatusArraySchema;
 
   const ajv = new Ajv();
   const validate = ajv.compile<MastodonStatusArraySchema>(mastodonStatusArraySchema);
