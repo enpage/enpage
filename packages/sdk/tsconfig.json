@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "types": ["vite/client", "node"],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "rootDir": "src",
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
