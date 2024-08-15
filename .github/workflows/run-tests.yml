@@ -1,0 +1,44 @@
+name: Run tests
+
+on:
+  workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+
+jobs:
+  test:
+    name: Test job
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get node_modules cache
+        id: cache-pnpm
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: PNPM install
+        run: |
+          pnpm config set store-dir ~/.pnpm-store
+          pnpm install
+
+      - name: lint
+        run: pnpm ci:lint
+
+      - name: build
+        run: pnpm build
+
