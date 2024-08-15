@@ -26,7 +26,6 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
    */
   attr: AttributesResolved<A>;
 
-  siteConfig: Record<string, unknown>;
   ssrManifest?: Manifest;
   templateManifest: TemplateManifest;
 };
