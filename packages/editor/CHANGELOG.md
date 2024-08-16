@@ -1,5 +1,13 @@
 # @enpage/editor
 
+## 0.0.10
+
+### Patch Changes
+
+- a5dd5de: Update lodash-es imports
+- Updated dependencies [a5dd5de]
+  - @enpage/sdk@0.0.23
+
 ## 0.0.9
 
 ### Patch Changes
