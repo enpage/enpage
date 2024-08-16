@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.23
+
+### Patch Changes
+
+- a5dd5de: Update lodash-es imports
+
 ## 0.0.22
 
 ### Patch Changes
