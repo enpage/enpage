@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.22
+
+### Patch Changes
+
+- 1563fb0: Remove lodash-es from dev deps
+
 ## 0.0.21
 
 ### Patch Changes
