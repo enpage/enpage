@@ -1,42 +1,26 @@
 import { Type, type Static, type TSchema } from "@sinclair/typebox";
-export { Type as ds, type TSchema } from "@sinclair/typebox";
+import type { DatasourceProvider } from "./datasources/types";
+import { youtubeListSchema } from "./datasources/youtube/list/schema";
+import { facebookPostSchema } from "./datasources/facebook/posts/schema";
+import { instagramFeedSchema } from "./datasources/instagram/feed/schema";
+import { mastodonStatusArraySchema } from "./datasources/mastodon/status/schema";
+import { rssSchema } from "./datasources/rss/schema";
+import { threadsMediaSchema } from "./datasources/threads/media/schema";
+import { tiktokVideoResponseSchema } from "./datasources/tiktok/video/schema";
 
-export type DatasourceProvider = "youtube-video" | "youtube-feed" | "tweet" | "twitter-feed";
-// | "instagram"
-// | "linkedin"
-// | "facebook"
-// | "google"
-// | "spotify"
-// | "tiktok"
-// | "github"
-// | "reddit"
-// | "snapchat"
-// | "pinterest"
-// | "twitch";
+export { Type as ds, type TSchema } from "@sinclair/typebox";
 
 export type DatasourceProviderOptions = TSchema;
 
-const youtubeVideoSchema = Type.Object({
-  id: Type.String({ minLength: 1 }),
-  title: Type.String(),
-  publishedAt: Type.String(),
-  thumbnail: Type.Optional(Type.String()),
-});
-
-const youtubeFeedSchema = Type.Array(youtubeVideoSchema);
-
-const tweetSchema = Type.Object({
-  id: Type.String({ maxLength: 36 }),
-  publishedAt: Type.String(),
-});
-
-const twitterFeedSchema = Type.Array(tweetSchema);
-
 export const providersSchemaMap: Record<DatasourceProvider, TSchema> = {
-  "youtube-video": youtubeVideoSchema,
-  "youtube-feed": youtubeFeedSchema,
-  tweet: tweetSchema,
-  "twitter-feed": twitterFeedSchema,
+  "youtube-list": youtubeListSchema,
+  "facebook-posts": facebookPostSchema,
+  "instagram-feed": instagramFeedSchema,
+  "mastodon-status": mastodonStatusArraySchema,
+  "http-json": Type.Any(),
+  rss: rssSchema,
+  "threads-media": threadsMediaSchema,
+  "tiktok-video": tiktokVideoResponseSchema,
 };
 
 type DatasourceProviderManifest<

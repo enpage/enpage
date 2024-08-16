@@ -31,8 +31,6 @@ export enum DatasourceProvider {
   Rss = "rss",
   ThreadsMedia = "threads-media",
   TiktokVideo = "tiktok-video",
-  TwitterTimeline = "twitter-timeline",
-  TwitterTweet = "twitter-tweet",
   YoutubeList = "youtube-list",
   HttpJSon = "http-json",
 }
