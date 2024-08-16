@@ -7,7 +7,7 @@ import type {
 } from "~/shared/datasources";
 import { MAX_LIVE_DATASOURCES } from "./constants";
 import type { GenericPageConfig } from "~/shared/page-config";
-import fetchHttpJSON from "~/shared/datasources/http-json/fetcher";
+import fetchHttpJSON from "~/shared/datasources/http/json/fetcher";
 import type { EnpageEnv } from "~/shared/env";
 
 export async function fetchDatasources(env: EnpageEnv, pageConfig: GenericPageConfig) {
