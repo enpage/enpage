@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.18
+
+### Patch Changes
+
+- 991342b: Refactor dependencies
+
 ## 0.0.17
 
 ### Patch Changes
