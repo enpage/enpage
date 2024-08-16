@@ -1,7 +1,6 @@
 import { addSeconds, subMinutes } from "date-fns";
 import type { TiktokOAuthConfig, TiktokFullOAuthConfig } from "./config";
-import mapKeys from "lodash-es/mapKeys";
-import camelCase from "lodash-es/camelCase";
+import { mapKeys, camelCase } from "lodash-es";
 import type { EnpageEnv } from "~/shared/env";
 
 export function updateTiktokOAuthConfig(config: TiktokFullOAuthConfig, data: TiktokOAuthConfig) {

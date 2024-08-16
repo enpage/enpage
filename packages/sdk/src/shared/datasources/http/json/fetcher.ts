@@ -1,7 +1,7 @@
 import type { HttpJsonOptions } from "./types";
 import type { DatasourceFetcher } from "../../types";
 import type { GenericPageConfig } from "~/shared/page-config";
-import get from "lodash-es/get";
+import { get } from "lodash-es";
 
 /**
  * For this fetcher, validation is done outside of the fetcher.

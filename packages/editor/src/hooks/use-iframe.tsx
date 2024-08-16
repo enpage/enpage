@@ -1,7 +1,7 @@
 import { useEditor } from "./use-editor-store";
 import { type RefObject, useEffect, useRef } from "react";
 import type { IframeMessage } from "@enpage/sdk/browser/dev-client";
-import isEqual from "lodash-es/isEqual";
+import { isEqual } from "lodash-es";
 import { isChromeLike } from "../utils/is-safari";
 import invariant from "tiny-invariant";
 import debug from "debug";
