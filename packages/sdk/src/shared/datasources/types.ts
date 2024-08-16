@@ -1,4 +1,5 @@
 import type { EnpageEnv } from "../env";
+import z from "zod";
 
 export interface Options {
   nextRefreshDelay?: number;
@@ -22,3 +23,18 @@ type DatasourceFetcherParams<OAuthProps = unknown, Opts extends Options = Option
 export type DatasourceFetcher<T = unknown, OAuthOpts = unknown, Opts extends Options = Options> = (
   params: DatasourceFetcherParams<OAuthOpts, Opts>,
 ) => Promise<T>;
+
+export enum DatasourceProvider {
+  FacebookPosts = "facebook-posts",
+  InstagramFeed = "instagram-feed",
+  MastodonStatus = "mastodon-status",
+  Rss = "rss",
+  ThreadsMedia = "threads-media",
+  TiktokVideo = "tiktok-video",
+  TwitterTimeline = "twitter-timeline",
+  TwitterTweet = "twitter-tweet",
+  YoutubeList = "youtube-list",
+  HttpJSon = "http-json",
+}
+
+export const datasourceProvider = z.nativeEnum(DatasourceProvider);

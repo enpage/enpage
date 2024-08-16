@@ -1,5 +1,5 @@
 import type { HttpJsonOptions } from "./types";
-import type { DatasourceFetcher } from "../types";
+import type { DatasourceFetcher } from "../../types";
 import type { GenericPageConfig } from "~/shared/page-config";
 import get from "lodash-es/get";
 
