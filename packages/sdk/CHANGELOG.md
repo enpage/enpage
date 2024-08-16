@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.20
+
+### Patch Changes
+
+- 797fe82: Add datasources types
+
 ## 0.0.19
 
 ### Patch Changes
