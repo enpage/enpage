@@ -34,6 +34,7 @@ export enum DatasourceProvider {
   TwitterTimeline = "twitter-timeline",
   TwitterTweet = "twitter-tweet",
   YoutubeList = "youtube-list",
+  HttpJSon = "http-json",
 }
 
 export const datasourceProvider = z.nativeEnum(DatasourceProvider);
