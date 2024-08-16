@@ -3,7 +3,6 @@ import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
 import type { GenericPageContext, PageContext } from "~/shared/page-context";
 import { Liquid } from "liquidjs";
-import { minify } from "html-minifier";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 import type { AttributesResolved } from "~/shared/attributes";
@@ -95,16 +94,7 @@ export const renderTemplatePlugin = (
         //   logger.info("SSR: rendering liquid templates");
         //   html = await renderLiquid(dom.serialize(), context);
         // }
-        if (!isBuildMode) {
-          return dom.serialize();
-        } else {
-          logger.info("render: Minifying HTML", { timestamp: true });
-          return minify(dom.serialize(), {
-            removeComments: true,
-            collapseWhitespace: true,
-            ignoreCustomComments: [],
-          });
-        }
+        return dom.serialize();
       },
     },
   };
