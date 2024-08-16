@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.21
+
+### Patch Changes
+
+- 3dbaa71: Move lodash to dependencies
+
 ## 0.0.20
 
 ### Patch Changes
