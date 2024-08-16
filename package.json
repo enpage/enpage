@@ -21,9 +21,6 @@
   "author": "Matthias Etienne",
   "license": "AGPL-3.0-only",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "engines": {
     "pnpm": ">=8.0.0",
     "node": ">=20.0.0"
