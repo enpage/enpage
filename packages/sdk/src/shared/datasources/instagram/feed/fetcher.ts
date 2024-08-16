@@ -3,6 +3,7 @@ import { instagramFeedSchema, type InstagramFeedSchema } from "./schema";
 import Ajv from "ajv";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
 import type { DatasourceFetcher } from "../../types";
+import { Http401Error } from "../../errors";
 
 const fetchInstagramFeedDatasource: DatasourceFetcher<
   InstagramFeedSchema,
@@ -18,6 +19,9 @@ const fetchInstagramFeedDatasource: DatasourceFetcher<
   const response = await fetch(`https://graph.instagram.com/me/media?${params.toString()}`);
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Http401Error(`fetchInstagramFeedDatasource Error: Unauthorized.`);
+    }
     throw new Error(`fetchInstagramFeedDatasource Error: Response status: ${response.status}`);
   }
 

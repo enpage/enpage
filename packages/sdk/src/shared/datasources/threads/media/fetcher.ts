@@ -4,6 +4,7 @@ import type { MetaOAuthConfig } from "../../meta/oauth/config";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 import invariant from "tiny-invariant";
+import { Http401Error } from "../../errors";
 
 const fetchThreadsMediaDatasource: DatasourceFetcher<
   ThreadsMediaSchema,
@@ -35,6 +36,9 @@ const fetchThreadsMediaDatasource: DatasourceFetcher<
   const response = await fetch(`https://graph.threads.net/v1.0/me/threads?${params.toString()}`);
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Http401Error(`fetchThreadsMediaDatasource Error: Unauthorized.`);
+    }
     throw new Error(`fetchThreadsMediaDatasource Error: Response status: ${response.status}`);
   }
 
