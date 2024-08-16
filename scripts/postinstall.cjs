@@ -5,7 +5,7 @@ const cliFile = resolve(__dirname, "../packages/sdk/dist/node/cli/program.js");
 
 const getPackageManager = () => (process.env.npm_config_user_agent ?? "").split("/")[0] || "npm";
 
-if (!fs.existsSync(cliFile)) {
+if (!fs.existsSync(cliFile) && !process.env.CI) {
   console.log("Building SDK CLI...");
   const manager = getPackageManager();
   // run build script in the package directory packages/sdk
