@@ -3,6 +3,7 @@ import { type YoutubeListSchema, youtubeListSchema } from "./schema";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 import type { YoutubeOAuthConfig } from "../oauth/config";
+import { Http401Error } from "../../errors";
 
 const fetchYoutubeList: DatasourceFetcher<
   YoutubeListSchema,
@@ -31,6 +32,9 @@ const fetchYoutubeList: DatasourceFetcher<
   const url = `https://www.googleapis.com/youtube/v3/search?${params.toString()}`;
   const response = await fetch(url);
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Http401Error(`fetchYoutubeList Error: Unauthorized.`);
+    }
     throw new Error(`fetchYoutubeList Error: Response status: ${response.status}`);
   }
 

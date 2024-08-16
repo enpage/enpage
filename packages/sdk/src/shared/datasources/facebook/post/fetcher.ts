@@ -3,6 +3,7 @@ import Ajv from "ajv";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
 import type { DatasourceFetcher } from "../../types";
 import type { FacebookPostOptions } from "./types";
+import { Http401Error } from "../../errors";
 
 const fetchFacebookPostDatasource: DatasourceFetcher<
   FacebookPostSchema,
@@ -38,6 +39,9 @@ const fetchFacebookPostDatasource: DatasourceFetcher<
   const response = await fetch(`https://graph.facebook.com/me/posts?${params.toString()}`);
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Http401Error(`fetchFacebookPostDatasource Error: Unauthorized.`);
+    }
     throw new Error(`fetchFacebookPostDatasource Error: Response status: ${response.status}`);
   }
 

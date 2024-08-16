@@ -3,6 +3,7 @@ import { type MastodonStatusArraySchema, mastodonStatusArraySchema } from "./sch
 import fetchMastodonAccount from "../account/fetcher";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
+import { Http401Error } from "../../errors";
 
 const fetchMastodonStatus: DatasourceFetcher<
   MastodonStatusArraySchema,
@@ -17,6 +18,9 @@ const fetchMastodonStatus: DatasourceFetcher<
   const response = await fetch(url);
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Http401Error(`fetchMastodonStatus Error: Unauthorized.`);
+    }
     throw new Error(`fetchMastodonStatus Error: Response status: ${response.status}`);
   }
 

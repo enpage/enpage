@@ -3,6 +3,7 @@ import { type TiktokVideoResponseSchema, tiktokVideoResponseSchema } from "./sch
 import type { TiktokOAuthConfig } from "../oauth/config";
 import type { DatasourceFetcher } from "../../types";
 import Ajv from "ajv";
+import { Http401Error } from "../../errors";
 
 const fetchTiktokVideoDatasource: DatasourceFetcher<
   TiktokVideoResponseSchema,
@@ -25,6 +26,9 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Http401Error(`fetchTiktokVideoDatasource Error: Unauthorized.`);
+    }
     throw new Error(`Response status: ${response.status}`);
   }
   const data = (await response.json()) as TiktokVideoResponseSchema;
