@@ -28,24 +28,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get node_modules cache
-        id: cache-pnpm
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          version: 9
+          run_install: false
 
-      - name: PNPM install
-        run: |
-          pnpm config set store-dir ~/.pnpm-store
-          pnpm install
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: lint
         run: pnpm ci:lint
