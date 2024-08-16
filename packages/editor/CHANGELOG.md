@@ -1,5 +1,12 @@
 # @enpage/editor
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [a272e27]
+  - @enpage/sdk@0.0.19
+
 ## 0.0.5
 
 ### Patch Changes

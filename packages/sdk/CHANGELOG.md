@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.19
+
+### Patch Changes
+
+- a272e27: Add HTTP 401 error handling
+
 ## 0.0.18
 
 ### Patch Changes
