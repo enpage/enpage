@@ -46,6 +46,7 @@
     "clsx": "2.1.1",
     "commander": "12.1.0",
     "date-fns": "3.6.0",
+    "lodash-es": "4.17.21",
     "debug": "4.3.6",
     "express": "^4.19.2",
     "http-cache-semantics": "4.1.1",
@@ -65,8 +66,7 @@
     "zod": "3.23.8"
   },
   "peerDependencies": {
-    "@enpage/style-system": "workspace:*",
-    "lodash-es": "4.17.21"
+    "@enpage/style-system": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20240806.0",
