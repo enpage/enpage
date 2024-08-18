@@ -26,7 +26,7 @@ export const templateManifestSchema = z.object({
 
 export type TemplateManifest = z.infer<typeof templateManifestSchema>;
 
-export function defineManifest(manifest: TemplateManifest) {
+export function defineManifest(manifest: Omit<TemplateManifest, "id" | "thumbnail">): TemplateManifest {
   manifest.settings = { ...defaultTemplateSettings, ...(manifest.settings ?? {}) };
   return manifest;
 }

@@ -1,1 +1,1 @@
-export const MAX_LIVE_DATASOURCES = 5;
+export const MAX_LIVE_DATASOURCES = 30;

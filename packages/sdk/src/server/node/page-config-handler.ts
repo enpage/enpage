@@ -1,9 +1,9 @@
 import type { PageConfig } from "@enpage/sdk/page-config";
 import type { RequestContext } from "@hattip/compose";
 import { fsCache, memoryCache } from "./cache";
-import { getPageConfigFromAPI } from "../common/get-page-config";
+import { getPageConfig } from "../common/get-page-config";
 import type { NodePlatformInfo } from "@hattip/adapter-node";
-import { getPageConfigFromLocalFiles } from "./local-page-config";
+import { getLocalPageConfig } from "./local-page-config";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type GenericPageConfig = PageConfig<any, any>;
@@ -23,12 +23,10 @@ export default async function pageConfigHandler(ctx: RequestContext<NodePlatform
   } else {
     // *Production* or local production server testing
     if (process.env.NODE_ENV === "local-preview") {
-      pageConfig =
-        (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getPageConfigFromLocalFiles(ctx));
+      pageConfig = (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getLocalPageConfig());
     } else {
       // try to use the cache first, then fallback to the API
-      pageConfig =
-        (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getPageConfigFromAPI(ctx));
+      pageConfig = (await cacheDriver.getItem<GenericPageConfig>(cacheKey)) || (await getPageConfig(ctx));
     }
   }
 

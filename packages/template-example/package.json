@@ -38,17 +38,7 @@
     "enpage-template"
   ],
   "enpage": {
-    "id": "com.example.hello-world",
-    "name": "Hello World",
-    "description": "A simple template that says hello.",
-    "outline-color": "#FF9900",
-    "keywords": [
-      "hello",
-      "world"
-    ],
-    "author": "John Doe",
-    "thumbnail": "https://example.com/thumbnail.png",
-    "homepage": "https://example.com"
+    "id": "com.example.hello-world"
   },
   "private": true
 }

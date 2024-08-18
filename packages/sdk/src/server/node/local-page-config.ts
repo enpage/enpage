@@ -5,7 +5,7 @@ import type { DatasourceManifestMap, DatasourceResolved } from "~/shared/datasou
 import type { TemplateManifest } from "~/shared/manifest";
 import type { GenericPageConfig } from "~/shared/page-config";
 
-export async function getPageConfigFromLocalFiles(ctx: RequestContext): Promise<GenericPageConfig> {
+export async function getLocalPageConfig(): Promise<GenericPageConfig> {
   const { attributes, datasources, manifest } = (await import(join(process.cwd(), "enpage.config.js"))) as {
     attributes: AttributesMap;
     datasources: DatasourceManifestMap | undefined;
