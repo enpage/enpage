@@ -5,7 +5,6 @@ import type { GenericPageContext, PageContext } from "~/shared/page-context";
 import { Liquid } from "liquidjs";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
-import type { AttributesResolved } from "~/shared/attributes";
 import invariant from "tiny-invariant";
 import type { EnpageEnv } from "~/shared/env";
 
@@ -20,6 +19,7 @@ export const renderTemplatePlugin = (
   env: EnpageEnv,
 ): Plugin => {
   const isBuildMode = viteEnv.command === "build";
+  const isDevMode = viteEnv.command === "serve";
   const viteMode = viteEnv.mode;
   let logger: Logger;
 
@@ -77,14 +77,7 @@ export const renderTemplatePlugin = (
         // add meta csp
         addContentSecurityPolicy(doc, head);
 
-        // ----------------------------
-        // [build-only] Add stylesheets to the document head
-        if (isBuildMode) {
-          // ----------------------------
-          // [dev only]
-        } else {
-          addDevClient(doc, head);
-        }
+        if (isDevMode) addDevClient(doc, head);
 
         // Hide sections when needed
         const sections = getPageSections(doc);
