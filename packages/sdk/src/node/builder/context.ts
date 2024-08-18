@@ -40,9 +40,6 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
   const siteHost = env.PUBLIC_ENPAGE_SITE_HOST;
   const apiBaseUrl = env.PUBLIC_ENPAGE_API_BASE_URL;
 
-  // console.log("import env", import.meta.env);
-  // console.log("process env", env);
-
   if (!apiToken) {
     console.warn("ENPAGE_API_TOKEN is empty. Skipping context fetch.");
     return false;
