@@ -18,7 +18,7 @@ import { getPackageManager } from "./helpers";
 import open from "open";
 import { uploadFiles } from "./upload";
 import { pollForLogin } from "./login";
-import { CLI_PROJECT_NAME, CONF_USER_TOKEN_KEY } from "./constants";
+import { API_BASE_URL, CLI_PROJECT_NAME, CONF_USER_TOKEN_KEY } from "./constants";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const configFile = resolve(__dirname, "../builder/vite-config.js");
@@ -189,7 +189,10 @@ export async function login({ args, options }: ArgOpts<CommonOptions>) {
   // - 204 when the login is under progress
   // - 200 when the login is successful
   // - 400+ when the login fails
-  const url = `https://enpage.co/sign-in/?from=cli&state=${id}`;
+  const loginUrl = new URL(
+    `cli/login/?state=${id}`,
+    API_BASE_URL.endsWith("/") ? API_BASE_URL : `${API_BASE_URL}/`,
+  );
 
   const confirmed = await confirm({
     message: `Would you like to open the login page in your browser?`,
@@ -197,9 +200,9 @@ export async function login({ args, options }: ArgOpts<CommonOptions>) {
   });
 
   if (confirmed) {
-    open(url);
+    open(loginUrl.href);
   } else {
-    logger.info(`\nPlease visit the following URL to login:\n  ${url}\n`);
+    logger.info(`\nPlease visit the following URL to login:\n  ${loginUrl}\n`);
   }
 
   logger.info(chalk.gray("\n  Waiting for login...\n"));

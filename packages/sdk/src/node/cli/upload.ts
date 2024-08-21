@@ -2,7 +2,7 @@ import { connect, type ClientHttp2Session, type ClientHttp2Stream } from "node:h
 import path from "node:path";
 import { createReadStream } from "node:fs";
 import fg from "fast-glob";
-import { DEFAULT_UPLOAD_MAX_CONCURRENCY } from "./constants";
+import { API_BASE_URL, DEFAULT_UPLOAD_MAX_CONCURRENCY } from "./constants";
 
 export interface UploadResult {
   hasUploadErrors: boolean;
@@ -55,8 +55,7 @@ export class UploadQueue {
 }
 
 export async function uploadFiles(templateId: string, token: string): Promise<UploadResult> {
-  const apiBaseUrl = process.env.PUBLIC_ENPAGE_API_BASE_URL ?? "https://api.enpage.co/v1";
-  const session: ClientHttp2Session = connect(apiBaseUrl);
+  const session: ClientHttp2Session = connect(API_BASE_URL);
   const basePath = path.resolve(process.cwd(), ".enpage", "dist");
 
   const uploadQueue = new UploadQueue(DEFAULT_UPLOAD_MAX_CONCURRENCY); // Adjust concurrency as needed
