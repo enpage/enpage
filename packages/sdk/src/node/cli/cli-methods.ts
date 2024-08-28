@@ -18,7 +18,13 @@ import { getPackageManager } from "./helpers";
 import open from "open";
 import { uploadFiles } from "./upload";
 import { pollForLogin } from "./login";
-import { API_BASE_URL, CLI_PROJECT_NAME, CONF_USER_TOKEN_KEY, FRONTEND_BASE_URL } from "./constants";
+import {
+  API_BASE_URL,
+  CLI_PROJECT_NAME,
+  CONF_USER_TOKEN_KEY,
+  FRONTEND_BASE_URL,
+  CLI_LOGIN_CLIENT_ID,
+} from "./constants";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const configFile = resolve(__dirname, "../builder/vite-config.js");
@@ -185,12 +191,31 @@ export async function login({ args, options }: ArgOpts<CommonOptions>) {
   logger.info("Login to Enpage\n");
 
   const id = nanoid(100);
+  const apiBaseURL = new URL(API_BASE_URL.endsWith("/") ? API_BASE_URL : `${API_BASE_URL}/`);
+  const deviceAuthorizationEndpoint = new URL("oauth/code", apiBaseURL);
+  const tokenEndpoint = new URL("oauth/token", apiBaseURL);
+
+  const oAuthParams = {
+    clientId: CLI_LOGIN_CLIENT_ID,
+    deviceAuthorizationEndpoint,
+    tokenEndpoint,
+    scope: "profile,templates:write",
+  };
+
+  const deviceCodeResponse = await fetch(oAuthParams.deviceAuthorizationEndpoint, {
+    method: "POST",
+    body: JSON.stringify({
+      client_id: oAuthParams.clientId,
+      scope: oAuthParams.scope,
+    }),
+  });
+
   // Should return:
   // - 204 when the login is under progress
   // - 200 when the login is successful
   // - 400+ when the login fails
   const loginUrl = new URL(
-    `/authorize/?state=${id}`,
+    `authorize/?state=${id}`,
     FRONTEND_BASE_URL.endsWith("/") ? FRONTEND_BASE_URL : `${FRONTEND_BASE_URL}/`,
   );
 
