@@ -2,7 +2,7 @@ import { connect, type ClientHttp2Session, type ClientHttp2Stream } from "node:h
 import path from "node:path";
 import { createReadStream } from "node:fs";
 import fg from "fast-glob";
-import { API_BASE_URL, DEFAULT_UPLOAD_MAX_CONCURRENCY } from "./constants";
+import { API_BASE_URL, DEFAULT_UPLOAD_MAX_CONCURRENCY } from "../../constants";
 
 export interface UploadResult {
   hasUploadErrors: boolean;
@@ -54,7 +54,7 @@ export class UploadQueue {
   }
 }
 
-export async function uploadFiles(templateId: string, token: string): Promise<UploadResult> {
+export async function uploadFiles(templateId: string): Promise<UploadResult> {
   const session: ClientHttp2Session = connect(API_BASE_URL);
   const basePath = path.resolve(process.cwd(), ".enpage", "dist");
 
@@ -81,7 +81,7 @@ export async function uploadFiles(templateId: string, token: string): Promise<Up
         ":method": "POST",
         ":path": `/templates/${templateId}/files/${entry}`,
         "content-type": "application/octet-stream",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       });
 
       req.on("response", (headers) => {

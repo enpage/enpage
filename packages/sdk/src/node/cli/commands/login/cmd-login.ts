@@ -1,6 +1,4 @@
-import type { Logger } from "vite";
 import Conf from "conf";
-import { nanoid } from "nanoid";
 import chalk from "chalk";
 import { confirm } from "@inquirer/prompts";
 import open from "open";
@@ -10,10 +8,12 @@ import {
   API_BASE_URL,
   OAUTH_ENDPOINT_DEVICE_CODE,
   OAUTH_ENDPOINT_TOKEN,
-} from "./constants";
-import { post } from "./api";
+} from "../../constants";
+import { post } from "../../api";
+import { logger } from "~/node/shared/logger";
+import type { ArgOpts, CommonOptions } from "../../types";
 
-export async function pollForLogin(deviceCode: string, logger: Logger, state: string) {
+export async function pollForLogin(deviceCode: string) {
   while (true) {
     const body = new URLSearchParams({
       grant_type: "device_code",
@@ -37,10 +37,7 @@ export async function pollForLogin(deviceCode: string, logger: Logger, state: st
   }
 }
 
-export async function performLogin(logger: Logger) {
-  const id = nanoid(100);
-  const tokenEndpoint = "oauth/token";
-
+export async function login({ options }: ArgOpts<CommonOptions>) {
   logger.info(`Logging in to Enpage...\n`);
 
   const deviceCodeResponse = await fetch(OAUTH_ENDPOINT_DEVICE_CODE, {
@@ -81,7 +78,7 @@ export async function performLogin(logger: Logger) {
   }
 
   logger.info(chalk.gray("\nWaiting for login...\n"));
-  const loginData = await pollForLogin(device_code, logger, id);
+  const loginData = await pollForLogin(device_code);
 
   if (!loginData) {
     logger.error("Login failed. Please try again.");

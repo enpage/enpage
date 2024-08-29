@@ -14,3 +14,5 @@ export function createLogger(level?: LogLevel, allowClearScreen?: boolean, showV
 
   return logger;
 }
+
+export const logger = createLogger();

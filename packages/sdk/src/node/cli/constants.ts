@@ -8,3 +8,4 @@ export const DEFAULT_UPLOAD_MAX_CONCURRENCY = 5;
 
 export const OAUTH_ENDPOINT_DEVICE_CODE = "oauth/devicecode";
 export const OAUTH_ENDPOINT_TOKEN = "oauth/token";
+export const OAUTH_ENDPOINT_USER_INFO = "oauth/userinfo";

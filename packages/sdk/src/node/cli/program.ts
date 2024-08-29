@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import {
-  startDevServer,
-  buildTemplate,
-  previewTemplate,
-  type ArgOpts,
-  type CommonOptions,
-  submitTemplate,
-  login,
-} from "./cli-methods";
+import type { ArgOpts, CommonOptions } from "./types";
+import { publish } from "./commands/publish/cmd-publish";
+import { login } from "./commands/login/cmd-login";
+import { preview } from "./commands/preview/cmd-preview";
+import { buildTemplate } from "./commands/build/cmd-build";
+import { startDevServer } from "./commands/dev/cmd-dev";
+import { createLogger } from "../shared/logger";
 
 program
   .name("enpage")
   .option("-l, --logLevel <level>", `[string] info | warn | error | silent`)
-  .option("--clearScreen", `[boolean] allow/disable clear screen when logging`);
+  .option("--clearScreen", `[boolean] allow/disable clear screen when logging`)
+  .hook("preAction", (thisCommand) => {
+    createLogger(thisCommand.opts().logLevel, thisCommand.opts().clearScreen, true);
+  });
 
 program
   .command("dev")
@@ -38,23 +39,23 @@ Pass --ssr=local to generate a SSR-enabled build that can be tested locally.`,
   });
 
 program
-  .command("submit")
-  .description("Submit template to Enpage")
+  .command("publish")
+  .description("Publish a template to Enpage")
   .action(async (...args) => {
-    submitTemplate(getArgsOptions(args) as ArgOpts<CommonOptions>);
+    publish(getArgsOptions(args) as ArgOpts<CommonOptions>);
   });
 
 program
   .command("preview")
   .description("Preview Enpage template using production-like server")
   .action((...args) => {
-    previewTemplate(getArgsOptions(args) as ArgOpts<CommonOptions>);
+    preview(getArgsOptions(args) as ArgOpts<CommonOptions>);
   });
 
 program
   .command("login")
   .description("Login to Enpage")
-  .action(async (...args) => {
+  .action((...args) => {
     login(getArgsOptions(args) as ArgOpts<CommonOptions>);
   });
 
