@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import { createLogger } from "../builder/logger";
 import { createDevServer } from "~/server/node/dev-server";
 import { createServer } from "~/server/node/server";
-import { confirm } from "@inquirer/prompts";
 import { getLocalPageConfig } from "~/server/node/local-page-config";
 import { nanoid } from "nanoid";
 import { templateManifestSchema } from "~/shared/manifest";
@@ -15,16 +14,10 @@ import Conf from "conf";
 import chalk from "chalk";
 import { sync as rmSync } from "rimraf";
 import { getPackageManager } from "./helpers";
-import open from "open";
 import { uploadFiles } from "./upload";
-import { pollForLogin } from "./login";
-import {
-  API_BASE_URL,
-  CLI_PROJECT_NAME,
-  CONF_USER_TOKEN_KEY,
-  FRONTEND_BASE_URL,
-  CLI_LOGIN_CLIENT_ID,
-} from "./constants";
+import { performLogin } from "./login";
+import { CLI_PROJECT_NAME } from "./constants";
+import type { EnpageCliCAccessConfigFile } from "./types";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const configFile = resolve(__dirname, "../builder/vite-config.js");
@@ -128,9 +121,8 @@ export async function previewTemplate({ args, options }: ArgOpts<CommonOptions>)
 
 export async function submitTemplate({ args, options }: ArgOpts<CommonOptions>) {
   const logger = createLogger(options.logLevel, options.clearScreen);
-  const cliConfig = new Conf({ projectName: CLI_PROJECT_NAME });
-  const token: string | undefined =
-    process.env.ENPAGE_API_TOKEN ?? (cliConfig.get(CONF_USER_TOKEN_KEY) as string);
+  const cliConfig = new Conf<EnpageCliCAccessConfigFile>({ projectName: CLI_PROJECT_NAME });
+  const token: string | undefined = process.env.ENPAGE_API_TOKEN ?? (cliConfig.get("access_token") as string);
 
   if (!token) {
     const pkgCmd = getPackageManager();
@@ -186,50 +178,7 @@ export async function submitTemplate({ args, options }: ArgOpts<CommonOptions>) 
   }
 }
 
-export async function login({ args, options }: ArgOpts<CommonOptions>) {
+export async function login({ options }: ArgOpts<CommonOptions>) {
   const logger = createLogger(options.logLevel, options.clearScreen, true);
-  logger.info("Login to Enpage\n");
-
-  const id = nanoid(100);
-  const apiBaseURL = new URL(API_BASE_URL.endsWith("/") ? API_BASE_URL : `${API_BASE_URL}/`);
-  const deviceAuthorizationEndpoint = new URL("oauth/code", apiBaseURL);
-  const tokenEndpoint = new URL("oauth/token", apiBaseURL);
-
-  const oAuthParams = {
-    clientId: CLI_LOGIN_CLIENT_ID,
-    deviceAuthorizationEndpoint,
-    tokenEndpoint,
-    scope: "profile,templates:write",
-  };
-
-  const deviceCodeResponse = await fetch(oAuthParams.deviceAuthorizationEndpoint, {
-    method: "POST",
-    body: JSON.stringify({
-      client_id: oAuthParams.clientId,
-      scope: oAuthParams.scope,
-    }),
-  });
-
-  // Should return:
-  // - 204 when the login is under progress
-  // - 200 when the login is successful
-  // - 400+ when the login fails
-  const loginUrl = new URL(
-    `authorize/?state=${id}`,
-    FRONTEND_BASE_URL.endsWith("/") ? FRONTEND_BASE_URL : `${FRONTEND_BASE_URL}/`,
-  );
-
-  const confirmed = await confirm({
-    message: `Would you like to open the login page in your browser?`,
-    default: true,
-  });
-
-  if (confirmed) {
-    open(loginUrl.href);
-  } else {
-    logger.info(`\nPlease visit the following URL to login:\n  ${loginUrl}\n`);
-  }
-
-  logger.info(chalk.gray("\n  Waiting for login...\n"));
-  pollForLogin(logger, id);
+  performLogin(logger);
 }

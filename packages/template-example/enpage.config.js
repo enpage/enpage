@@ -36,7 +36,7 @@ export const datasources = defineDataSources({
     ),
   },
   videos: {
-    provider: "youtube-feed",
+    provider: "youtube",
     name: "My Videos",
   },
 });

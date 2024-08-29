@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import open from "open";
 import {
   startDevServer,
   buildTemplate,
@@ -10,9 +9,9 @@ import {
   submitTemplate,
   login,
 } from "./cli-methods";
-import { nanoid } from "nanoid";
 
 program
+  .name("enpage")
   .option("-l, --logLevel <level>", `[string] info | warn | error | silent`)
   .option("--clearScreen", `[boolean] allow/disable clear screen when logging`);
 
@@ -21,7 +20,6 @@ program
   .description("Start Enpage development server")
   .action((...args) => {
     startDevServer(getArgsOptions(args) as ArgOpts<CommonOptions>);
-    // createServer().listen(process.env.PORT || 3000);
   });
 
 program
