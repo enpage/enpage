@@ -9,8 +9,13 @@ const fetchMastodonStatus: DatasourceFetcher<
   MastodonStatusArraySchema,
   null,
   MastodonCommonOptions
-> = async ({ options, env }) => {
-  const account = await fetchMastodonAccount({ options: { username: options.username }, env, oauth: null });
+> = async ({ options, env, pageConfig }) => {
+  const account = await fetchMastodonAccount({
+    options: { username: options.username },
+    pageConfig,
+    env,
+    oauth: null,
+  });
 
   const accountUrl = new URL(account.url);
   const url = `https://${accountUrl.host}/api/v1/accounts/${account.id}/statuses`;

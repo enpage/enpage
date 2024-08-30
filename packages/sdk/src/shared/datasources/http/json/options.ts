@@ -6,10 +6,6 @@ export const httpJsonOptions = Type.Composite([
   Type.Object({
     url: Type.String(),
     headers: Type.Optional(Type.Record(Type.String(), Type.String())),
-    pageConfig: Type.Object({
-      page: Type.Number(),
-      limit: Type.Number(),
-    }),
   }),
 ]);
 

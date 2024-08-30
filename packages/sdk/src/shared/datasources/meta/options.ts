@@ -4,7 +4,7 @@ import { providerOptions } from "../types";
 export const metaOptions = Type.Composite([
   providerOptions,
   Type.Object({
-    limit: Type.Optional(Type.String()),
+    limit: Type.Optional(Type.Number()),
   }),
 ]);
 

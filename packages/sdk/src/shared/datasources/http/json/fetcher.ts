@@ -5,9 +5,9 @@ import { get } from "lodash-es";
 /**
  * For this fetcher, validation is done outside of the fetcher.
  */
-const fetchHttpJSON: DatasourceFetcher<unknown, null, HttpJsonOptions> = async ({ options }) => {
+const fetchHttpJSON: DatasourceFetcher<unknown, null, HttpJsonOptions> = async ({ options, pageConfig }) => {
   const placeholderRx = /{{(.+?)}}/g;
-  const replacer = createPlaceholderReplacer(options.pageConfig);
+  const replacer = createPlaceholderReplacer(pageConfig);
   const url = options.url.replace(placeholderRx, replacer);
   const headers: Record<string, string> = {};
 
