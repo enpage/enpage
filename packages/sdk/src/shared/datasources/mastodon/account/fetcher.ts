@@ -1,9 +1,9 @@
 import { type MastodonAccountSchema, mastodonAccountSchema } from "./schema";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
-import type { MastodonAccountOptions } from "./types";
+import type { MastodonCommonOptions } from "../options";
 
-const fetchMastodonAccount: DatasourceFetcher<MastodonAccountSchema, null, MastodonAccountOptions> = async ({
+const fetchMastodonAccount: DatasourceFetcher<MastodonAccountSchema, null, MastodonCommonOptions> = async ({
   options,
 }) => {
   const params = new URLSearchParams({

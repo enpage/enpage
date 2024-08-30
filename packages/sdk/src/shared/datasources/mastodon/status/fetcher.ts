@@ -1,14 +1,14 @@
-import type { MastodonStatusOptions } from "./types";
 import { type MastodonStatusArraySchema, mastodonStatusArraySchema } from "./schema";
 import fetchMastodonAccount from "../account/fetcher";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 import { Http401Error } from "../../errors";
+import type { MastodonCommonOptions } from "../options";
 
 const fetchMastodonStatus: DatasourceFetcher<
   MastodonStatusArraySchema,
   null,
-  MastodonStatusOptions
+  MastodonCommonOptions
 > = async ({ options, env }) => {
   const account = await fetchMastodonAccount({ options: { username: options.username }, env, oauth: null });
 

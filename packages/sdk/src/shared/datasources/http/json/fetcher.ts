@@ -1,6 +1,5 @@
-import type { HttpJsonOptions } from "./types";
+import type { HttpJsonOptions } from "./options";
 import type { DatasourceFetcher } from "../../types";
-import type { GenericPageConfig } from "~/shared/page-config";
 import { get } from "lodash-es";
 
 /**
@@ -29,9 +28,9 @@ const fetchHttpJSON: DatasourceFetcher<unknown, null, HttpJsonOptions> = async (
 
 export default fetchHttpJSON;
 
-function createPlaceholderReplacer(pageConfig: GenericPageConfig) {
+function createPlaceholderReplacer(pageConfig: Record<string, unknown>) {
   return function replacePlaceholders(_: unknown, p1: string) {
     const varName = (p1 as string).trim();
-    return get(pageConfig, varName) ?? "";
+    return String(get(pageConfig, varName)) ?? "";
   };
 }

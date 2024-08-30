@@ -1,9 +1,10 @@
-import type { YoutubeListOptions } from "./types";
+import type { YoutubeListOptions } from "./options";
 import { type YoutubeListSchema, youtubeListSchema } from "./schema";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 import type { YoutubeOAuthConfig } from "../oauth/config";
 import { Http401Error } from "../../errors";
+import { stringifyObjectValues } from "../../utils";
 
 const fetchYoutubeList: DatasourceFetcher<
   YoutubeListSchema,
@@ -15,7 +16,7 @@ const fetchYoutubeList: DatasourceFetcher<
   }
 
   const params = new URLSearchParams({
-    ...(options.urlParams ?? {}),
+    ...stringifyObjectValues(options),
     part: "snippet,id",
     type: "video",
     videoEmbeddable: "true",
@@ -29,7 +30,7 @@ const fetchYoutubeList: DatasourceFetcher<
     params.set("key", env.YOUTUBE_API_KEY);
   }
 
-  const url = `https://www.googleapis.com/youtube/v3/search?${params.toString()}`;
+  const url = `https://www.googleapis.com/youtube/v3/search?${params}`;
   const response = await fetch(url);
   if (!response.ok) {
     if (response.status === 401) {

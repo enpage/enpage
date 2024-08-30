@@ -1,9 +1,12 @@
 import type { EnpageEnv } from "../env";
+import { Type, type Static } from "@sinclair/typebox";
 import z from "zod";
 
-export interface Options {
-  nextRefreshDelay?: number;
-}
+export const providerOptions = Type.Object({
+  nextRefreshDelay: Type.Optional(Type.Number()),
+});
+
+export type ProviderOptions = Static<typeof providerOptions>;
 
 export interface OAuthConfig<T> {
   siteId: string;
@@ -14,25 +17,29 @@ export interface OAuthConfig<T> {
   nextRefreshTokenAt: Date | null;
 }
 
-type DatasourceFetcherParams<OAuthProps = unknown, Opts extends Options = Options> = {
+type DatasourceFetcherParams<OAuthProps = unknown, Opts extends ProviderOptions = ProviderOptions> = {
   env: EnpageEnv;
   options: Opts;
   oauth: OAuthProps extends null ? null : OAuthConfig<OAuthProps>;
 };
 
-export type DatasourceFetcher<T = unknown, OAuthOpts = unknown, Opts extends Options = Options> = (
-  params: DatasourceFetcherParams<OAuthOpts, Opts>,
-) => Promise<T>;
+export type DatasourceFetcher<
+  T = unknown,
+  OAuthOpts = unknown,
+  Opts extends ProviderOptions = ProviderOptions,
+> = (params: DatasourceFetcherParams<OAuthOpts, Opts>) => Promise<T>;
 
-export enum DatasourceProvider {
-  FacebookPosts = "facebook-posts",
-  InstagramFeed = "instagram-feed",
-  MastodonStatus = "mastodon-status",
-  Rss = "rss",
-  ThreadsMedia = "threads-media",
-  TiktokVideo = "tiktok-video",
-  YoutubeList = "youtube-list",
-  HttpJSon = "http-json",
-}
+const providers = [
+  "facebook-posts",
+  "instagram-feed",
+  "mastodon-status",
+  "rss",
+  "threads-media",
+  "tiktok-video",
+  "youtube-list",
+  "http-json",
+] as const;
 
-export const datasourceProvider = z.nativeEnum(DatasourceProvider);
+export type DatasourceProvider = (typeof providers)[number];
+
+export const datasourceProvider = z.enum(providers);

@@ -1,4 +1,4 @@
-import type { TiktokVideoOptions } from "./types";
+import type { TiktokVideoOptions } from "./options";
 import { type TiktokVideoResponseSchema, tiktokVideoResponseSchema } from "./schema";
 import type { TiktokOAuthConfig } from "../oauth/config";
 import type { DatasourceFetcher } from "../../types";
@@ -16,13 +16,14 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   });
 
   const url = `https://open.tiktokapis.com/v2/video/list/?${params.toString()}`;
+  const { nextRefreshDelay, ...body } = options;
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${oauth.config.accessToken}`,
     },
-    body: JSON.stringify(options.body ?? {}),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

@@ -1,4 +1,4 @@
-import type { RssOptions } from "./types";
+import type { RssOptions } from "./options";
 import Parser from "rss-parser";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../types";
@@ -6,7 +6,7 @@ import type { RssSchema } from "./schema";
 
 const fetchRss: DatasourceFetcher<RssSchema, null, RssOptions> = async ({ options }) => {
   const parser: Parser = new Parser();
-  const url = options.url;
+  const { url } = options;
 
   const feed = (await parser.parseURL(url)) as RssSchema;
 
@@ -15,7 +15,7 @@ const fetchRss: DatasourceFetcher<RssSchema, null, RssOptions> = async ({ option
   const isValid = validate(feed);
 
   if (!isValid) {
-    throw new Error(`fecthRss Error: Invalid Feed (${url}): ${validate.errors}`);
+    throw new Error(`fetchRss Error: Invalid Feed (${url}): ${validate.errors}`);
   }
 
   return feed;

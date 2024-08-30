@@ -1,20 +1,21 @@
-import type { ThreadsMediaOptions } from "./types";
 import { type ThreadsMediaSchema, threadsMediaSchema } from "./schema";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
 import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 import invariant from "tiny-invariant";
 import { Http401Error } from "../../errors";
+import type { MetaOptions } from "../../meta/options";
+import { stringifyObjectValues } from "../../utils";
 
 const fetchThreadsMediaDatasource: DatasourceFetcher<
   ThreadsMediaSchema,
   MetaOAuthConfig,
-  ThreadsMediaOptions
+  MetaOptions
 > = async ({ options, oauth }) => {
   invariant(oauth?.config, "fetchThreadsMediaDatasource Error: OAuth config is required");
 
   const params = new URLSearchParams({
-    ...(options.urlParams ?? {}),
+    ...stringifyObjectValues(options),
     access_token: oauth.config.accessToken,
     fields: [
       "id",

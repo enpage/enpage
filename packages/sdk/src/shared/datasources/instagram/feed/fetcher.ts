@@ -1,17 +1,18 @@
-import type { InstagramFeedOptions } from "./types";
 import { instagramFeedSchema, type InstagramFeedSchema } from "./schema";
 import Ajv from "ajv";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
 import type { DatasourceFetcher } from "../../types";
 import { Http401Error } from "../../errors";
+import type { MetaOptions } from "../../meta/options";
+import { stringifyObjectValues } from "../../utils";
 
 const fetchInstagramFeedDatasource: DatasourceFetcher<
   InstagramFeedSchema,
   MetaOAuthConfig,
-  InstagramFeedOptions
+  MetaOptions
 > = async ({ options, oauth }) => {
   const params = new URLSearchParams({
-    ...(options.urlParams ?? {}),
+    ...stringifyObjectValues(options),
     access_token: oauth.config.accessToken,
     fields: ["id", "caption", "timestamp", "thumbnail_url", "media_url", "permalink", "media_type"].join(","),
   });
