@@ -1,5 +1,24 @@
+import { logger } from "../shared/logger";
 import { API_BASE_URL } from "./constants";
-import { accessConfig } from "./config";
+import { accessStore, getToken } from "./store";
+
+type SuccessResponseWrapper<T> = {
+  isSuccess: true;
+  isError: false;
+  status: number;
+  statusText: string;
+  data: T;
+};
+
+type ErrorResponseWrapper<E> = {
+  isSuccess: false;
+  isError: true;
+  status: number;
+  statusText: string;
+  data: E;
+};
+
+type ResponseWrapper<T, E> = SuccessResponseWrapper<T> | ErrorResponseWrapper<E>;
 
 /**
  *
@@ -7,13 +26,13 @@ import { accessConfig } from "./config";
  * @param data
  * @returns
  */
-export async function post<ResponseType = unknown>(
+export async function post<ResponseType = unknown, ErrorType = { error: string; error_description?: string }>(
   path: string,
   data: Record<string, unknown> | URLSearchParams,
   headers: Record<string, string> = {},
 ) {
-  if (accessConfig.get("token")) {
-    headers.Authorization = `Bearer ${accessConfig.get("token")}`;
+  if (accessStore.get("access_token")) {
+    headers.Authorization = `Bearer ${accessStore.get("access_token")}`;
   }
   const response = await fetch(toURL(path), {
     method: "POST",
@@ -23,16 +42,29 @@ export async function post<ResponseType = unknown>(
       ...headers,
     },
     body: data instanceof URLSearchParams ? data : JSON.stringify(data),
+  }).catch((error) => {
+    logger.error(`Fatal Error requesting API: ${error.message} (${error.cause.code})`, { error });
+    logger.error(`Please check your internet connection and try again, or retry later.`, { error });
+    process.exit(1);
   });
-  return formatResponse<ResponseType>(response);
+
+  return formatResponse<ResponseType, ErrorType>(response);
 }
 
-export async function get(path: string, headers: Record<string, string> = {}) {
-  if (accessConfig.get("token")) {
-    headers.Authorization = `Bearer ${accessConfig.get("token")}`;
+export async function get<ResponseType = unknown, ErrorType = { error: string; error_description?: string }>(
+  path: string,
+  headers: Record<string, string> = {},
+) {
+  const token = getToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
-  const response = await fetch(toURL(path), { headers });
-  return formatResponse(response);
+  const response = await fetch(toURL(path), { headers, method: "GET" }).catch((error) => {
+    logger.error(`Fatal Error requesting API: ${error.message} (${error.cause.code})`, { error });
+    logger.error(`Please check your internet connection and try again, or retry later.`, { error });
+    process.exit(1);
+  });
+  return formatResponse<ResponseType, ErrorType>(response);
 }
 
 function toURL(path: string) {
@@ -40,15 +72,28 @@ function toURL(path: string) {
   return new URL(path, apiBaseURL);
 }
 
-async function formatResponse<ResponseType = unknown>(response: Response) {
-  return {
-    isSuccess: response.ok,
-    isError: !response.ok,
-    status: response.status,
-    statusText: response.statusText,
-    data:
-      response.headers.get("content-type") === "application/json"
-        ? ((await response.json()) as ResponseType)
-        : ((await response.text()) as ResponseType),
-  };
+async function formatResponse<SuccessType, ErrorType>(
+  response: Response,
+): Promise<ResponseWrapper<SuccessType, ErrorType>> {
+  const data = response.headers.get("content-type")?.startsWith("application/json")
+    ? ((await response.json()) as ResponseType)
+    : ((await response.text()) as ResponseType);
+
+  if (response.ok) {
+    return {
+      isSuccess: true,
+      isError: false,
+      status: response.status,
+      statusText: response.statusText,
+      data: data as SuccessType,
+    };
+  } else {
+    return {
+      isSuccess: false,
+      isError: true,
+      status: response.status,
+      statusText: response.statusText,
+      data: data as ErrorType,
+    };
+  }
 }

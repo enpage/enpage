@@ -14,3 +14,7 @@ export function getPackageManager() {
 
   return packageManager;
 }
+
+export function formatAPIError(error: { error: string; error_description?: string }) {
+  return `[${error.error}]${error.error_description ? `: ${error.error_description}` : ""}`;
+}

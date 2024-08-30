@@ -1,17 +1,11 @@
-import Conf from "conf";
 import chalk from "chalk";
 import { confirm } from "@inquirer/prompts";
 import open from "open";
-import {
-  CLI_PROJECT_NAME,
-  CLI_LOGIN_CLIENT_ID,
-  API_BASE_URL,
-  OAUTH_ENDPOINT_DEVICE_CODE,
-  OAUTH_ENDPOINT_TOKEN,
-} from "../../constants";
+import { CLI_LOGIN_CLIENT_ID, OAUTH_ENDPOINT_DEVICE_CODE, OAUTH_ENDPOINT_TOKEN } from "../../constants";
 import { post } from "../../api";
 import { logger } from "~/node/shared/logger";
 import type { ArgOpts, CommonOptions } from "../../types";
+import { accessStore } from "../../store";
 
 export async function pollForLogin(deviceCode: string) {
   while (true) {
@@ -20,10 +14,13 @@ export async function pollForLogin(deviceCode: string) {
       device_code: deviceCode,
       client_id: CLI_LOGIN_CLIENT_ID,
     });
-    const tokenResponse = await post<DeviceCodeTokenResponse>(OAUTH_ENDPOINT_TOKEN, body);
+    const tokenResponse = await post<DeviceCodeTokenSuccessResponse, DeviceCodeTokenErrorResponse>(
+      OAUTH_ENDPOINT_TOKEN,
+      body,
+    );
     const { data, isSuccess } = tokenResponse;
 
-    if (isDeviceCodeTokenSuccessResponse(data)) {
+    if (isSuccess) {
       return data;
     }
 
@@ -40,29 +37,18 @@ export async function pollForLogin(deviceCode: string) {
 export async function login({ options }: ArgOpts<CommonOptions>) {
   logger.info(`Logging in to Enpage...\n`);
 
-  const deviceCodeResponse = await fetch(OAUTH_ENDPOINT_DEVICE_CODE, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      client_id: CLI_LOGIN_CLIENT_ID,
-      scope: "profile,templates:publish",
-    }),
+  const { isError, data } = await post<DeviceCodeResponse>(OAUTH_ENDPOINT_DEVICE_CODE, {
+    client_id: CLI_LOGIN_CLIENT_ID,
+    scope: "profile,templates:publish",
   });
 
-  const deviceCodeData = await deviceCodeResponse.json<DeviceCodeResponse>().catch((e) => {
-    logger.error(`Error while parsing DeviceCodeResponse: ${e.message}`);
-    process.exit(1);
-  });
-
-  if (isDeviceCodeSuccessResponse(deviceCodeData) === false) {
+  if (isError) {
     logger.error("Failed to get device code. Please try again.");
-    logger.error(`Error: ${deviceCodeData.error_description ?? deviceCodeData.error}`);
+    logger.error(`Error: ${data.error_description ?? data.error}`);
     process.exit(1);
   }
 
-  const { verification_uri, device_code } = deviceCodeData;
+  const { verification_uri, device_code } = data;
 
   const confirmed = await confirm({
     message: `Would you like to open the login page in your browser?`,
@@ -85,13 +71,15 @@ export async function login({ options }: ArgOpts<CommonOptions>) {
     process.exit(1);
   }
 
-  const cliConfig = new Conf<typeof loginData>({ projectName: CLI_PROJECT_NAME });
-  cliConfig.set(loginData);
+  accessStore.set({
+    ...loginData,
+    ...(loginData.expires_in ? { expires_at: Date.now() + loginData.expires_in * 1000 } : {}),
+  });
   logger.info("Login successful!\n");
-  process.exit(0);
+  process.exitCode = 0;
 }
 
-interface DeviceCodeSuccessResponse {
+interface DeviceCodeResponse {
   device_code: string;
   user_code: string;
   verification_uri: string;
@@ -100,19 +88,7 @@ interface DeviceCodeSuccessResponse {
   interval?: number; // Optional as per RFC 8628
 }
 
-// Error response type
-interface DeviceCodeErrorResponse {
-  error: string;
-  error_description?: string;
-  error_uri?: string;
-}
-
 // Union type for the response
-type DeviceCodeResponse = DeviceCodeSuccessResponse | DeviceCodeErrorResponse;
-
-function isDeviceCodeSuccessResponse(response: DeviceCodeResponse): response is DeviceCodeSuccessResponse {
-  return "device_code" in response;
-}
 
 interface DeviceCodeTokenSuccessResponse {
   access_token: string;
@@ -127,14 +103,4 @@ interface DeviceCodeTokenErrorResponse {
   error: "authorization_pending" | "slow_down" | "access_denied" | "expired_token" | string;
   error_description?: string;
   error_uri?: string;
-}
-
-// Union type for the token response
-type DeviceCodeTokenResponse = DeviceCodeTokenSuccessResponse | DeviceCodeTokenErrorResponse;
-
-// Type guard to check if the response is a success response
-function isDeviceCodeTokenSuccessResponse(
-  response: DeviceCodeTokenResponse,
-): response is DeviceCodeTokenSuccessResponse {
-  return "access_token" in response;
 }
