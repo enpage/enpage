@@ -1,16 +1,12 @@
-import type { RequestContext } from "@hattip/compose";
 import { join } from "node:path";
 import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
 import type { DatasourceManifestMap, DatasourceResolved } from "~/shared/datasources";
-import type { TemplateManifest } from "~/shared/manifest";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig, PageConfigFile } from "~/shared/page-config";
 
-export async function getLocalPageConfig(): Promise<GenericPageConfig> {
-  const { attributes, datasources, manifest } = (await import(join(process.cwd(), "enpage.config.js"))) as {
-    attributes: AttributesMap;
-    datasources: DatasourceManifestMap | undefined;
-    manifest: TemplateManifest;
-  };
+export async function getLocalPageConfig(configFile?: string): Promise<GenericPageConfig> {
+  const { attributes, datasources, manifest } = (await import(
+    configFile ?? join(process.cwd(), "enpage.config.js")
+  )) as PageConfigFile;
 
   return {
     attributes,
