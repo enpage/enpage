@@ -1,6 +1,6 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import type { PageContext } from "~/shared/page-context";
-import { providersSamples } from "~/shared/data-samples";
+import { samples } from "~/shared/datasources/samples";
 import type { AttributesResolved } from "~/shared/attributes";
 import invariant from "tiny-invariant";
 import type { EnpageEnv } from "~/shared/env";
@@ -13,7 +13,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     for (const key in cfg.datasources) {
       const provider = cfg.datasources[key].provider;
       if (provider && provider !== "http-json") {
-        data[key] = providersSamples[provider];
+        data[key] = samples[provider];
       } else if ("sampleData" in cfg.datasources[key] && cfg.datasources[key].sampleData) {
         data[key] = cfg.datasources[key].sampleData;
       }
