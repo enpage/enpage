@@ -9,7 +9,11 @@ export interface S3Client {
 }
 
 export function createS3Client(env: EnpageEnv): S3Client {
-  const aws = new AwsClient({ accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY });
+  const aws = new AwsClient({
+    accessKeyId: env.R2_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+    region: "auto",
+  });
   const url = new URL(`https://${env.R2_SITES_BUCKET_NAME}.r2.cloudflarestorage.com`);
   return {
     get(key: string) {
