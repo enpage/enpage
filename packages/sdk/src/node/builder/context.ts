@@ -48,7 +48,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
   invariant(siteHost, "PUBLIC_ENPAGE_SITE_HOST is empty.");
   invariant(apiBaseUrl, "PUBLIC_ENPAGE_API_BASE_URL is empty.");
 
-  const url = `${apiBaseUrl}/sites/${siteHost}/context`;
+  const url = `${apiBaseUrl}/v1/sites/${siteHost}/context`;
   const response = await fetch(url, {
     headers: {
       Accept: "application/json",
