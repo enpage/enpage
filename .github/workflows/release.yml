@@ -83,7 +83,7 @@ jobs:
             ```
 
             *Deployment info* :rocket:
-            - Commit: https://github.com/enpage/enpage/commit/${{ github.sha }}
+            - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
             - Action: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 
