@@ -6,6 +6,7 @@ import invariant from "tiny-invariant";
 import { Http401Error } from "../../errors";
 import type { MetaOptions } from "../../meta/options";
 import { stringifyObjectValues } from "../../utils";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchThreadsMediaDatasource: DatasourceFetcher<
   ThreadsMediaSchema,
@@ -45,12 +46,13 @@ const fetchThreadsMediaDatasource: DatasourceFetcher<
 
   const media = (await response.json()) as ThreadsMediaSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<ThreadsMediaSchema>(threadsMediaSchema);
   const isValid = validate(media);
 
   if (!isValid) {
-    throw new Error(`fetchThreadsMediaDatasource Error: Invalid JSON object: ${validate.errors}`);
+    throw new Error(
+      `fetchThreadsMediaDatasource Error: Invalid Threads response data: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return media;

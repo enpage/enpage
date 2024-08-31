@@ -4,6 +4,7 @@ import type { TiktokOAuthConfig } from "../oauth/config";
 import type { DatasourceFetcher } from "../../types";
 import Ajv from "ajv";
 import { Http401Error } from "../../errors";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchTiktokVideoDatasource: DatasourceFetcher<
   TiktokVideoResponseSchema,
@@ -34,12 +35,13 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   }
   const data = (await response.json()) as TiktokVideoResponseSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<TiktokVideoResponseSchema>(tiktokVideoResponseSchema);
   const isValid = validate(data);
 
   if (!isValid) {
-    throw new Error(`fetchTiktokVideoDatasource Error: Invalid JSON object: ${validate.errors}`);
+    throw new Error(
+      `fetchTiktokVideoDatasource Error: Invalid TikTok response data: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return data;

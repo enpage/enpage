@@ -1,5 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { mastodonAccountSchema } from "../account/schema";
+import e from "express";
 
 const mastodonMediaAttachmentSchema = Type.Object({
   id: Type.String(),
@@ -123,6 +124,8 @@ const mastodonStatusSchema = Type.Object(
     $id: "mastodonStatus",
   },
 );
+
+export type MastodonStatusSchema = Static<typeof mastodonStatusSchema>;
 
 export const mastodonStatusArraySchema = Type.Array(mastodonStatusSchema);
 export type MastodonStatusArraySchema = Static<typeof mastodonStatusArraySchema>;

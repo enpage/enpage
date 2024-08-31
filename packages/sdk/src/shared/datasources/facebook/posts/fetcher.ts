@@ -5,6 +5,7 @@ import type { DatasourceFetcher } from "../../types";
 import { Http401Error } from "../../errors";
 import type { MetaOptions } from "../../meta/options";
 import { stringifyObjectValues } from "../../utils";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchFacebookPostDatasource: DatasourceFetcher<
   FacebookPostSchema,
@@ -48,11 +49,12 @@ const fetchFacebookPostDatasource: DatasourceFetcher<
 
   const post = (await response.json()) as FacebookPostSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<FacebookPostSchema>(facebookPostSchema);
 
   if (!validate(post)) {
-    throw new Error(`fetchFacebookPostDatasource Error: Invalid JSON object: ${validate.errors}`);
+    throw new Error(
+      `fetchFacebookPostDatasource Error: Invalid JSON object: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return post;

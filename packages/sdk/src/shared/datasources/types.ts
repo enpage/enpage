@@ -18,7 +18,7 @@ export interface OAuthConfig<T> {
   nextRefreshTokenAt: Date | null;
 }
 
-type DatasourceFetcherParams<OAuthProps = unknown, Opts extends ProviderOptions = ProviderOptions> = {
+export type DatasourceFetcherParams<OAuthProps = unknown, Opts extends ProviderOptions = ProviderOptions> = {
   env: EnpageEnv;
   options: Opts;
   pageConfig: GenericPageConfig;

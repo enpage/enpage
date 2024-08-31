@@ -5,6 +5,7 @@ import type { DatasourceFetcher } from "../../types";
 import type { YoutubeOAuthConfig } from "../oauth/config";
 import { Http401Error } from "../../errors";
 import { stringifyObjectValues } from "../../utils";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchYoutubeList: DatasourceFetcher<
   YoutubeListSchema,
@@ -41,12 +42,13 @@ const fetchYoutubeList: DatasourceFetcher<
 
   const data = (await response.json()) as YoutubeListSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<YoutubeListSchema>(youtubeListSchema);
   const isValid = validate(data);
 
   if (!isValid) {
-    throw new Error(`fetchYoutubeList Error: Invalid Youtube response object: ${validate.errors}`);
+    throw new Error(
+      `fetchYoutubeList Error: Invalid Youtube response data: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return data;

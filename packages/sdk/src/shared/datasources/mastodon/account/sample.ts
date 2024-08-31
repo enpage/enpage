@@ -1,7 +1,21 @@
 import type { MastodonAccountSchema } from "./schema";
 
 export const sample = {
+  id: "1",
   acct: "Gargron",
+  url: "https://mastodon.social/@Gargron",
+  noindex: false,
+  locked: false,
+  discoverable: true,
+  fields: [],
+  followers_count: 0,
+  following_count: 0,
+  group: false,
+  statuses_count: 0,
+  note: "Admin of mastodon.social",
+  username: "Gargron",
+  header_static: "https://files.mastodon.social/accounts/headers/000/000/001/original/7b7e3c3e3e7e3e3e.png",
+  header: "https://files.mastodon.social/accounts/headers/000/000/001/original/7b7e3c3e3e7e3e3e.png",
   avatar: "https://files.mastodon.social/accounts/avatars/000/000/001/original/7b7e3c3e3e7e3e3e.png",
   avatar_static: "https://files.mastodon.social/accounts/avatars/000/000/001/original/7b7e3c3e3e7e3e3e.png",
   bot: false,
@@ -16,4 +30,4 @@ export const sample = {
       visible_in_picker: true,
     },
   ],
-} as MastodonAccountSchema;
+} satisfies MastodonAccountSchema;

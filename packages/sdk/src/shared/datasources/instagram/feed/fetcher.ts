@@ -5,6 +5,7 @@ import type { DatasourceFetcher } from "../../types";
 import { Http401Error } from "../../errors";
 import type { MetaOptions } from "../../meta/options";
 import { stringifyObjectValues } from "../../utils";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchInstagramFeedDatasource: DatasourceFetcher<
   InstagramFeedSchema,
@@ -28,12 +29,13 @@ const fetchInstagramFeedDatasource: DatasourceFetcher<
 
   const feed = (await response.json()) as InstagramFeedSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<InstagramFeedSchema>(instagramFeedSchema);
   const isValid = validate(feed);
 
   if (!isValid) {
-    throw new Error(`fetchInstagramFeedDatasource Error: Invalid JSON object: ${validate.errors}`);
+    throw new Error(
+      `fetchInstagramFeedDatasource Error: Invalid Instagram response data: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return feed;
