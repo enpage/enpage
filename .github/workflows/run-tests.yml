@@ -8,6 +8,7 @@ on:
     tags-ignore:
       - "*"
     paths:
+      - "!docs/**"
       - '**/*.html'
       - '**/*.js'
       - '**/*.ts'
@@ -21,6 +22,7 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - "!docs/**"
       - '**/*.html'
       - '**/*.js'
       - '**/*.ts'
