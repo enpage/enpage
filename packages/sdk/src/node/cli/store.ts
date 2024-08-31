@@ -43,7 +43,7 @@ export function getTokenOrThrow() {
   if (!token) {
     const pkgCmd = getPackageManager();
     throw new Error(
-      `Access token not found. Please run ${chalk.cyan(`${pkgCmd} run login`)} to authenticate.`,
+      `Access token not found. Please run ${chalk.cyan(`${pkgCmd} run enpage:login`)} to authenticate.`,
     );
   }
   return token;
