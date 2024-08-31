@@ -23,7 +23,9 @@ on:
       - '**/*.mjs'
       - '**/*.mts'
       - '**/*.yaml'
+      - '**/*.yml'
       - '**/*.json'
+      - '**/*.mdx'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -34,8 +36,10 @@ on:
       - '**/*.tsx'
       - '**/*.mjs'
       - '**/*.mts'
+      - '**/*.yml'
       - '**/*.yaml'
       - '**/*.json'
+      - '**/*.mdx'
   schedule:
     - cron: '0 4 * * 1'
 
