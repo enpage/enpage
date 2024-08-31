@@ -5,7 +5,7 @@ import { program } from "commander";
 import { resolve } from "node:path";
 import path from "node:path";
 import chalk from "chalk";
-import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { input, select } from "@inquirer/prompts";
 import { execSync } from "node:child_process";
 
@@ -30,6 +30,9 @@ program
     process.stdout.write("Cloning template example... ");
 
     await degit("enpage/enpage/packages/template-example", { cache: false }).clone(directory);
+
+    // remove CHANGELOG.md
+    rmSync(resolve(directory, "CHANGELOG.md"));
 
     console.log(chalk.cyan("OK"));
     console.log("");
