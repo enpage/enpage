@@ -131,6 +131,11 @@ program
       pkgJson.private = true;
     }
 
+    // biome-ignore lint/performance/noDelete: need to remove the lint script
+    delete pkgJson.scripts.lint;
+    // biome-ignore lint/performance/noDelete: need to remove the ci:lint script
+    delete pkgJson.scripts["ci:lint"];
+
     // write the package.json
     process.stdout.write("Writing package.json... ");
     writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2));
@@ -141,19 +146,12 @@ program
 
     const pm = getPackageManager();
 
-    // override the workspace file for pnpm
-    if (pm === "pnpm") {
-      const workspacePath = resolve(directory, "pnpm-workspace.yaml");
-      writeFileSync(workspacePath, "\n");
-    }
+    execSync(`${pm} install`, { cwd: directory, stdio: "inherit" });
 
-    execSync(`${pm} install`, { cwd: directory });
-
-    console.log(chalk.cyan("All done!"));
+    console.log(`\n${chalk.cyan("All done!")}\n`);
     console.log("You can now develop your template:\n");
     console.log(chalk.cyan(`  cd ${dir}`));
-    console.log(chalk.cyan(`  ${pm} start`));
-    console.log("");
+    console.log(chalk.cyan(`  ${pm} start\n`));
 
     process.exit(0);
   });
