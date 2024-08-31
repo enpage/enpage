@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.18
+
+### Patch Changes
+
+- b572f81: Various imporvements around CLI
+
 ## 0.0.17
 
 ### Patch Changes
