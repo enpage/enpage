@@ -1,4 +1,4 @@
 .enpage
+.cache
 node_modules
-npm-debug.log
-.env.local
+*.log
