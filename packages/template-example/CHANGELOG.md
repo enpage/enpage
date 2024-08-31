@@ -1,5 +1,13 @@
 # @enpage/template-example
 
+## 0.0.24
+
+### Patch Changes
+
+- 7340727: Add oauth and rework datasources
+- Updated dependencies [7340727]
+  - @enpage/sdk@0.0.24
+
 ## 0.0.23
 
 ### Patch Changes

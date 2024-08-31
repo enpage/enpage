@@ -1,5 +1,13 @@
 # @enpage/editor
 
+## 0.0.11
+
+### Patch Changes
+
+- 7340727: Add oauth and rework datasources
+- Updated dependencies [7340727]
+  - @enpage/sdk@0.0.24
+
 ## 0.0.10
 
 ### Patch Changes
