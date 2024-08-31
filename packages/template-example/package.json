@@ -13,8 +13,8 @@
     "start": "enpage dev",
     "build": "enpage build",
     "preview": "enpage preview",
-    "publish": "enpage publish",
-    "login": "enpage login",
+    "enpage:publish": "enpage publish",
+    "enpage:login": "enpage login",
     "lint": "biome check --write .",
     "ci:lint": "biome check ."
   },

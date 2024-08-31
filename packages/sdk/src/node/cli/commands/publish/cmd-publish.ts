@@ -18,7 +18,7 @@ export async function publish({ options, args }: ArgOpts) {
   if (!(await isLoggedIn(true))) {
     const pkgCmd = getPackageManager();
     logger.error(
-      `  ${chalk.redBright("Error")}: User token not found. Please run ${chalk.cyan(`${pkgCmd} run login`)} to authenticate or set the ${chalk.cyan("ENPAGE_API_TOKEN")} environment variable.\n`,
+      `  ${chalk.redBright("Error")}: User token not found. Please run ${chalk.cyan(`${pkgCmd} run enpage:login`)} to authenticate or set the ${chalk.cyan("ENPAGE_API_TOKEN")} environment variable.\n`,
     );
     process.exit(1);
   }
@@ -73,7 +73,7 @@ export async function publish({ options, args }: ArgOpts) {
   if (!token) {
     const pkgCmd = getPackageManager();
     logger.error(
-      `  ${chalk.redBright("Error")}: Credentials not found. Please run ${chalk.cyan(`${pkgCmd} run login`)} to authenticate.\n`,
+      `  ${chalk.redBright("Error")}: Credentials not found. Please run ${chalk.cyan(`${pkgCmd} run enpage:login`)} to authenticate.\n`,
     );
     process.exit(1);
   }
