@@ -1,5 +1,13 @@
 # @enpage/template-example
 
+## 0.0.25
+
+### Patch Changes
+
+- b572f81: Various imporvements around CLI
+- Updated dependencies [b572f81]
+  - @enpage/sdk@0.0.25
+
 ## 0.0.24
 
 ### Patch Changes

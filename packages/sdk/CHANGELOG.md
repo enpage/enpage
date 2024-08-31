@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.25
+
+### Patch Changes
+
+- b572f81: Various imporvements around CLI
+
 ## 0.0.24
 
 ### Patch Changes
