@@ -6,6 +6,8 @@ import path from "node:path";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { getPackageManager } from "./utils";
+import chalk from "chalk";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const accessStore = new Conf<CredentialsStore>({ projectName: CLI_PROJECT_NAME, encryptionKey: getKey() });
@@ -39,7 +41,10 @@ export async function isLoggedIn(checkRemote = false): Promise<boolean> {
 export function getTokenOrThrow() {
   const token = accessStore.get("access_token");
   if (!token) {
-    throw new Error("Access token not found. Please run `enpage login` to authenticate.");
+    const pkgCmd = getPackageManager();
+    throw new Error(
+      `Access token not found. Please run ${chalk.cyan(`${pkgCmd} run login`)} to authenticate.`,
+    );
   }
   return token;
 }

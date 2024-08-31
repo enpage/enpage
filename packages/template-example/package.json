@@ -13,6 +13,8 @@
     "start": "enpage dev",
     "build": "enpage build",
     "preview": "enpage preview",
+    "publish": "enpage publish",
+    "login": "enpage login",
     "lint": "biome check --write .",
     "ci:lint": "biome check ."
   },
@@ -37,8 +39,5 @@
   "keywords": [
     "enpage-template"
   ],
-  "enpage": {
-    "id": "com.example.hello-world"
-  },
   "private": true
 }
