@@ -8,8 +8,8 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: {
-      dark: "/enpage-developers-dark.svg",
-      light: "/enpage-developers.svg",
+      dark: "/enpage-dark.svg",
+      light: "/enpage.svg",
       alt: "Enpage Developer Documentation",
     },
     siteTitle: false,
@@ -125,6 +125,10 @@ export default defineConfig({
       pattern: "https://github.com/enpage/enpage/edit/main/docs/:path",
     },
     socialLinks: [{ icon: "github", link: "https://github.com/enpage/enpage" }],
+    footer: {
+      message: "Enpage SDK is released under AGPL-3.0 license",
+      copyright: "Copyright © 2024-present Flippable- Made with ❤️ in Paris",
+    },
   },
   head: [
     ["link", { rel: "icon", href: "/favicon.svg" }],
