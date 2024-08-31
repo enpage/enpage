@@ -10,7 +10,12 @@ import { getPackageManager } from "./utils";
 import chalk from "chalk";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const accessStore = new Conf<CredentialsStore>({ projectName: CLI_PROJECT_NAME, encryptionKey: getKey() });
+const key = getKey();
+const accessStore = new Conf<CredentialsStore>({
+  projectName: CLI_PROJECT_NAME,
+  encryptionKey: key,
+  clearInvalidConfig: true,
+});
 
 export async function isLoggedIn(checkRemote = false): Promise<boolean> {
   const token = accessStore.get("access_token");
@@ -64,19 +69,26 @@ function findNearestNodeModules(): string | null {
 function getKey() {
   const nodeModulesPath = findNearestNodeModules();
   if (!nodeModulesPath) {
+    console.log("Could not find nearest node_modules directory.");
     throw new Error("Could not find nearest node_modules directory.");
   }
   const tmpSecureStoreDir = path.join(nodeModulesPath, ".enpage-tmp");
   if (!fs.existsSync(tmpSecureStoreDir)) {
+    console.log("Creating secure store directory...");
     fs.mkdirSync(tmpSecureStoreDir, { recursive: true, mode: 0o700 });
   }
   const keyPath = path.join(tmpSecureStoreDir, ".enpage-key");
   if (!fs.existsSync(keyPath)) {
+    console.log("Generating secure store key...");
     const key = crypto.randomBytes(32).toString("hex");
+    console.log("Writing secure store key to %s (%s)", keyPath, key);
     fs.writeFileSync(keyPath, key, { mode: 0o600, flush: true });
     return key;
   }
-  return fs.readFileSync(keyPath, "utf8");
+  const key = fs.readFileSync(keyPath, "utf8");
+  console.log("Using secure store key from path %s", keyPath);
+  console.log("Key: %s", key);
+  return key;
 }
 
 export { accessStore };
