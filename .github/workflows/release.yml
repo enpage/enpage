@@ -23,17 +23,17 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          node-version: 20
-
-      - name: 🥡 Setup pnpm
-        id: setup-pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8.10.5
+          version: 8
           run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.tool-versions'
+          cache: 'pnpm'
 
       - name: Creating .npmrc
         run: |
@@ -42,20 +42,6 @@ jobs:
           EOF
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: 🎈 Get pnpm store directory
-        id: get-pnpm-cache-dir
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-
-      - name: 🔆 Cache pnpm modules
-        uses: actions/cache@v3
-        id: pnpm-cache
-        with:
-          path: ${{ steps.get-pnpm-cache-dir.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
 
       - name: 🧩 Install Dependencies
         id: install-dependencies
