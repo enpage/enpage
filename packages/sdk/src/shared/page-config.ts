@@ -39,5 +39,4 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
   templateManifest: TemplateManifest;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type GenericPageConfig = PageConfig<any, any>;
+export type GenericPageConfig = PageConfig<DatasourceManifestMap, AttributesMap>;

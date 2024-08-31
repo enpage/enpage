@@ -1,8 +1,7 @@
 import { type ThreadsMediaSchema, threadsMediaSchema } from "./schema";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
-import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
-import invariant from "tiny-invariant";
+import invariant from "~/shared/utils/invariant";
 import { Http401Error } from "../../errors";
 import type { MetaOptions } from "../../meta/options";
 import { stringifyObjectValues } from "../../utils";

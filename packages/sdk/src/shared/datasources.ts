@@ -51,7 +51,7 @@ export type DatasourceProviderOptionsMap = {
   [key in DatasourceProvider]: Static<(typeof providersOptionsMap)[key]>;
 };
 
-type DatasourceProviderManifest<
+export type DatasourceProviderManifest<
   P extends DatasourceProvider,
   O extends DatasourceProviderOptionsMap[P] = DatasourceProviderOptionsMap[P],
   S extends TSchema = P extends "http-json" ? HttpJsonSchema : (typeof providersSchemaMap)[P],

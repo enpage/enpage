@@ -33,7 +33,10 @@ export async function isLoggedIn(checkRemote = false): Promise<boolean> {
   return isSuccess;
 }
 
-export function getToken() {
+/**
+ * Get access token or throw error if not found
+ */
+export function getTokenOrThrow() {
   const token = accessStore.get("access_token");
   if (!token) {
     throw new Error("Access token not found. Please run `enpage login` to authenticate.");

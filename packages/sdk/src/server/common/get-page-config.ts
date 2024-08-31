@@ -1,4 +1,4 @@
-import type { GenericPageConfig } from "@enpage/sdk/page-config";
+import type { GenericPageConfig } from "../../shared/page-config";
 import type { RequestContext } from "@hattip/compose";
 
 export async function getPageConfig(ctx: RequestContext) {

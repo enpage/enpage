@@ -5,7 +5,7 @@ import type { GenericPageContext, PageContext } from "~/shared/page-context";
 import { Liquid } from "liquidjs";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
-import invariant from "tiny-invariant";
+import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
 
 /**

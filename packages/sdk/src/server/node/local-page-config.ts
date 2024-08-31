@@ -17,9 +17,10 @@ export async function getLocalPageConfig(configFile?: string): Promise<GenericPa
   };
 }
 
-function resolveData(datasources: DatasourceManifestMap) {
-  const data: DatasourceResolved<DatasourceManifestMap> = {};
+function resolveData<M extends DatasourceManifestMap>(datasources: M) {
+  const data: DatasourceResolved<M> = {} as DatasourceResolved<M>;
   for (const key in datasources) {
+    // @ts-ignore
     data[key] = datasources[key].sampleData;
   }
   return data;

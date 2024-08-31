@@ -1,6 +1,6 @@
 import type { GenericPageContext } from "~/shared/page-context";
 import type { GenericPageConfig } from "~/shared/page-config";
-import invariant from "tiny-invariant";
+import invariant from "~/shared/utils/invariant";
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { ViteDevServer } from "vite";
 import type { S3Client } from "~/server/common/node-s3-client";

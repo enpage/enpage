@@ -7,7 +7,7 @@ import chalk from "chalk";
 import { logger } from "~/node/shared/logger";
 import type { ArgOpts } from "../../types";
 import { formatAPIError, getPackageManager } from "../../utils";
-import { getToken, isLoggedIn } from "../../store";
+import { getTokenOrThrow, isLoggedIn } from "../../store";
 import { uploadTemplate } from "./uploader";
 import path from "node:path";
 import { post } from "../../api";
@@ -68,7 +68,7 @@ export async function publish({ options, args }: ArgOpts) {
     process.exit(1);
   }
 
-  const token = getToken();
+  const token = getTokenOrThrow();
 
   if (!token) {
     logger.error(
