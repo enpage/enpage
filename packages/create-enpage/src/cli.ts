@@ -6,8 +6,7 @@ import { resolve } from "node:path";
 import path from "node:path";
 import chalk from "chalk";
 import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { input } from "@inquirer/prompts";
-import { randomUUID } from "node:crypto";
+import { input, select } from "@inquirer/prompts";
 import { execSync } from "node:child_process";
 
 program
@@ -30,13 +29,21 @@ program
     }
     process.stdout.write("Cloning template example... ");
 
-    const emitter = degit("enpage/enpage/packages/template-example");
-
-    await emitter.clone(directory);
+    await degit("enpage/enpage/packages/template-example", { cache: false }).clone(directory);
 
     console.log(chalk.blue("OK"));
     console.log("");
     console.log("Let's set up your new template:");
+
+    const name = await input({
+      message: "Name your template",
+      validate(value) {
+        if (value.length > 0) {
+          return true;
+        }
+        return "Name cannot be empty";
+      },
+    });
 
     const description = await input({
       message: "Enter a template description",
@@ -47,6 +54,7 @@ program
         return "Description cannot be empty";
       },
     });
+
     const author = await input({
       message: "Enter the author's name",
       validate(value) {
@@ -56,8 +64,26 @@ program
         return "Author name cannot be empty";
       },
     });
+
+    const visibility = await select({
+      message: "Choose the visibility of the template",
+      choices: [
+        { name: "Private", value: "private", description: "For your eyes only" },
+        {
+          name: "Public",
+          value: "public",
+          description: "To be available on Enpage (paid or free users)",
+        },
+      ],
+    });
+
+    if (visibility === "public") {
+      console.log("  > You will need to publish your template to make it available on Enpage.\n");
+    }
+
     // ask for tags
     const tags = await input({ message: "Enter tags for the template (optional, comma separated)" });
+
     const homepage = await input({
       message: "Enter a homepage URL (optional)",
       validate(value) {
@@ -71,10 +97,6 @@ program
         return "Homepage URL must start with https://";
       },
     });
-
-    const template = {
-      id: randomUUID(),
-    };
 
     const tagsArray = tags.split(",").map((tag: string) => tag.trim());
     const pkgPath = resolve(directory, "package.json");
@@ -91,13 +113,23 @@ program
       }
     }
 
+    // name needs to be valid for registries, so we generate a new one
     pkgJson.name = `enpage-template-${path.basename(directory)}`;
-    pkgJson.enpage = template;
     pkgJson.author = author;
     pkgJson.keywords = [...new Set([...pkgJson.keywords, ...tagsArray])];
+
     pkgJson.license = "UNLICENSED";
-    pkgJson.description = description;
+
     pkgJson.homepage = homepage.length > 0 ? homepage : undefined;
+    pkgJson.enpage = {
+      name,
+      description,
+    };
+
+    if (visibility === "private") {
+      pkgJson.enpage.private = true;
+      pkgJson.private = true;
+    }
 
     // write the package.json
     process.stdout.write("Writing package.json... ");
@@ -109,6 +141,7 @@ program
 
     const pm = getPackageManager();
 
+    // override the workspace file for pnpm
     if (pm === "pnpm") {
       const workspacePath = resolve(directory, "pnpm-workspace.yaml");
       writeFileSync(workspacePath, "\n");
