@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.17
+
+### Patch Changes
+
+- 2b092fc: Add name and visibilty to template creation
+
 ## 0.0.16
 
 ### Patch Changes
