@@ -20,6 +20,7 @@ on:
       - '**/*.ts'
       - '**/*.jsx'
       - '**/*.tsx'
+      - '**/pnpm-lock.yaml'
       - '**/package.json'
       - '**/tsconfig.json'
   pull_request:
@@ -30,6 +31,7 @@ on:
       - '**/*.ts'
       - '**/*.jsx'
       - '**/*.tsx'
+      - '**/pnpm-lock.yaml'
       - '**/package.json'
       - '**/tsconfig.json'
   schedule:
