@@ -19,7 +19,7 @@ program
       // create the directory
       process.stdout.write(`Creating directory ${directory}... `);
       mkdirSync(directory, { recursive: true });
-      console.log(chalk.blue("OK"));
+      console.log(chalk.cyan("OK"));
     } else if (!lstatSync(directory).isDirectory()) {
       console.log(chalk.red(`${directory} exists but is not a directory. Aborting.`));
       process.exit(1);
@@ -31,7 +31,7 @@ program
 
     await degit("enpage/enpage/packages/template-example", { cache: false }).clone(directory);
 
-    console.log(chalk.blue("OK"));
+    console.log(chalk.cyan("OK"));
     console.log("");
     console.log("Let's set up your new template:");
 
@@ -134,7 +134,7 @@ program
     // write the package.json
     process.stdout.write("Writing package.json... ");
     writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2));
-    console.log(chalk.blue("OK"));
+    console.log(chalk.cyan("OK"));
 
     // install dependencies
     console.log("Installing dependencies... ");
@@ -149,10 +149,10 @@ program
 
     execSync(`${pm} install`, { cwd: directory });
 
-    console.log(chalk.blue("All done!"));
+    console.log(chalk.cyan("All done!"));
     console.log("You can now develop your template:\n");
-    console.log(chalk.blue(`  cd ${dir}`));
-    console.log(chalk.blue(`  ${pm} start`));
+    console.log(chalk.cyan(`  cd ${dir}`));
+    console.log(chalk.cyan(`  ${pm} start`));
     console.log("");
 
     process.exit(0);
