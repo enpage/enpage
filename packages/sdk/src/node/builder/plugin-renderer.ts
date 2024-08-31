@@ -5,13 +5,18 @@ import type { GenericPageContext } from "~/shared/page-context";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 import invariant from "~/shared/utils/invariant";
+import type { EnpageEnv } from "~/shared/env";
 
 /**
  * Renders the template based on the provided configuration and Vite environment.
  * @param {EnpageTemplateConfig} cfg - The Enpage template configuration.
  * @param {ConfigEnv} viteEnv - The Vite environment configuration.
  */
-export const renderTemplatePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv): Plugin => {
+export const renderTemplatePlugin = (
+  cfg: EnpageTemplateConfig,
+  viteEnv: ConfigEnv,
+  env: EnpageEnv,
+): Plugin => {
   const isDevMode = viteEnv.command === "serve";
   let logger: Logger;
 
