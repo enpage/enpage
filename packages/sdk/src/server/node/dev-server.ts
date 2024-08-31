@@ -1,7 +1,7 @@
-import type { InlineConfig, ViteDevServer } from "vite";
+import type { InlineConfig } from "vite";
 import { createServer } from "vite";
 import readline from "node:readline";
-import express, { type Application } from "express";
+import express from "express";
 import chalk from "chalk";
 import open from "open";
 import { createDevMiddleware } from "./middleware";
@@ -27,7 +27,6 @@ export async function createDevServer(port: number | string, viteConfig: Partial
   const server = app.listen(port, () => {
     logger.info("Enpage Dev Server listening:\n");
     displayServerUrls(port, logger);
-    // logger.info("Press 'h' then 'Enter' to show help.");
     showHelp();
     logger.info("");
   });
