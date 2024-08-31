@@ -1,4 +1,4 @@
-import type { PageConfig } from "@enpage/sdk/page-config";
+import type { PageConfig } from "../../shared/page-config";
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import type { RequestContext } from "@hattip/compose";
 import { kv } from "./cache";

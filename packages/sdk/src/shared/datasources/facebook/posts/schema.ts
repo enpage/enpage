@@ -25,8 +25,8 @@ export const facebookPostSchema = Type.Object({
     }),
   ),
   paging: Type.Object({
-    previous: Type.String(),
-    next: Type.String(),
+    previous: Type.Optional(Type.String()),
+    next: Type.Optional(Type.String()),
   }),
 });
 

@@ -15,11 +15,13 @@ export const tiktokVideoResponseSchema = Type.Object({
       }),
     ),
   }),
-  error: Type.Object({
-    code: Type.String(),
-    message: Type.String(),
-    log_id: Type.String(),
-  }),
+  error: Type.Optional(
+    Type.Object({
+      code: Type.String(),
+      message: Type.String(),
+      log_id: Type.String(),
+    }),
+  ),
 });
 
 export type TiktokVideoResponseSchema = Static<typeof tiktokVideoResponseSchema>;

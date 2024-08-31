@@ -168,7 +168,10 @@ class EPFor extends CustomElement {
       el.remove();
     });
     // append the contents to the parent
-    this.parentElement?.append(...temp.childNodes);
+    const childNodesArray = Array.from(temp.childNodes);
+    //I think it's not a bug but a mistyping between NodeListOf and Array
+    // @ts-ignore ignore for now but we should fix this type error.
+    this.parentElement?.append(...childNodesArray);
     this.parentElement?.setAttribute("ep-editable", "");
   }
 }

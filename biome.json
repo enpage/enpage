@@ -70,6 +70,16 @@
           "allowTrailingCommas": true
         }
       }
+    },
+    {
+      "include": ["**/*.test.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
     }
   ]
 }

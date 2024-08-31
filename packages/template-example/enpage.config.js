@@ -35,8 +35,21 @@ export const datasources = defineDataSources({
       }),
     ),
   },
+  posts: {
+    name: "Posts",
+    provider: "facebook-posts",
+    options: {
+      limit: 5,
+      nextRefreshDelay: 60 * 60 * 1000,
+    },
+  },
   videos: {
-    provider: "youtube-feed",
+    provider: "youtube-list",
+    options: {
+      channelId: "UCJbPGzawDH1njbqV-D5HqKw",
+      maxResults: 10,
+    },
+    description: "List of videos from a Youtube playlist",
     name: "My Videos",
   },
 });

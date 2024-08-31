@@ -1,9 +1,10 @@
-import type { TiktokVideoOptions } from "./types";
+import type { TiktokVideoOptions } from "./options";
 import { type TiktokVideoResponseSchema, tiktokVideoResponseSchema } from "./schema";
 import type { TiktokOAuthConfig } from "../oauth/config";
 import type { DatasourceFetcher } from "../../types";
 import Ajv from "ajv";
 import { Http401Error } from "../../errors";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchTiktokVideoDatasource: DatasourceFetcher<
   TiktokVideoResponseSchema,
@@ -16,13 +17,14 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   });
 
   const url = `https://open.tiktokapis.com/v2/video/list/?${params.toString()}`;
+  const { nextRefreshDelay, ...body } = options;
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${oauth.config.accessToken}`,
     },
-    body: JSON.stringify(options.body ?? {}),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -33,12 +35,13 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   }
   const data = (await response.json()) as TiktokVideoResponseSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<TiktokVideoResponseSchema>(tiktokVideoResponseSchema);
   const isValid = validate(data);
 
   if (!isValid) {
-    throw new Error(`fetchTiktokVideoDatasource Error: Invalid JSON object: ${validate.errors}`);
+    throw new Error(
+      `fetchTiktokVideoDatasource Error: Invalid TikTok response data: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return data;

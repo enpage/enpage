@@ -4,6 +4,15 @@ import type { Manifest } from "vite";
 import type { TemplateManifest } from "./manifest";
 
 /**
+ * raw exported fields from enpage.config.js
+ */
+export type PageConfigFile = {
+  attributes: AttributesMap;
+  datasources: DatasourceManifestMap | undefined;
+  manifest: TemplateManifest;
+};
+
+/**
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
 export type PageConfig<D extends DatasourceManifestMap | undefined, A extends AttributesMap> = {
@@ -30,5 +39,4 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
   templateManifest: TemplateManifest;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type GenericPageConfig = PageConfig<any, any>;
+export type GenericPageConfig = PageConfig<DatasourceManifestMap, AttributesMap>;

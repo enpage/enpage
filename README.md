@@ -27,6 +27,10 @@ Visit https://developers.enpage.co/contribute.html for more information on how t
 1. Run `pnpm dev` at the root of the monorepo.
 2. In another terminal, run `pnpm start` in the `packages/template-example` directory.
 
+### Releasing new versions
+
+Run `pnpm changeset` to create a new changeset and push it to your pull request branch.
+
 ### Documentation Development
 
 Run `pnpm docs:dev` at the root of the monorepo to start the documentation server.

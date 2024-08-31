@@ -6,7 +6,7 @@ import type { GenericPageConfig } from "~/shared/page-config";
 import type { ViteDevServer } from "vite";
 import { createS3Client, createLocalS3Client, type S3Client } from "./node-s3-client";
 import type { R2Bucket } from "@cloudflare/workers-types";
-import invariant from "tiny-invariant";
+import invariant from "~/shared/utils/invariant";
 import { fetchDatasources } from "./fetch-datasources";
 import { isCloudflare } from "./is-cloudflare";
 import { getEnvironment } from "./getenv";

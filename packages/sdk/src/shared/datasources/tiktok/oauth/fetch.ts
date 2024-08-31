@@ -43,13 +43,13 @@ export function getTiktokNewOAuthConfig(config: TiktokOAuthConfig, data: TiktokO
   return data;
 }
 
-async function fetchTiktokToken(url: string, params: URLSearchParams) {
+async function fetchTiktokToken(url: string, body: URLSearchParams) {
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: params,
+    body,
   });
 
   if (!response.ok) {

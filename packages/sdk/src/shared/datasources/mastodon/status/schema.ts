@@ -1,7 +1,8 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { type MastodonAccountSchema, mastodonAccountSchema } from "../account/schema";
+import { mastodonAccountSchema } from "../account/schema";
+import e from "express";
 
-const matodonMediaAttachmentSchema = Type.Object({
+const mastodonMediaAttachmentSchema = Type.Object({
   id: Type.String(),
   type: Type.Union([
     Type.Literal("audio"),
@@ -18,8 +19,6 @@ const matodonMediaAttachmentSchema = Type.Object({
   blurhash: Type.Optional(Type.String()),
 });
 
-type MatodonMediaAttachmentSchema = Static<typeof matodonMediaAttachmentSchema>;
-
 const mastodonEmojiSchema = Type.Object({
   shortcode: Type.String(),
   url: Type.String(),
@@ -27,8 +26,6 @@ const mastodonEmojiSchema = Type.Object({
   visible_in_picker: Type.Boolean(),
   category: Type.Optional(Type.String()),
 });
-
-type MastodonEmojiSchema = Static<typeof mastodonEmojiSchema>;
 
 const mastodonPreviewCardSchema = Type.Object({
   url: Type.String(),
@@ -52,8 +49,6 @@ const mastodonPreviewCardSchema = Type.Object({
   blurhash: Type.Optional(Type.String()),
 });
 
-type MastodonPreviewCardSchema = Static<typeof mastodonPreviewCardSchema>;
-
 const mastodonPollSchema = Type.Object({
   id: Type.String(),
   expires_at: Type.String(),
@@ -71,51 +66,6 @@ const mastodonPollSchema = Type.Object({
   emojis: Type.Array(mastodonEmojiSchema),
 });
 
-type MastodonPollSchema = Static<typeof mastodonPollSchema>;
-
-type MastodonStatus = {
-  id: string;
-  uri: string;
-  created_at: string;
-  account: MastodonAccountSchema;
-  content: string;
-  visibility: "public" | "unlisted" | "private" | "direct";
-  sensitive: boolean;
-  media_attachments: MatodonMediaAttachmentSchema[];
-  application?: {
-    name: string;
-    website: string | null;
-  };
-  mentions: {
-    id: string;
-    username: string;
-    acct: string;
-    url: string;
-  }[];
-  tags: {
-    name: string;
-    url: string;
-  }[];
-  emojis: MastodonEmojiSchema[];
-  reblogs_count: number;
-  favourites_count: number;
-  replies_count: number;
-  url: string;
-  in_reply_to_id: string | null;
-  in_reply_to_account_id: string | null;
-  reblog?: MastodonStatus | null;
-  poll?: MastodonPollSchema | null;
-  card?: MastodonPreviewCardSchema | null;
-  language?: string | null;
-  text?: string | null;
-  edited_at?: string | null;
-  favourited?: boolean;
-  reblogged?: boolean;
-  muted?: boolean;
-  bookmarked?: boolean;
-  pinned?: boolean;
-};
-
 const mastodonStatusSchema = Type.Object(
   {
     id: Type.String(),
@@ -130,7 +80,7 @@ const mastodonStatusSchema = Type.Object(
       Type.Literal("direct"),
     ]),
     sensitive: Type.Boolean(),
-    media_attachments: Type.Array(matodonMediaAttachmentSchema),
+    media_attachments: Type.Array(mastodonMediaAttachmentSchema),
     application: Type.Optional(
       Type.Object({
         name: Type.String(),
@@ -174,6 +124,8 @@ const mastodonStatusSchema = Type.Object(
     $id: "mastodonStatus",
   },
 );
+
+export type MastodonStatusSchema = Static<typeof mastodonStatusSchema>;
 
 export const mastodonStatusArraySchema = Type.Array(mastodonStatusSchema);
 export type MastodonStatusArraySchema = Static<typeof mastodonStatusArraySchema>;

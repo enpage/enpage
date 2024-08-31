@@ -3,8 +3,9 @@ import { createMiddleware } from "./middleware";
 import type { Logger } from "vite";
 import { displayServerUrls } from "./network-utils";
 import { getBuildDirectories } from "./path-utils";
+import { logger as _logger } from "~/node/shared/logger";
 
-export async function createServer(port: number | string, logger: Logger) {
+export async function createServer(port: number | string, logger: Logger = _logger) {
   const app = express();
 
   const { assets } = getBuildDirectories();

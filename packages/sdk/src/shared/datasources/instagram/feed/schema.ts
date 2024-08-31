@@ -13,10 +13,10 @@ export const instagramFeedSchema = Type.Object({
   ),
   paging: Type.Object({
     cursors: Type.Object({
-      before: Type.String(),
-      after: Type.String(),
+      before: Type.Optional(Type.String()),
+      after: Type.Optional(Type.String()),
     }),
-    next: Type.String(),
+    next: Type.Optional(Type.String()),
   }),
 });
 

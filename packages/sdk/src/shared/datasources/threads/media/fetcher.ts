@@ -1,20 +1,21 @@
-import type { ThreadsMediaOptions } from "./types";
 import { type ThreadsMediaSchema, threadsMediaSchema } from "./schema";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
-import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
-import invariant from "tiny-invariant";
+import invariant from "~/shared/utils/invariant";
 import { Http401Error } from "../../errors";
+import type { MetaOptions } from "../../meta/options";
+import { stringifyObjectValues } from "../../utils";
+import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
 const fetchThreadsMediaDatasource: DatasourceFetcher<
   ThreadsMediaSchema,
   MetaOAuthConfig,
-  ThreadsMediaOptions
+  MetaOptions
 > = async ({ options, oauth }) => {
   invariant(oauth?.config, "fetchThreadsMediaDatasource Error: OAuth config is required");
 
   const params = new URLSearchParams({
-    ...(options.urlParams ?? {}),
+    ...stringifyObjectValues(options),
     access_token: oauth.config.accessToken,
     fields: [
       "id",
@@ -44,12 +45,13 @@ const fetchThreadsMediaDatasource: DatasourceFetcher<
 
   const media = (await response.json()) as ThreadsMediaSchema;
 
-  const ajv = new Ajv();
   const validate = ajv.compile<ThreadsMediaSchema>(threadsMediaSchema);
   const isValid = validate(media);
 
   if (!isValid) {
-    throw new Error(`fetchThreadsMediaDatasource Error: Invalid JSON object: ${validate.errors}`);
+    throw new Error(
+      `fetchThreadsMediaDatasource Error: Invalid Threads response data: ${serializeAjvErrors(validate.errors)}`,
+    );
   }
 
   return media;

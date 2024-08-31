@@ -115,7 +115,7 @@ export class EnpageJavascriptAPI extends EventTarget {
 
   async saveDataRecord(dataRecordId: string, record: Record<string, unknown>) {
     const res = await fetch(
-      `%PUBLIC_ENPAGE_API_BASE_URL%/sites/${window.location.hostname}/data-records/${dataRecordId}`,
+      `%PUBLIC_ENPAGE_API_BASE_URL%/v1/sites/${window.location.hostname}/data-records/${dataRecordId}`,
       {
         method: "POST",
         mode: "cors",
