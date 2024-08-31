@@ -14,20 +14,26 @@ name: "CodeQL"
 on:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - 'packages/editor/server.js'
-      - 'docs/**'
-      - '.changeset/**'
-      - 'creatives/**'
+    paths:
+      - '**/*.html'
+      - '**/*.js'
+      - '**/*.ts'
+      - '**/*.jsx'
+      - '**/*.tsx'
+      - '**/package.json'
+      - '**/tsconfig.json'
   pull_request:
     branches: [ "main" ]
-    paths-ignore:
-      - 'packages/editor/server.js'
-      - 'docs/**'
-      - '.changeset/**'
-      - 'creatives/**'
+    paths:
+      - '**/*.html'
+      - '**/*.js'
+      - '**/*.ts'
+      - '**/*.jsx'
+      - '**/*.tsx'
+      - '**/package.json'
+      - '**/tsconfig.json'
   schedule:
-    - cron: '22 4 * * 6'
+    - cron: '0 4 * * 1'
 
 
 
