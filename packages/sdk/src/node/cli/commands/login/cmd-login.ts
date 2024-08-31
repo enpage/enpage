@@ -64,6 +64,7 @@ export async function login({ options }: ArgOpts<CommonOptions>) {
   }
 
   logger.info(chalk.gray("\nWaiting for login...\n"));
+
   const loginData = await pollForLogin(device_code);
 
   if (!loginData) {
@@ -71,36 +72,38 @@ export async function login({ options }: ArgOpts<CommonOptions>) {
     process.exit(1);
   }
 
+  // Store the access token info
   accessStore.set({
     ...loginData,
     ...(loginData.expires_in ? { expires_at: Date.now() + loginData.expires_in * 1000 } : {}),
   });
+
   logger.info("Login successful!\n");
   process.exitCode = 0;
 }
 
-interface DeviceCodeResponse {
+type DeviceCodeResponse = {
   device_code: string;
   user_code: string;
   verification_uri: string;
   verification_uri_complete?: string; // Optional as per RFC 8628
   expires_in: number;
   interval?: number; // Optional as per RFC 8628
-}
+};
 
 // Union type for the response
 
-interface DeviceCodeTokenSuccessResponse {
+type DeviceCodeTokenSuccessResponse = {
   access_token: string;
   token_type: string;
   expires_in?: number;
   refresh_token?: string;
   scope?: string;
-}
+};
 
 // Error response type for token request
-interface DeviceCodeTokenErrorResponse {
+type DeviceCodeTokenErrorResponse = {
   error: "authorization_pending" | "slow_down" | "access_denied" | "expired_token" | string;
   error_description?: string;
   error_uri?: string;
-}
+};
