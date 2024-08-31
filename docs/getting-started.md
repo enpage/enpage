@@ -17,18 +17,15 @@ To create a new template, use the Enpage CLI. Run the following command in your 
 ::: code-group
 
 ```bash [Using npm]
-# Create a new template in a new directory called `my-template`
-npm create enpage my-template
+npm create enpage@latest my-template # Create in a new dir `my-template`
 ```
 
 ```bash [Using yarn]
-# Create a new template in a new directory called `my-template`
-yarn create enpage my-template
+yarn create enpage@latest my-template # Create in a new dir `my-template`
 ```
 
 ```bash [Using pnpm]
-# Create a new template in a new directory called `my-template`
-pnpm create enpage my-template
+pnpm create enpage@latest my-template # Create in a new dir `my-template`
 ```
 
 :::

@@ -21,6 +21,6 @@ features:
   - title: Vite based
     details: Based on Vite, the next generation frontend tooling.
   - title: Open Source
-    details: Enpage SDK is open source and available on GitHub.
+    details: Enpage SDK is released under AGPL-3.0 license and available on GitHub.
 
 ---
