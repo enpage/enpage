@@ -39,7 +39,7 @@ export const datasources = defineDataSources({
     name: "Posts",
     provider: "facebook-posts",
     options: {
-      limit: "5",
+      limit: 5,
       nextRefreshDelay: 60 * 60 * 1000,
     },
   },
@@ -47,7 +47,7 @@ export const datasources = defineDataSources({
     provider: "youtube-list",
     options: {
       channelId: "UCJbPGzawDH1njbqV-D5HqKw",
-      maxResults: "10",
+      maxResults: 10,
     },
     description: "List of videos from a Youtube playlist",
     name: "My Videos",

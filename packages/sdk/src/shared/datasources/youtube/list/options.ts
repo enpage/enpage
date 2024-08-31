@@ -6,7 +6,7 @@ export const youtubeListOptions = Type.Composite([
   Type.Object({
     channelId: Type.String(),
     order: Type.Optional(Type.String()),
-    maxResults: Type.Optional(Type.String()),
+    maxResults: Type.Optional(Type.Number()),
     regionCode: Type.Optional(Type.String()),
     relevanceLanguage: Type.Optional(Type.String()),
   }),
