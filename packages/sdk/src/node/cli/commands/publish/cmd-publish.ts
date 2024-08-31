@@ -71,8 +71,9 @@ export async function publish({ options, args }: ArgOpts) {
   const token = getTokenOrThrow();
 
   if (!token) {
+    const pkgCmd = getPackageManager();
     logger.error(
-      `  ${chalk.redBright("Error")}: Credentials not found. Please run 'enpage login' to authenticate.\n`,
+      `  ${chalk.redBright("Error")}: Credentials not found. Please run ${chalk.cyan(`${pkgCmd} run login`)} to authenticate.\n`,
     );
     process.exit(1);
   }
