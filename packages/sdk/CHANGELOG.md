@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.24
+
+### Patch Changes
+
+- 7340727: Add oauth and rework datasources
+
 ## 0.0.23
 
 ### Patch Changes
