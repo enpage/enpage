@@ -1,5 +1,12 @@
 # @enpage/template-example
 
+## 0.0.27
+
+### Patch Changes
+
+- Updated dependencies [87c7ecf]
+  - @enpage/sdk@0.0.27
+
 ## 0.0.26
 
 ### Patch Changes

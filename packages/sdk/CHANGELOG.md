@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.27
+
+### Patch Changes
+
+- 87c7ecf: Fix CLI config
+
 ## 0.0.26
 
 ### Patch Changes
