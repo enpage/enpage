@@ -20,9 +20,10 @@ on:
       - '**/*.ts'
       - '**/*.jsx'
       - '**/*.tsx'
-      - '**/pnpm-lock.yaml'
-      - '**/package.json'
-      - '**/tsconfig.json'
+      - '**/*.mjs'
+      - '**/*.mts'
+      - '**/*.yaml'
+      - '**/*.json'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -31,9 +32,10 @@ on:
       - '**/*.ts'
       - '**/*.jsx'
       - '**/*.tsx'
-      - '**/pnpm-lock.yaml'
-      - '**/package.json'
-      - '**/tsconfig.json'
+      - '**/*.mjs'
+      - '**/*.mts'
+      - '**/*.yaml'
+      - '**/*.json'
   schedule:
     - cron: '0 4 * * 1'
 

@@ -8,11 +8,27 @@ on:
     tags-ignore:
       - "*"
     paths:
-      - "packages/**/**"
+      - '**/*.html'
+      - '**/*.js'
+      - '**/*.ts'
+      - '**/*.jsx'
+      - '**/*.tsx'
+      - '**/*.mjs'
+      - '**/*.mts'
+      - '**/*.yaml'
+      - '**/*.json'
   pull_request:
     branches: [main]
     paths:
-      - "packages/**/**"
+      - '**/*.html'
+      - '**/*.js'
+      - '**/*.ts'
+      - '**/*.jsx'
+      - '**/*.tsx'
+      - '**/*.mjs'
+      - '**/*.mts'
+      - '**/*.yaml'
+      - '**/*.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
