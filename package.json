@@ -28,7 +28,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.8.1",
     "@changesets/cli": "2.27.7",
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.4.0",
     "@vitest/ui": "2.0.5",
     "dotenv": "16.4.5",
     "nx": "19.5.7",
