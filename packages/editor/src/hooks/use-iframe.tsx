@@ -3,7 +3,7 @@ import { type RefObject, useEffect, useRef } from "react";
 import type { IframeMessage } from "@enpage/sdk/browser/dev-client";
 import { isEqual } from "lodash-es";
 import { isChromeLike } from "../utils/is-safari";
-import invariant from "tiny-invariant";
+import invariant from "@enpage/sdk/utils/invariant";
 import debug from "debug";
 
 const log = debug("editor:use-iframe");

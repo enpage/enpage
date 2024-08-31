@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createContext, useContext } from "react";
 import { temporal } from "zundo";
-import invariant from "tiny-invariant";
+import invariant from "@enpage/sdk/utils/invariant";
 import type { ResponsiveMode } from "@enpage/sdk/responsive";
 import type { ElementSelectedPayload } from "@enpage/sdk/browser/dev-client";
 export { type Immer } from "immer";
