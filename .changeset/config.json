@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.1/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": ["@changesets/changelog-github", { "repo": "enpage/enpage" }],
   "linked": [],
   "fixed": [["@enpage/sdk", "@enpage/template-example", "create-enpage"]],
   "access": "public",
@@ -10,5 +10,9 @@
   "privatePackages": {
     "version": true,
     "tag": true
+  },
+  "snapshot": {
+    "prereleaseTemplate": "alpha.${tag}",
+    "useCalculatedVersion": true
   }
 }
