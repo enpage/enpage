@@ -71,6 +71,7 @@ export default defineConfig((options) => {
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
       external,
+      noExternal: ["lodash-es", "nanoid"],
       esbuildOptions(input) {
         input.banner = banner;
       },
