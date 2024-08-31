@@ -1,5 +1,13 @@
 # @enpage/template-example
 
+## 0.0.26
+
+### Patch Changes
+
+- c9e9d65: More CLI improvements
+- Updated dependencies [c9e9d65]
+  - @enpage/sdk@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes

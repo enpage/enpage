@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.26
+
+### Patch Changes
+
+- c9e9d65: More CLI improvements
+
 ## 0.0.25
 
 ### Patch Changes
