@@ -76,16 +76,14 @@ jobs:
           MSG_MINIMAL: true
           SLACK_ICON_EMOJI:  ':rocket:'
           SLACK_MESSAGE_ON_SUCCESS: |
-            A new version of the Enpage SDK is ready! :tada:
+            Some packages from enpage/enpage have been released! :tada:
 
             ```
-            ${{ toJSON(steps.changesets.outputs.publishedPackages) }}
+            ${{ steps.changesets.outputs.publishedPackages }}
             ```
 
             *Deployment info* :rocket:
-            - :house: https://www.npmjs.com/package/@enpage/sdk
-            - :house: https://www.npmjs.com/package/@enpage/template-example
-            - Commit: https://github.com/enpage/monorepo/commit/${{ github.sha }}
+            - Commit: https://github.com/enpage/enpage/commit/${{ github.sha }}
             - Action: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 
