@@ -12,7 +12,6 @@
     "tag": true
   },
   "snapshot": {
-    "prereleaseTemplate": "alpha.${tag}",
-    "useCalculatedVersion": true
+    "prereleaseTemplate": "alpha.${tag}"
   }
 }
