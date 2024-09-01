@@ -7,7 +7,7 @@
     "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel --filter=!@enpage/template-example -r dev ",
     "build": "nx run-many -t build --exclude=@enpage/template-example",
     "lint": "pnpm --parallel --recursive lint",
-    "ci:lint": "pnpm --parallel --recursive ci:lint",
+    "ci:lint": "biome ci --reporter=github --colors=off packages && pnpm --parallel --recursive ci:lint",
     "test-create-enpage": "rimraf testing/my-template && pnpm create enpage@latest testing/my-template",
     "changeset": "changeset",
     "clean": "pnpm -r exec -- rimraf node_modules && pnpm install",

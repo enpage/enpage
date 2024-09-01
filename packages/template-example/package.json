@@ -16,7 +16,7 @@
     "enpage:publish": "enpage publish",
     "enpage:login": "enpage login",
     "lint": "biome check --write . && tsc --noEmit",
-    "ci:lint": "biome ci --reporter=github --colors=off . && tsc --noEmit"
+    "ci:lint": "tsc --noEmit"
   },
   "devDependencies": {
     "postcss-preset-env": "10.0.1",
