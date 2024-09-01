@@ -10,7 +10,6 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "emitDeclarationOnly": true,
     "declaration": true,
     "allowJs": true,
 

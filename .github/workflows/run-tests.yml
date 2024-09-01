@@ -38,6 +38,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+permissions:
+  pull-requests: write
 
 jobs:
   test:
@@ -64,11 +66,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: lint
-        run: pnpm ci:lint
-
       - name: build
         run: pnpm build
+
+      - name: lint
+        run: pnpm ci:lint
 
       - name: test
         run: pnpm test

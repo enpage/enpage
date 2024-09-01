@@ -9,8 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup",
-    "lint": "biome check .",
-    "ci:lint": "biome check ."
+    "lint": "biome check --write . && tsc --noEmit",
+    "ci:lint": "tsc --noEmit"
   },
   "engines": {
     "node": ">=18.14.1"
@@ -23,7 +23,7 @@
     "@inquirer/prompts": "5.3.8",
     "chalk": "5.3.0",
     "commander": "12.1.0",
-    "degit": "2.8.4"
+    "tiged": "3.0.0-rc.0"
   },
   "devDependencies": {
     "@types/degit": "2.8.6",
