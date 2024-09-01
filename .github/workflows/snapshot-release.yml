@@ -1,23 +1,16 @@
 name: Snapshot Release
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "!docs/**"
-      - ".changeset/**"
-      - "packages/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-  workflow_dispatch:
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   snapshot-release:
-    if: ${{ !contains(github.event.head_commit.message, 'chore(release):') }}
+     # Run only if the PR was merged and the commit message doesn't start with "chore(release):"
+    if: github.event.pull_request.merged == true && !startsWith(github.event.pull_request.title, 'chore(release):')
     name: Snapshot Release
     runs-on: ubuntu-latest
     steps:
@@ -63,56 +56,55 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Parse output
-        id: parse
+        id: parse_published_packages
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const output = fs.readFileSync(process.env.GITHUB_STEP_SUMMARY, 'utf8');
-            const published = Array.from(
+            const packages = Array.from(
               output.matchAll(/Publishing "([^"]+)" at "([^"]+)"/gm), m => ({ package: m[1], version: m[2] })
             )
-            console.log('Published:', JSON.stringify(published, null, 2));
-            return published;
 
-      - name: Find associated pull request
-        id: find_pr
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const { owner, repo } = context.repo;
-            const sha = context.sha;
+            console.log('Published:', JSON.stringify(packages, null, 2));
 
-            // Search for pull requests containing this commit
-            const { data: pullRequests } = await github.rest.search.issuesAndPullRequests({
-              q: `${sha} type:pr is:merged repo:${owner}/${repo}`
-            });
-
-            if (pullRequests.items.length > 0) {
-              // Get the most recent PR if there are multiple
-              const pr = pullRequests.items[0];
-              console.log(`Found associated PR: #${pr.number}`);
-              return pr.number;
-            } else {
-              console.log('No associated PR found');
-              return null;
-            }
-
-
-      - name: Post comment on merged PR
-        if: steps.find_pr.outputs.result != 'null'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const result = ${{ steps.parse.outputs.result }};
-            let body = '## Snapshots versions released:\n\n';
-
-            (published || []).forEach(({ package, version }) => {
+            let body = "";
+            (packages || []).forEach(({ package, version }) => {
               body += `- ${package}@${version}\n`;
             });
 
-            console.log("Published:", body);
+            return packages.length > 0 ? { packages, message } : null;
 
+
+      - name: Post comment on merged PR
+        if: steps.parse_published_packages.outputs.result != 'null'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { packages, message } = ${{ steps.parse_published_packages.outputs.result }};
+            const body = '## Snapshots versions released :rocket:\n\n' + message;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: steps.parse_published_packages.outputs.result != 'null'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.RELEASES_SLACK_WEBHOOK }}
+          SLACK_CHANNEL: "releases"
+          SLACK_USERNAME: "SDKReleaser"
+          SLACK_COLOR: 'success'
+          SLACK_TITLE: "New Enpage snapshots available"
+          SLACK_FOOTER: ""
+          SLACK_ICON_EMOJI: ':rocket:'
+          SLACK_MESSAGE_ON_SUCCESS: |
+            Some snapshot packages from enpage/enpage have been released! :tada:
+
+            ${{ steps.parse_published_packages.outputs.result.message }}
 
