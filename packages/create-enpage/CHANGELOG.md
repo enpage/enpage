@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.30
+
+### Patch Changes
+
+- [#120](https://github.com/enpage/enpage/pull/120) [`7a2b77c`](https://github.com/enpage/enpage/commit/7a2b77cf789e1354d355152190185814da6a07c9) Thanks [@mattallty](https://github.com/mattallty)! - Allow external templates as well as specific prereleases
+
 ## 0.0.29
 
 ## 0.0.28
