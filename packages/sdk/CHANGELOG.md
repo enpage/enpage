@@ -1,5 +1,13 @@
 # @enpage/sdk
 
+## 0.0.29
+
+### Patch Changes
+
+- [#117](https://github.com/enpage/enpage/pull/117) [`8910927`](https://github.com/enpage/enpage/commit/89109273eff06abbda17641d7caece5fd14594dc) Thanks [@mattallty](https://github.com/mattallty)! - minor edits
+
+- [#119](https://github.com/enpage/enpage/pull/119) [`b0605da`](https://github.com/enpage/enpage/commit/b0605dad87cc837f441aedc2b5de64a1d73e7935) Thanks [@mattallty](https://github.com/mattallty)! - Remove duplicate types
+
 ## 0.0.28
 
 ### Patch Changes
