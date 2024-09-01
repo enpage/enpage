@@ -4,7 +4,7 @@
 This is an example of a Enpage template.
 
 Important:
-- A template MUST a least have one <section>.
+- A template MUST a least have one <section> element under the <body> tag.
 - Multiple <section> elements allow to simulate a multi-pages website.
 - When using multiple <section> elements, the first one is considered the home page.
 -->
@@ -32,22 +32,23 @@ Important:
 </head>
 
 <body class="min-h-dvh place-content-center text-white">
-  <section ep-animate-appear="zoomIn" ep-animate-disappear="zoomOut" ep-container
-   class="mx-auto flex max-sm:h-dvh w-full md:max-w-[90%] xl:max-w-screen-lg items-center justify-center
+  <section ep-animate-appear="zoomIn" ep-animate-disappear="zoomOut" ep-container class="mx-auto flex max-sm:h-dvh w-full md:max-w-[90%] xl:max-w-screen-lg items-center justify-center
    gap-10 md:rounded-3xl bg-gradient-to-tl from-gray-700 to-gray-800
    p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-    <img draggable="true" id="profile-pic" src="./assets/img/profile.webp" ep-editable style="float: inherit" class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
+    <img draggable="true" id="profile-pic" src="./assets/img/profile.webp" ep-editable style="float: inherit"
+         class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
          label="Profile picture" alt="My picture" />
 
     <div class="flex-1" ep-container>
-      <h1 ep-label="Title" ep-editable ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl text-shadow-md shadow-black/40">
+      <h1 ep-label="Title" ep-editable ep-text-editable="plain"
+          class="text-4xl font-extrabold md:text-5xl text-shadow-md shadow-black/40">
         Samantha Smith
       </h1>
       <p id="subtitle" ep-label="Subtitle" class="text-base font-medium" ep-editable ep-text-editable="plain">
         General Manager @ Acme Corp
       </p>
 
-      <ul class="mt-8 flex w-full flex-col gap-2" >
+      <ul class="mt-8 flex w-full flex-col gap-2">
         <li ep-for="link in data.links" class="flex items-center
         font-semibold
         gap-3 rounded-md bg-white/10 text-white hover:bg-white/20 group-hover/editor:bg-white/10">
@@ -98,12 +99,15 @@ Important:
       -->
 
       <p class="mt-10 flex justify-end" ep-container>
-        <button onclick="enpage.nextPage()" class="rounded-md font-bold bg-white/30 text-white px-6 py-3">Next page</button>
+        <button onclick="enpage.nextPage()" class="rounded-md font-bold bg-white/30 text-white px-6 py-3">Next
+          page</button>
       </p>
     </div>
   </section>
-  <section ep-animate-appear="zoomIn" ep-animate-appear-mode="parallel" ep-slug="second-page" class="mx-auto flex max-w-sm md:max-w-[90%] xl:max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
-    <img id="profile-pic" src="./assets/img/profile.webp" class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
+  <section ep-animate-appear="zoomIn" ep-animate-appear-mode="parallel" ep-slug="second-page"
+           class="mx-auto flex max-w-sm md:max-w-[90%] xl:max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="./assets/img/profile.webp"
+         class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
          label="Profile picture" alt="My picture" />
     <div class="flex-1">
       <p id="section-2" ep-label="Title" ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">

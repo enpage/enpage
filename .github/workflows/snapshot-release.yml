@@ -62,4 +62,57 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Parse output
+        id: parse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync(process.env.GITHUB_STEP_SUMMARY, 'utf8');
+            const published = published = Array.from(
+              output.matchAll(/Publishing "([^"]+)" at "([^"]+)"/gm), m => ({ package: m[1], version: m[2] })
+            )
+            console.log('Published:', JSON.stringify(published, null, 2));
+            return published;
+
+      - name: Find associated pull request
+        id: find_pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = context.sha;
+
+            // Search for pull requests containing this commit
+            const { data: pullRequests } = await github.rest.search.issuesAndPullRequests({
+              q: `${sha} type:pr is:merged repo:${owner}/${repo}`
+            });
+
+            if (pullRequests.items.length > 0) {
+              // Get the most recent PR if there are multiple
+              const pr = pullRequests.items[0];
+              console.log(`Found associated PR: #${pr.number}`);
+              return pr.number;
+            } else {
+              console.log('No associated PR found');
+              return null;
+            }
+
+
+      - name: Post comment on merged PR
+        if: steps.find_pr.outputs.result != 'null'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const result = ${{ toJson(steps.parse.outputs.result) }};
+            let body = '## Snapshots versions released:\n\n';
+
+            (published || []).forEach(({ package, version }) => {
+              body += `- ${package}@${version}\n`;
+            });
+
+            console.log("Published:", body);
+
 
