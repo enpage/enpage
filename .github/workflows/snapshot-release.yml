@@ -51,17 +51,13 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Set sha_short
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
       - name: Create Snapshot Release
-        run: pnpm changeset version --snapshot ${{ steps.vars.outputs.sha_short }}
+        run: pnpm changeset version --snapshot ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Snapshot
-        run: pnpm changeset publish --tag ${{ steps.vars.outputs.sha_short }}
+        run: pnpm changeset publish --tag ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

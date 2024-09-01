@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import degit from "degit";
+import tiged from "tiged";
 import { program } from "commander";
 import { resolve } from "node:path";
 import path from "node:path";
@@ -12,9 +12,13 @@ import { execSync } from "node:child_process";
 program
   .description("Create a new Enpage template")
   .argument("[directory]", "Directory to create the template in", ".")
+  .option("-t, --template <template>", "Template to clone", "enpage/enpage/packages/template-example")
+  .option("--ref", "Specific ref to clone. It can be a branch, tag or commit hash")
   .action(async (dir) => {
+    const options = program.opts();
     const directory = resolve(process.cwd(), dir);
     const exist = existsSync(directory);
+
     if (!exist) {
       // create the directory
       process.stdout.write(`Creating directory ${directory}... `);
@@ -29,10 +33,13 @@ program
     }
     process.stdout.write("Cloning template example... ");
 
-    await degit("enpage/enpage/packages/template-example", { cache: false }).clone(directory);
+    const gitUrl = formatTemplateString(options.template, options.ref);
 
-    // remove CHANGELOG.md
-    rmSync(resolve(directory, "CHANGELOG.md"));
+    await tiged(gitUrl, {
+      verbose: true,
+      mode: "git",
+      disableCache: true,
+    }).clone(directory);
 
     console.log(chalk.cyan("OK"));
     console.log("");
@@ -109,42 +116,42 @@ program
     const pkgPath = resolve(directory, "package.json");
     const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
-    const version = pkgJson.version;
-    const isPrerelease = version.includes("-");
-
-    // replace all references to "workspace:" in all kind of dependencies with:
-    // - "latest" if we are in stable version
-    // - The same exact pre-version if we are in a prerelease
-    for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
-      if (pkgJson[depType]) {
-        for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
-          if (version.startsWith("workspace:")) {
-            pkgJson[depType][dep] = isPrerelease ? version : "latest";
+    if (isEnpageTemplate(gitUrl)) {
+      const snapVersion =
+        options.ref && isGitRefCommit(options.ref) ? `0.0.0-snapshot-${options.ref}` : undefined;
+      // replace all references to "workspace:" in all kind of dependencies with:
+      // - "latest" if we are in stable version
+      // - The same exact pre-version if we are in a prerelease
+      for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+        if (pkgJson[depType]) {
+          for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
+            if (version.startsWith("workspace:")) {
+              pkgJson[depType][dep] = snapVersion ?? "latest";
+            }
           }
         }
       }
+      // biome-ignore lint/performance/noDelete: need to remove the lint script
+      delete pkgJson.scripts.lint;
+      // biome-ignore lint/performance/noDelete: need to remove the ci:lint script
+      delete pkgJson.scripts["ci:lint"];
     }
 
-    // name needs to be valid for registries, so we generate a new one
-    pkgJson.name = `enpage-template-${path.basename(directory)}`;
-    pkgJson.author = author;
-    pkgJson.keywords = [...new Set([...pkgJson.keywords, ...tagsArray])];
-    pkgJson.license = "UNLICENSED";
-    pkgJson.homepage = homepage.length > 0 ? homepage : undefined;
-    pkgJson.enpage = {
-      name,
+    Object.assign(pkgJson, {
+      // name needs to be valid for registries, so we generate a new one
+      name: `enpage-template-${path.basename(directory)}`,
+      author,
       description,
-    };
-
-    if (visibility === "private") {
-      pkgJson.enpage.private = true;
-      pkgJson.private = true;
-    }
-
-    // biome-ignore lint/performance/noDelete: need to remove the lint script
-    delete pkgJson.scripts.lint;
-    // biome-ignore lint/performance/noDelete: need to remove the ci:lint script
-    delete pkgJson.scripts["ci:lint"];
+      keywords: [...new Set([...pkgJson.keywords, ...tagsArray])],
+      license: "UNLICENSED",
+      homepage: homepage.length > 0 ? homepage : undefined,
+      private: visibility === "private",
+      enpage: {
+        name,
+        description,
+        private: visibility === "private",
+      },
+    });
 
     // write the package.json
     process.stdout.write("Writing package.json... ");
@@ -193,4 +200,23 @@ function getPackageManager() {
 function getPackageManagRunCmd(pm?: string) {
   const packageManager = pm ?? getPackageManager();
   return packageManager === "npm" ? `${packageManager} run` : packageManager;
+}
+
+function formatTemplateString(template: string, ref?: string) {
+  // shortcut for templates in the enpage org
+  if (template.includes("/") === false) {
+    template = `enpage/template-${template}`;
+  }
+  if (ref) {
+    return `${template}#${ref}`;
+  }
+  return template;
+}
+
+function isEnpageTemplate(template: string) {
+  return template.startsWith("enpage/");
+}
+
+function isGitRefCommit(ref: string) {
+  return /^[0-9a-f]{40}$/.test(ref);
 }
