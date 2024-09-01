@@ -1,5 +1,13 @@
 # @enpage/editor
 
+## 0.0.18
+
+### Patch Changes
+
+- Updated dependencies [[`73509e3`](https://github.com/enpage/enpage/commit/73509e3716ad6697f9427c18fd154e2a75fbe4bf)]:
+  - @enpage/style-system@0.0.18
+  - @enpage/sdk@0.0.31
+
 ## 0.0.17
 
 ### Patch Changes

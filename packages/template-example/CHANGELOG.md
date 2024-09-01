@@ -1,5 +1,17 @@
 # @enpage/template-example
 
+## 0.0.31
+
+### Patch Changes
+
+- [#124](https://github.com/enpage/enpage/pull/124) [`fee505a`](https://github.com/enpage/enpage/commit/fee505a06063359d3502739444f671fc5522104e) Thanks [@mattallty](https://github.com/mattallty)! - Improve snapshots releases
+
+- [#122](https://github.com/enpage/enpage/pull/122) [`73509e3`](https://github.com/enpage/enpage/commit/73509e3716ad6697f9427c18fd154e2a75fbe4bf) Thanks [@mattallty](https://github.com/mattallty)! - Fix @enpage/style-system aliasing in vite
+
+- Updated dependencies [[`73509e3`](https://github.com/enpage/enpage/commit/73509e3716ad6697f9427c18fd154e2a75fbe4bf)]:
+  - @enpage/style-system@0.0.18
+  - @enpage/sdk@0.0.31
+
 ## 0.0.30
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "create-enpage",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "A CLI for creating Enpage templates.",
   "type": "module",
   "files": [
