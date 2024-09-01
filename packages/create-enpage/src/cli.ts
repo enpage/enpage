@@ -101,20 +101,24 @@ program
       },
     });
 
-    const tagsArray = tags.split(",").map((tag: string) => tag.trim());
+    const tagsArray = tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
     const pkgPath = resolve(directory, "package.json");
     const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
     // replace all references to "workspace:" in all kind of dependencies with "latest"
-    for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
-      if (pkgJson[depType]) {
-        for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
-          if (version.startsWith("workspace:")) {
-            pkgJson[depType][dep] = "latest";
-          }
-        }
-      }
-    }
+    // for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+    //   if (pkgJson[depType]) {
+    //     for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
+    //       if (version.startsWith("workspace:")) {
+    //         pkgJson[depType][dep] = "latest";
+    //       }
+    //     }
+    //   }
+    // }
 
     // name needs to be valid for registries, so we generate a new one
     pkgJson.name = `enpage-template-${path.basename(directory)}`;
