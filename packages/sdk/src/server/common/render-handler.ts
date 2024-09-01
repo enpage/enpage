@@ -56,9 +56,22 @@ export default async function renderHandler(ctx: RequestContext<PlatformInfo>) {
 
   const body = await renderHtml(url, renderOpts, render);
 
+  const policies = [
+    "default-src 'self'",
+    "frame-ancestors 'self' http://localhost:* https://enpage.co",
+    "img-src 'self' data: https://cdn.enpage.co",
+    "font-src 'self' https://*",
+    "connect-src 'self' https://* ws://localhost:*",
+    "frame-src 'self' https://*",
+    "child-src 'self' https://*",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.enpage.co",
+    "style-src 'self' 'unsafe-inline' https://cdn.enpage.co",
+  ];
+
   return new Response(body, {
     headers: {
       "Content-Type": "text/html",
+      "Content-Security-Policy": policies.join("; "),
     },
   });
 }

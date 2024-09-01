@@ -71,8 +71,6 @@ export const renderTemplatePlugin = (
         addCustomElements(doc, head);
         // add animate script
         addAnimationScript(doc, head);
-        // add meta csp
-        addContentSecurityPolicy(doc, head);
 
         if (isDevMode) addDevClient(doc, head);
 
@@ -89,23 +87,6 @@ export const renderTemplatePlugin = (
     },
   };
 };
-
-function addContentSecurityPolicy(doc: Document, head: HTMLHeadElement) {
-  const csp = doc.createElement("meta");
-  csp.httpEquiv = "Content-Security-Policy";
-  csp.content = [
-    `default-src 'self'`,
-    "img-src 'self' https://*",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*",
-    "style-src 'self' 'unsafe-inline' https://*",
-    "font-src 'self' https://*",
-    "connect-src 'self' https://*",
-    "frame-src 'self' https://*",
-    "child-src 'self' https://*",
-    "frame-ancestors 'self' http://localhost:* https://enpage.co",
-  ].join(";");
-  head.appendChild(csp);
-}
 
 function addStatePlaceholderScript(doc: Document, head: HTMLHeadElement) {
   const stateScript = doc.createElement("script");
