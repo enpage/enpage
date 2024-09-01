@@ -1,9 +1,9 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import type { GenericPageConfig } from "~/shared/page-config";
-import type { ConfigEnv, Logger, Plugin } from "vite";
+import type { ConfigEnv, Plugin } from "vite";
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
-import type { GenericPageContext, PageContext } from "~/shared/page-context";
+import type { GenericPageContext } from "~/shared/page-context";
 import type { EnpageEnv } from "~/shared/env";
 
 const virtualIndexId = "virtual:enpage-template:index.html";
