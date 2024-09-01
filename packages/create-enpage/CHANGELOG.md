@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.31
+
+### Patch Changes
+
+- [#122](https://github.com/enpage/enpage/pull/122) [`73509e3`](https://github.com/enpage/enpage/commit/73509e3716ad6697f9427c18fd154e2a75fbe4bf) Thanks [@mattallty](https://github.com/mattallty)! - Fix @enpage/style-system aliasing in vite
+
 ## 0.0.30
 
 ### Patch Changes
