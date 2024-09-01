@@ -8,6 +8,8 @@ on:
     tags-ignore:
       - "*"
     paths:
+      - "!.changeset/**"
+      - "!.vscode/**"
       - "!docs/**"
       - '**/*.html'
       - '**/*.js'
@@ -22,6 +24,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - "!.changeset/**"
+      - "!.vscode/**"
       - "!docs/**"
       - '**/*.html'
       - '**/*.js'
