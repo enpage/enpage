@@ -13,7 +13,7 @@ const defaultTemplateSettings: TemplateSettings = {
 };
 
 export const templateManifestSchema = z.object({
-  // if ommitted, it smeans the template has not been published yet
+  // if ommitted, it means the template has not been published yet
   id: z.string().optional(),
   name: z.string(),
   description: z.string(),

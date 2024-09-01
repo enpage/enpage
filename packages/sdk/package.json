@@ -109,7 +109,7 @@
     "lint": "biome check --write . && tsc --noEmit",
     "ci:lint": "biome check . && tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
-     "prepare": "node ./scripts/prepare.cjs"
+    "prepare": "node ./scripts/prepare.cjs"
   },
   "author": "Matthias Etienne",
   "publishConfig": {
