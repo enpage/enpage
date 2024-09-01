@@ -1,8 +1,7 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { GenericPageContext, PageContext } from "~/shared/page-context";
-import { Liquid } from "liquidjs";
+import type { GenericPageContext } from "~/shared/page-context";
 import { nanoid } from "nanoid";
 import { version } from "../../../package.json";
 import invariant from "~/shared/utils/invariant";
@@ -18,9 +17,7 @@ export const renderTemplatePlugin = (
   viteEnv: ConfigEnv,
   env: EnpageEnv,
 ): Plugin => {
-  const isBuildMode = viteEnv.command === "build";
   const isDevMode = viteEnv.command === "serve";
-  const viteMode = viteEnv.mode;
   let logger: Logger;
 
   let serverHostname = process.env.ENPAGE_SITE_HOST;
@@ -41,7 +38,7 @@ export const renderTemplatePlugin = (
     },
     transformIndexHtml: {
       order: "pre",
-      handler: async (html: string, viteCtx) => {
+      handler: async (html: string) => {
         const context = enpageCtx;
 
         // disable JSDOM errors otherwise we'll get a lot of noise
@@ -282,39 +279,6 @@ function addMissingLabels(doc: Document) {
 }
 
 /**
- * Adds the Enpage SDK script to the document head.
- * @param {Document} doc - The document to modify.
- * @param {string[]} slugs - The list of slugs for the pages.
- * @param {PageContext<any, any>} context - The page context.
- * @param {NodeListOf<Element>} sections - The list of page sections.
- * @param {HTMLHeadElement} head - The head element to append the script to.
- */
-function addEnpageSdkScriptDev(
-  doc: Document,
-  slugs: string[],
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  context: PageContext<any, any> | undefined,
-  sections: NodeListOf<Element>,
-  head: HTMLHeadElement,
-) {
-  const enpageSdkScript = doc.createElement("script");
-  enpageSdkScript.type = "module";
-  enpageSdkScript.textContent = `
-import { EnpageJavascriptAPI } from "@enpage/sdk/browser/js-api";
-const slugs =  ${JSON.stringify(slugs)};
-const pathname = window.location.pathname.slice(1);
-const pageId = pathname === '' ? 0 : slugs.indexOf(pathname);
-window.enpage = new EnpageJavascriptAPI(
-  ${context ? JSON.stringify(context) : "null"},
-  pageId > -1 ? pageId : 0,
-  ${sections.length},
-  ${JSON.stringify(slugs)}
-);
-`;
-  head.appendChild(enpageSdkScript);
-}
-
-/**
  * Attaches the Vite preload error script to the document head.
  * @param {Document} doc - The document to modify.
  * @param {HTMLHeadElement} head - The head element to append the script to.
@@ -418,15 +382,4 @@ function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document
     link.href = `/@enpage/style-system/${style}.css`;
     head.appendChild(link);
   }
-}
-
-/**
- * @deprecated
- */
-// biome-ignore lint/suspicious/noExplicitAny: we don't know the type of the context
-function renderLiquid(html: string, ctx: PageContext<any, any> | undefined) {
-  const engine = new Liquid();
-  return engine.parseAndRender(html, ctx, {
-    globals: ctx,
-  });
 }

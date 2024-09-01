@@ -39,12 +39,7 @@ export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
         }),
     ],
     resolve: {
-      preserveSymlinks: true,
       alias: [
-        {
-          find: "@enpage/liquid",
-          replacement: resolve(__dirname, "../../../node_modules/liquidjs/dist/liquid.browser.esm.js"),
-        },
         {
           find: /@enpage\/style-system\/(.*)/,
           replacement: `${resolve(__dirname, "../../../node_modules/@enpage/style-system/src")}/$1`,

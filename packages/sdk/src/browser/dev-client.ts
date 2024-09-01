@@ -1,4 +1,3 @@
-// import { Liquid } from "liquidjs";
 import { onDragOver, onDragEnd, getInsertPosition } from "./dnd";
 import editorCss from "@enpage/style-system/editor.css?url";
 import { debounce } from "lodash-es";
