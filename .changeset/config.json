@@ -12,6 +12,6 @@
     "tag": true
   },
   "snapshot": {
-    "prereleaseTemplate": "alpha.${tag}"
+    "prereleaseTemplate": "alpha.{tag}"
   }
 }
