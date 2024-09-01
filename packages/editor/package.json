@@ -17,7 +17,7 @@
     "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",
     "preview": "cross-env NODE_ENV=production node server",
     "lint": "biome check --write . && tsc --noEmit",
-    "ci:lint": "biome check . && tsc --noEmit"
+    "ci:lint": "biome ci . && tsc --noEmit"
   },
   "dependencies": {
     "@enpage/sdk": "workspace:*",

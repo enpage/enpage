@@ -107,7 +107,7 @@
     "dev": "tsup --watch",
     "sizetest": "pnpm build && du -sh dist",
     "lint": "biome check --write . && tsc --noEmit",
-    "ci:lint": "biome check . && tsc --noEmit",
+    "ci:lint": "biome ci . && tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "node ./scripts/prepare.cjs"
   },
