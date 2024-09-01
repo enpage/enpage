@@ -15,8 +15,7 @@
     "version:packages": "changeset version",
     "docs:dev": "vitepress dev docs --port 8965",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "postinstall": "node ./scripts/postinstall.cjs"
+    "docs:preview": "vitepress preview docs"
   },
   "keywords": [],
   "author": "Matthias Etienne",

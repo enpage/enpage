@@ -7,8 +7,6 @@ import inspectPlugin from "vite-plugin-inspect";
 import type { EnpageEnv } from "~/shared/env";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
-// const require = createRequire(import.meta.url);
-
 export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   const tailwindCfgPath = join(process.cwd(), "tailwind.config.js");
 
