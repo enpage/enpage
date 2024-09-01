@@ -25,7 +25,6 @@
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
-  "vitest.disableWorkspaceWarning": true,
   "[ignore]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },

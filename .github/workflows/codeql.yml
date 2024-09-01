@@ -15,7 +15,8 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "!docs/**"
+      - "!.changeset/**"
+      - "!.vscode/**"
       - '**/*.html'
       - '**/*.js'
       - '**/*.ts'
@@ -27,10 +28,12 @@ on:
       - '**/*.yml'
       - '**/*.json'
       - '**/*.mdx'
+      - "**/.env"
   pull_request:
     branches: [ "main" ]
     paths:
-      - "!docs/**"
+      - "!.changeset/**"
+      - "!.vscode/**"
       - '**/*.html'
       - '**/*.js'
       - '**/*.ts'
@@ -42,6 +45,7 @@ on:
       - '**/*.yaml'
       - '**/*.json'
       - '**/*.mdx'
+      - "**/.env"
   schedule:
     - cron: '0 4 * * 1'
 

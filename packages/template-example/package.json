@@ -38,8 +38,5 @@
   "keywords": [
     "enpage-template",
     "enpage-template-example"
-  ],
-  "publishConfig": {
-    "access": "public"
-  }
+  ]
 }

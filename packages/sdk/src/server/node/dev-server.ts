@@ -13,7 +13,7 @@ export async function createDevServer(port: number | string, viteConfig: Partial
     base: "/",
     envPrefix: "PUBLIC_",
     envDir: process.cwd(),
-    server: { middlewareMode: true },
+    server: { middlewareMode: true, hmr: { port: +port + 1 } },
     appType: "custom",
     cacheDir: `${process.cwd()}/.cache`,
     ...viteConfig,
