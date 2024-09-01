@@ -1,4 +1,4 @@
-import getPort from "get-port";
+import getPort, { portNumbers } from "get-port";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createDevServer } from "~/server/node/dev-server";
@@ -10,7 +10,8 @@ const configFile = resolve(__dirname, "../builder/vite-config.js");
 
 export async function startDevServer({ args, options }: ArgOpts<CommonOptions>) {
   // Get an available port. First try the env var PORT, then default to 3000, then let get-port find one.
-  const port = await getPort({ port: process.env.PORT ? +process.env.PORT : 3000 });
+  const wanted = process.env.PORT ? +process.env.PORT : 3000;
+  const port = await getPort({ port: portNumbers(wanted, wanted + 20) });
   // force development mode
   process.env.NODE_ENV = "development";
   // set the site host

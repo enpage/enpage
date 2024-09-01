@@ -137,6 +137,9 @@ program
       delete pkgJson.scripts["ci:lint"];
     }
 
+    // biome-ignore lint/performance/noDelete: need to remove the ci:lint script
+    delete pkgJson.publishConfig;
+
     Object.assign(pkgJson, {
       // name needs to be valid for registries, so we generate a new one
       name: `enpage-template-${path.basename(directory)}`,
@@ -167,8 +170,10 @@ program
     execSync(`${pm} install`, { cwd: directory, stdio: "inherit" });
 
     console.log(`\n${chalk.cyan("All done!")}\n`);
+
     console.log("You can now develop your template:\n");
-    console.log(chalk.cyan(`  cd ${dir}`));
+
+    if (dir !== ".") console.log(chalk.cyan(`  cd ${dir}`));
     console.log(chalk.cyan(`  ${runCmd} dev\n`));
 
     process.exit(0);
