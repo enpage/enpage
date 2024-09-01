@@ -109,24 +109,27 @@ program
     const pkgPath = resolve(directory, "package.json");
     const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
-    // replace all references to "workspace:" in all kind of dependencies with "latest"
-    // for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
-    //   if (pkgJson[depType]) {
-    //     for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
-    //       if (version.startsWith("workspace:")) {
-    //         pkgJson[depType][dep] = "latest";
-    //       }
-    //     }
-    //   }
-    // }
+    const version = pkgJson.version;
+    const isPrerelease = version.includes("-");
+
+    // replace all references to "workspace:" in all kind of dependencies with:
+    // - "latest" if we are in stable version
+    // - The same exact pre-version if we are in a prerelease
+    for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+      if (pkgJson[depType]) {
+        for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
+          if (version.startsWith("workspace:")) {
+            pkgJson[depType][dep] = isPrerelease ? version : "latest";
+          }
+        }
+      }
+    }
 
     // name needs to be valid for registries, so we generate a new one
     pkgJson.name = `enpage-template-${path.basename(directory)}`;
     pkgJson.author = author;
     pkgJson.keywords = [...new Set([...pkgJson.keywords, ...tagsArray])];
-
     pkgJson.license = "UNLICENSED";
-
     pkgJson.homepage = homepage.length > 0 ? homepage : undefined;
     pkgJson.enpage = {
       name,
@@ -152,6 +155,7 @@ program
     console.log("Installing dependencies... ");
 
     const pm = getPackageManager();
+    const runCmd = getPackageManagRunCmd(pm);
 
     execSync(`${pm} install`, { cwd: directory, stdio: "inherit" });
 
@@ -180,9 +184,13 @@ function getPackageManager() {
 
   // Display message
   if (!packageManager) {
-    console.log("Warning: could not detect package manager");
     packageManager = "npm";
   }
 
   return packageManager;
+}
+
+function getPackageManagRunCmd(pm?: string) {
+  const packageManager = pm ?? getPackageManager();
+  return packageManager === "npm" ? `${packageManager} run` : packageManager;
 }
