@@ -24,8 +24,9 @@ Visit https://developers.enpage.co/contribute.html for more information on how t
 
 ### SDK Development
 
-1. Run `pnpm dev` at the root of the monorepo.
-2. In another terminal, run `pnpm start` in the `packages/template-example` directory.
+Run `pnpm dev` at the root of the monorepo and this will build and watch the SDK for changes.
+If you want to test the SDK in the template example, you'll also need to run `pnpm dev` in the
+`packages/template-example` directory.
 
 ### Releasing new versions
 
