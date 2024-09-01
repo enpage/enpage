@@ -423,9 +423,6 @@ importers:
         specifier: 3.4.10
         version: 3.4.10
     devDependencies:
-      '@vitejs/plugin-react':
-        specifier: 4.3.1
-        version: 4.3.1(vite@5.4.0)
       postcss-preset-env:
         specifier: 10.0.1
         version: 10.0.1(postcss@8.4.41)
