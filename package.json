@@ -4,12 +4,13 @@
   "description": "Monorepo for the Enpage SDK",
   "scripts": {
     "test": "vitest",
-    "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel -r dev",
+    "dev": "pnpm build && pnpm --reporter-hide-prefix --parallel --filter=!@enpage/template-example -r dev ",
     "build": "nx run-many -t build --exclude=@enpage/template-example",
     "lint": "pnpm --parallel --recursive lint",
     "ci:lint": "pnpm --parallel --recursive ci:lint",
     "test-create-enpage": "rimraf testing/my-template && pnpm create enpage@latest testing/my-template",
     "changeset": "changeset",
+    "clean": "pnpm -r exec -- rimraf node_modules && pnpm install",
     "publish:packages": "changeset publish",
     "version:packages": "changeset version",
     "docs:dev": "vitepress dev docs --port 8965",
@@ -42,5 +43,10 @@
     "vitepress": "1.3.2",
     "vitest": "2.0.5",
     "vue": "3.4.38"
+  },
+  "pnpm": {
+    "overrides": {
+      "jsdom>tough-cookie": "5.0.0-rc.4"
+    }
   }
 }
