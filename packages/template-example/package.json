@@ -10,7 +10,7 @@
     "./enpage.config.js": "./enpage.config.js"
   },
   "scripts": {
-    "start": "enpage dev",
+    "dev": "enpage dev",
     "build": "enpage build",
     "preview": "enpage preview",
     "enpage:publish": "enpage publish",
