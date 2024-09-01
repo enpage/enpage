@@ -36,7 +36,10 @@
   "author": "Matthias Etienne",
   "license": "AGPL-3.0-only",
   "keywords": [
-    "enpage-template"
+    "enpage-template",
+    "enpage-template-example"
   ],
-  "private": true
+  "publishConfig": {
+    "access": "public"
+  }
 }
