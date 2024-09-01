@@ -158,7 +158,7 @@ program
     console.log(`\n${chalk.cyan("All done!")}\n`);
     console.log("You can now develop your template:\n");
     console.log(chalk.cyan(`  cd ${dir}`));
-    console.log(chalk.cyan(`  ${pm} start\n`));
+    console.log(chalk.cyan(`  ${runCmd} dev\n`));
 
     process.exit(0);
   });
