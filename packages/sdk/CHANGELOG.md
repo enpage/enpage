@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.28
+
+### Patch Changes
+
+- [#115](https://github.com/enpage/enpage/pull/115) [`f4e337b`](https://github.com/enpage/enpage/commit/f4e337bfb2fe503d717fae4a85919c39148a27dd) Thanks [@mattallty](https://github.com/mattallty)! - Various SDK fixes
+
 ## 0.0.27
 
 ### Patch Changes
