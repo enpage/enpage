@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup",
     "lint": "biome check --write . && tsc --noEmit",
-    "ci:lint": "biome ci .  && tsc --noEmit"
+    "ci:lint": "biome ci --reporter=github --colors=off .  && tsc --noEmit"
   },
   "engines": {
     "node": ">=18.14.1"
