@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.33
+
+### Patch Changes
+
+- [#128](https://github.com/enpage/enpage/pull/128) [`afd84b1`](https://github.com/enpage/enpage/commit/afd84b1d0140ed06314950ed5ac68f19d12ab411) Thanks [@mattallty](https://github.com/mattallty)! - Remove unused html-minifier
+
 ## 0.0.32
 
 ## 0.0.31
