@@ -1,5 +1,12 @@
 # @enpage/editor
 
+## 0.0.20
+
+### Patch Changes
+
+- Updated dependencies [[`afd84b1`](https://github.com/enpage/enpage/commit/afd84b1d0140ed06314950ed5ac68f19d12ab411)]:
+  - @enpage/sdk@0.0.33
+
 ## 0.0.19
 
 ### Patch Changes
