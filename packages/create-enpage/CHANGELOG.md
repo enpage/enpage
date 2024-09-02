@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.34
+
+### Patch Changes
+
+- [#130](https://github.com/enpage/enpage/pull/130) [`dc84628`](https://github.com/enpage/enpage/commit/dc84628ed469f301bb333819340f2a8894208d11) Thanks [@mattallty](https://github.com/mattallty)! - Better handle errors when cloning or copying a template
+
 ## 0.0.33
 
 ## 0.0.32
