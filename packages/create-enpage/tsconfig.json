@@ -15,7 +15,11 @@
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@common/*": ["../../common/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "../../common"]
 }

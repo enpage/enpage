@@ -11,7 +11,7 @@
     "build": "tsup",
     "lint": "biome check --write . && tsc --noEmit",
     "ci:lint": "tsc --noEmit",
-    "pack:test": "node scripts/pack-test.mjs"
+    "pack:test": "pnpm build && node scripts/pack-test.mjs"
   },
   "engines": {
     "node": ">=18.14.1"

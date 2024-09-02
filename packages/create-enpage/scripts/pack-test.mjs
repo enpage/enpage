@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -28,7 +29,7 @@ const packageDir = path.dirname(scriptDir);
 async function main() {
   try {
     // Run pnpm pack
-    console.log("Running pnpm pack...");
+    console.log("\nRunning pnpm pack...");
     execSync("pnpm pack", { cwd: packageDir, stdio: "inherit" });
 
     // Find the most recently created .tgz file
@@ -45,10 +46,9 @@ async function main() {
 
       // Rename the file
       await fs.rename(oldPath, newPath);
-      console.log(`Renamed ${tgzFile} to create-enpage-test.tgz\n\n`);
-      console.log(
-        `You can now test the package by running something like:\n\n  ${chalk.cyan("npx ../enpage/packages/create-enpage/create-enpage-test.tgz")}\n\n`,
-      );
+      console.log(`renamed to create-enpage-test.tgz\n`);
+
+      console.log(chalk.cyan(`create-enpage-test.tgz is ready to test\n`));
     } else {
       console.error("No .tgz file found after running pnpm pack");
       process.exit(1);

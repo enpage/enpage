@@ -1,0 +1,15 @@
+{
+  "name": "@enpage/common",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./*": {
+      "import": "./*.ts",
+      "types": "./*.ts"
+    }
+  },
+  "dependencies": {
+    "@humanwhocodes/gitignore-to-minimatch": "1.0.2",
+    "minimatch": "10.0.1"
+  }
+}

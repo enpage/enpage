@@ -5,6 +5,10 @@
 
 ## Local development
 
+### Testing with tsx
+
+### Testing the build
+
 > ⚠️ Important: the following steps work for `npm`but not for `pnpm`
 
 1. Clone this repository and run :
