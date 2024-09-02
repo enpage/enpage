@@ -1,13 +1,14 @@
 #!/usr/bin/env node
-
 import tiged from "tiged";
 import { program } from "commander";
 import { resolve } from "node:path";
 import path from "node:path";
 import chalk from "chalk";
-import { existsSync, mkdirSync, lstatSync, readdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { existsSync, lstatSync, readdirSync } from "node:fs";
+import { cp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { input, select } from "@inquirer/prompts";
 import { execSync } from "node:child_process";
+import { GitIgnoreMatcher } from "@common/utils/gitignore-matcher";
 
 program
   .description("Create a new Enpage template")
@@ -16,33 +17,52 @@ program
   .option("--ref", "Specific ref to clone. It can be a branch, tag or commit hash")
   .action(async (dir) => {
     const options = program.opts();
-    const directory = resolve(process.cwd(), dir);
-    const exist = existsSync(directory);
+    const destination = resolve(process.cwd(), dir);
+    const exist = existsSync(destination);
 
     if (!exist) {
       // create the directory
-      process.stdout.write(`Creating directory ${directory}... `);
-      mkdirSync(directory, { recursive: true });
+      process.stdout.write(`Creating directory ${destination}... `);
+      await mkdir(destination, { recursive: true });
       console.log(chalk.cyan("OK"));
-    } else if (!lstatSync(directory).isDirectory()) {
-      console.log(chalk.red(`${directory} exists but is not a directory. Aborting.`));
+    } else if (!lstatSync(destination).isDirectory()) {
+      console.log(chalk.red(`${destination} exists but is not a directory. Aborting.`));
       process.exit(1);
-    } else if (!isDirectoryEmpty(directory)) {
-      console.log(chalk.red(`Directory ${directory} is not empty. Aborting.`));
+    } else if (!isDirectoryEmpty(destination)) {
+      console.log(chalk.red(`Directory ${destination} is not empty. Aborting.`));
       process.exit(1);
     }
+
     process.stdout.write("Cloning template example... ");
 
-    const gitUrl = formatTemplateString(options.template, options.ref);
+    const gitUrlOrPath = formatTemplateString(options.template, options.ref);
 
-    await tiged(gitUrl, {
-      verbose: true,
-      mode: "git",
-      disableCache: true,
-    }).clone(directory);
+    if (!isLocalTemplate(gitUrlOrPath)) {
+      // clone remote template (git)
+      await tiged(gitUrlOrPath, {
+        verbose: true,
+        mode: "git",
+        disableCache: true,
+      }).clone(destination);
+    } else {
+      // copy the local template (directory)
+      const localPath = resolve(gitUrlOrPath);
+      const gitignore = path.join(localPath, ".gitignore");
+      const matcher = new GitIgnoreMatcher(gitignore, [
+        "node_modules/**",
+        ".cache/**",
+        "**/.DS_Store",
+        ".git/**",
+        ".enpage/**",
+      ]);
 
-    console.log(chalk.cyan("OK"));
-    console.log("");
+      await cp(resolve(gitUrlOrPath), destination, {
+        recursive: true,
+        filter: (source) => matcher.match(source) === false,
+      });
+    }
+
+    console.log(chalk.cyan("OK\n"));
     console.log("Let's set up your new template:");
 
     const name = await input({
@@ -87,10 +107,6 @@ program
       ],
     });
 
-    if (visibility === "public") {
-      console.log("  > You will need to publish your template to make it available on Enpage.\n");
-    }
-
     // ask for tags
     const tags = await input({ message: "Enter tags for the template (optional, comma separated)" });
 
@@ -113,10 +129,10 @@ program
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
 
-    const pkgPath = resolve(directory, "package.json");
-    const pkgJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
+    const pkgPath = resolve(destination, "package.json");
+    const pkgJson = JSON.parse(await readFile(pkgPath, "utf-8"));
 
-    if (isEnpageTemplate(gitUrl)) {
+    if (isEnpageTemplate(gitUrlOrPath) || isLocalTemplate(gitUrlOrPath)) {
       const snapVersion =
         options.ref && isGitRefCommit(options.ref) ? `0.0.0-snapshot-${options.ref}` : undefined;
       // replace all references to "workspace:" in all kind of dependencies with:
@@ -142,7 +158,7 @@ program
 
     Object.assign(pkgJson, {
       // name needs to be valid for registries, so we generate a new one
-      name: `enpage-template-${path.basename(directory)}`,
+      name: `enpage-template-${path.basename(destination)}`,
       author,
       description,
       keywords: [...new Set([...pkgJson.keywords, ...tagsArray])],
@@ -157,8 +173,8 @@ program
     });
 
     // write the package.json
-    process.stdout.write("Writing package.json... ");
-    writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2));
+    process.stdout.write("\nWriting package.json... ");
+    await writeFile(pkgPath, JSON.stringify(pkgJson, null, 2));
     console.log(chalk.cyan("OK"));
 
     // install dependencies
@@ -167,11 +183,12 @@ program
     const pm = getPackageManager();
     const runCmd = getPackageManagRunCmd(pm);
 
-    execSync(`${pm} install`, { cwd: directory, stdio: "inherit" });
+    execSync(`${pm} install`, { cwd: destination, stdio: "inherit" });
 
-    console.log(`\n${chalk.cyan("All done!")}\n`);
-
-    console.log("You can now develop your template:\n");
+    console.log("");
+    console.log(`${chalk.cyan("All done!")}\n`);
+    console.log("You can now develop your template:");
+    console.log("");
 
     if (dir !== ".") console.log(chalk.cyan(`  cd ${dir}`));
     console.log(chalk.cyan(`  ${runCmd} dev\n`));
@@ -186,19 +203,16 @@ function isDirectoryEmpty(path: string) {
   return files.length === 0;
 }
 
+// Detect package manager
 function getPackageManager() {
-  // Detect package manager
   let packageManager: string | undefined;
   if (process.env.npm_config_user_agent) {
     const pmPart = process.env.npm_config_user_agent.split(" ")[0];
     packageManager = pmPart.slice(0, pmPart.lastIndexOf("/"));
   }
-
-  // Display message
   if (!packageManager) {
     packageManager = "npm";
   }
-
   return packageManager;
 }
 
@@ -208,6 +222,10 @@ function getPackageManagRunCmd(pm?: string) {
 }
 
 function formatTemplateString(template: string, ref?: string) {
+  if (isLocalTemplate(template)) {
+    if (ref) console.warn(chalk.yellow("WARNING: Ignoring ref for local template"));
+    return template;
+  }
   // shortcut for templates in the enpage org
   if (template.includes("/") === false) {
     template = `enpage/template-${template}`;
@@ -216,6 +234,10 @@ function formatTemplateString(template: string, ref?: string) {
     return `${template}#${ref}`;
   }
   return template;
+}
+
+function isLocalTemplate(template: string) {
+  return template.startsWith(".") || template.startsWith("/");
 }
 
 function isEnpageTemplate(template: string) {
