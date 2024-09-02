@@ -43,7 +43,12 @@ program
         verbose: true,
         mode: "git",
         disableCache: true,
-      }).clone(destination);
+      })
+        .clone(destination)
+        .catch((err) => {
+          console.error(chalk.red(`Error cloning template: ${err.message}`));
+          process.exit(1);
+        });
     } else {
       // copy the local template (directory)
       const localPath = resolve(gitUrlOrPath);
@@ -59,6 +64,9 @@ program
       await cp(resolve(gitUrlOrPath), destination, {
         recursive: true,
         filter: (source) => matcher.match(source) === false,
+      }).catch((err) => {
+        console.error(chalk.red(`Error copying template: ${err.message}`));
+        process.exit(1);
       });
     }
 
