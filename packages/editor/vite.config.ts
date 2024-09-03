@@ -9,16 +9,22 @@ const [, port] = process.env.ENPAGE_SITE_HOST.split(":");
 // https://vitejs.dev/config/
 export default defineConfig({
   envPrefix: ["PUBLIC_"],
-  plugins: [Inspect(), react(), dts()],
+  base: "./",
+  plugins: [
+    Inspect(),
+    react(),
+    dts({
+      exclude: ["src/entry-client.tsx", "src/entry-server.tsx", "src/main.tsx", "src/App.tsx"],
+    }),
+  ],
   server: {
     port: +(process.env.PORT ?? 3008),
   },
   build: {
     copyPublicDir: false,
     lib: {
-      entry: {
-        main: "src/components/index.tsx",
-      },
+      fileName: (format) => `library.${format}.js`,
+      entry: "src/library.tsx",
       formats: ["es"],
     },
     rollupOptions: {
