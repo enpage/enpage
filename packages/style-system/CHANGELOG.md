@@ -1,5 +1,11 @@
 # @enpage/style-system
 
+## 0.0.19
+
+### Patch Changes
+
+- [#136](https://github.com/enpage/enpage/pull/136) [`66db709`](https://github.com/enpage/enpage/commit/66db7092b246793a8ad95c6b507a57cad20230ef) Thanks [@mattallty](https://github.com/mattallty)! - fix bundled css in editor package
+
 ## 0.0.18
 
 ### Patch Changes
