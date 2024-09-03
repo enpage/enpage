@@ -4,7 +4,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/library.es.js",
+      "import": "./dist/library.js",
       "types": "./dist/library.d.ts"
     },
     "./dist/assets/*.css": {
