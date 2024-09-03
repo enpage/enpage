@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.35
+
+### Patch Changes
+
+- [#132](https://github.com/enpage/enpage/pull/132) [`daf0f0d`](https://github.com/enpage/enpage/commit/daf0f0d031e256a899a7b6dfc9c2310e0c960220) Thanks [@mattallty](https://github.com/mattallty)! - Simplify cli options
+
 ## 0.0.34
 
 ### Patch Changes
