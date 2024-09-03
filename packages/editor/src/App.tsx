@@ -1,4 +1,3 @@
-import "./index.css";
 import { EditorWrapper } from "./components/EditorWrapper";
 import { useEffect, useState } from "react";
 

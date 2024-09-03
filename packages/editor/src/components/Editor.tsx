@@ -1,19 +1,28 @@
 import { useEditor } from "../hooks/use-editor-store";
 import Toolbar from "./Toolbar";
-import { useRef } from "react";
+import { useRef, type ComponentProps } from "react";
 import Inspector from "./inspector/Inspector";
 import { DeviceFrame, PreviewIframe } from "./Iframe";
 import BlocksLibrary from "./blocks-library/BlocksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
 
-export default function Editor() {
+import "./Editor.css";
+import { cn } from "../utils/component-utils";
+
+export type EditorProps = ComponentProps<"div">;
+
+export default function Editor({ className, ...props }: EditorProps) {
   // const editor = useEditor();
   const rootRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
       id="editor"
-      className="h-dvh max-h-dvh overflow-hidden flex relative flex-1 bg-gray-300 dark:bg-gray-700 touch-none"
+      className={cn(
+        "h-dvh max-h-dvh overflow-hidden flex relative flex-1 bg-gray-300 dark:bg-gray-700 touch-none",
+        className,
+      )}
+      {...props}
       ref={rootRef}
     >
       <Inspector />

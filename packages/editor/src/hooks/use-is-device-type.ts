@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@uidotdev/usehooks";
+import { useMediaQuery } from "usehooks-ts";
 import { useEditor } from "./use-editor-store";
 import { useEffect } from "react";
 
