@@ -1,5 +1,11 @@
 # @enpage/editor
 
+## 0.0.23
+
+### Patch Changes
+
+- [#134](https://github.com/enpage/enpage/pull/134) [`5424ee5`](https://github.com/enpage/enpage/commit/5424ee5ac9185c6071667e7da62779d5b7c8c145) Thanks [@mattallty](https://github.com/mattallty)! - Fix editor build and publishing
+
 ## 0.0.22
 
 ### Patch Changes
