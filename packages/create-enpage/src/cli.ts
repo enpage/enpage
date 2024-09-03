@@ -13,8 +13,21 @@ import { GitIgnoreMatcher } from "@common/utils/gitignore-matcher";
 program
   .description("Create a new Enpage template")
   .argument("[directory]", "Directory to create the template in", ".")
-  .option("-t, --template <template>", "Template to clone", "enpage/enpage/packages/template-example")
-  .option("--ref", "Specific ref to clone. It can be a branch, tag or commit hash")
+  .option(
+    // The template to clone or the path to the local template
+    // Can take either:
+    // - A template name (e.g. "example", without any "/"), in which case it will try to get it from
+    // a dedicated git repository in the Enpage Org, like: enpage/template-${template}
+    // - A git repository URL accepted by degit/tiged, like "myorg/mytemplate"
+    // - A local path to a template directory, like "./mytemplate" (starting with a dot or a slash)
+    //
+    "-t, --template <template>",
+    "Template to clone",
+    // Default: Clone the latest tag of the template-example package
+    // Being in a monorepo, the latest tag is named "#@enpage/template-example@latest"
+    // Only retrieve the template package directory, not the whole monorepo
+    "enpage/enpage/packages/template-example#@enpage/template-example@latest",
+  )
   .action(async (dir) => {
     const options = program.opts();
     const destination = resolve(process.cwd(), dir);
@@ -35,7 +48,7 @@ program
 
     process.stdout.write("Cloning template example... ");
 
-    const gitUrlOrPath = formatTemplateString(options.template, options.ref);
+    const gitUrlOrPath = formatTemplateString(options.template);
 
     if (!isLocalTemplate(gitUrlOrPath)) {
       // clone remote template (git)
@@ -141,16 +154,13 @@ program
     const pkgJson = JSON.parse(await readFile(pkgPath, "utf-8"));
 
     if (isEnpageTemplate(gitUrlOrPath) || isLocalTemplate(gitUrlOrPath)) {
-      const snapVersion =
-        options.ref && isGitRefCommit(options.ref) ? `0.0.0-snapshot-${options.ref}` : undefined;
-      // replace all references to "workspace:" in all kind of dependencies with:
-      // - "latest" if we are in stable version
-      // - The same exact pre-version if we are in a prerelease
+      // replace all references to "workspace:" in all kind of dependencies with the "latest" tag
       for (const depType of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
         if (pkgJson[depType]) {
           for (const [dep, version] of Object.entries<string>(pkgJson[depType])) {
             if (version.startsWith("workspace:")) {
-              pkgJson[depType][dep] = snapVersion ?? "latest";
+              // todo: allow overriding the version to allow testing snapshot releases made by the Enpage Org
+              pkgJson[depType][dep] = "latest";
             }
           }
         }
@@ -229,17 +239,13 @@ function getPackageManagRunCmd(pm?: string) {
   return packageManager === "npm" ? `${packageManager} run` : packageManager;
 }
 
-function formatTemplateString(template: string, ref?: string) {
+function formatTemplateString(template: string) {
   if (isLocalTemplate(template)) {
-    if (ref) console.warn(chalk.yellow("WARNING: Ignoring ref for local template"));
     return template;
   }
-  // shortcut for templates in the enpage org
+  // shortcut for templates dedicated repositories in the enpage org
   if (template.includes("/") === false) {
     template = `enpage/template-${template}`;
-  }
-  if (ref) {
-    return `${template}#${ref}`;
   }
   return template;
 }
@@ -250,8 +256,4 @@ function isLocalTemplate(template: string) {
 
 function isEnpageTemplate(template: string) {
   return template.startsWith("enpage/");
-}
-
-function isGitRefCommit(ref: string) {
-  return /^[0-9a-f]{40}$/.test(ref);
 }
