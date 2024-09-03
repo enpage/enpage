@@ -5,9 +5,9 @@ import Inspector from "./inspector/Inspector";
 import { DeviceFrame, PreviewIframe } from "./Iframe";
 import BlocksLibrary from "./blocks-library/BlocksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
+import { cn } from "../utils/component-utils";
 
 import "./Editor.css";
-import { cn } from "../utils/component-utils";
 
 export type EditorProps = ComponentProps<"div">;
 
