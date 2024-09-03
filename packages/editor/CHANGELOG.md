@@ -1,5 +1,11 @@
 # @enpage/editor
 
+## 0.0.25
+
+### Patch Changes
+
+- [#138](https://github.com/enpage/enpage/pull/138) [`689569f`](https://github.com/enpage/enpage/commit/689569f09efe7438a9cb1a46d7b8243206a32055) Thanks [@mattallty](https://github.com/mattallty)! - fix editor css export
+
 ## 0.0.24
 
 ### Patch Changes
