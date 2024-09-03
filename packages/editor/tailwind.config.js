@@ -8,7 +8,7 @@ export default {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
     "./index.html",
-    "node_modules/@enpage/style-system/src/**/*.{js,ts}",
+    "./node_modules/@enpage/style-system/src/**/*.{js,ts}",
   ],
   /* End of block */
 
