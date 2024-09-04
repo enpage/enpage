@@ -14,4 +14,4 @@ updates:
       - "/packages/style-system"
       - "/packages/template-example"
     schedule:
-      interval: "daily"
+      interval: "weekly"
