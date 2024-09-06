@@ -13,10 +13,7 @@ export type RenderOptions = {
 };
 
 export async function render(url: URL, options: RenderOptions) {
-  // when rendering server-side, we expect the page context to contain the SSR manifest
-  // invariant(options.pageConfig.ssrManifest, "SSR manifest not found in page config.");
-
-  const { pageConfig, pageContext, s3Client, vite } = options;
+  const { pageContext, s3Client, vite } = options;
   const isProduction = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "local-preview";
   let html = "";
 
