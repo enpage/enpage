@@ -4,14 +4,17 @@
   "description": "Enpage template example",
   "type": "module",
   "exports": {
-    ".": "./.template-dist",
+    ".": "./dist",
     "./package.json": "./package.json",
-    "./manifest.json": "./.vite/manifest.json",
-    "./enpage.config.js": "./enpage.config.js"
+    "./enpage.manifest.json": "./dist/.vite/enpage.manifest.json",
+    "./enpage.config.js": "./enpage.config.js",
+    "./manifest.json": "./dist/.vite/manifest.json",
+    "./ssr-manifest.json": "./dist/.vite/ssr-manifest.json"
   },
   "scripts": {
     "dev": "enpage dev",
-    "build": "enpage build",
+    "build": "enpage build --ssr",
+    "build:local": "enpage build --ssr local",
     "preview": "enpage preview",
     "enpage:publish": "enpage publish",
     "enpage:login": "enpage login",
