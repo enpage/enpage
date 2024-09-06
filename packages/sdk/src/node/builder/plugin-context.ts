@@ -1,8 +1,9 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { ConfigEnv, Logger, Plugin } from "vite";
+import type { ConfigEnv, Plugin } from "vite";
 import type { PageContext } from "~/shared/page-context";
 import { createFakeContext, fetchContext } from "./context";
 import type { EnpageEnv } from "~/shared/env";
+import type { Logger } from "../shared/logger";
 
 export const contextPlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, env: EnpageEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
@@ -13,7 +14,7 @@ export const contextPlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, env
     // enforce: "pre",
     async config(config) {
       if (isSsrBuild || config.build?.ssrManifest) {
-        console.warn("SSR build detected. Skipping context fetch.");
+        // SSR build detected. Skipping context fetch
         return;
       }
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>

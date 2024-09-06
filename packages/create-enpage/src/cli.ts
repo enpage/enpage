@@ -71,7 +71,8 @@ program
         ".cache/**",
         "**/.DS_Store",
         ".git/**",
-        ".enpage/**",
+        // upload sources, not dist
+        "dist/**",
       ]);
 
       await cp(resolve(gitUrlOrPath), destination, {

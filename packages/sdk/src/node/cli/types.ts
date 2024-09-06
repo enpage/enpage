@@ -21,7 +21,7 @@ export type CommonOptions = {
 };
 
 export type BuildOptions = {
-  ssr?: boolean | "local";
+  ssr: boolean | "local";
   clean?: boolean;
 };
 

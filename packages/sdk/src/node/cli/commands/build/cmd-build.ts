@@ -10,10 +10,10 @@ const configFile = resolve(__dirname, "../builder/vite-config.js");
 const serverEntryFile = resolve(__dirname, "../builder/vite-entry-server.js");
 
 export async function buildTemplate({ options }: ArgOpts<CommonOptions & BuildOptions>) {
-  console.log("Building template...", options);
+  logger.info("Building template...\n");
 
   if (options.clean) {
-    rmSync(path.join(process.cwd(), ".enpage", "dist"));
+    rmSync(path.join(process.cwd(), "dist"));
   }
 
   let mode = "production";

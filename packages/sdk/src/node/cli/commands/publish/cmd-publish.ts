@@ -39,7 +39,7 @@ export async function publish({ options, args }: ArgOpts) {
       ? path.isAbsolute(args[1])
         ? args[1]
         : resolve(process.cwd(), args[1])
-      : resolve(templateDir, ".enpage", "dist");
+      : resolve(templateDir, "dist");
 
   if (!existsSync(distDir)) {
     logger.error(`  ${chalk.redBright("Error")}: Dist directory not found: ${distDir}. Aborting.\n`);

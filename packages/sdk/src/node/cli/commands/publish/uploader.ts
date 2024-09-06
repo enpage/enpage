@@ -60,7 +60,7 @@ async function discoverFiles(templateDir: string): Promise<string[]> {
     onlyFiles: true,
     dot: true,
     absolute: true,
-    ignore: ["node_modules/**", ".cache/**", "**/.DS_Store", ".git/**", ".enpage/**", ...gitignored],
+    ignore: ["node_modules/**", ".cache/**", "**/.DS_Store", ".git/**", "dist/**", ...gitignored],
   });
 }
 

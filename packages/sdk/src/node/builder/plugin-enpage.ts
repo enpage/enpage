@@ -1,5 +1,4 @@
 import { type ConfigEnv, loadEnv, type Plugin } from "vite";
-import stripBanner from "rollup-plugin-strip-banner";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,12 +35,7 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
         },
         build: {
           manifest: true,
-          // ssrManifest: true,
-          outDir: cfg.build?.ssrManifest
-            ? ".enpage/dist/client"
-            : cfg.ssr
-              ? ".enpage/dist/server"
-              : ".enpage/dist",
+          outDir: cfg.build?.ssrManifest ? "dist/client" : cfg.ssr ? "dist/server" : "dist",
           rollupOptions: {
             external: ["zod"],
             output: {

@@ -11,7 +11,7 @@ import { logout } from "./commands/logout/cmd-logout";
 
 program
   .name("enpage")
-  .option("-l, --logLevel <level>", `[string] info | warn | error | silent`)
+  .option("-l, --logLevel <level>", `[string] info | warn | error | silent | debug`)
   .option("--clearScreen", `[boolean] allow/disable clear screen when logging`)
   .option("--dry-run", `[boolean] run command without making changes`)
   .hook("preAction", (thisCommand) => {
@@ -33,7 +33,8 @@ program
     `Enable server side rendering.
 Pass --ssr to generate a SSR-enabled build.
 Pass --ssr=local to generate a SSR-enabled build that can be tested locally.`,
-    true,
+    Boolean,
+    false,
   )
   .option("--no-clean", `Don't clean directory before buidling`)
   .action(function (this: Command) {

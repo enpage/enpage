@@ -1,4 +1,4 @@
-.enpage
+dist
 .cache
 node_modules
 *.log

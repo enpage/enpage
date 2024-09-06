@@ -1,7 +1,8 @@
 import { JSDOM, VirtualConsole } from "jsdom";
-import type { ConfigEnv, Logger, Plugin } from "vite";
+import type { ConfigEnv, Plugin } from "vite";
 import type { EnpageEnv } from "~/shared/env";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
+import type { Logger } from "../shared/logger";
 
 export const insertBasePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, env: EnpageEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
@@ -11,8 +12,7 @@ export const insertBasePlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, 
   return {
     name: "enpage:base-url",
     configResolved(config) {
-      // isBuildMode = config.command === "build";
-      logger = config.logger;
+      logger = config.logger as Logger;
     },
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
