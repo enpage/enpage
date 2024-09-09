@@ -3,11 +3,11 @@ import { confirm } from "@inquirer/prompts";
 import open from "open";
 import { CLI_LOGIN_CLIENT_ID, OAUTH_ENDPOINT_DEVICE_CODE, OAUTH_ENDPOINT_TOKEN } from "../../constants";
 import { post } from "../../api";
-import { logger } from "~/node/shared/logger";
-import type { ArgOpts, CommonOptions } from "../../types";
+import type { Logger } from "~/node/shared/logger";
+import type { CommandArgOpts, CommonOptions } from "../../types";
 import { accessStore } from "../../store";
 
-export async function pollForLogin(deviceCode: string) {
+export async function pollForLogin(deviceCode: string, logger: Logger) {
   while (true) {
     const body = new URLSearchParams({
       grant_type: "device_code",
@@ -34,7 +34,7 @@ export async function pollForLogin(deviceCode: string) {
   }
 }
 
-export async function login({ options }: ArgOpts<CommonOptions>) {
+export async function login({ options, logger }: CommandArgOpts<CommonOptions>) {
   logger.info(`Logging in to Enpage...\n`);
 
   const { isError, data } = await post<DeviceCodeResponse>(OAUTH_ENDPOINT_DEVICE_CODE, {
@@ -65,7 +65,7 @@ export async function login({ options }: ArgOpts<CommonOptions>) {
 
   logger.info(chalk.gray("\nWaiting for login...\n"));
 
-  const loginData = await pollForLogin(device_code);
+  const loginData = await pollForLogin(device_code, logger);
 
   if (!loginData) {
     logger.error("Login failed. Please try again.");

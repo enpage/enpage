@@ -2,14 +2,13 @@ import { build } from "vite";
 import path, { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { sync as rmSync } from "rimraf";
-import type { ArgOpts, BuildOptions, CommonOptions } from "../../types";
-import { logger } from "~/node/shared/logger";
+import type { CommandArgOpts, BuildOptions, CommonOptions } from "../../types";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const configFile = resolve(__dirname, "../builder/vite-config.js");
 const serverEntryFile = resolve(__dirname, "../builder/vite-entry-server.js");
 
-export async function buildTemplate({ options }: ArgOpts<CommonOptions & BuildOptions>) {
+export async function buildTemplate({ options, logger }: CommandArgOpts<CommonOptions & BuildOptions>) {
   logger.info("Building template...\n");
 
   if (options.clean) {

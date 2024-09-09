@@ -1,4 +1,5 @@
 import type { OptionValues } from "commander";
+import type { Logger } from "../shared/logger";
 
 export type CredentialsStore = {
   access_token: string;
@@ -10,14 +11,16 @@ export type CredentialsStore = {
   expires_at: number;
 };
 
-export type ArgOpts<Opts extends OptionValues = OptionValues> = {
+export type CommandArgOpts<Opts extends OptionValues = OptionValues> = {
   args: string[];
   options: CommonOptions & Opts;
+  logger: Logger;
 };
 
 export type CommonOptions = {
   logLevel?: "info" | "warn" | "error" | "silent";
   clearScreen?: boolean;
+  dryRun?: boolean;
 };
 
 export type BuildOptions = {

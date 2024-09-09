@@ -1,19 +1,16 @@
 import { resolve } from "node:path";
-import { getLocalPageConfig } from "~/server/node/local-page-config";
-import { templateManifestSchema } from "~/shared/manifest";
-import { fromError } from "zod-validation-error";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import chalk from "chalk";
-import { logger } from "~/node/shared/logger";
-import type { ArgOpts } from "../../types";
+import type { CommandArgOpts } from "../../types";
 import { formatAPIError, getPackageManager } from "../../utils";
 import { getTokenOrThrow, isLoggedIn } from "../../store";
 import { uploadTemplate } from "./uploader";
 import path from "node:path";
 import { post } from "../../api";
 import { API_ENDPOINT_REGISTER_TEMPLATE } from "../../constants";
+import { loadConfigFromJsFile, validateTemplateConfig } from "~/node/shared/config";
 
-export async function publish({ options, args }: ArgOpts) {
+export async function publish({ options, args, logger }: CommandArgOpts) {
   // check if user is logged in
   if (!(await isLoggedIn(true))) {
     const pkgCmd = getPackageManager();
@@ -30,7 +27,7 @@ export async function publish({ options, args }: ArgOpts) {
     : process.cwd();
 
   if (!existsSync(templateDir)) {
-    logger.error(`  ${chalk.redBright("Error")}: Template directory not found: ${templateDir}. Aborting.\n`);
+    logger.error(`  Template directory not found: ${templateDir}. Aborting.\n`);
     process.exit(1);
   }
 
@@ -42,7 +39,9 @@ export async function publish({ options, args }: ArgOpts) {
       : resolve(templateDir, "dist");
 
   if (!existsSync(distDir)) {
-    logger.error(`  ${chalk.redBright("Error")}: Dist directory not found: ${distDir}. Aborting.\n`);
+    logger.error(
+      `  Dist directory not found: ${distDir}.\n  Please run 'build' before publishing. Aborting.\n`,
+    );
     process.exit(1);
   }
 
@@ -57,27 +56,11 @@ export async function publish({ options, args }: ArgOpts) {
 
   // load manifest from both enpage.config.js and package.json
   // manifest.json is used to store the template ID for future updates
-  const { templateManifest } = await getLocalPageConfig(resolve(templateDir, "enpage.config.js"));
+  const config = await loadConfigFromJsFile(resolve(templateDir, "enpage.config.js"), logger);
 
-  // validate manifest
-  const validation = templateManifestSchema.safeParse(templateManifest);
-  if (!validation.success) {
-    const err = fromError(validation.error);
-    logger.error("Invalid template manifest. Please review your enpage.config.js file.");
-    logger.error(`Error: ${err.toString()}\n\n`);
-    process.exit(1);
-  }
+  validateTemplateConfig(config, logger);
 
   const token = getTokenOrThrow();
-
-  if (!token) {
-    const pkgCmd = getPackageManager();
-    logger.error(
-      `  ${chalk.redBright("Error")}: Credentials not found. Please run ${chalk.cyan(`${pkgCmd} run enpage:login`)} to authenticate.\n`,
-    );
-    process.exit(1);
-  }
-
   const pkgLocation = getPackageLocation(templateDir);
 
   if (!pkgLocation) {
@@ -98,7 +81,7 @@ export async function publish({ options, args }: ArgOpts) {
   if (!pkg.enpage?.id) {
     // call API to create a new template
     const { data, isError, status } = await post<{ id: string }>(API_ENDPOINT_REGISTER_TEMPLATE, {
-      manifest: templateManifest,
+      manifest: config.manifest,
     });
     if (isError) {
       logger.error(`  ${chalk.redBright("Error")}: Cannot register template: ${formatAPIError(data)}\n`);
@@ -106,9 +89,24 @@ export async function publish({ options, args }: ArgOpts) {
     }
     pkg.enpage ??= {};
     pkg.enpage.id = data.id;
+
+    // save the template ID to package.json
+    try {
+      if (!options.dryRun) writeFileSync(pkgLocation, JSON.stringify(pkg, null, 2));
+    } catch (e) {
+      logger.error(
+        `  ${chalk.redBright("Error")}: Cannot update template id in package.json file located in ${templateDir}. Aborting.\n`,
+      );
+      process.exit(1);
+    }
   }
 
   const templateId = pkg.enpage.id;
+
+  if (options.dryRun) {
+    logger.info(`Dry run complete. Template ID: ${templateId}\n`);
+    process.exit(0);
+  }
 
   // submit template to Enpage
   logger.info(`Submitting template to Enpage...\n`);
@@ -119,6 +117,8 @@ export async function publish({ options, args }: ArgOpts) {
     logger.error("\nUpload failed. See details above.\n");
     process.exit(1);
   }
+
+  logger.success(`Template ${templateId} published.\n`);
 }
 
 function getPackageLocation(templateDir: string) {

@@ -5,9 +5,8 @@ import type { GenericPageConfig } from "~/shared/page-config";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 
 export async function getLocalPageConfig(configFile?: string): Promise<GenericPageConfig> {
-  const { attributes, datasources, manifest } = (await import(
-    configFile ?? join(process.cwd(), "enpage.config.js")
-  )) as EnpageTemplateConfig;
+  const configFilePath = configFile ?? join(process.cwd(), "enpage.config.js");
+  const { attributes, datasources, manifest } = (await import(configFilePath)) as EnpageTemplateConfig;
 
   return {
     attributes,
