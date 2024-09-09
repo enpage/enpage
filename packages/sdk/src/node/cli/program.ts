@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-import { program, Argument, type Command, type OptionValues } from "commander";
-import type { ArgOpts, BuildOptions, CommonOptions } from "./types";
+import { program, type Command, type OptionValues } from "commander";
+import type { BuildOptions, CommonOptions } from "./types";
 import { publish } from "./commands/publish/cmd-publish";
 import { login } from "./commands/login/cmd-login";
 import { preview } from "./commands/preview/cmd-preview";
 import { buildTemplate } from "./commands/build/cmd-build";
 import { startDevServer } from "./commands/dev/cmd-dev";
-import { createLogger } from "../shared/logger";
+import { createLogger, type Logger } from "../shared/logger";
 import { logout } from "./commands/logout/cmd-logout";
+
+let logger: Logger;
 
 program
   .name("enpage")
@@ -15,7 +17,19 @@ program
   .option("--clearScreen", `[boolean] allow/disable clear screen when logging`)
   .option("--dry-run", `[boolean] run command without making changes`)
   .hook("preAction", (thisCommand) => {
-    createLogger(thisCommand.opts().logLevel, thisCommand.opts().clearScreen, true);
+    logger = createLogger(
+      thisCommand.optsWithGlobals().logLevel,
+      thisCommand.optsWithGlobals().clearScreen,
+      true,
+    );
+    // for now, disable the form-data warning until they fix it
+    process.removeAllListeners("warning");
+    process.on("warning", (warning) => {
+      if (warning.name === "DeprecationWarning" && warning.message.includes("util.isArray")) {
+        return;
+      }
+      logger.warnOnce(`Warning: ${warning.name} - ${warning.message}`);
+    });
   });
 
 program
@@ -75,5 +89,5 @@ program
 program.parse();
 
 function getArgsOptionsObject<O extends OptionValues>(cmd: Command) {
-  return { options: cmd.opts<CommonOptions & O>(), args: cmd.args };
+  return { options: cmd.optsWithGlobals<CommonOptions & O>(), args: cmd.args, logger };
 }

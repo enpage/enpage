@@ -1,5 +1,5 @@
 import { defineConfig, type UserConfig, loadEnv } from "vite";
-import { loadConfig } from "./config";
+import { loadConfigFromJsFile } from "../shared/config";
 import enpagePlugin from "./plugin-enpage";
 import { join, dirname } from "node:path";
 import { existsSync } from "node:fs";
@@ -16,11 +16,10 @@ export default defineConfig(async (viteConfigEnv): Promise<UserConfig> => {
   }
 
   const env = loadEnv(viteConfigEnv.mode, process.cwd(), ["PUBLIC_"]);
-
   const cachePath = join(process.cwd(), ".cache");
 
   const cfgPath = join(process.cwd(), "enpage.config.js");
-  const config = await loadConfig(cfgPath);
+  const config = await loadConfigFromJsFile(cfgPath);
 
   const isBuild = viteConfigEnv.command === "build";
   const isSsrBuild = isBuild && viteConfigEnv.isSsrBuild === true;

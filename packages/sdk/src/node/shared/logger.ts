@@ -20,19 +20,18 @@ export function createLogger(level?: EnpageLoggerLevel, allowClearScreen?: boole
     logger.info(chalk.hex("#7270c6").bold(`🚀 Enpage v${version}\n`));
   }
 
-  Object.assign(logger, {
-    success: (message: string, options: LogOptions) => logger.info(chalk.green(message), options),
-    error: (message: string, options: LogOptions) => logger.error(chalk.red(message), options),
-    warn: (message: string, options: LogOptions) => logger.warn(chalk.yellow(message), options),
-    warnOnce: (message: string, options: LogOptions) => logger.warnOnce(chalk.yellow(message), options),
-    debug: (message: string, options: LogOptions) => {
+  return {
+    ...logger,
+    success: (message: string, options?: LogOptions) => logger.info(chalk.green(message), options),
+    error: (message: string, options?: LogOptions) => logger.error(chalk.red(message), options),
+    warn: (message: string, options?: LogOptions) => logger.warn(chalk.yellow(message), options),
+    warnOnce: (message: string, options?: LogOptions) => logger.warnOnce(chalk.yellow(message), options),
+    debug: (message: string, options?: LogOptions) => {
       if (level === "debug") {
         logger.info(chalk.gray(message), options);
       }
     },
-  });
-
-  return logger;
+  };
 }
 
 export const logger = createLogger();

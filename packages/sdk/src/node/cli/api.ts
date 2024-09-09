@@ -43,8 +43,8 @@ export async function post<ResponseType = unknown, ErrorType = { error: string; 
     },
     body: data instanceof URLSearchParams ? data : JSON.stringify(data),
   }).catch((error) => {
-    logger.error(`Fatal Error requesting API: ${error.message} (${error.cause.code})`, { error });
-    logger.error(`Please check your internet connection and try again, or retry later.`, { error });
+    logger.error(`Fatal Error requesting API: ${error.message} (${error.cause.code})`);
+    logger.error(`Please check your internet connection and try again, or retry later.`);
     process.exit(1);
   });
 
@@ -59,8 +59,8 @@ export async function get<ResponseType = unknown, ErrorType = { error: string; e
     headers.Authorization = `Bearer ${accessStore.get("access_token")}`;
   }
   const response = await fetch(toURL(path), { headers, method: "GET" }).catch((error) => {
-    logger.error(`Fatal Error requesting API: ${error.message} (${error.cause.code})`, { error });
-    logger.error(`Please check your internet connection and try again, or retry later.`, { error });
+    logger.error(`Fatal Error requesting API: ${error.message} (${error.cause.code})`);
+    logger.error(`Please check your internet connection and try again, or retry later.`);
     process.exit(1);
   });
   return formatResponse<ResponseType, ErrorType>(response);

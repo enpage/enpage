@@ -40,7 +40,7 @@ interface UploadConfig {
 
 const defaultConfig: UploadConfig = {
   maxDataSize: 12 * 1024 * 1024, // 12MB
-  retryAttempts: 3,
+  retryAttempts: 2,
   retryDelay: 1000,
 };
 
@@ -60,7 +60,17 @@ async function discoverFiles(templateDir: string): Promise<string[]> {
     onlyFiles: true,
     dot: true,
     absolute: true,
-    ignore: ["node_modules/**", ".cache/**", "**/.DS_Store", ".git/**", "dist/**", ...gitignored],
+    ignore: [
+      "node_modules/**",
+      ".cache/**",
+      "**/.DS_Store",
+      ".gitignore",
+      ".env",
+      ".env.*",
+      ".git/**",
+      "dist/**",
+      ...gitignored,
+    ],
   });
 }
 

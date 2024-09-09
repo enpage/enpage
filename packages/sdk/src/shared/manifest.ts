@@ -17,6 +17,7 @@ export const templateManifestSchema = z.object({
   id: z.string().optional(),
   name: z.string(),
   description: z.string(),
+  readme: z.record(z.string()).optional(),
   tags: z.array(z.string()).optional(),
   author: z.string(),
   thumbnail: z.string().url().optional(),
