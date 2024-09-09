@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.37
+
+### Patch Changes
+
+- [#154](https://github.com/enpage/enpage/pull/154) [`bf52303`](https://github.com/enpage/enpage/commit/bf52303bbfc6a685c6076cbfcd6b63600638f116) Thanks [@mattallty](https://github.com/mattallty)! - Add support for readme files in templates
+
 ## 0.0.36
 
 ### Patch Changes
