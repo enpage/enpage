@@ -47,13 +47,13 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
           },
         },
         experimental:
-          command === "build" && !env.NO_CDN && viteEnv.mode !== "development"
+          command === "build" && env.PUBLIC_ENPAGE_ASSETS_BASE_URL
             ? {
                 renderBuiltUrl(filename, { hostId, hostType, type }) {
                   if (type === "public") {
                     return `/${filename}`;
                   }
-                  return `https://cdn.enpage.co/sites/${env.SITE_SLUG}/${filename}`;
+                  return `${env.PUBLIC_ENPAGE_ASSETS_BASE_URL}/${filename}`;
                 },
               }
             : {},
