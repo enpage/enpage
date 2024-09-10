@@ -5,6 +5,7 @@ export type EnpageEnv = {
   PUBLIC_ENPAGE_SITE_ID: string;
   PUBLIC_ENPAGE_API_BASE_URL: string;
   PUBLIC_ENPAGE_SITE_HOST: string;
+  PUBLIC_ENPAGE_ASSETS_BASE_URL?: string;
   ENPAGE_API_TOKEN: string;
   SITES_DB: D1Database;
   SITES_CACHE: KVNamespace;
@@ -13,7 +14,6 @@ export type EnpageEnv = {
   R2_ACCESS_KEY_ID: string;
   R2_SECRET_ACCESS_KEY: string;
   NODE_ENV: "development" | "production" | "preview" | "local-preview";
-  NO_CDN?: string;
   DATASOURCE_REFRESH_DELAY_IN_MINUTE: string;
   FACEBOOK_APP_SECRET?: string;
   INSTAGRAM_APP_SECRET?: string;
