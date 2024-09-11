@@ -20,17 +20,20 @@ type ErrorResponseWrapper<E> = {
 
 type ResponseWrapper<T, E> = SuccessResponseWrapper<T> | ErrorResponseWrapper<E>;
 
+type CommonResponseType = {
+  success: boolean;
+};
+
 /**
  *
  * @param pathOrUrl
  * @param data
  * @returns
  */
-export async function post<ResponseType = unknown, ErrorType = { error: string; error_description?: string }>(
-  path: string,
-  data: Record<string, unknown> | URLSearchParams,
-  headers: Record<string, string> = {},
-) {
+export async function post<
+  ResponseType extends CommonResponseType = CommonResponseType,
+  ErrorType = { error: string; error_description?: string },
+>(path: string, data: Record<string, unknown> | URLSearchParams, headers: Record<string, string> = {}) {
   if (accessStore.get("access_token")) {
     headers.Authorization = `Bearer ${accessStore.get("access_token")}`;
   }

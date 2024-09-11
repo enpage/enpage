@@ -1,5 +1,6 @@
 import path from "node:path";
 import fs from "node:fs";
+import crypto from "node:crypto";
 import fg from "fast-glob";
 import { API_BASE_URL, DEFAULT_UPLOAD_MAX_CONCURRENCY } from "../../constants";
 import http from "node:http";
@@ -12,6 +13,8 @@ import FormData from "form-data";
 import parseGitIgnore from "./parse-gitignore";
 import PQueue from "p-queue";
 import ora from "ora";
+import { customAlphabet } from "nanoid";
+import { post } from "../../api";
 
 interface UploadStats {
   fileName: string;
@@ -98,6 +101,7 @@ async function uploadFile(
 
   return uploadWithRetry(0);
 }
+
 async function performUpload(
   filePath: string,
   relativePath: string,
@@ -199,7 +203,11 @@ async function performUpload(
   });
 }
 
-function reportUploadStatistics(uploadedFiles: UploadStats[], failedFiles: PromiseRejectedResult[]) {
+function reportUploadStatistics(
+  templateId: string,
+  uploadedFiles: UploadStats[],
+  failedFiles: PromiseRejectedResult[],
+) {
   if (failedFiles.length > 0) {
     logger.error(chalk.red(`Failed to upload ${failedFiles.length} files:`));
     failedFiles.forEach((failure) => {
@@ -207,7 +215,9 @@ function reportUploadStatistics(uploadedFiles: UploadStats[], failedFiles: Promi
       logger.error(`- ${error.filename}: ${error.error_description} (${error.error})`);
     });
   } else {
-    logger.info(chalk.green(`Uploaded ${uploadedFiles.length} files successfully.\n`));
+    logger.info(
+      chalk.green(`Uploaded ${uploadedFiles.length} files successfully for template ${templateId}.\n`),
+    );
   }
 }
 
@@ -215,29 +225,41 @@ export async function uploadTemplate(
   templateId: string,
   templateDir: string,
   token: string,
+  dryRun = false,
   config: Partial<UploadConfig> = {},
 ) {
   const fullConfig = { ...defaultConfig, ...config };
   const queue = new PQueue({ concurrency: DEFAULT_UPLOAD_MAX_CONCURRENCY });
   const files = await discoverFiles(templateDir);
   const filesCount = files.length;
-
-  const spinner = ora(`Uploading ${filesCount} files...`).start();
+  const signatures: Record<string, string> = {};
+  // generate a upload id
+  const uploadId = generateUploadId();
   let completedUploads = 0;
 
-  const uploadPromises = files.map((file) => {
+  // compute signatures
+  for (const file of files) {
     const relativePath = path.relative(templateDir, file);
-    const url = `${API_BASE_URL}/v1/templates/${templateId}/upload`;
+    const md5 = await md5sum(file);
+    signatures[relativePath] = md5;
+  }
+
+  if (dryRun) {
+    logger.info("Dry run mode enabled. Skipping upload.\n");
+    logger.info("The following files would have been uploaded:");
+    files.forEach((file) => logger.info(`- ${file}`));
+    process.exit(0);
+  }
+
+  const spinner = ora(`Uploading ${filesCount} files...`).start();
+
+  // upload files
+  const uploadPromises = files.map((file) => {
+    const fullPath = path.resolve(templateDir, file);
+    const relativePath = path.relative(templateDir, file);
+    const url = `${API_BASE_URL}/v1/templates/${templateId}/upload/${uploadId}`;
     return queue.add(async () => {
-      const result = await uploadFile(
-        path.resolve(templateDir, file),
-        relativePath,
-        url,
-        templateId,
-        spinner,
-        token,
-        fullConfig,
-      );
+      const result = await uploadFile(fullPath, relativePath, url, templateId, spinner, token, fullConfig);
       completedUploads++;
       return result;
     });
@@ -255,9 +277,32 @@ export async function uploadTemplate(
   );
 
   reportUploadStatistics(
+    templateId,
     uploadedFiles.map((r) => r.value),
     failedFiles,
   );
+
+  // finalize upload
+  if (!failedFiles.length && uploadedFiles.length) {
+    const finalizeUrl = `${API_BASE_URL}/v1/templates/${templateId}/upload/${uploadId}/finalize`;
+    const finalizePayload = {
+      signatures,
+    };
+
+    const finalizeResponse = await post(finalizeUrl, finalizePayload);
+
+    if (finalizeResponse.isError) {
+      logger.error(
+        `Failed to finalize upload: ${finalizeResponse.data.error_description} (${finalizeResponse.data.error})`,
+      );
+      return {
+        filesCount,
+        uploadedFiles: uploadedFiles.map((r) => r.value),
+        failedFiles: [],
+        success: false,
+      };
+    }
+  }
 
   return {
     filesCount,
@@ -265,4 +310,29 @@ export async function uploadTemplate(
     failedFiles,
     success: failedFiles.length === 0,
   };
+}
+
+function md5sum(filePath: string): Promise<string> {
+  return new Promise((res, rej) => {
+    const hash = crypto.createHash("md5");
+    const rStream = fs.createReadStream(filePath);
+    rStream.on("data", (data) => {
+      hash.update(data);
+    });
+    rStream.on("end", () => {
+      res(hash.digest("hex"));
+    });
+  });
+}
+
+function generateUploadId(): string {
+  const randomId = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 5);
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = (now.getUTCMonth() + 1).toString().padStart(2, "0");
+  const day = now.getUTCDate().toString().padStart(2, "0");
+  const hours = now.getUTCHours().toString().padStart(2, "0");
+  const minutes = now.getUTCMinutes().toString().padStart(2, "0");
+  const seconds = now.getUTCSeconds().toString().padStart(2, "0");
+  return `${year}${month}${day}${hours}${minutes}${seconds}_${randomId()}`;
 }

@@ -80,15 +80,18 @@ export async function publish({ options, args, logger }: CommandArgOpts) {
 
   if (!pkg.enpage?.id) {
     // call API to create a new template
-    const { data, isError, status } = await post<{ id: string }>(API_ENDPOINT_REGISTER_TEMPLATE, {
-      manifest: config.manifest,
-    });
+    const { data, isError, status } = await post<{ success: true; template: { id: string } }>(
+      API_ENDPOINT_REGISTER_TEMPLATE,
+      {
+        manifest: config.manifest,
+      },
+    );
     if (isError) {
       logger.error(`  ${chalk.redBright("Error")}: Cannot register template: ${formatAPIError(data)}\n`);
       process.exit(1);
     }
     pkg.enpage ??= {};
-    pkg.enpage.id = data.id;
+    pkg.enpage.id = data.template.id;
 
     // save the template ID to package.json
     try {
@@ -103,15 +106,10 @@ export async function publish({ options, args, logger }: CommandArgOpts) {
 
   const templateId = pkg.enpage.id;
 
-  if (options.dryRun) {
-    logger.info(`Dry run complete. Template ID: ${templateId}\n`);
-    process.exit(0);
-  }
-
   // submit template to Enpage
   logger.info(`Submitting template to Enpage...\n`);
 
-  const uploadResults = await uploadTemplate(templateId, templateDir, token);
+  const uploadResults = await uploadTemplate(templateId, templateDir, token, options.dryRun);
 
   if (!uploadResults.success) {
     logger.error("\nUpload failed. See details above.\n");
