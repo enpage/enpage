@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.38
+
+### Patch Changes
+
+- [#163](https://github.com/enpage/enpage/pull/163) [`9ee3958`](https://github.com/enpage/enpage/commit/9ee3958602ea823d0af59b8e0702c3ce8bba472a) Thanks [@mattallty](https://github.com/mattallty)! - Improve RSS parser
+
 ## 0.0.37
 
 ### Patch Changes
