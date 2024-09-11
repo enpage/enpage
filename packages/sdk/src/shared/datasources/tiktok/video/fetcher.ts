@@ -2,7 +2,6 @@ import type { TiktokVideoOptions } from "./options";
 import { type TiktokVideoResponseSchema, tiktokVideoResponseSchema } from "./schema";
 import type { TiktokOAuthConfig } from "../oauth/config";
 import type { DatasourceFetcher } from "../../types";
-import Ajv from "ajv";
 import { Http401Error } from "../../errors";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
 
