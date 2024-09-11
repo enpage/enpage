@@ -1,5 +1,4 @@
 import { facebookPostSchema, type FacebookPostSchema } from "./schema";
-import Ajv from "ajv";
 import type { MetaOAuthConfig } from "../../meta/oauth/config";
 import type { DatasourceFetcher } from "../../types";
 import { Http401Error } from "../../errors";
