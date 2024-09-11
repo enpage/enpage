@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.40
+
+### Patch Changes
+
+- [#167](https://github.com/enpage/enpage/pull/167) [`3c9fc7c`](https://github.com/enpage/enpage/commit/3c9fc7c4775d3a1e409276fcd5c01746a753b794) Thanks [@mattallty](https://github.com/mattallty)! - Remove OAuth fetchers from datasources
+
 ## 0.0.39
 
 ### Patch Changes
