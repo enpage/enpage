@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import fetchRss from "../fetcher";
-import type { EnpageEnv } from "../../../env";
 import type { GenericPageConfig } from "../../../page-config";
 
 describe("rssFetcher", () => {

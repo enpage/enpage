@@ -1,6 +1,5 @@
 import type { YoutubeListOptions } from "./options";
 import { type YoutubeListSchema, youtubeListSchema } from "./schema";
-import Ajv from "ajv";
 import type { DatasourceFetcher } from "../../types";
 import type { YoutubeOAuthConfig } from "../oauth/config";
 import { Http401Error } from "../../errors";
