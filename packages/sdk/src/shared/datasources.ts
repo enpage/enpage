@@ -18,7 +18,7 @@ export { Type as ds, type TSchema } from "@sinclair/typebox";
 
 type HttpJsonSchema = TSchema;
 
-export const providersSchemaMap = {
+export const providersSchemaMap: Record<DatasourceProvider, TSchema> = {
   "youtube-list": youtubeListSchema,
   "facebook-posts": facebookPostSchema,
   "instagram-feed": instagramFeedSchema,
@@ -36,7 +36,7 @@ export type DatasourceProviderSchemaMap = {
   [key in DatasourceProvider]: Static<(typeof providersSchemaMap)[key]>;
 };
 
-export const providersOptionsMap = {
+export const providersOptionsMap: Record<DatasourceProvider, TSchema> = {
   "youtube-list": youtubeListOptions,
   "facebook-posts": metaOptions,
   "instagram-feed": metaOptions,
