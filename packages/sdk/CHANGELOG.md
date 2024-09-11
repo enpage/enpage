@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.39
+
+### Patch Changes
+
+- [#165](https://github.com/enpage/enpage/pull/165) [`5fe981e`](https://github.com/enpage/enpage/commit/5fe981ef9580b66ed405333f1382e2de4f3bf2b1) Thanks [@mattallty](https://github.com/mattallty)! - Remove env from fetchers
+
 ## 0.0.38
 
 ### Patch Changes
