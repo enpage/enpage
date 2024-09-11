@@ -22,7 +22,6 @@ describe("fetchHttpJSON", () => {
     const result = await fetchHttpJSON({
       options: { url: "https://api.example.com/data" },
       pageConfig: {},
-      env: {},
       oauth: null,
     } as DatasourceFetcherParams<null, HttpJsonOptions>);
 
@@ -64,7 +63,6 @@ describe("fetchHttpJSON", () => {
       fetchHttpJSON({
         options: { url: "https://api.example.com/notfound" },
         pageConfig: {},
-        env: {},
         oauth: null,
       } as DatasourceFetcherParams<null, HttpJsonOptions>),
     ).rejects.toThrow("fetchHttpJSON Error: Response status: 404");

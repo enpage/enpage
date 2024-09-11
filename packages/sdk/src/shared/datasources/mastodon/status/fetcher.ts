@@ -9,11 +9,10 @@ const fetchMastodonStatus: DatasourceFetcher<
   MastodonStatusArraySchema,
   null,
   MastodonCommonOptions
-> = async ({ options, env, pageConfig }) => {
+> = async ({ options, pageConfig }) => {
   const account = await fetchMastodonAccount({
     options: { username: options.username },
     pageConfig,
-    env,
     oauth: null,
   });
 

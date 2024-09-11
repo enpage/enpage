@@ -41,7 +41,6 @@ describe("fetchFacebookPostDatasource", () => {
     const result = await fetchFacebookPostDatasource({
       options: { limit: 10 },
       oauth: { config: { accessToken: "test-token" } },
-      env: {},
       pageConfig: {},
     } as DatasourceFetcherParams<MetaOAuthConfig, MetaOptions>);
 
@@ -61,7 +60,6 @@ describe("fetchFacebookPostDatasource", () => {
       fetchFacebookPostDatasource({
         options: { limit: 10 },
         oauth: { config: { accessToken: "invalid-token" } },
-        env: {},
         pageConfig: {},
       } as DatasourceFetcherParams<MetaOAuthConfig, MetaOptions>),
     ).rejects.toThrow(Http401Error);
@@ -79,7 +77,6 @@ describe("fetchFacebookPostDatasource", () => {
       fetchFacebookPostDatasource({
         options: { limit: 10 },
         oauth: { config: { accessToken: "test-token" } },
-        env: {},
         pageConfig: {},
       } as DatasourceFetcherParams<MetaOAuthConfig, MetaOptions>),
     ).rejects.toThrow();

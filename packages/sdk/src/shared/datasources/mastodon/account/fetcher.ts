@@ -18,7 +18,6 @@ const fetchMastodonAccount: DatasourceFetcher<MastodonAccountSchema, null, Masto
   }
 
   const account = (await response.json()) as MastodonAccountSchema;
-
   const validate = ajv.compile<MastodonAccountSchema>(mastodonAccountSchema);
   const isValid = validate(account);
 

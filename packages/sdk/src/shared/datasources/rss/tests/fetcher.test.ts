@@ -18,7 +18,6 @@ describe("rssFetcher", () => {
       options: {
         url: feeds[0],
       },
-      env: {} as EnpageEnv,
       oauth: null,
       pageConfig: {} as GenericPageConfig,
     });

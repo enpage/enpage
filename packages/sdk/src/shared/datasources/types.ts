@@ -1,7 +1,6 @@
-import type { EnpageEnv } from "../env";
 import { Type, type Static } from "@sinclair/typebox";
 import z from "zod";
-import type { GenericPageConfig, PageConfig } from "../page-config";
+import type { GenericPageConfig } from "../page-config";
 
 export const providerOptions = Type.Object({
   nextRefreshDelay: Type.Optional(Type.Number()),
@@ -19,7 +18,6 @@ export interface OAuthConfig<T> {
 }
 
 export type DatasourceFetcherParams<OAuthProps = unknown, Opts extends ProviderOptions = ProviderOptions> = {
-  env: EnpageEnv;
   options: Opts;
   pageConfig: GenericPageConfig;
   oauth: OAuthProps extends null ? null : OAuthConfig<OAuthProps>;

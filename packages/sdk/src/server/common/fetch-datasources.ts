@@ -31,7 +31,6 @@ export async function fetchDatasources(env: EnpageEnv, pageConfig: GenericPageCo
           },
           pageConfig,
           oauth: null,
-          env,
         });
         return { key, result };
       } catch (error) {
