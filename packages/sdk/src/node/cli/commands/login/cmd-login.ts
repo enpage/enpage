@@ -83,6 +83,7 @@ export async function login({ options, logger }: CommandArgOpts<CommonOptions>) 
 }
 
 type DeviceCodeResponse = {
+  success: true;
   device_code: string;
   user_code: string;
   verification_uri: string;
@@ -94,6 +95,7 @@ type DeviceCodeResponse = {
 // Union type for the response
 
 type DeviceCodeTokenSuccessResponse = {
+  success: true;
   access_token: string;
   token_type: string;
   expires_in?: number;
