@@ -1,6 +1,6 @@
 {
   "name": "@enpage/editor",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "type": "module",
   "exports": {
     ".": {
