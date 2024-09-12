@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.42
+
+### Patch Changes
+
+- [#173](https://github.com/enpage/enpage/pull/173) [`8d9a269`](https://github.com/enpage/enpage/commit/8d9a269e9759178e044058ee3e7bc0e2966e3554) Thanks [@mattallty](https://github.com/mattallty)! - Reorder exports to prevent tsup warnings
+
 ## 0.0.41
 
 ### Patch Changes
