@@ -9,8 +9,8 @@
   ],
   "exports": {
     "./browser/*": {
-      "import": "./dist/browser/*.js",
-      "types": "./dist/browser/*.d.ts"
+      "types": "./dist/browser/*.d.ts",
+      "import": "./dist/browser/*.js"
     },
     "./builder/*": {
       "import": "./dist/node/builder/*.js"
@@ -19,14 +19,14 @@
       "import": "./dist/node/cli/*.js"
     },
     "./env.d.ts": {
+      "types": "./env.d.ts",
       "require": "./env.d.ts",
-      "import": "./env.d.ts",
-      "types": "./env.d.ts"
+      "import": "./env.d.ts"
     },
     "./custom-attrs.d.ts": "./custom-attrs.d.ts",
     "./*": {
-      "import": "./dist/shared/*.js",
-      "types": "./dist/shared/*.d.ts"
+      "types": "./dist/shared/*.d.ts",
+      "import": "./dist/shared/*.js"
     }
   },
   "bin": {
