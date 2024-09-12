@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.41
+
+### Patch Changes
+
+- [#169](https://github.com/enpage/enpage/pull/169) [`975a4c3`](https://github.com/enpage/enpage/commit/975a4c3c057da64ccd15edad770cf2531d266916) Thanks [@mattallty](https://github.com/mattallty)! - Rework sdk deps
+
 ## 0.0.40
 
 ### Patch Changes
