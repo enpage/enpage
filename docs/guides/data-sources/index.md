@@ -20,23 +20,49 @@ And of course — you can also define your own custom data sources!
 
 ### Using a Built-In Internal Data Source
 
+The following example shows how to define an Internal Data Source that will be used in the
+template to display a list of links.
+
+
+#### Declare your data source in the `enpage.config.js` file
+
 ::: code-group
 
 ```javascript [enpage.config.js]
 import { defineDataSources } from "@enpage/sdk/datasources";
 
-// Define an internal data source that will be used
-// in the template as a list of links
 export const datasources = defineDataSources({
-  links: {
+  // Define a data source named "mylinks" using the "links" provider
+  mylinks: {
     // Label of the data source that will be displayed in the Enpage Editor
     name: "Links",
-    // use the built-in "generic-links" provider
-    provider: "generic-links"
+    // use the built-in "links" provider
+    provider: "links"
   }
 });
 ```
+:::
 
+#### Or use the Enpage CLI
+
+If you don't feel like writing the code manually, you can use the Enpage CLI to add a data source to your project.
+
+
+::: code-group
+```bash [npm]
+# Add a data source named "mylinks" using the "links" provider
+npm run add-datasource mylinks links
+```
+
+```bash [pnpm]
+# Add a data source named "mylinks" using the "links" provider
+pnpm add-datasource mylinks links
+```
+
+```bash [yarn]
+# Add a data source named "mylinks" using the "links" provider
+yarn add-datasource mylinks links
+```
 :::
 
 ### Using a Custom Internal Data Source
@@ -85,8 +111,7 @@ export const datasources = defineDataSources({
 ## External Data Sources
 
 
-Enpage provides a large range of built-in External Data Sources that you can use with minimal configuration (such as Youtube, Twitter, Instagram, etc.).
-The complete list can be found [here](./external/).
+Enpage provides a large range of built-in External Data Sources that you can use with minimal configuration (such as Youtube, Instagram, etc.). See the [complete list here](./external/).
 
 ### Example of External Data Sources
 
@@ -112,7 +137,7 @@ export const datasources = defineDataSources({
 
 :::
 
-#### `http-json` Data Source for fetching data from an API
+#### `json` Data Source for fetching data from an API
 
 ::: code-group
 
@@ -125,7 +150,7 @@ export const datasources = defineDataSources({
   posts: {
     // Label of the data source that will be displayed in the Enpage Editor
     name: "My Posts",
-    provider: "http-json",
+    provider: "json",
     options: {
       // URL of the API
       url: "https://api.example.com/blogs/{{ attr.blogId }}/posts",

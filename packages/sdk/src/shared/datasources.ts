@@ -1,18 +1,18 @@
 import { Type, type Static, type TSchema } from "@sinclair/typebox";
 import type { DatasourceProvider } from "./datasources/types";
-import { youtubeListSchema } from "./datasources/youtube/list/schema";
-import { facebookPostSchema } from "./datasources/facebook/posts/schema";
-import { instagramFeedSchema } from "./datasources/instagram/feed/schema";
-import { mastodonStatusArraySchema } from "./datasources/mastodon/status/schema";
-import { rssSchema } from "./datasources/rss/schema";
-import { threadsMediaSchema } from "./datasources/threads/media/schema";
-import { tiktokVideoResponseSchema } from "./datasources/tiktok/video/schema";
-import { youtubeListOptions } from "./datasources/youtube/list/options";
-import { metaOptions } from "./datasources/meta/options";
-import { mastodonCommonOptions } from "./datasources/mastodon/options";
-import { httpJsonOptions } from "./datasources/http/json/options";
-import { rssOptions } from "./datasources/rss/options";
-import { tiktokVideoOptions } from "./datasources/tiktok/video/options";
+import { youtubeListSchema } from "./datasources/external/youtube/list/schema";
+import { facebookPostSchema } from "./datasources/external/facebook/posts/schema";
+import { instagramFeedSchema } from "./datasources/external/instagram/feed/schema";
+import { mastodonStatusArraySchema } from "./datasources/external/mastodon/status/schema";
+import { rssSchema } from "./datasources/external/rss/schema";
+import { threadsMediaSchema } from "./datasources/external/threads/media/schema";
+import { tiktokVideoResponseSchema } from "./datasources/external/tiktok/video/schema";
+import { youtubeListOptions } from "./datasources/external/youtube/list/options";
+import { metaOptions } from "./datasources/external/meta/options";
+import { mastodonCommonOptions } from "./datasources/external/mastodon/options";
+import { httpJsonOptions } from "./datasources/external/json/options";
+import { rssOptions } from "./datasources/external/rss/options";
+import { tiktokVideoOptions } from "./datasources/external/tiktok/video/options";
 
 export { Type as ds, type TSchema } from "@sinclair/typebox";
 
@@ -23,7 +23,7 @@ export const providersSchemaMap: Record<DatasourceProvider, TSchema> = {
   "facebook-posts": facebookPostSchema,
   "instagram-feed": instagramFeedSchema,
   "mastodon-status": mastodonStatusArraySchema,
-  "http-json": Type.Union([
+  json: Type.Union([
     Type.Array(Type.Any()),
     Type.Object({}, { additionalProperties: true }),
   ]) as HttpJsonSchema,
@@ -41,7 +41,7 @@ export const providersOptionsMap: Record<DatasourceProvider, TSchema> = {
   "facebook-posts": metaOptions,
   "instagram-feed": metaOptions,
   "mastodon-status": mastodonCommonOptions,
-  "http-json": httpJsonOptions,
+  json: httpJsonOptions,
   rss: rssOptions,
   "threads-media": metaOptions,
   "tiktok-video": tiktokVideoOptions,
@@ -54,13 +54,13 @@ export type DatasourceProviderOptionsMap = {
 export type DatasourceProviderManifest<
   P extends DatasourceProvider,
   O extends DatasourceProviderOptionsMap[P] = DatasourceProviderOptionsMap[P],
-  S extends TSchema = P extends "http-json" ? HttpJsonSchema : (typeof providersSchemaMap)[P],
+  S extends TSchema = P extends "json" ? HttpJsonSchema : (typeof providersSchemaMap)[P],
 > = {
   provider: P;
   options: O;
   name: string;
   description?: string;
-} & (P extends "http-json"
+} & (P extends "json"
   ? {
       schema: S;
       sampleData?: Static<S>;
@@ -108,7 +108,7 @@ export type DatasourceResolved<D extends DatasourceManifestMap> = {
     : D[K] extends DatasourceProviderManifest<infer P, infer O, infer S>
       ? P extends DatasourceProvider
         ? DatasourceProviderManifest<P, O, S> & {
-            data: P extends "http-json" ? Static<S> : Static<(typeof providersSchemaMap)[P]>;
+            data: P extends "json" ? Static<S> : Static<(typeof providersSchemaMap)[P]>;
           }
         : never
       : never;

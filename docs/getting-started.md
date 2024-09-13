@@ -16,16 +16,16 @@ To create a new template, use the Enpage CLI. Run the following command in your 
 
 ::: code-group
 
-```bash [Using npm]
-npm create enpage@latest my-template # Create in a new dir `my-template`
+```bash [npm]
+npx create-enpage my-template # Create in a new dir `my-template`
 ```
 
-```bash [Using yarn]
-yarn create enpage@latest my-template # Create in a new dir `my-template`
+```bash [yarn]
+yarn create enpage my-template # Create in a new dir `my-template`
 ```
 
-```bash [Using pnpm]
-pnpm create enpage@latest my-template # Create in a new dir `my-template`
+```bash [pnpm]
+pnpm create enpage my-template # Create in a new dir `my-template`
 ```
 
 :::
@@ -37,17 +37,17 @@ To preview your template, simply go to your template directory and run the `dev`
 
 ::: code-group
 
-```bash [Using npm]
+```bash [npm]
 cd my-template
 npm run dev
 ```
 
-```bash [Using yarn]
+```bash [yarn]
 cd my-template
 yarn dev
 ```
 
-```bash [Using pnpm]
+```bash [pnpm]
 cd my-template
 pnpm dev
 ```

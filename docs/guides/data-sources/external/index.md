@@ -8,4 +8,4 @@ Enpage provides a set of built-in, ready-to-use external data sources to create 
 - [TikTok](./tiktok.md) (feed)
 - [Youtube](./youtube.md) (list)
 - [RSS / Atom](./rss.md)
-- [HTTP-JSON](./http-json.md)
+- [json](./json.md)

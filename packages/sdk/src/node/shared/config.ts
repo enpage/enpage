@@ -54,7 +54,7 @@ export function loadConfigFromManifestFile(manifestPath: string, logger: Logger)
 export function validateTemplateConfig(config: EnpageTemplateConfig, logger: Logger) {
   for (const key in config.datasources) {
     if (
-      !(config.datasources[key].provider || config.datasources[key].provider === "http-json") &&
+      !(config.datasources[key].provider || config.datasources[key].provider === "json") &&
       !config.datasources[key].sampleData
     ) {
       logger.error(

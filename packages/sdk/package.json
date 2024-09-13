@@ -60,6 +60,7 @@
     "get-port": "7.1.0",
     "htmlparser2": "9.1.0",
     "http-cache-semantics": "4.1.1",
+    "http-errors-enhanced": "2.0.8",
     "immer": "10.1.1",
     "import-meta-resolve": "4.1.0",
     "jsdom": "25.0.0",

@@ -22,7 +22,7 @@ export const datasources = defineDataSources({
   },
   tasks: {
     name: "Tasks",
-    provider: "http-json",
+    provider: "json",
     options: {
       url: "https://jsonplaceholder.typicode.com/todos?userId=1",
     },

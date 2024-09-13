@@ -29,6 +29,9 @@ importers:
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
+      json-schema-to-markdown:
+        specifier: 1.1.1
+        version: 1.1.1
       nx:
         specifier: 19.7.2
         version: 19.7.2
@@ -277,6 +280,9 @@ importers:
       http-cache-semantics:
         specifier: 4.1.1
         version: 4.1.1
+      http-errors-enhanced:
+        specifier: 2.0.8
+        version: 2.0.8
       immer:
         specifier: 10.1.1
         version: 10.1.1
@@ -5928,6 +5934,11 @@ packages:
     resolution: {integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==}
     dev: false
 
+  /http-errors-enhanced@2.0.8:
+    resolution: {integrity: sha512-/OKdpMYvyTS/NlPFDmUPB9Y26SNUJLcfY3Ag7dqSLOPU5OHlpzyDiVF3Y8UQxazhUjWA8eu6Fdt/BtP3E6TUsQ==}
+    engines: {node: '>= 18.18.0'}
+    dev: false
+
   /http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
@@ -6254,6 +6265,10 @@ packages:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
     hasBin: true
+    dev: true
+
+  /json-schema-to-markdown@1.1.1:
+    resolution: {integrity: sha512-AWah/3VoorCoBBtnzZnGUjUey9WbMx1HjENyFXh/hYgnohL5XWZ6JKdaNMRn/ZExyPIsEXWqukVw2kacoGqAIQ==}
     dev: true
 
   /json-schema-traverse@1.0.0:
