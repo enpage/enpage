@@ -1,15 +1,19 @@
 # Data Sources
 
-Data Sources are the source of data for the templates. We can distinguish 2 types of data sources:
+Data sources are a way to provide dynamic content to your templates.
+
+Data Sources are defined in the `enpage.config.js` file using the `defineDataSources()` function.
+All data sources have a schema associated with them. This schema is used to validate data and provide a better editing experience in the Enpage Editor.
+
+We can distinguish 2 types of data sources:
 
 - **Internal**: Holds data that is managed and edited within the Enpage Editor by the site owner.
 - **External**:  Holds data that comes from external sources, such as Social Media websites or APIs. They can be fetched manualy or refreshed automatically at a regular interval.
 
-Enpage provides [built-in data sources](./built-in/) (internal & external) that you can use with minimal configuration.
-You can also define your own custom data sources, which can be internal or external.
+Enpage provides a large number of built-in data sources that can be used with minimal configuration.
 
-Data Sources are defined in the `enpage.config.js` file using the `defineDataSources()` function.
-All data sources have a schema associated with them. The schema is used to validate the data before using it in the template.
+And of course — you can also define your own custom data sources!
+
 
 
 ## Internal Data Sources
@@ -54,10 +58,10 @@ import { defineDataSources, ds } from "@enpage/sdk/datasources";
 // Define an internal data source that will be used
 // in the template as a list of links
 export const datasources = defineDataSources({
-  links: {
+  people: {
     // Label of the data source that will be displayed in the Enpage Editor
     name: "People",
-    // Schema of the data source (using zod)
+    // Schema of the data source
     schema: ds.Array(
       ds.Object({
         firstName: ds.String(),
@@ -82,7 +86,7 @@ export const datasources = defineDataSources({
 
 
 Enpage provides a large range of built-in External Data Sources that you can use with minimal configuration (such as Youtube, Twitter, Instagram, etc.).
-The complete list can be found [here](./built-in/).
+The complete list can be found [here](./external/).
 
 ### Example of External Data Sources
 

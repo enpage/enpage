@@ -2,7 +2,6 @@
 <html>
 <!--
 This is an example of a Enpage template.
-
 Important:
 - A template MUST a least have one <section> element under the <body> tag.
 - Multiple <section> elements allow to simulate a multi-pages website.
@@ -18,6 +17,7 @@ Important:
 
   <!-- Styles -->
   <link rel="stylesheet" href="./assets/css/styles.css" />
+
 
   <!--
     Local scripts should be loaded as modules (type="module").
@@ -66,33 +66,8 @@ Important:
         </ep-for>
       </ul>
 
-
-      <!-- Using a template tag to loop through the links
-      <ul class="mt-10 flex w-full flex-col gap-2">
-        <template>
-          {% for link in data.links %}
-          <li class="flex items-center gap-3 text-shadow-sm shadow-black/20 rounded-md bg-white/10
-           text-white/80 hover:bg-white/20 group-hover/editor:bg-white/10">
-            <a class="flex-1 p-2.5 font-medium " href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
-          </li>
-          {% endfor %}
-        </template>
-      </ul>
-      -->
-
-
-      <!-- conditional template
-      <template>
-          {% if attributes.testBoolTrue%}
-          <p>Test bool is true</p>
-          {% endif %}
-      </template>
-      -->
-
-      <!-- conditions
-      <p ep-if="{{ attributes.testBoolTrue == false }}">Test bool is false using ep-if</p>
       <p ep-if="attributes.testBoolTrue == true">Test bool is true using ep-if</p>
-      -->
+      <p ep-if="{{ attributes.testBoolTrue == false }}">Test bool is false using ep-if</p>
 
       <!-- ep-bind
       <p ep-bind>ep-bind should be true: {{ attributes.testBoolTrue }}</p>

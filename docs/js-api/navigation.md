@@ -1,47 +1,98 @@
-# Navigation methods
+# Navigation methods and attributes
 
 ::: tip About
-Navigation methods only make sense when used in multi-page templates.
+Navigation methods or attributes shall only be used in the context of multi-pages templates.
 :::
 
-## `enpage.nextPage()`
+## `ep-next-page / enpage.nextPage()`
 
 Navigates to the next page if available.
 
 ```html
+<!-- Using the attribute (preferred way) -->
+<button ep-next-page>Next</button>
+
+<!-- Hide the element if there is no next page -->
+<button ep-next-page="auto-hide">Next</button>
+
+<!-- Or disable it -->
+<button ep-next-page="auto-disable">Next</button>
+
+<!-- Using the method -->
 <button onclick="enpage.nextPage()">Next</button>
 ```
 
-## `enpage.previousPage()`
+## `ep-previous-page / enpage.previousPage()`
 
 Navigates to the previous page if available.
 
 ```html
+<!-- Using the attribute (preferred way) -->
+<button ep-previous-page>Previous</button>
+
+<!-- Hide the element if there is no previous page -->
+<button ep-previous-page="auto-hide">Previous</button>
+
+<!-- Or disable it -->
+<button ep-previous-page="auto-disable">Previous</button>
+
+<!-- Using the method -->
 <button onclick="enpage.previousPage()">Previous</button>
 ```
 
-## `enpage.goToPage(page: number)`
+
+## `ep-goto / enpage.goToPage(page: number)`
 
 Navigates to a specific page. The page number is 0-based.
 
 ```html
+<!-- Using the attribute (preferred way) -->
+<button ep-goto="2">Go to page 3</button>
+
+<!-- Hide the element if the page is the current one -->
+<button ep-goto="2" ep-auto-hide>Go to page 3</button>
+
+<!-- Or disable it -->
+<button ep-goto="2" ep-auto-disable>Go to page 3</button>
+
+<!-- Using the method -->
 <button onclick="enpage.goToPage(2)">Go to page 3</button>
 ```
 
-## `enpage.firstPage()`
+## `ep-first-page / enpage.firstPage()`
 
-Navigates to the first page. This is equivalent to `enpage.goToPage(0)`.
+Navigates to the first page.
 
 ```html
+<!-- Using the attribute (preferred way) -->
+<button ep-first-page>Go to first page</button>
+
+<!-- Hide the element if the page is the current one -->
+<button ep-first-page="auto-hide">Go to first page</button>
+
+<!-- Or disable it -->
+<button ep-first-page="auto-disable">Go to first page</button>
+
+<!-- Using the method -->
 <button onclick="enpage.firstPage()">Go to first page</button>
 ```
 
-## `enpage.lastPage()`
+
+## `ep-last-page / enpage.lastPage()`
 
 Navigates to the last page.
-This is equivalent to `enpage.goToPage(enpage.totalPages - 1)`.
 
 ```html
+<!-- Using the attribute (preferred way) -->
+<button ep-last-page>Go to last page</button>
+
+<!-- Hide the element if the page is the current one -->
+<button ep-last-page="auto-hide">Go to last page</button>
+
+<!-- Or disable it -->
+<button ep-last-page="auto-disable">Go to last page</button>
+
+<!-- Using the method -->
 <button onclick="enpage.lastPage()">Go to last page</button>
 ```
 
@@ -50,7 +101,7 @@ This is equivalent to `enpage.goToPage(enpage.totalPages - 1)`.
 Returns the current page number (0-based).
 
 ```html
-<p ep-bind>Current page: {{ enpage.currentPage }}</p>
+<p>Current page: <slot name="enpage.currentPage"></slot></p>
 ```
 
 ## `enpage.totalPages`
@@ -58,21 +109,15 @@ Returns the current page number (0-based).
 Returns the total number of pages.
 
 ```html
-<p ep-bind>Total pages: {{ enpage.totalPages }}</p>
+<p>Total pages: <slot name="enpage.totalPages"></slot></p>
 ```
 
 ## `enpage.canGoForward`
 
 `true` if there is a next page available.
 
-```html
-<button ep-bind:disabled="{{ enpage.canGoForward == false }}" onclick="enpage.nextPage()">Next</button>
-```
 
 ## `enpage.canGoBack`
 
 `true` if there is a previous page available.
 
-```html
-<button ep-bind:disabled="{{ enpage.canGoBack == false }}" onclick="enpage.previousPage()">Previous</button>
-```

@@ -16,7 +16,7 @@ Data Records are defined in the `enpage.config.js` file using the `defineDataRec
 Define as many Data Records as you want.
 
 :::warning Difference between Data Records and Data Sources
-Data Records are used to save data submitted by users, while Data Sources are used to fetch data from external sources. Data Records
+Data Records are used to save data submitted by users, while Data Sources are used to fetch data to be displayed in templates. Data Records
 cannot be consumed by templates, while Data Sources can.
 :::
 
@@ -79,7 +79,7 @@ export const datarecords = defineDataRecords({
 ## External Data Records
 
 When using external Data Records, data is saved in a third-party service (such as an API, Google Sheets, Airtable, etc.).
-No data is saved within Enpage, and data cannot be retrieved via the Enpage Dashboard or the Enpage API.
+As no data is saved to Enpage in this case, it cannot be retrieved through the Enpage Dashboard or the Enpage API.
 
 ### Using Built-In External Data Records
 

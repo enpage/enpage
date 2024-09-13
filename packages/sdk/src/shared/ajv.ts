@@ -6,7 +6,22 @@ export const ajv = new Ajv({
 });
 
 // Add formats to Ajv
-addFormats(ajv);
+addFormats(ajv, [
+  "date-time",
+  "time",
+  "date",
+  "email",
+  "hostname",
+  "ipv4",
+  "ipv6",
+  "uri",
+  "uri-reference",
+  "uuid",
+  "uri-template",
+  "json-pointer",
+  "relative-json-pointer",
+  "regex",
+]);
 
 ajv.addFormat("date-object", {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>

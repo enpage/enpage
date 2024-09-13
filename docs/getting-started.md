@@ -33,14 +33,29 @@ pnpm create enpage@latest my-template # Create in a new dir `my-template`
 Then, follow the instructions in the terminal to create your new template.
 You can start building your template by editing the files in the `my-template` directory.
 
-To preview your template, simply go to your template directory and run `npm run dev`:
+To preview your template, simply go to your template directory and run the `dev` command:
 
-```bash
+::: code-group
+
+```bash [Using npm]
 cd my-template
 npm run dev
 ```
 
-This will start a local development server, allowing you to live edit and preview your template directly in the browser.
+```bash [Using yarn]
+cd my-template
+yarn dev
+```
+
+```bash [Using pnpm]
+cd my-template
+pnpm dev
+```
+
+:::
+
+
+This will start a local development server, allowing you to live edit and preview your template directly in your browser.
 
 ## Template structure
 

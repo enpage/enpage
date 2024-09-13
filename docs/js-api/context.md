@@ -8,9 +8,8 @@ Hold the current page context.
 
 ```javascript{1}
 const { attributes, data } = enpage.context;
-const firstName = attributes.firstName;
 
-console.log("Hello %s", firstName);
+console.log("Hello %s", attributes.firstName);
 ```
 
 ```typescript
@@ -20,3 +19,6 @@ interface Context {
   attributes: AttributesRecords;
 }
 ```
+
+See also [Attributes](../guides/templates/attributes) and [Data Sources](../guides/data-sources).
+

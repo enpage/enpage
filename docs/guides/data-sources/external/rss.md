@@ -1,4 +1,4 @@
-# RSS Data Source
+# RSS / Atom Data Source
 
 :::warning TODO
 This data source is not yet implemented.
