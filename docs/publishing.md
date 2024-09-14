@@ -7,13 +7,17 @@ Once you have finished developing your template, you can publish it to the Enpag
 Before you can publish your template, you need to have an Enpage account. If you don't have one yet, you can [sign up here](https://enpage.co).
 
 
-## Settings
+## Publishing Settings
 
-### Template privacy
+### Privacy
 
 When you publish a template, you can choose whether it should be public or private.
 Public templates can be used by anyone, while private templates are only accessible to you or your organization.
 
+### Category
+
+You have to assign your template to a category. This helps users filter templates when searching for a template to use. The Enpage team will review the category you choose and may change it if it doesn't fit the template.
+If you can't find a suitable category, you can suggest a new one or use the "Other" category.
 
 ### Readme file
 
