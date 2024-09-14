@@ -94,46 +94,46 @@ export default defineConfig({
             link: "/guides/data-sources/external/",
             collapsed: true,
             items: [
-              {
-                text: "Generic Formats",
-                items: [
-                  { text: "CSV", link: "/guides/data-sources/external/csv" },
-                  { text: "RSS", link: "/guides/data-sources/external/rss" },
-                  { text: "JSON", link: "/guides/data-sources/external/json" },
-                  // { text: "XML", link: "/guides/data-sources/external/xml" },
-                  // { text: "GraphQL", link: "/guides/data-sources/external/graphql" },
-                ],
-              },
-              {
-                text: "Spreadsheets",
-                items: [
-                  { text: "Airtable", link: "/guides/data-sources/external/airtable" },
-                  { text: "Google Sheets", link: "/guides/data-sources/external/google-sheets" },
-                  { text: "Microsoft Excel", link: "/guides/data-sources/external/excel" },
-                  { text: "Smartsheet", link: "/guides/data-sources/external/smartsheet" },
-                  { text: "Zoho Sheet", link: "/guides/data-sources/external/zoho-sheet" },
-                ],
-              },
-              {
-                text: "Workspace",
-                items: [
-                  { text: "Notion", link: "/guides/data-sources/external/notion" },
-                  { text: "Evernote", link: "/guides/data-sources/external/evernote" },
-                  { text: "Microsoft OneNote", link: "/guides/data-sources/external/onenote" },
-                  { text: "Asana", link: "/guides/data-sources/external/asana" },
-                  { text: "Monday.com", link: "/guides/data-sources/external/monday" },
-                  { text: "Jira", link: "/guides/data-sources/external/jira" },
-                ],
-              },
-              {
-                text: "File Storage",
-                items: [
-                  { text: "Dropbox", link: "/guides/data-sources/external/dropbox" },
-                  { text: "Google Drive", link: "/guides/data-sources/external/google-drive" },
-                  { text: "OneDrive", link: "/guides/data-sources/external/onedrive" },
-                  { text: "Box", link: "/guides/data-sources/external/box" },
-                ],
-              },
+              // {
+              //   text: "Generic Formats",
+              //   items: [
+              //     { text: "CSV", link: "/guides/data-sources/external/csv" },
+              //     { text: "RSS", link: "/guides/data-sources/external/rss" },
+              //     { text: "JSON", link: "/guides/data-sources/external/json" },
+              //     // { text: "XML", link: "/guides/data-sources/external/xml" },
+              //     // { text: "GraphQL", link: "/guides/data-sources/external/graphql" },
+              //   ],
+              // },
+              // {
+              //   text: "Spreadsheets",
+              //   items: [
+              //     { text: "Airtable", link: "/guides/data-sources/external/airtable" },
+              //     { text: "Google Sheets", link: "/guides/data-sources/external/google-sheets" },
+              //     { text: "Microsoft Excel", link: "/guides/data-sources/external/excel" },
+              //     { text: "Smartsheet", link: "/guides/data-sources/external/smartsheet" },
+              //     { text: "Zoho Sheet", link: "/guides/data-sources/external/zoho-sheet" },
+              //   ],
+              // },
+              // {
+              //   text: "Workspace",
+              //   items: [
+              //     { text: "Notion", link: "/guides/data-sources/external/notion" },
+              //     { text: "Evernote", link: "/guides/data-sources/external/evernote" },
+              //     { text: "Microsoft OneNote", link: "/guides/data-sources/external/onenote" },
+              //     { text: "Asana", link: "/guides/data-sources/external/asana" },
+              //     { text: "Monday.com", link: "/guides/data-sources/external/monday" },
+              //     { text: "Jira", link: "/guides/data-sources/external/jira" },
+              //   ],
+              // },
+              // {
+              //   text: "File Storage",
+              //   items: [
+              //     { text: "Dropbox", link: "/guides/data-sources/external/dropbox" },
+              //     { text: "Google Drive", link: "/guides/data-sources/external/google-drive" },
+              //     { text: "OneDrive", link: "/guides/data-sources/external/onedrive" },
+              //     { text: "Box", link: "/guides/data-sources/external/box" },
+              //   ],
+              // },
               {
                 text: "Social Media",
                 items: [
