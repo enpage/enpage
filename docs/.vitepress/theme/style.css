@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /**
  * Customize default theme styling by overriding CSS variables:
  * https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
@@ -68,6 +72,8 @@
   --vp-c-danger-2: var(--vp-c-red-2);
   --vp-c-danger-3: var(--vp-c-red-3);
   --vp-c-danger-soft: var(--vp-c-red-soft);
+
+
 }
 
 /**
@@ -136,9 +142,8 @@
   --vp-nav-logo-height: 70px;
 }
 
-.VPNav,
-.VPNavBar {
-  transition: none !important;
+.VPNavBar:not(.has-sidebar) {
+  @apply bg-white/60 dark:bg-black/60;
 }
 
 .VPSidebar {
@@ -169,13 +174,12 @@ div.VPContent.is-home {
 }
 
 h1.name {
-  padding-top: 3rem;
-  font-weight: 800 !important;
+  @apply !text-4xl md:!text-6xl 2xl:!text-8xl pt-20 text-balance;
 }
 
 h1.name,
 p.tagline {
-  max-width: minmax(calc(100dvw / 2), 400px) !important;
+  max-width: max(calc(100dvw / 2), 300px) !important;
   text-align: center;
   margin: auto !important;
 }

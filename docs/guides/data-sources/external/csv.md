@@ -1,4 +1,4 @@
-# CSV Source
+# CSV Data Source
 
 Use the `csv` data source to fetch data from a CSV file.
 
@@ -10,8 +10,8 @@ Use the `csv` data source to fetch data from a CSV file.
 import { defineDataSources } from "@enpage/sdk/datasources";
 
 export const datasources = defineDataSources({
-  // Define a data source named "myfeed" using the "rss" provider
-  myfeed: {
+  // Define a data source named "products" using the "csv" provider
+  products: {
     name: "Products",
     provider: "csv"
   }
@@ -22,7 +22,6 @@ export const datasources = defineDataSources({
 ## Schema
 
 :::tip Note
-The schema displayed below is for reference only. It does not need to be included in your project.
+There is no predefined schema for the `csv` data source. You can define your own schema based on the JSON structure returned by the API.
 :::
 
-<<< @../../packages/sdk/src/shared/datasources/rss/schema.ts

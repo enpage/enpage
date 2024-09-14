@@ -10,7 +10,9 @@ Here is an example of how to define Builder settings in your template:
 import { defineBuilderSettings } from "@enpage/sdk/builder-settings";
 
 defineBuilderSettings({
-  editorOutlineColor: "#FF9900", // customize the outline color of the editor when an element is selected/hovered
+  // Customize the outline color of the editor
+  // when an element is selected/hovered
+  editorOutlineColor: "#FF9900",
 });
 ```
 

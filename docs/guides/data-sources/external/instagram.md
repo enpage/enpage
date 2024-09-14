@@ -32,4 +32,4 @@ export const datasources = defineDataSources({
 The schema displayed below is for reference only. It does not need to be included in your project.
 :::
 
-<<< @../../packages/sdk/src/shared/datasources/instagram/feed/schema.ts
+<<< @../../packages/sdk/src/shared/datasources/external/instagram/feed/schema.ts

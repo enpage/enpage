@@ -161,7 +161,7 @@ export const attributes = defineAttributes({
 
 ## Built-in Attributes
 
-Enpage also defines a set of built-in attributes. Built-in attributes names start with `$`.
+Enpage defines a set of built-in attributes. Built-in attributes names start with `$`.
 
 ### List of built-in attributes
 

@@ -9,6 +9,7 @@ while Enpage will take care of the form validation and submission.
 ::: code-group
 
 ```html [index.html]
+<!-- Fill your Data record identifier in "ep-record" attribute -->
 <form ep-record="contactFormSubmissions">
   <p>
     <label for="name">Name</label>
@@ -30,12 +31,12 @@ while Enpage will take care of the form validation and submission.
     <button type="submit">Submit</button>
   </p>
 
-  <!-- Form error message -->
+  <!-- A global form error message -->
   <template ep-form-error>
     <p>There was an error submitting the form. Please try again.</p>
   </template>
 
-  <!-- confirmation message when data is saved -->
+  <!-- A global confirmation message when data is saved -->
   <template ep-form-success>
     <p>Thank you for your submission!</p>
   </template>

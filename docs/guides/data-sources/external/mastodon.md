@@ -31,4 +31,4 @@ export const datasources = defineDataSources({
 The schema displayed below is for reference only. It does not need to be included in your project.
 :::
 
-<<< @../../packages/sdk/src/shared/datasources/mastodon/status/schema.ts
+<<< @../../packages/sdk/src/shared/datasources/external/mastodon/status/schema.ts
