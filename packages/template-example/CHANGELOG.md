@@ -1,5 +1,14 @@
 # @enpage/template-example
 
+## 0.0.43
+
+### Patch Changes
+
+- [#175](https://github.com/enpage/enpage/pull/175) [`3c06df3`](https://github.com/enpage/enpage/commit/3c06df3135c4202f23535e50f0499b149f92ff1a) Thanks [@mattallty](https://github.com/mattallty)! - Refactor data sources
+
+- Updated dependencies [[`3c06df3`](https://github.com/enpage/enpage/commit/3c06df3135c4202f23535e50f0499b149f92ff1a)]:
+  - @enpage/sdk@0.0.43
+
 ## 0.0.42
 
 ### Patch Changes
