@@ -12,7 +12,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     data = {} as Record<string, unknown>;
     for (const key in cfg.datasources) {
       const provider = cfg.datasources[key].provider;
-      if (provider && provider !== "http-json") {
+      if (provider && provider !== "json") {
         data[key] = samples[provider];
       } else if ("sampleData" in cfg.datasources[key] && cfg.datasources[key].sampleData) {
         data[key] = cfg.datasources[key].sampleData;

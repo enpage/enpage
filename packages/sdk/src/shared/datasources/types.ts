@@ -37,7 +37,7 @@ const providers = [
   "threads-media",
   "tiktok-video",
   "youtube-list",
-  "http-json",
+  "json",
 ] as const;
 
 export type DatasourceProvider = (typeof providers)[number];

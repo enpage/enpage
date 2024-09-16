@@ -9,13 +9,15 @@ They can be used to create lists of links, images, or any other data that you wa
 Enpage provides a set of built-in internal data sources that you can use to create dynamic content in your templates:
 
 
+- [FAQ](./faq.md): A list of frequently asked questions with a question and answer.
+- [Links](./links.md): A list of links with an optional icon and description.
+<!--
 - [Blog](./blog.md): A list of blog posts with a title, description, date, and image, etc.
 - [Contact Information](./contact.md): Contact information with an address, phone number, email, and social media links.
 - [Events](./events.md): A list of events with a title, description, date, and image.
-- [FAQ](./faq.md): A list of frequently asked questions with a question and answer.
+
 - [Features](./features.md): A list of features with a title, description, and icon.
 - [Gallery](./gallery.md): A list of images.
-- [Links](./links.md): A list of links with an optional icon and description.
 - [People](./people.md): A list of people with a name, description, and image.
 - [Pricing Plans](./pricing-plans.md): A list of pricing plans with a title, description, price, and features.
 - [Products](./products.md): A list of products with a title, description, price, and image.
@@ -25,6 +27,6 @@ Enpage provides a set of built-in internal data sources that you can use to crea
 - [Testimonials](./testimonials.md): A list of testimonials with a name, description, and image.
 - [Timeline](./timeline.md): A list of events with a title, description, date, and image.
 
-
+ -->
 
 

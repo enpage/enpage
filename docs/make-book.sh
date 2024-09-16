@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the output file name
-OUTPUT_FILE="_book.md"
+OUTPUT_FILE="../_book.md"
 
 # Remove the output file if it already exists
 rm -f $OUTPUT_FILE

@@ -9,7 +9,7 @@
 
 ### Testing the build
 
-> ⚠️ Important: the following steps work for `npm`but not for `pnpm`
+> ⚠️ Important: the following steps work for `npm` but not for `pnpm`
 
 1. Clone this repository and run :
   1. `pnpm install` and `pnpm build` at the root.

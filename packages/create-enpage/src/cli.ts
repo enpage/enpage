@@ -202,7 +202,11 @@ program
     const pm = getPackageManager();
     const runCmd = getPackageManagRunCmd(pm);
 
-    execSync(`${pm} install`, { cwd: destination, stdio: "inherit" });
+    if (pm === "pnpm") {
+      execSync(`${pm} install --ignore-workspace`, { cwd: destination, stdio: "inherit" });
+    } else {
+      execSync(`${pm} install`, { cwd: destination, stdio: "inherit" });
+    }
 
     console.log("");
     console.log(`${chalk.cyan("All done!")}\n`);

@@ -17,7 +17,7 @@ export default defineConfig({
       { text: "Home", link: "/" },
       { text: "Quick start", link: "/getting-started" },
       { text: "Help", link: "/help" },
-      { text: "Contribute", link: "/contribute" },
+      { text: "Publish your template", link: "/publishing" },
       { text: "Enpage.co", link: "https://enpage.co" },
     ],
     sidebar: [
@@ -36,7 +36,7 @@ export default defineConfig({
             link: "/guides/templates/",
           },
           { text: "Using Javascript / Typescript", link: "/guides/templates/javascript" },
-          { text: "Styling with CSS", link: "/guides/templates/css" },
+          { text: "Styling", link: "/guides/templates/css" },
           {
             text: "Assets (images & fonts)",
             collapsed: true,
@@ -94,13 +94,57 @@ export default defineConfig({
             link: "/guides/data-sources/external/",
             collapsed: true,
             items: [
-              { text: "Instagram", link: "/guides/data-sources/external/instagram" },
-              { text: "Mastodon", link: "/guides/data-sources/external/mastodon" },
-              { text: "Threads", link: "/guides/data-sources/external/threads" },
-              { text: "TikTok", link: "/guides/data-sources/external/tiktok" },
-              { text: "YouTube", link: "/guides/data-sources/external/youtube" },
-              { text: "RSS", link: "/guides/data-sources/external/rss" },
-              { text: "HTTP-JSON", link: "/guides/data-sources/external/http-json" },
+              // {
+              //   text: "Generic Formats",
+              //   items: [
+              //     { text: "CSV", link: "/guides/data-sources/external/csv" },
+              //     { text: "RSS", link: "/guides/data-sources/external/rss" },
+              //     { text: "JSON", link: "/guides/data-sources/external/json" },
+              //     // { text: "XML", link: "/guides/data-sources/external/xml" },
+              //     // { text: "GraphQL", link: "/guides/data-sources/external/graphql" },
+              //   ],
+              // },
+              // {
+              //   text: "Spreadsheets",
+              //   items: [
+              //     { text: "Airtable", link: "/guides/data-sources/external/airtable" },
+              //     { text: "Google Sheets", link: "/guides/data-sources/external/google-sheets" },
+              //     { text: "Microsoft Excel", link: "/guides/data-sources/external/excel" },
+              //     { text: "Smartsheet", link: "/guides/data-sources/external/smartsheet" },
+              //     { text: "Zoho Sheet", link: "/guides/data-sources/external/zoho-sheet" },
+              //   ],
+              // },
+              // {
+              //   text: "Workspace",
+              //   items: [
+              //     { text: "Notion", link: "/guides/data-sources/external/notion" },
+              //     { text: "Evernote", link: "/guides/data-sources/external/evernote" },
+              //     { text: "Microsoft OneNote", link: "/guides/data-sources/external/onenote" },
+              //     { text: "Asana", link: "/guides/data-sources/external/asana" },
+              //     { text: "Monday.com", link: "/guides/data-sources/external/monday" },
+              //     { text: "Jira", link: "/guides/data-sources/external/jira" },
+              //   ],
+              // },
+              // {
+              //   text: "File Storage",
+              //   items: [
+              //     { text: "Dropbox", link: "/guides/data-sources/external/dropbox" },
+              //     { text: "Google Drive", link: "/guides/data-sources/external/google-drive" },
+              //     { text: "OneDrive", link: "/guides/data-sources/external/onedrive" },
+              //     { text: "Box", link: "/guides/data-sources/external/box" },
+              //   ],
+              // },
+              {
+                text: "Social Media",
+                items: [
+                  { text: "Facebook", link: "/guides/data-sources/external/facebook" },
+                  { text: "Instagram", link: "/guides/data-sources/external/instagram" },
+                  { text: "Mastodon", link: "/guides/data-sources/external/mastodon" },
+                  { text: "Threads", link: "/guides/data-sources/external/threads" },
+                  { text: "TikTok", link: "/guides/data-sources/external/tiktok" },
+                  { text: "YouTube", link: "/guides/data-sources/external/youtube" },
+                ],
+              },
             ],
           },
         ],
@@ -124,7 +168,7 @@ export default defineConfig({
               { text: "Google Sheets", link: "/guides/data-records/built-in/google-sheets" },
               { text: "Airtable", link: "/guides/data-records/built-in/airtable" },
               { text: "Notion", link: "/guides/data-records/built-in/notion" },
-              { text: "HTTP Query", link: "/guides/data-records/built-in/http-query" },
+              { text: "Http Query", link: "/guides/data-records/built-in/http-query" },
             ],
           },
         ],
@@ -139,7 +183,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "❤️ Contribute",
+        text: "❤️ Contribute to the SDK",
         link: "/contribute",
       },
     ],
@@ -149,7 +193,7 @@ export default defineConfig({
     socialLinks: [{ icon: "github", link: "https://github.com/enpage/enpage" }],
     footer: {
       message: "Enpage SDK is released under AGPL-3.0 license",
-      copyright: "Copyright © 2024-present Flippable- Made with ❤️ in Paris",
+      copyright: "Copyright © 2024-present Flippable - Made with ❤️ in Paris",
     },
   },
   head: [

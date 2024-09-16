@@ -1,11 +1,11 @@
 import type { TSchema, DatasourceProviderManifest } from "~/shared/datasources";
 import { MAX_LIVE_DATASOURCES } from "./constants";
 import type { GenericPageConfig } from "~/shared/page-config";
-import fetchHttpJSON from "~/shared/datasources/http/json/fetcher";
+import fetchHttpJSON from "~/shared/datasources/external/json/fetcher";
 import type { EnpageEnv } from "~/shared/env";
-import type { HttpJsonOptions } from "~/shared/datasources/http/json/options";
+import type { HttpJsonOptions } from "~/shared/datasources/external/json/options";
 
-type DatasourceLiveOnlyManifest = DatasourceProviderManifest<"http-json", HttpJsonOptions, TSchema>;
+type DatasourceLiveOnlyManifest = DatasourceProviderManifest<"json", HttpJsonOptions, TSchema>;
 type DatasourceLiveOnlyManifestEntry = [string, DatasourceLiveOnlyManifest];
 
 export async function fetchDatasources(env: EnpageEnv, pageConfig: GenericPageConfig) {
@@ -15,7 +15,7 @@ export async function fetchDatasources(env: EnpageEnv, pageConfig: GenericPageCo
   }
 
   let eligibleDatasources = Object.entries(datasources).filter(
-    ([, datasource]) => datasource.provider === "http-json",
+    ([, datasource]) => datasource.provider === "json",
   ) as DatasourceLiveOnlyManifestEntry[];
 
   const count = eligibleDatasources.length;

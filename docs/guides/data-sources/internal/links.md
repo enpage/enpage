@@ -2,10 +2,6 @@
 
 This built-in data source allows you to create a list of links that can be used in your templates.
 
-## Provider name
-
-Use the provider name `enpage-links` to create a list of generic links.
-
 ## Usage
 
 
@@ -15,9 +11,14 @@ Use the provider name `enpage-links` to create a list of generic links.
 import { defineDataSources } from "@enpage/sdk/datasources";
 
 export const datasources = defineDataSources({
+  // Define a data source named "mylinks" using the "links" provider
   mylinks: {
+    // Label of the data source that will be displayed in the Enpage Editor
     name: "Links",
-    provider: "enpage-links",
+    // use the built-in "links" provider
+    provider: "links",
+    // Sample data that will be used during development
+    // or when the template is first loaded in the Enpage Editor
     sampleData: [
       { title: "Enpage", url: "https://enpage.co" },
       { title: "Google", url: "https://google.com" },
@@ -27,30 +28,10 @@ export const datasources = defineDataSources({
 });
 ```
 
-### Or add it to your template using the Enpage CLI
-
-This will automatically add the data source to your `enpage.config.json` file.
-
-::: code-group
-
-```bash [Using npm]
-npm run add-datasource enpage-links mylinks
-```
-
-```bash [Using yarn]
-yarn add-datasource enpage-links mylinks
-```
-
-```bash [Using pnpm]
-pnpm add-datasource enpage-links mylinks
-```
-:::
-
-
 ## Schema
 
 :::tip Note
-The schema displayed below is just for reference. You don't need to include it in your project.
+The schema displayed below is for reference only. It does not need to be included in your project.
 :::
 
 
