@@ -14,5 +14,5 @@ console.log("Hello %s", attributes.firstName);
 
 
 
-See also [Attributes](../guides/templates/attributes) and [Data Sources](../guides/data-sources).
+See also [Attributes](../guides/templates/attributes) and [Data Sources](../guides/data-sources/).
 
