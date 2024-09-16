@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.39
+
+### Patch Changes
+
+- [#175](https://github.com/enpage/enpage/pull/175) [`3c06df3`](https://github.com/enpage/enpage/commit/3c06df3135c4202f23535e50f0499b149f92ff1a) Thanks [@mattallty](https://github.com/mattallty)! - Refactor data sources
+
 ## 0.0.38
 
 ## 0.0.37
