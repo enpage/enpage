@@ -1,5 +1,14 @@
 # @enpage/editor
 
+## 0.0.34
+
+### Patch Changes
+
+- [#187](https://github.com/enpage/enpage/pull/187) [`8dd3d88`](https://github.com/enpage/enpage/commit/8dd3d88c24c2370b4af070d890356232584af08b) Thanks [@mattallty](https://github.com/mattallty)! - Rework plugins
+
+- Updated dependencies [[`8dd3d88`](https://github.com/enpage/enpage/commit/8dd3d88c24c2370b4af070d890356232584af08b)]:
+  - @enpage/sdk@0.0.44
+
 ## 0.0.33
 
 ### Patch Changes
