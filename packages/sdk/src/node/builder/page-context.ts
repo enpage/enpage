@@ -1,5 +1,5 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { PageContext } from "~/shared/page-context";
+import type { PageContext } from "~/shared/page-config";
 import { samples } from "~/shared/datasources/samples";
 import type { AttributesResolved } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";
@@ -22,8 +22,9 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const attributes: AttributesResolved<any> = {};
-  for (const key in cfg.attributes) {
-    attributes[key] = cfg.attributes[key].defaultValue;
+
+  for (const key in cfg.attributes.properties) {
+    attributes[key] = cfg.attributes.properties[key].default;
   }
 
   return { data, attr: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;

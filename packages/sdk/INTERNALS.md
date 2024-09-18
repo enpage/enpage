@@ -26,6 +26,41 @@ Table of differences between the 3 environments:
 The HTML document itself is the source of truth for the editor state.
 Liquid tags are used to define loops, conditions, and other logic in the HTML document.
 
+## Server-side rendering
+
+### Flow
+
+The SSR flow is composed of 3 main steps:
+
+1. Incoming Request
+2. Page Config handler: retrieves the page configuration including context (attributes and data sources)
+  - In dev mode, the page configuration is loaded from the virtual file `virtual:enpage-page-config.json`
+  - In local-preview mode, the page configuration is loaded from cache or from enpage.config.js (the local-preview is a node environment)
+  - In production mode, the page configuration is fetched from the API
+3. Render handler: renders the HTML document using the page configuration
+  - In dev mode, renderer is loaded from the virtual `virtual:vite-entry-server` file
+  - In production/local-preview mode, the renderer is loaded from the real vite-entry-server file
+  - The render function returns the HTML document and the state. Those are then merged and returned to the client.
+
+## Vite
+
+### Flow
+
+The `vite-config.ts` is the equivalent of the `vite.config.js` file in a Vite project. It only load the enpage plugin.
+
+### Vite plugins:
+
+- enpage meta: loads all enpage plugins
+- enpage: main plugin defining the vite config
+- enpage:virtual-files: plugin to handle virtual files. Hooks used: `resolveId`, `load`. It returns the content of the virtual files:
+  - `virtual:enpage-template:index.html`: the main index.html template file
+  - `virtual:vite-entry-server`: the entry server file
+  - `virtual:enpage-page-config.json`: returns  a virtual json file containing the GenericPageConfig.
+- enpage:context: plugin to handle the PageContext. In dev mode, it generates a fake context. In non-ssr build mode, it fetches the context from the server. Hooks used: `config`. It adds the
+`enpageContext` property (of type `PageContext`) to the vite config.
+- enpage:render: plugin to handle the rendering of the main index.html file. It uses the transformIndexHtml hook to render the HTML document using the page context. Hooks used: `transformIndexHtml`, `configureServer`.
+- enpage:base-url (dev only): plugin to handle the base URL of the website. It uses the transformIndexHtml hook to inject the base URL in the HTML document. Hooks used: `transformIndexHtml`, `configureServer`.
+- enpage:manifest: plugin to handle the manifest file. It uses the `generateBundle` hook to generate the enpage.manifest.json file.
 
 ## Rendering flow
 

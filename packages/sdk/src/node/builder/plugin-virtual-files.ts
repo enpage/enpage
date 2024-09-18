@@ -3,8 +3,9 @@ import type { GenericPageConfig } from "~/shared/page-config";
 import type { ConfigEnv, Plugin } from "vite";
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
-import type { GenericPageContext } from "~/shared/page-context";
+import type { GenericPageContext } from "~/shared/page-config";
 import type { EnpageEnv } from "~/shared/env";
+import { store } from "./store";
 
 const virtualIndexId = "virtual:enpage-template:index.html";
 const resolvedVirtualIndexId = `\0${virtualIndexId}`;
@@ -47,9 +48,8 @@ export const virtualFilesPlugin = (
         case resolvedVirtualIndexId: {
           const htmlPath = resolve(process.cwd(), "index.html");
           const htmlContent = readFileSync(htmlPath, "utf-8");
-          // return htmlContent;
-          // return { code: htmlContent };
-          return `export const html = ${JSON.stringify(htmlContent)};`;
+          return `export const html = ${JSON.stringify(htmlContent)};
+          export const slugs = ${JSON.stringify(store.get("slugs"))};`;
         }
         case resolvedVirtualViteEntryServerId: {
           return `export { render } from "@enpage/sdk/builder/vite-entry-server";`;

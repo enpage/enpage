@@ -5,7 +5,8 @@ import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-w
 declare global {
   interface Window {
     enpage: import("./src/browser/js-api").EnpageJavascriptAPI;
-    __ENPAGE_STATE__: ConstructorParameters<typeof import("./src/browser/js-api").EnpageJavascriptAPI>;
+    __ENPAGE_STATE__: import("./src/browser/js-api").State;
+    __ENPAGE_ROUTING__: import("./src/browser/js-api").Routing;
   }
 }
 

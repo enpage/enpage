@@ -1,9 +1,8 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import type { ConfigEnv, Plugin } from "vite";
-import type { PageContext } from "~/shared/page-context";
-import { createFakeContext, fetchContext } from "./context";
+import type { PageContext } from "~/shared/page-config";
+import { createFakeContext, fetchContext } from "./page-context";
 import type { EnpageEnv } from "~/shared/env";
-import type { Logger } from "../shared/logger";
 
 export const contextPlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, env: EnpageEnv): Plugin => {
   const isBuildMode = viteEnv.command === "build";
@@ -23,7 +22,7 @@ export const contextPlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, env
 
       // If in dev mode, use fake context
       if (!isBuildMode) {
-        // console.warn("Using fake context.");
+        console.warn("Using fake context.");
         context = createFakeContext(cfg);
         // If in build mode, fetch context from API if not SSR build
       } else if (!isSsrBuild) {
