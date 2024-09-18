@@ -206,8 +206,8 @@ importers:
   packages/sdk:
     dependencies:
       '@date-fns/utc':
-        specifier: 1.2.0
-        version: 1.2.0
+        specifier: 2.1.0
+        version: 2.1.0
       '@enpage/style-system':
         specifier: workspace:*
         version: link:../style-system
@@ -1151,8 +1151,8 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  '@date-fns/utc@1.2.0':
-    resolution: {integrity: sha512-YLq+crMPJiBmIdkRmv9nZuZy1mVtMlDcUKlg4mvI0UsC/dZeIaGoGB5p/C4FrpeOhZ7zBTK03T58S0DFkRNMnw==}
+  '@date-fns/utc@2.1.0':
+    resolution: {integrity: sha512-176grgAgU2U303rD2/vcOmNg0kGPbhzckuH1TEP2al7n0AQipZIy9P15usd2TKQCG1g+E1jX/ZVQSzs4sUDwgA==}
 
   '@docsearch/css@3.6.1':
     resolution: {integrity: sha512-VtVb5DS+0hRIprU2CO6ZQjK2Zg4QU5HrDM1+ix6rT0umsYvFvatMAnf97NHZlVWDaaLlx7GRfR/7FikANiM2Fg==}
@@ -6518,7 +6518,7 @@ snapshots:
     dependencies:
       postcss: 8.4.42
 
-  '@date-fns/utc@1.2.0': {}
+  '@date-fns/utc@2.1.0': {}
 
   '@docsearch/css@3.6.1': {}
 

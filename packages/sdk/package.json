@@ -33,7 +33,7 @@
     "enpage": "dist/node/cli/program.js"
   },
   "dependencies": {
-    "@date-fns/utc": "1.2.0",
+    "@date-fns/utc": "2.1.0",
     "@fullhuman/postcss-purgecss": "6.0.0",
     "@hattip/adapter-cloudflare-workers": "0.0.47",
     "@hattip/adapter-node": "0.0.47",
