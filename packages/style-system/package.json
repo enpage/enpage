@@ -24,7 +24,7 @@
   "license": "AGPL-3.0-only",
   "dependencies": {
     "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.13",
+    "@tailwindcss/typography": "^0.5.15",
     "@whiterussianstudio/tailwind-easing": "^1.0.0",
     "animate.css": "^4.1.1",
     "tailwind-scrollbar": "^3.1.0",
