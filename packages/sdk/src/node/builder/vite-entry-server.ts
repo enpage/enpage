@@ -1,5 +1,4 @@
-import type { GenericPageContext } from "~/shared/page-context";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig, GenericPageContext } from "~/shared/page-config";
 import invariant from "~/shared/utils/invariant";
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { ViteDevServer } from "vite";
@@ -7,13 +6,12 @@ import type { S3Client } from "~/server/common/node-s3-client";
 
 export type RenderOptions = {
   pageConfig: GenericPageConfig;
-  pageContext: GenericPageContext;
   s3Client?: S3Client | R2Bucket;
   vite?: ViteDevServer;
 };
 
 export async function render(url: URL, options: RenderOptions) {
-  const { pageContext, s3Client, vite } = options;
+  const { pageConfig, s3Client, vite } = options;
   const isProduction = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "local-preview";
   let html = "";
 
@@ -38,7 +36,11 @@ export async function render(url: URL, options: RenderOptions) {
   }
 
   // todo: adjust the state to match the current page
-  const state: Window["__ENPAGE_STATE__"] = [pageContext, 0, 1, []];
+  const { attr, data } = pageConfig;
+  const state: Window["__ENPAGE_STATE__"] = {
+    ctx: { attr, data },
+    pageIndex: 0,
+  };
 
   return {
     html,

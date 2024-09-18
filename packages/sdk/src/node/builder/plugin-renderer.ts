@@ -1,11 +1,12 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { GenericPageContext } from "~/shared/page-context";
-import { nanoid } from "nanoid";
+import type { GenericPageContext } from "~/shared/page-config";
 import { version } from "../../../package.json";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
+import { getPageSections, processPageSections } from "../../browser/page-sections";
+import { store } from "./store";
 
 /**
  * Renders the template based on the provided configuration and Vite environment.
@@ -36,14 +37,12 @@ export const renderTemplatePlugin = (
         next();
       });
     },
+
     transformIndexHtml: {
       order: "pre",
-      handler: async (html: string) => {
+      handler: async (html: string, ctx) => {
+        console.log("transformIndexHtml called");
         const context = enpageCtx;
-
-        // disable JSDOM errors otherwise we'll get a lot of noise
-        // for things like CSS imports or other new CSS features
-        // not recognized by JSDOM
         const { head, doc, body, dom } = createJSDOM(html);
 
         invariant(head, "No head element found in index.html");
@@ -77,11 +76,8 @@ export const renderTemplatePlugin = (
         // Hide sections when needed
         const sections = getPageSections(doc);
         const { slugs } = processPageSections(sections);
+        store.set("slugs", slugs);
 
-        // if (isSsrBuild) {
-        //   logger.info("SSR: rendering liquid templates");
-        //   html = await renderLiquid(dom.serialize(), context);
-        // }
         return dom.serialize();
       },
     },
@@ -118,6 +114,10 @@ window.enpage.addEventListener("afternavigate", initDevClient);`;
  */
 function createJSDOM(html: string) {
   const virtualConsole = new VirtualConsole();
+
+  // disable JSDOM errors otherwise we'll get a lot of noise
+  // for things like CSS imports or other new CSS features
+  // not recognized by JSDOM
   virtualConsole.sendTo(console, { omitJSDOMErrors: true });
 
   const dom = new JSDOM(html, { virtualConsole });
@@ -138,62 +138,6 @@ function processBody(cfg: EnpageTemplateConfig, body: HTMLBodyElement) {
     body.setAttribute("ep-editable", "");
     body.setAttribute("ep-label", "Background");
   }
-}
-
-/**
- * Retrieves all page sections from the document.
- * @param {Document} doc - The document to search for sections.
- */
-function getPageSections(doc: Document) {
-  const sections = doc.querySelectorAll("body > section");
-  if (!sections.length) {
-    throw Error("No sections found in the document");
-  }
-  return sections;
-}
-
-/**
- * Processes page sections, setting attributes and generating slugs.
- * @param {NodeListOf<Element>} sections - The list of section elements to process.
- */
-function processPageSections(sections: NodeListOf<Element>) {
-  const slugs: string[] = [];
-  sections.forEach((section, index) => {
-    section.setAttribute("ep-label", `Page ${index + 1}`);
-    if (!section.getAttribute("id")) {
-      section.setAttribute("id", nanoid(7));
-    }
-    if (!section.getAttribute("ep-animate-appear")) {
-      section.setAttribute("ep-animate-appear", "fadeIn");
-    }
-    if (!section.getAttribute("ep-animate-disappear")) {
-      section.setAttribute("ep-animate-disappear", "fadeOut");
-    }
-    // add [ep-editable] if not present
-    if (!section.getAttribute("ep-editable")) {
-      section.setAttribute("ep-editable", "");
-    }
-    // hide all sections except the first one
-    if (index > 0) {
-      section.setAttribute("hidden", "");
-      let slug = section.getAttribute("ep-slug");
-      if (!slug) {
-        slug = nanoid(7);
-        section.setAttribute("ep-slug", slug);
-      }
-      slugs.push(slug);
-    } else {
-      // make sure the first section has role="main"
-      section.setAttribute("role", "main");
-      // make sure the first section has no slug
-      section.removeAttribute("ep-slug");
-      // hide it by default if it as an animation
-      if (section.hasAttribute("ep-animate-appear")) {
-        section.setAttribute("hidden", "");
-      }
-    }
-  });
-  return { slugs };
 }
 
 /**
@@ -281,17 +225,24 @@ function upsertHtmlElement(
   parent: HTMLElement,
   attributes: Record<string, string>,
 ) {
+  const setElAttributes = (el: Element, attributes: Record<string, string>) => {
+    for (const key in attributes) {
+      if (key === "innerText") {
+        el.textContent = attributes[key];
+      } else if (key === "innerHTML") {
+        el.innerHTML = attributes[key];
+      } else {
+        el.setAttribute(key, attributes[key]);
+      }
+    }
+  };
   let el = parent.querySelector(selector);
   if (!el) {
     el = doc.createElement(tagName);
-    for (const key in attributes) {
-      el.setAttribute(key, attributes[key]);
-    }
+    setElAttributes(el, attributes);
     parent.appendChild(el);
   } else {
-    for (const key in attributes) {
-      el.setAttribute(key, attributes[key]);
-    }
+    setElAttributes(el, attributes);
   }
 }
 
@@ -313,7 +264,7 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
 
   // title (always update)
   if (context?.attr.$siteTitle)
-    upsertHtmlElement("title", "title", doc, head, { textContent: context.attr.$siteTitle });
+    upsertHtmlElement("title", "title", doc, head, { innerText: context.attr.$siteTitle });
 
   // description (always update)
   if (context?.attr.$siteDescription)

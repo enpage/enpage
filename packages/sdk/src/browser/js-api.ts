@@ -1,15 +1,23 @@
-import type { PageContext } from "../shared/page-context";
+import type { PageContext } from "../shared/page-config";
 import type { NavigateEvent } from "./events";
 
+export type State = {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  ctx: PageContext<any, any>;
+  pageIndex: number;
+};
+
 export class EnpageJavascriptAPI extends EventTarget {
+  private _totalPages: number;
+
   constructor(
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    private ctx: PageContext<any, any>,
-    private pageIndex = 0,
-    private pagesCount = 1,
-    private pagesSlugs: string[] = [],
+    private state: State,
+    private _slugs: string[] = [],
   ) {
     super();
+    this._totalPages = this.slugs.length
+      ? this.slugs.length + 1
+      : Array.from(document.querySelectorAll("body > section")).length;
     this.setupListeners();
   }
 
@@ -18,10 +26,14 @@ export class EnpageJavascriptAPI extends EventTarget {
       const evt = e as NavigateEvent;
       const oldIndex = evt.detail.from;
       const newIndex = evt.detail.to;
-      const slug = this.pagesSlugs.at(newIndex - 1);
+      const slug = this.slugs.at(newIndex - 1);
 
-      this.pageIndex = newIndex;
-      history.pushState({ page: newIndex }, "", newIndex === 0 ? "/" : slug ? `/${slug}` : undefined);
+      this.state.pageIndex = newIndex;
+      history.pushState(
+        { page: newIndex },
+        "",
+        newIndex === 0 ? "/" : slug ? `/${slug}` : `/page-${newIndex}`,
+      );
 
       this.dispatchEvent(
         new CustomEvent("afternavigate", {
@@ -33,15 +45,15 @@ export class EnpageJavascriptAPI extends EventTarget {
   }
 
   get currentPage() {
-    return this.pageIndex;
+    return this.state.pageIndex;
   }
 
   get totalPages() {
-    return this.pagesCount;
+    return this._totalPages;
   }
 
   get context() {
-    return this.ctx;
+    return this.state.ctx;
   }
 
   nextPage() {
@@ -69,7 +81,7 @@ export class EnpageJavascriptAPI extends EventTarget {
   }
 
   goToPage(index: number) {
-    if (index < 0 || index >= this.pagesCount) {
+    if (index < 0 || index >= this.totalPages) {
       throw new RangeError(`Invalid page index: ${index}`);
     }
     this.dispatchEvent(
@@ -94,7 +106,7 @@ export class EnpageJavascriptAPI extends EventTarget {
   lastPage() {
     this.dispatchEvent(
       new CustomEvent("beforenavigate", {
-        detail: { from: this.currentPage, to: this.pagesCount - 1 },
+        detail: { from: this.currentPage, to: this.totalPages - 1 },
         bubbles: true,
         cancelable: true,
       }),
@@ -102,15 +114,15 @@ export class EnpageJavascriptAPI extends EventTarget {
   }
 
   get canGoBack() {
-    return this.pageIndex > 0;
+    return this.state.pageIndex > 0;
   }
 
   get canGoForward() {
-    return this.pageIndex < this.pagesCount - 1;
+    return this.state.pageIndex < this.totalPages - 1;
   }
 
   get slugs() {
-    return this.pagesSlugs;
+    return this._slugs;
   }
 
   async saveDataRecord(dataRecordId: string, record: Record<string, unknown>) {

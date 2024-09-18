@@ -31,3 +31,11 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
 };
 
 export type GenericPageConfig = PageConfig<DatasourceManifestMap, AttributesMap>;
+
+export type PageContext<D extends DatasourceManifestMap | undefined, A extends AttributesMap> = Pick<
+  PageConfig<D, A>,
+  "data" | "attr"
+>;
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type GenericPageContext = PageContext<any, any>;

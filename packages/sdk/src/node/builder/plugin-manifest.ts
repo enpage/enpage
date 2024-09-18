@@ -9,6 +9,7 @@ export const manifestPlugin = (cfg: EnpageTemplateConfig, viteEnv: ConfigEnv, en
   return {
     name: "enpage:manifest",
     generateBundle() {
+      console.log("Generating Enpage manifest");
       if (viteEnv.isSsrBuild) {
         return;
       }
