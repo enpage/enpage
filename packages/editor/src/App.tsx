@@ -1,16 +1,12 @@
 import { EditorWrapper } from "./components/EditorWrapper";
-import { useEffect, useState } from "react";
+import { ClientOnly } from "./utils/client-only";
 
-export default function App({ html, templateUrl }: { html?: string; templateUrl?: string }) {
-  const [client, setClient] = useState(false);
-  useEffect(() => {
-    setClient(true);
-  }, []);
-  if (!client) return null;
-
+export default function App(props: { html: string; body: string; templateUrl: string }) {
   return (
-    <div className="h-dvh flex">
-      <EditorWrapper html={html} templateUrl={templateUrl} />
-    </div>
+    <ClientOnly>
+      <div className="h-dvh flex">
+        <EditorWrapper {...props} />
+      </div>
+    </ClientOnly>
   );
 }

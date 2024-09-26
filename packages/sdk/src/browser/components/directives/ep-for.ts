@@ -32,6 +32,22 @@ class EPFor extends CustomElement {
     this.updateItems();
   }
 
+  get datasource() {
+    return this.getAttribute("datasource");
+  }
+
+  get source() {
+    return this.getAttribute("source");
+  }
+
+  get json() {
+    return this.getAttribute("json");
+  }
+
+  get range() {
+    return this.getAttribute("range");
+  }
+
   private setupEventListener() {
     window.addEventListener("ep-data-changed", this._boundHandleDataChange as EventListener);
   }
@@ -41,7 +57,7 @@ class EPFor extends CustomElement {
   }
 
   private handleDataChange(event: CustomEvent<{ path: string }>) {
-    const datasource = this.getAttribute("datasource");
+    const datasource = this.datasource;
     if (datasource && event.detail.path.startsWith(datasource)) {
       this.updateItems();
     }
@@ -50,7 +66,7 @@ class EPFor extends CustomElement {
   private updateItems() {
     this._items = [];
 
-    if (this.hasAttribute("datasource")) {
+    if (this.datasource) {
       const path = this.getAttribute("datasource")!.split(".");
       let data = window.enpage.context.data;
       if (data) {
@@ -63,14 +79,14 @@ class EPFor extends CustomElement {
         console.error(`[ep-for] Data source not found: ${this.getAttribute("datasource")}`);
       }
       this._items = Array.isArray(data) ? data : Object.entries(data || {});
-    } else if (this.hasAttribute("source")) {
-      const sourceElement = document.getElementById(this.getAttribute("source")!);
+    } else if (this.source) {
+      const sourceElement = document.getElementById(this.source);
       if (sourceElement?.textContent) {
         this._items = JSON.parse(sourceElement.textContent);
       }
-    } else if (this.hasAttribute("json")) {
-      this._items = JSON.parse(this.getAttribute("json")!);
-    } else if (this.hasAttribute("range")) {
+    } else if (this.json) {
+      this._items = JSON.parse(this.json);
+    } else if (this.range) {
       const [start, end] = this.getAttribute("range")!.split("-").map(Number);
       this._items = Array.from({ length: end - start + 1 }, (_, i) => start + i);
     }
@@ -88,7 +104,7 @@ class EPFor extends CustomElement {
     if (element.hasAttribute("ep-bind-attr")) {
       const bindings = element
         .getAttribute("ep-bind-attr")!
-        .split(",")
+        .split(/[, ]+/)
         .map((s) => s.trim());
       bindings.forEach((binding) => {
         const [attr, prop] = binding.split(":").map((s) => s.trim());
@@ -159,7 +175,8 @@ class EPFor extends CustomElement {
   }
 
   // custom render for this element because we need to append the contents to the parent
-  protected render() {
+  render() {
+    console.log("rendering from ep-for client side");
     // Create temporary container
     const temp = document.createElement("div");
     temp.innerHTML = this.contents;

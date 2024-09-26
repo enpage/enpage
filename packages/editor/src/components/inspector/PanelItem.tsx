@@ -1,4 +1,4 @@
-import type { ElementSelectedPayload } from "@enpage/sdk/browser/dev-client";
+import type { ElementSelectedPayload } from "@enpage/sdk/browser/types";
 import type { ComponentProps } from "react";
 
 export type PanelItemProps = ComponentProps<"div"> & {

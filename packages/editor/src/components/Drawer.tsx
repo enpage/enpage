@@ -85,10 +85,8 @@ export function HorizontalDrawer({
   dismissable,
   noBackdrop,
 }: HDrawerProps) {
-  const enterFrom =
-    from === "right" ? "opacity-0 translate-x-full scale-90" : "opacity-0 -translate-x-full scale-90";
-  const enterTo =
-    from === "right" ? "opacity-100 translate-x-0 scale-100" : "opacity-100 translate-x-0 scale-100";
+  const enterFrom = from === "right" ? "opacity-0 translate-x-full" : "opacity-0 -translate-x-full";
+  const enterTo = from === "right" ? "opacity-100 translate-x-0" : "opacity-100 translate-x-0";
   const leaveTo = from === "right" ? "opacity-0 translate-x-full" : "opacity-0 -translate-x-full";
   const basePosition = from === "right" ? "right-0" : "left-0";
 
@@ -134,7 +132,7 @@ export function HorizontalDrawer({
           >
             <DialogPanel
               className="w-full relative flex-1 dialog-panel
-                rounded-2xl rounded-b-none bg-white
+                rounded-2xl rounded-b-none bg-white dark:bg-dark-800
                 shadow-[0_-35px_45px_rgba(0,0,0,0.2)]"
             >
               {children}

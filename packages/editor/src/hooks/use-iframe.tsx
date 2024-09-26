@@ -1,10 +1,15 @@
-import { useEditor } from "./use-editor-store";
+import { useDraft, useEditor } from "./use-editor-store";
 import { type RefObject, useEffect, useRef } from "react";
-import type { IframeMessage } from "@enpage/sdk/browser/dev-client";
+import type { IframeMessage } from "@enpage/sdk/browser/types";
 import { isEqual } from "lodash-es";
-import { isChromeLike } from "../utils/is-safari";
+import { isChromeLike, isSafari } from "../utils/is-safari";
 import invariant from "@enpage/sdk/utils/invariant";
+import type { BlockManifest, Block } from "@enpage/sdk/browser/components/base/ep-block-base";
+import { unserializeDomData } from "@enpage/sdk/browser/components/utils";
+import type { EditorMessage } from "@enpage/sdk/browser/types";
+// import { createTwoFilesPatch } from "diff";
 import debug from "debug";
+import type { Static } from "@sinclair/typebox";
 
 const log = debug("editor:use-iframe");
 
@@ -33,8 +38,9 @@ const dedup = <T extends (...args: any[]) => any>(func: T): ((...args: Parameter
 const sendIframeMessageThrottle = dedup(sendIframeMessage);
 
 // Hook for monitoring iframe messages
-export function useIframeMonitor(iframeRef: RefObject<HTMLIFrameElement>) {
+export function useIframeMessaging(iframeRef: RefObject<HTMLIFrameElement>) {
   const editor = useEditor();
+  const draft = useDraft();
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -44,26 +50,57 @@ export function useIframeMonitor(iframeRef: RefObject<HTMLIFrameElement>) {
       if (event.source !== iframe.contentWindow) return;
 
       const payload = event.data as IframeMessage;
-      log("iframe message", payload);
+      // log("message received from iframe", payload);
 
       switch (payload.type) {
         case "iframe-focused":
           iframe.focus();
           break;
         case "element-selected":
+          // console.log("element selected", payload.element);
           editor.setSelectedElement(payload.element);
+          break;
+        case "dom-updated":
+          //
+          // console.log("dom updated!!!", payload);
           break;
       }
     };
-
+    // listen for messages from iframe
     window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [iframeRef.current, editor.setSelectedElement]);
+
+    // listen for mutations in the iframe
+    //   const observer = new MutationObserver(() => {
+    //     if (iframe.contentDocument) {
+    //       const doc = iframe.contentDocument.cloneNode(true) as Document;
+    //       const body = doc.querySelector("body")!;
+    //       body.querySelectorAll("[ep-ignore]").forEach((el) => el.remove());
+    //       if (draft.body !== body.outerHTML) {
+    //         const patch = createTwoFilesPatch("old.html", "new.html", draft.body, body.outerHTML);
+    //         console.log("body has changed from %d bytes to %d bytes", draft.body.length, body.outerHTML.length);
+    //         draft.setBody(body.outerHTML);
+    //       }
+    //     }
+    //   });
+
+    //   if (iframe.contentDocument) {
+    //     observer.observe(iframe.contentDocument, { attributes: false, childList: true, subtree: true });
+    //   }
+
+    //   return () => {
+    //     window.removeEventListener("message", handleMessage);
+    //     observer.disconnect();
+    //   };
+  }, [iframeRef.current, editor.setSelectedElement /* draft.setBody, draft.body*/]);
 }
 
 // Hook for handling drag and touch events over iframe
 export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
-  const draggedElement = useRef<HTMLElement | null>(null);
+  const dragged = useRef<{
+    element: HTMLElement;
+    block: Static<BlockManifest>;
+    manifest: BlockManifest;
+  } | null>(null);
   const touchGhost = useRef<HTMLDivElement | null>(null);
   const editor = useEditor();
 
@@ -83,24 +120,6 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
       }
     };
 
-    const handleMouseEvent = (e: DragEvent) => {
-      switch (e.type) {
-        case "dragstart":
-          handleDragStart(e);
-          break;
-        case "drop":
-        case "dragover":
-          handleDragOverOrDrop(e);
-          break;
-        case "dragend":
-          handleDragEnd(e);
-          break;
-        case "dragenter":
-          e.preventDefault();
-          break;
-      }
-    };
-
     // Touch event handlers
     const handleTouchStart = (e: TouchEvent) => {
       if (e.targetTouches.length > 1) {
@@ -111,9 +130,16 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
 
       if (e.target instanceof HTMLElement && e.target.getAttribute("data-block-type")) {
         invariant(iframe.current, "[touchstart] iframe must be present");
+        invariant(e.target.dataset.block, "[touchstart] dataset.block must be present");
+        invariant(e.target.dataset.manifest, "[touchstart] dataset.manifest must be present");
 
         iframe.current.style.pointerEvents = "none";
-        draggedElement.current = e.target;
+
+        dragged.current = {
+          element: e.target,
+          manifest: unserializeDomData<BlockManifest>(e.target.dataset.manifest),
+          block: unserializeDomData(e.target.dataset.block),
+        };
         const touchLocation = e.touches[0];
         const ghost = createMobileDragGhost(e.target, touchLocation.clientX, touchLocation.clientY);
         if (touchGhost.current) {
@@ -127,7 +153,7 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!iframe.current || !draggedElement.current) return;
+      if (!iframe.current || !dragged.current) return;
 
       const touchLocation = e.touches[0];
 
@@ -141,7 +167,7 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
 
       sendIframeMessageThrottle(iframe.current, {
         type: `editor-dragover`,
-        template: draggedElement.current.dataset.blockTemplate!,
+        block: dragged.current.block,
         coordinates,
       });
     };
@@ -156,36 +182,51 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
 
       iframe.current.style.pointerEvents = "auto";
 
-      if (e.type === "touchend" && draggedElement.current) {
+      if (e.type === "touchend" && dragged.current) {
         const touchLocation = e.changedTouches[0];
         const coordinates = translateToIframeCoords(iframe.current, touchLocation.pageX, touchLocation.pageY);
         sendIframeMessage(iframe.current, {
           type: `editor-drop`,
           coordinates,
-          template: draggedElement.current.dataset.blockTemplate!,
+          block: dragged.current.block,
         });
       }
 
       sendIframeMessage(iframe.current, { type: "editor-dragend" });
-      draggedElement.current = null;
+      dragged.current = null;
     };
 
     // Mouse event handlers
     const handleDragStart = (e: DragEvent) => {
+      console.log("drag start", e);
       if (!iframe.current) return;
-      log("dragstart", e.target);
-      iframe.current.style.pointerEvents = "none";
+      const element = e.target as HTMLElement;
+
+      log("dragstart", element);
+
+      // why ?
+      // iframe.current.style.pointerEvents = "none";
       if (isChromeLike() && e.dataTransfer) {
         e.dataTransfer.dropEffect = "copy";
         e.dataTransfer.effectAllowed = "copyMove";
       }
-      draggedElement.current = e.target as HTMLElement;
+
+      invariant(element.dataset.block, "[dragstart] dataset.block must be present");
+      invariant(element.dataset.manifest, "[dragstart] dataset.manifest must be present");
+
+      dragged.current = {
+        element,
+        block: unserializeDomData<Block>(element.dataset.block),
+        manifest: unserializeDomData<BlockManifest>(element.dataset.manifest),
+      };
     };
 
     const handleDragOverOrDrop = (e: DragEvent) => {
-      if (!iframe.current || !draggedElement.current) return;
+      if (!iframe.current || !dragged.current) {
+        log("skipping dragover or drop");
+        return;
+      }
       e.preventDefault();
-      log(e.type);
 
       const hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
       if (hoveredElement?.classList.contains("dialog-panel")) {
@@ -193,57 +234,179 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
         return true;
       }
 
-      const coordinates = translateToIframeCoords(iframe.current, e.clientX, e.clientY);
-      if (coordinates.x < 0 || coordinates.y < 0) return true;
+      const coordinates = isSafari()
+        ? translateToIframeCoords(iframe.current, e.clientX, e.clientY)
+        : {
+            x: e.clientX,
+            y: e.clientY,
+          };
+
+      if (coordinates.x < 0 || coordinates.y < 0) {
+        return true;
+      }
 
       sendIframeMessageThrottle(iframe.current, {
-        type: `editor-${e.type}`,
-        template: draggedElement.current.dataset.blockTemplate!,
+        type: `editor-${e.type}` as "editor-dragover" | "editor-drop",
+        block: dragged.current.block,
+        manifest: dragged.current.manifest,
         coordinates,
-      });
-
-      if (e.type === "drop") {
-        iframe.current.style.pointerEvents = "none";
-      }
+      } satisfies EditorMessage);
     };
 
     const handleDragEnd = (e: DragEvent) => {
-      log("dragend", e.target);
+      log("dragend");
       invariant(iframe.current, `[${e.type}] iframe must be present`);
-      draggedElement.current = null;
+      dragged.current = null;
       sendIframeMessage(iframe.current, {
         type: `editor-dragend`,
-      });
-      iframe.current.style.pointerEvents = "none";
+      } satisfies EditorMessage);
+
+      // The following code lends to the iframe being totally unresponsive to touch events after the first drop, which is dumb
+      // START
+      // console.log("drag end, disabling pointer events");
+      // iframe.current.style.pointerEvents = "none";
+      // END
     };
 
-    // Event listeners
-    window.addEventListener("dragstart", handleMouseEvent, false);
-    window.addEventListener("dragend", handleMouseEvent, false);
-    window.addEventListener("drop", handleMouseEvent, false);
-    window.addEventListener("dragenter", handleMouseEvent, false);
-    window.addEventListener("dragover", handleMouseEvent, false);
+    const preventEventDefault = (e: Event) => {
+      e.preventDefault();
+    };
 
-    window.addEventListener("touchstart", handleTouchEvent, false);
-    window.addEventListener("touchmove", handleTouchEvent, false);
-    window.addEventListener("touchcancel", handleTouchEvent, false);
-    window.addEventListener("touchend", handleTouchEvent, false);
+    const abortCtrl = new AbortController();
+    const { signal } = abortCtrl;
+
+    // Event listeners
+    window.addEventListener("dragstart", handleDragStart, {
+      signal,
+      capture: false,
+    });
+
+    window.addEventListener("dragenter", preventEventDefault, {
+      signal,
+    });
+
+    if (isSafari()) {
+      window.addEventListener("dragover", handleDragOverOrDrop, {
+        signal,
+        capture: false,
+      });
+      window.addEventListener("drop", handleDragOverOrDrop, {
+        signal,
+      });
+    } else {
+      iframe.current?.contentWindow?.addEventListener("dragover", handleDragOverOrDrop, {
+        signal,
+      });
+      iframe.current?.contentWindow?.addEventListener("drop", handleDragOverOrDrop, {
+        signal,
+      });
+    }
+
+    window.addEventListener("dragend", handleDragEnd, {
+      signal,
+    });
+
+    iframe.current?.contentWindow?.addEventListener(
+      "click",
+      (e) => {
+        e.preventDefault();
+
+        const target = e.target as HTMLElement;
+        if (target.tagName === "BUTTON" || target.tagName === "A") {
+          e.stopPropagation();
+        }
+
+        // e.stopPropagation();
+        const el = e.target as HTMLElement;
+        // el.style.outline = "2px solid red";
+        makeEditable(el);
+      },
+      {
+        signal,
+        capture: true,
+      },
+    );
+
+    // iframe.current?.contentWindow?.addEventListener("dragover", handleMouseEvent, false);
+
+    window.addEventListener("touchstart", handleTouchEvent, {
+      signal,
+    });
+    window.addEventListener("touchmove", handleTouchEvent, {
+      signal,
+    });
+    window.addEventListener("touchcancel", handleTouchEvent, {
+      signal,
+    });
+    window.addEventListener("touchend", handleTouchEvent, {
+      signal,
+    });
 
     return () => {
-      window.removeEventListener("dragstart", handleMouseEvent);
-      window.removeEventListener("dragend", handleMouseEvent);
-      window.removeEventListener("drop", handleMouseEvent);
-      window.removeEventListener("dragenter", handleMouseEvent);
-      window.removeEventListener("dragover", handleMouseEvent);
-
-      window.removeEventListener("touchstart", handleTouchEvent);
-      window.removeEventListener("touchmove", handleTouchEvent);
-      window.removeEventListener("touchcancel", handleTouchEvent);
-      window.removeEventListener("touchend", handleTouchEvent);
+      abortCtrl.abort("cleanup");
     };
   }, [iframe.current, editor.setLibraryVisible]);
 
   return null;
+}
+
+/**
+ * Makes an HTML element editable with custom behavior:
+ * - Prevents creation of div elements on Enter key press
+ * - Inserts line breaks instead of new paragraphs
+ * - Handles paste events to insert plain text
+ * - Cleans up formatting on blur
+ *
+ * @param element The HTML element to make editable.
+ */
+function makeEditable(element: HTMLElement): void {
+  // console.log("makeEditable", element);
+
+  element.addEventListener("dblclick", function (this: HTMLElement) {
+    element.setAttribute("contenteditable", "true");
+  });
+
+  element.addEventListener("keydown", function (this: HTMLElement, e: KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const selection = window.getSelection();
+      const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+
+      if (range && this.contains(range.commonAncestorContainer)) {
+        const br = document.createElement("br");
+        range.deleteContents();
+        range.insertNode(br);
+
+        range.setStartAfter(br);
+        range.setEndAfter(br);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      } else {
+        const br = document.createElement("br");
+        this.appendChild(br);
+
+        const newRange = document.createRange();
+        newRange.setStartAfter(br);
+        newRange.setEndAfter(br);
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+      }
+
+      this.scrollIntoView({ block: "end" });
+    }
+  });
+
+  element.addEventListener("paste", function (e: ClipboardEvent) {
+    e.preventDefault();
+    const text = e.clipboardData?.getData("text/plain") ?? "";
+    document.execCommand("insertText", false, text);
+  });
+
+  element.addEventListener("blur", function (this: HTMLElement) {
+    this.innerHTML = this.innerHTML.replace(/<div>|<br>/gi, " ").trim();
+    this.removeAttribute("contenteditable");
+  });
 }
 
 // Helper functions

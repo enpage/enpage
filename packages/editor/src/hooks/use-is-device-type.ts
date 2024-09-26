@@ -12,7 +12,7 @@ export function useIsTabletDevice() {
 }
 
 export function useIsLargeDevice() {
-  return useMediaQuery("(min-device-width: 1367px)");
+  return useMediaQuery("(min-device-width: 1367px)", { initializeWithValue: true });
 }
 
 export function usePreviewModeInit() {

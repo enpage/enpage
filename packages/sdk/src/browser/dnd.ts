@@ -2,11 +2,6 @@ import { canContain, type Tag } from "./tag-containment-rules";
 
 type Coordinates = { x: number; y: number };
 
-type Params = {
-  dragElement: HTMLElement;
-  coordinates: Coordinates;
-};
-
 type Side = {
   horizontal: "left" | "right";
   vertical: "top" | "bottom";
@@ -61,9 +56,7 @@ function getElementSideForCoordinates(element: HTMLElement, coordinates: Coordin
   return { horizontal, vertical };
 }
 
-export function getInsertPosition(params: Params) {
-  const { dragElement, coordinates } = params;
-
+export function getInsertPosition(dragElementTag: string, coordinates: Coordinates) {
   // all elements at the coordinates
   const dropTargets = document.elementsFromPoint(coordinates.x, coordinates.y) as HTMLElement[];
   // filter drop targets and get the one that is the closest to the mouse pointer
@@ -110,7 +103,7 @@ export function getInsertPosition(params: Params) {
   const container = (isContainerChild ? referenceElement.parentElement : dropTarget) as HTMLElement;
 
   // Check if the dragged element can be contained in the container
-  if (!canContain(container.tagName.toLowerCase() as Tag, dragElement.tagName.toLowerCase() as Tag)) {
+  if (!canContain(container.tagName.toLowerCase(), dragElementTag)) {
     return null;
   }
 
@@ -174,6 +167,7 @@ const INDICATOR_TRANSITION_2WAY_2 = "all 0.25s cubic-bezier(0.34, 1.3, 0.64, 1)"
 function createIndicator(): HTMLElement {
   const indicator = document.createElement("div");
   indicator.className = "dnd-indicator";
+  indicator.setAttribute("ep-ignore", "");
 
   Object.assign(indicator.style, {
     position: "fixed",
@@ -347,8 +341,9 @@ function updateIndicator(insertPosition: ReturnType<typeof getInsertPosition>) {
   });
 }
 
-export function onDragOver(dragElement: HTMLElement, coordinates: Coordinates): void {
-  const insertPosition = getInsertPosition({ dragElement, coordinates });
+export function onDragOver(dragElementTag: string, coordinates: Coordinates): void {
+  console.log("onDragOver", dragElementTag, coordinates);
+  const insertPosition = getInsertPosition(dragElementTag, coordinates);
   updateIndicator(insertPosition);
 }
 
@@ -366,6 +361,7 @@ export function onDragEnd(): void {
 
   indicatorTimeout = null;
 }
+
 // Call this function once to create the indicator
 function initializeDragAndDrop() {
   createIndicator();

@@ -3,6 +3,8 @@ import invariant from "~/shared/utils/invariant";
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { ViteDevServer } from "vite";
 import type { S3Client } from "~/server/common/node-s3-client";
+import { promises as fs } from "node:fs";
+import { join } from "node:path";
 
 export type RenderOptions = {
   pageConfig: GenericPageConfig;
@@ -26,9 +28,9 @@ export async function render(url: URL, options: RenderOptions) {
   } else {
     invariant(vite, "Vite dev server not found.");
     try {
-      const mod = await vite.ssrLoadModule("virtual:enpage-template:index.html");
-      html = mod.html;
-      html = await vite.transformIndexHtml(url.pathname, html);
+      const indexContents = await fs.readFile(join(process.cwd(), "index.html"), "utf-8");
+      // html = mod.html;
+      html = await vite.transformIndexHtml(url.pathname, indexContents);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       throw e;

@@ -41,7 +41,6 @@ export const renderTemplatePlugin = (
     transformIndexHtml: {
       order: "pre",
       handler: async (html: string, ctx) => {
-        console.log("transformIndexHtml called");
         const context = enpageCtx;
         const { head, doc, body, dom } = createJSDOM(html);
 
@@ -122,7 +121,7 @@ function createJSDOM(html: string) {
 
   const dom = new JSDOM(html, { virtualConsole });
   const doc = dom.window.document;
-  const head = doc.querySelector("head");
+  const head = doc.querySelector("head") as HTMLHeadElement;
   const body = doc.querySelector("body") as HTMLBodyElement;
   return { head, doc, body, dom };
 }

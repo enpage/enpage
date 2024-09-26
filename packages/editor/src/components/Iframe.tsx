@@ -2,7 +2,7 @@ import { clsx } from "../utils/component-utils";
 import { type ComponentProps, useRef } from "react";
 import type { ResponsiveMode } from "@enpage/sdk/responsive";
 import styles from "./Iframe.module.css";
-import { useIframeMonitor, useDragOverIframe } from "../hooks/use-iframe";
+import { useIframeMessaging, useDragOverIframe } from "../hooks/use-iframe";
 
 type PreviewIframeProps = {
   html?: string;
@@ -18,7 +18,8 @@ export function DeviceFrame({
   return (
     <div
       className={clsx(
-        "device-frame relative transition-all duration-300 mx-auto flex scrollbar-thin",
+        // relatively positioned because on safari we'll have a iframe-overlay
+        "device-frame relative transition-all duration-500 mx-auto flex scrollbar-thin",
         styles[previewMode],
         {
           [styles.handled]: previewMode === "tablet" || previewMode === "mobile",
@@ -27,7 +28,7 @@ export function DeviceFrame({
       )}
       {...props}
     >
-      {previewMode === "desktop" && <div className={styles.desktopBar} data-url="https://john.enpage.co" />}
+      {/* {previewMode === "desktop" && <div className={styles.desktopBar} data-url="https://john.enpage.co" />} */}
       {children}
     </div>
   );
@@ -36,20 +37,23 @@ export function DeviceFrame({
 // create a PreviewIframe and forward ref
 export function PreviewIframe({ html, url, previewMode }: PreviewIframeProps) {
   const ref = useRef<HTMLIFrameElement>(null);
-  useIframeMonitor(ref);
+  useIframeMessaging(ref);
   useDragOverIframe(ref);
+
   return (
     <iframe
       ref={ref}
-      className={clsx("flex-1 h-full z-10", {
+      className={clsx("flex-1 h-full relative pointer-events-auto", {
         "rounded-none": previewMode === "desktop",
         "rounded-[inherit]": previewMode !== "desktop",
       })}
+      id="preview"
       name="preview"
       title="Site Preview"
       srcDoc={html}
       src={url}
-      sandbox="allow-scripts allow-same-origin"
+      allowFullScreen
+      sandbox="allow-scripts allow-same-origin allow-pointer-lock"
     />
   );
 }

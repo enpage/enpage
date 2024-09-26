@@ -110,7 +110,7 @@ export const tagContainmentRules: ContainmentRules = {
 };
 
 // Function to check if one tag can be contained within another
-export function canContain(parentTag: Tag, childTag: Tag): boolean {
+export function canContain(parentTag: Tag | string, childTag: Tag | string): boolean {
   return true;
   // const allowedChildren = tagContainmentRules[parentTag];
   // return allowedChildren ? allowedChildren.includes(childTag) : false;

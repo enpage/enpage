@@ -37,3 +37,13 @@ body > section {
 ep-for {
   display: none;
 }
+
+ep-image  {
+  box-sizing: border-box;
+  display: block;
+  touch-action: none;
+  overflow: hidden;
+  user-select: none;
+}
+
+

@@ -39,6 +39,7 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
           watch: {
             // Watch for changes in other packages
             ignored: ["!**/node_modules/**", "!../*/dist/**"],
+            // cwd: process.cwd(),
             interval: 800,
           },
         },

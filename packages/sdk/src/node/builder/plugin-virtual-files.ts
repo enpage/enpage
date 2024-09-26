@@ -7,9 +7,6 @@ import type { GenericPageContext } from "~/shared/page-config";
 import type { EnpageEnv } from "~/shared/env";
 import { store } from "./store";
 
-const virtualIndexId = "virtual:enpage-template:index.html";
-const resolvedVirtualIndexId = `\0${virtualIndexId}`;
-
 const virtualViteEntryServerId = "virtual:vite-entry-server";
 const resolvedVirtualViteEntryServerId = `\0${virtualViteEntryServerId}`;
 
@@ -17,7 +14,6 @@ const virtualEnpagePageConfig = "virtual:enpage-page-config.json";
 const resolvedVirtualEnpagePageConfig = `\0${virtualEnpagePageConfig}`;
 
 const virtualFilesMap = new Map([
-  [virtualIndexId, resolvedVirtualIndexId],
   [virtualViteEntryServerId, resolvedVirtualViteEntryServerId],
   [virtualEnpagePageConfig, resolvedVirtualEnpagePageConfig],
 ]);
@@ -45,12 +41,6 @@ export const virtualFilesPlugin = (
     },
     load(id) {
       switch (id) {
-        case resolvedVirtualIndexId: {
-          const htmlPath = resolve(process.cwd(), "index.html");
-          const htmlContent = readFileSync(htmlPath, "utf-8");
-          return `export const html = ${JSON.stringify(htmlContent)};
-          export const slugs = ${JSON.stringify(store.get("slugs"))};`;
-        }
         case resolvedVirtualViteEntryServerId: {
           return `export { render } from "@enpage/sdk/builder/vite-entry-server";`;
         }

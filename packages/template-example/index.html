@@ -36,7 +36,7 @@ Important:
    gap-10 md:rounded-3xl bg-gradient-to-tl from-gray-700 to-gray-800
    p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
     <img draggable="true" id="profile-pic" src="./assets/img/profile.webp" ep-editable style="float: inherit"
-         class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
+         class="shrink-0 flex-1 aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
          label="Profile picture" alt="My picture" />
 
     <div class="flex-1" ep-container>
@@ -66,6 +66,10 @@ Important:
         </ep-for>
       </ul>
 
+      <p class="bg-red-700 p-6">
+        hahaha <ep-text content="sssZZZZ">aaaaddd</ep-text>
+      </p>
+
       <p ep-if="attributes.testBoolTrue == true">Test bool is true using ep-if</p>
       <p ep-if="{{ attributes.testBoolTrue == false }}">Test bool is false using ep-if</p>
 
@@ -74,7 +78,8 @@ Important:
       -->
 
       <p class="mt-10 flex justify-end" ep-container>
-        <button onclick="enpage.nextPage()" class="rounded-md font-bold bg-white/30 text-white px-6 py-3">Next
+        <button onclick="enpage.nextPage()" ep-editable ep-text-editable="plain"
+                class="rounded-md font-bold bg-white/30 text-white px-6 py-3">Next
           page</button>
       </p>
     </div>

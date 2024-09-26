@@ -28,7 +28,6 @@ const external = [
   // "axe-core",
   "fsevents",
   "lightningcss",
-  "virtual:enpage-template:index.html",
   "virtual:enpage-page-config.json",
   "__STATIC_CONTENT_MANIFEST",
 ];
