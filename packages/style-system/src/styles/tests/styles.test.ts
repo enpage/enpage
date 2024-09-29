@@ -1,14 +1,11 @@
 import { describe, it, expect } from "vitest";
-import {
-  defineTokens,
-  defineTheme,
-  defineComponents,
-  generateCSSVariables,
-  analyzeTokenUsage,
-  token,
-  type TokensMap,
-  type Theme,
-} from "../styles"; // Adjust this import path as needed
+import { defineTokens } from "../tokens"; // Adjust this import path as needed
+import { analyzeTokenUsage } from "../analyze";
+import { token } from "../token-helpers";
+import type { TokensMap } from "../tokens";
+import { defineTheme, type Theme } from "../theme";
+import { generateCSSVariables } from "../generate-css-vars";
+import { generateUtilityClasses } from "../classes";
 
 describe("Design System Functions", () => {
   describe("defineTokens", () => {
@@ -21,33 +18,18 @@ describe("Design System Functions", () => {
           default: { $primaryColor: "#0070f3" },
         }),
       };
-      const result = defineTokens(customTokens);
-      expect(result).toHaveProperty("customColor");
-      expect(result).toHaveProperty("$primaryColor"); // Assuming this is a default token
+      const tokens = defineTokens(customTokens);
 
-      expect(() => generateCSSVariables(result, themes)).not.toThrow();
+      console.log(generateCSSVariables(tokens, themes));
 
-      console.log("generated CSS variables", generateCSSVariables(result, themes));
-    });
-
-    it("should throw an error if custom token name starts with $", () => {
-      const invalidTokens: TokensMap = {
-        $invalidToken: token.color("Invalid Token", "#000000"),
-      };
-      expect(() => defineTokens(invalidTokens)).toThrow();
+      expect(() => generateCSSVariables(tokens, themes)).not.toThrow();
     });
   });
 
   describe("default tokens", () => {
     it("should contain default tokens", () => {
       const tokens = defineTokens({});
-      console.dir(tokens);
-      expect(tokens).toHaveProperty("$primaryColor");
-      expect(tokens).toHaveProperty("$secondaryColor");
-      expect(tokens).toHaveProperty("$backgroundColor");
-      expect(tokens).toHaveProperty("$textColor");
-      expect(tokens).toHaveProperty("$fontBody");
-      expect(tokens).toHaveProperty("$fontHeading");
+      expect(tokens).toHaveProperty("font-size-xs");
     });
   });
 

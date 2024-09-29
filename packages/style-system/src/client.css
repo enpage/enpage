@@ -38,12 +38,16 @@ ep-for {
   display: none;
 }
 
-ep-image  {
+ep-image, ep-text {
   box-sizing: border-box;
   display: block;
   touch-action: none;
-  overflow: hidden;
   user-select: none;
+}
+
+ep-image  {
+  overflow: hidden;
+
 }
 
 

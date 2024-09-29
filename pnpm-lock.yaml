@@ -479,6 +479,12 @@ importers:
       animate.css:
         specifier: ^4.1.1
         version: 4.1.1
+      csstype:
+        specifier: 3.1.3
+        version: 3.1.3
+      polished:
+        specifier: 4.3.1
+        version: 4.3.1
       tailwind-scrollbar:
         specifier: ^3.1.0
         version: 3.1.0(tailwindcss@3.4.10)
@@ -9583,7 +9589,7 @@ packages:
       debug: 4.3.6
       globrex: 0.1.2
       tsconfck: 3.1.1(typescript@5.5.3)
-      vite: 5.4.6(@types/node@20.14.10)
+      vite: 5.4.6(@types/node@22.5.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9625,6 +9631,7 @@ packages:
       rollup: 4.21.3
     optionalDependencies:
       fsevents: 2.3.3
+    dev: false
 
   /vite@5.4.6(@types/node@20.14.15):
     resolution: {integrity: sha512-IeL5f8OO5nylsgzd9tq4qD2QqI0k2CQLGrWD0rCN0EQJZpBK5vJAx0I+GDkMOXxQX/OfFHMuLIx6ddAxGX/k+Q==}
@@ -9702,7 +9709,6 @@ packages:
       rollup: 4.21.3
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /vitepress@1.3.4(@algolia/client-search@5.4.1)(@types/node@22.5.1)(postcss@8.4.42)(search-insights@2.17.2)(typescript@5.5.3):
     resolution: {integrity: sha512-I1/F6OW1xl3kW4PaIMC6snxjWgf3qfziq2aqsDoFc/Gt41WbcRv++z8zjw8qGRIJ+I4bUW7ZcKFDHHN/jkH9DQ==}
