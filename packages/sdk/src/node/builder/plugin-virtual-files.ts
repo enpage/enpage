@@ -51,6 +51,7 @@ export const virtualFilesPlugin = (
             data: pageContext?.data,
             attr: pageContext!.attr,
             templateManifest: templateConfig.manifest,
+            bricks: templateConfig.bricks,
             // todo: add ssrManifest
             ssrManifest: {},
           } satisfies GenericPageConfig);

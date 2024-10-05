@@ -105,7 +105,6 @@ export const manifest = defineBlockManifest({
 });
 
 export type Manifest = Static<typeof manifest>;
-
 export const defaults = Value.Create(manifest);
 
 declare global {

@@ -14,6 +14,7 @@ import inspectPlugin from "vite-plugin-inspect";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import { existsSync } from "node:fs";
 import { loadConfigFromJsFile } from "../shared/config";
+import react from "@vitejs/plugin-react";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -95,6 +96,7 @@ export default async function enpageMetaPlugin(viteEnv: ConfigEnv) {
 
   return [
     inspectPlugin(),
+    react() as unknown as Plugin,
     virtualFilesPlugin(config, viteEnv, env),
     enpagePlugin(config, viteEnv, env),
     contextPlugin(config, viteEnv, env),

@@ -1,0 +1,61 @@
+html[data-theme="default"] {
+  /* Base Colors */
+  --color-primary: #007bff;     /* Main brand color */
+  --color-secondary: #6c757d;   /* Secondary brand color */
+  --color-tertiary: #28a745;    /* Accent color */
+
+  /* Text Colors */
+  --color-text-light: #ffffff;     /* Light text color */
+  --color-text-dark: #000000;      /* Dark text color */
+  --color-text-primary: #333333;   /* Main text color */
+  --color-text-secondary: #666666; /* Less emphasized text */
+  --color-text-tertiary: #777777;  /* Adjusted for better contrast */
+
+  /* Background Colors */
+  --color-bg-main: #ffffff;        /* Primary background */
+  --color-bg-secondary: #f8f9fa;   /* Secondary background */
+  --color-bg-tertiary: #e9ecef;    /* Tertiary background */
+
+  /* UI Element Colors */
+  --color-button-primary-bg: var(--color-primary);
+  --color-button-secondary-bg: var(--color-secondary);
+  --color-button-tertiary-bg: var(--color-tertiary);
+  --color-button-text: var(--color-text-light);
+  --color-input-bg: var(--color-bg-main);
+  --color-border: #ced4da;
+
+  /* State Colors */
+  --color-success: var(--color-tertiary);
+  --color-error: #dc3545;
+  --color-warning: #e0a800;
+  --color-info: var(--color-primary);
+
+  /* Link Colors */
+  --color-link: var(--color-primary);
+  --color-link-visited: #6610f2;
+  --color-link-hover: var(--color-primary-dark);
+
+  /* Card Background Colors */
+  --color-card-bg-1: #f0f8ff; /* AliceBlue */
+  --color-card-bg-2: #ffe4e1; /* MistyRose */
+  --color-card-bg-3: #e6ffe6; /* Honeydew */
+
+}
+
+
+:root {
+  /* Derived Shades */
+  --color-primary-light: color-mix(in sRGB, var(--color-primary) 80%, white 20%); /* Lighter shade */
+  --color-primary-dark: color-mix(in sRGB, var(--color-primary) 80%, black 20%);  /* Darker shade */
+
+  --color-secondary-light: color-mix(in sRGB, var(--color-secondary) 80%, white 20%);
+  --color-secondary-dark: color-mix(in sRGB, var(--color-secondary) 80%, black 20%);
+
+  --color-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 80%, white 20%);
+  --color-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 80%, black 20%);
+
+  /* Derived Card Text Colors */
+  --color-card-text-1: color-contrast(var(--color-card-bg-1) vs var(--color-text-light), var(--color-text-dark));
+  --color-card-text-2: color-contrast(var(--color-card-bg-2) vs var(--color-text-light), var(--color-text-dark));
+  --color-card-text-3: color-contrast(var(--color-card-bg-3) vs var(--color-text-light), var(--color-text-dark));
+}

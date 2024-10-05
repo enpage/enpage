@@ -70,7 +70,7 @@ export const renderTemplatePlugin = (
         // add animate script
         addAnimationScript(doc, head);
 
-        if (isDevMode) addDevClient(doc, head);
+        // if (isDevMode) addDevClient(doc, head);
 
         // Hide sections when needed
         const sections = getPageSections(doc);
@@ -313,4 +313,9 @@ function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document
     link.href = `/@enpage/style-system/${style}.css`;
     head.appendChild(link);
   }
+
+  const link = doc.createElement("link");
+  link.rel = "stylesheet";
+  link.textContent = '@import "open-props/postcss/style";';
+  head.appendChild(link);
 }

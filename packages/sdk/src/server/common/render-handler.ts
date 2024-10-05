@@ -50,7 +50,7 @@ export default async function renderHandler(ctx: RequestContext<PlatformInfo>) {
   const policies = [
     "default-src 'self'",
     "frame-ancestors 'self' http://localhost:* https://enpage.co",
-    "img-src 'self' data: https://cdn.enpage.co",
+    "img-src 'self' data: https://cdn.enpage.co https://placehold.co",
     "font-src 'self' https://*",
     "connect-src 'self' https://* ws://localhost:*",
     "frame-src 'self' https://*",

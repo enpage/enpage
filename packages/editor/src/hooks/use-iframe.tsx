@@ -5,6 +5,7 @@ import { isEqual } from "lodash-es";
 import { isChromeLike, isSafari } from "../utils/is-safari";
 import invariant from "@enpage/sdk/utils/invariant";
 import type { BlockManifest, Block } from "@enpage/sdk/browser/components/base/ep-block-base";
+import { initEditor } from "@enpage/sdk/browser/iframe-editor";
 import { unserializeDomData } from "@enpage/sdk/browser/components/utils";
 import type { EditorMessage } from "@enpage/sdk/browser/types";
 // import { createTwoFilesPatch } from "diff";
@@ -348,6 +349,24 @@ export function useDragOverIframe(iframe: RefObject<HTMLIFrameElement>) {
   }, [iframe.current, editor.setLibraryVisible]);
 
   return null;
+}
+
+export function useIframeEditor(iframeRef: RefObject<HTMLIFrameElement>) {
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    const abortCtrl = new AbortController();
+    iframe.addEventListener(
+      "load",
+      () => {
+        initEditor(iframe.contentWindow!, iframe.contentDocument!);
+      },
+      { signal: abortCtrl.signal },
+    );
+    return () => {
+      abortCtrl.abort();
+    };
+  }, [iframeRef.current]);
 }
 
 /**

@@ -1,7 +1,7 @@
-// @ts-check
 import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
+import { defineBricks } from "@enpage/sdk/bricks";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -79,3 +79,42 @@ export const manifest = defineManifest({
   description: "Description of the template",
   homepage: "https://enpage.co",
 });
+
+export const bricks = defineBricks([
+  { type: "container", variant: "full", bricks: [{ type: "text", props: { content: "My content" } }] },
+  {
+    type: "container",
+    variant: "2-1",
+    bricks: [
+      { type: "text-with-title", props: { title: "My title", content: "Hey there!" } },
+      { type: "text", props: { content: "Something" } },
+    ],
+  },
+  {
+    type: "container",
+    variant: "1-2",
+    bricks: [
+      { type: "image", props: {} },
+      { type: "text", props: { content: "Joe joe" } },
+    ],
+  },
+  {
+    type: "container",
+    variant: "1-1-1",
+    bricks: [
+      { type: "text", props: { content: "Sample here" } },
+      { type: "text", props: { content: "Hello World" } },
+      { type: "text", props: { content: "Blabla" } },
+    ],
+  },
+  {
+    type: "container",
+    variant: "1-1-1-1",
+    bricks: [
+      { type: "text", props: { content: "Sample here" } },
+      { type: "text", props: { content: "Hello World" } },
+      { type: "text", props: { content: "Blabla" } },
+      { type: "text", props: { content: "Blabla 2" } },
+    ],
+  },
+]);

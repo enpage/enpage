@@ -46,19 +46,19 @@ export async function initDevClient() {
     //-----------------------------------
   } else {
     // add editor.css
-    const editorCssEl = document.createElement("link");
-    editorCssEl.rel = "stylesheet";
-    editorCssEl.href = editorCss;
-    document.head.appendChild(editorCssEl);
+    // const editorCssEl = document.createElement("link");
+    // editorCssEl.rel = "stylesheet";
+    // editorCssEl.href = editorCss;
+    // document.head.appendChild(editorCssEl);
 
     // enable drag and drop on touch devices
-    window.addEventListener("focus", () => {
-      window.parent.postMessage({ type: "iframe-focused" } satisfies IframeFocusedPayload, editorOrigin);
-    });
+    // window.addEventListener("focus", () => {
+    //   window.parent.postMessage({ type: "iframe-focused" } satisfies IframeFocusedPayload, editorOrigin);
+    // });
 
-    window.addEventListener("blur", () => {
-      window.parent.postMessage({ type: "iframe-blurred" } satisfies IframeBlurredPayload, editorOrigin);
-    });
+    // window.addEventListener("blur", () => {
+    //   window.parent.postMessage({ type: "iframe-blurred" } satisfies IframeBlurredPayload, editorOrigin);
+    // });
 
     function onElementSelected(element: HTMLElement) {
       const clone = {

@@ -2,7 +2,7 @@ import { clsx } from "../utils/component-utils";
 import { type ComponentProps, useRef } from "react";
 import type { ResponsiveMode } from "@enpage/sdk/responsive";
 import styles from "./Iframe.module.css";
-import { useIframeMessaging, useDragOverIframe } from "../hooks/use-iframe";
+import { useIframeMessaging, useDragOverIframe, useIframeEditor } from "../hooks/use-iframe";
 
 type PreviewIframeProps = {
   html?: string;
@@ -39,6 +39,7 @@ export function PreviewIframe({ html, url, previewMode }: PreviewIframeProps) {
   const ref = useRef<HTMLIFrameElement>(null);
   useIframeMessaging(ref);
   useDragOverIframe(ref);
+  useIframeEditor(ref);
 
   return (
     <iframe

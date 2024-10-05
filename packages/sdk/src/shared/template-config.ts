@@ -1,6 +1,7 @@
 import type { DatasourceManifestMap } from "./datasources";
 import type { AttributesMap } from "./attributes";
 import type { TemplateManifest } from "./manifest";
+import type { BricksContainer } from "./bricks";
 
 export type EnpageTemplateConfig = {
   /**
@@ -15,4 +16,8 @@ export type EnpageTemplateConfig = {
    * The datasources declared for the template
    */
   datasources?: DatasourceManifestMap;
+  /**
+   * The blocks declared for the template
+   */
+  bricks: BricksContainer[];
 };
