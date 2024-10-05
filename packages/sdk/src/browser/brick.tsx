@@ -8,7 +8,6 @@ import {
   type LazyExoticComponent,
 } from "react";
 import { CSS } from "@dnd-kit/utilities";
-import { useDraggable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { tx } from "@twind/core";
 
@@ -37,11 +36,7 @@ const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
 
 const MemoBrickComponent = memo(BrickComponent);
 
-export default function DragabbleBrickWrapper({
-  type,
-  props,
-  ...wrapperAttrs
-}: Brick & ComponentProps<"div">) {
+function DragabbleBrickWrapper({ type, props, ...wrapperAttrs }: Brick & ComponentProps<"div">) {
   const { setNodeRef, attributes, listeners, transform, over, active } = useSortable({
     id: props.id,
     data: { type: "brick" },
@@ -54,15 +49,33 @@ export default function DragabbleBrickWrapper({
       : {};
 
   return (
-    <div ref={setNodeRef} style={style} {...wrapperAttrs} {...listeners} {...attributes}>
+    <div ref={setNodeRef} id={props.id} style={style} {...wrapperAttrs} {...listeners} {...attributes}>
       <MemoBrickComponent type={type} props={props} />
     </div>
   );
 }
 
-export function BrickOverlay({ type, props }: Brick) {
+export default memo(DragabbleBrickWrapper);
+
+export function BrickPlaceholder({ type, props, ...attrs }: ComponentProps<"div"> & Brick) {
   return (
-    <div className={tx("shadow bg-primary-100")}>
+    <div
+      className={tx(
+        "rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50",
+      )}
+      {...attrs}
+    />
+  );
+}
+
+export function BrickOverlay({ type, props, ...attrs }: ComponentProps<"div"> & Brick) {
+  return (
+    <div
+      className={tx(
+        "rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50",
+      )}
+      {...attrs}
+    >
       <MemoBrickComponent type={type} props={props} />
     </div>
   );

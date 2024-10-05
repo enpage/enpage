@@ -22,15 +22,18 @@ import {
 } from "@dnd-kit/core";
 import { BrickOverlay } from "./brick";
 import { createPortal } from "react-dom";
+import { o } from "vitest/dist/chunks/reporters.C_zwCd4j.js";
 
 export default function Page(props: { bricks: BricksContainer[] }) {
   const editorEnabled = useEditorEnabled();
   const draft = useDraft();
   const sensors = [useSensor(PointerSensor)];
   const dragTypeRef = useRef<BricksContainer["type"] | Brick["type"]>("container");
-  const [activeElement, setActiveElement] = useState<{ type: "container" | "brick"; id: string } | null>(
-    null,
-  );
+  const [activeElement, setActiveElement] = useState<{
+    type: "container" | "brick";
+    id: string;
+    rect: DOMRect;
+  } | null>(null);
 
   const containers = useMemo(() => {
     return editorEnabled ? draft.containers : props.bricks;
@@ -68,8 +71,50 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
       console.log("updating containers");
       updateContainers(active, over);
+    } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
+      updateBricks(active, over);
     }
   };
+
+  const updateBricks = useCallback(
+    (active: Active, over: Over) => {
+      if (active.id !== over.id) {
+        console.log("updating bricks", { over, active, containers });
+
+        const allBricks = containers.flatMap((ct) => ct.bricks);
+
+        // find the container id of the active and over
+        const activeContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === active.id));
+        const overContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === over.id));
+
+        // find active and over bricks
+        const activeBrick = allBricks.find((b) => b.props.id === active.id);
+        const overBrick = allBricks.find((b) => b.props.id === over.id);
+
+        if (!overBrick || !activeBrick || !activeContainer || !overContainer) {
+          return;
+        }
+
+        // replace
+        const newContainers = containers.map((ct) => {
+          if (ct.id === activeContainer.id || ct.id === overContainer.id) {
+            return {
+              ...ct,
+              bricks: ct.bricks.map((b) =>
+                b.props.id === active.id ? overBrick : b.props.id === over.id ? activeBrick : b,
+              ),
+            };
+          }
+
+          return ct;
+        });
+
+        draft.setContainers(newContainers);
+        console.log({ activeContainer, overContainer });
+      }
+    },
+    [containers, draft],
+  );
 
   const updateContainers = useCallback(
     (active: Active, over: Over) => {
@@ -90,12 +135,14 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       setActiveElement({
         type: "container",
         id: e.active.id as string,
+        rect: document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect,
       });
     } else if (e.active.data.current?.type === "brick") {
       dragTypeRef.current = "brick";
       setActiveElement({
         type: "brick",
         id: e.active.id as string,
+        rect: document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect,
       });
     }
   };
@@ -167,13 +214,18 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         >
           <ContainerList containers={containers} />
         </div>
-        {/* <p className={tx("mx-auto p-4")}>activeElement: {activeElement?.id}</p> */}
+        <p className={tx("mx-auto p-4")}>activeElement: {JSON.stringify(activeElement)}</p>
         {createPortal(
           <DragOverlay>
             {activeElement?.type === "container" && (
               <Container {...(getActiveElementData() as BricksContainer)} dragging={true} />
             )}
-            {activeElement?.type === "brick" && <BrickOverlay {...(getActiveElementData() as Brick)} />}
+            {activeElement?.type === "brick" && (
+              <BrickOverlay
+                {...(getActiveElementData() as Brick)}
+                style={{ height: `${activeElement.rect.height}px` }}
+              />
+            )}
           </DragOverlay>,
           document.body,
         )}

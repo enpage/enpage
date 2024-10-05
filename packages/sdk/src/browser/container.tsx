@@ -31,14 +31,12 @@ type ContainerProps = PropsWithChildren<
   } & BricksContainer
 >;
 
-const MemoDynamicBrick = memo(DragabbleBrickWrapper);
-
 export const Container = forwardRef<HTMLElement, ContainerProps>(
   ({ bricks, variant, className, id, children, dragging, placeholder, hidden, ...props }, ref) => {
     const containerBaseStyles = apply(
       "grid gap-2 relative w-full transition-all duration-300",
       {
-        "z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
+        "rounded overflow-hidden z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
           dragging,
         "hover:ring hover:ring-primary-500 hover:ring-opacity-80 hover:shadow-lg hover:bg-primary-500 hover:bg-opacity-50":
           !dragging && !placeholder && !hidden,
@@ -51,24 +49,20 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
 
     if (hidden) {
       return (
-        <section
-          ref={ref}
-          data-container-id={id}
-          className={clsx(tx(containerBaseStyles, className), "brick")}
-        >
+        <section ref={ref} id={id} className={clsx(tx(containerBaseStyles, className), "brick")}>
           Hidden row
         </section>
       );
     }
 
     if (placeholder) {
-      return <section ref={ref} data-container-id={id} className={tx(containerBaseStyles, className)} />;
+      return <section ref={ref} id={id} className={tx(containerBaseStyles, className)} />;
     }
 
     return (
-      <section ref={ref} data-container-id={id} className={tx(containerBaseStyles, className)} {...props}>
+      <section ref={ref} id={id} className={tx(containerBaseStyles, className)} {...props}>
         {bricks.map((child, index) => (
-          <MemoDynamicBrick
+          <DragabbleBrickWrapper
             key={child.props.id}
             className={tx(apply(getColClasses(index, variant)), child.props.className)}
             {...child}

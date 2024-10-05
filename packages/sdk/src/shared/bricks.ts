@@ -32,6 +32,7 @@ export type BrickId = string;
 export type Brick = {
   type: string;
   props: { id: string; className?: string };
+  placeholder?: boolean;
 };
 
 type DefinedBrick = Omit<Brick, "props"> & { props: ComponentProps<"div"> };
