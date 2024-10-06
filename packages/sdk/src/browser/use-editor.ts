@@ -8,7 +8,7 @@ import { temporal } from "zundo";
 import type { ResponsiveMode } from "~/shared/responsive";
 import type { ElementSelectedPayload } from "./types";
 import invariant from "~/shared/utils/invariant";
-import type { BricksContainer } from "~/shared/bricks";
+import type { Brick, BricksContainer } from "~/shared/bricks";
 export { type Immer } from "immer";
 
 export interface EditorStateProps {
@@ -18,17 +18,17 @@ export interface EditorStateProps {
   libraryVisible: boolean;
   editingPageIndex: number;
   settingsVisible?: boolean;
-  selectedElement?: ElementSelectedPayload["element"];
+  selectedBrick?: Brick;
 }
 
 export interface EditorState extends EditorStateProps {
   setPreviewMode: (mode: ResponsiveMode) => void;
-  setSelectedElement: (element?: ElementSelectedPayload["element"]) => void;
   setLibraryVisible: (visible: boolean) => void;
   toggleLibraryVisible: () => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettingsVisible: () => void;
   setEditingPageIndex: (index: number) => void;
+  setSelectedBrick: (brick: Brick) => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
@@ -40,10 +40,6 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
         immer((set, _get) => ({
           ...DEFAULT_PROPS,
           ...initProps,
-          setSelectedElement: (element) =>
-            set((state) => {
-              state.selectedElement = element;
-            }),
           setLibraryVisible: (visible) =>
             set((state) => {
               state.libraryVisible = visible;
@@ -68,6 +64,10 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             set((state) => {
               state.editingPageIndex = index;
             }),
+          setSelectedBrick: (brick) =>
+            set((state) => {
+              state.selectedBrick = brick;
+            }),
         })),
         {
           name: "editor-state",
@@ -75,7 +75,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           partialize: (state) =>
             Object.fromEntries(
               Object.entries(state).filter(
-                ([key]) => !["blocks", "selectedBlock", "previewMode"].includes(key),
+                ([key]) => !["selectedBrick", "libraryVisible", "previewMode"].includes(key),
               ),
             ),
         },

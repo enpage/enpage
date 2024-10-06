@@ -1,4 +1,4 @@
-import type { Brick } from "~/shared/bricks";
+import type { Brick, ContainerVariant } from "~/shared/bricks";
 import {
   lazy,
   memo,
@@ -6,10 +6,13 @@ import {
   type ComponentProps,
   type ComponentType,
   type LazyExoticComponent,
+  type MouseEvent,
 } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { tx } from "@twind/core";
+import clsx from "clsx";
+import { useEditor, useEditorEnabled } from "./use-editor";
 
 const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -36,11 +39,25 @@ const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
 
 const MemoBrickComponent = memo(BrickComponent);
 
-function DragabbleBrickWrapper({ type, props, ...wrapperAttrs }: Brick & ComponentProps<"div">) {
+export default function DragabbleBrickWrapper({
+  type,
+  props,
+  placeholder,
+  ...wrapperAttrs
+}: Brick & ComponentProps<"div">) {
+  const editor = useEditor();
+  const onClick = editor.enabled
+    ? (e: MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        editor.setSelectedBrick({ type, props });
+      }
+    : undefined;
+
   const { setNodeRef, attributes, listeners, transform, over, active } = useSortable({
     id: props.id,
     data: { type: "brick" },
   });
+
   const style =
     over?.data.current?.type !== "container"
       ? {
@@ -49,34 +66,63 @@ function DragabbleBrickWrapper({ type, props, ...wrapperAttrs }: Brick & Compone
       : {};
 
   return (
-    <div ref={setNodeRef} id={props.id} style={style} {...wrapperAttrs} {...listeners} {...attributes}>
-      <MemoBrickComponent type={type} props={props} />
+    <div
+      ref={setNodeRef}
+      id={props.id}
+      style={style}
+      {...wrapperAttrs}
+      {...listeners}
+      {...attributes}
+      onClick={onClick}
+    >
+      {active?.id === props.id ? (
+        <BrickPlaceholder type={type} props={props} />
+      ) : (
+        <MemoBrickComponent type={type} props={props} />
+      )}
     </div>
   );
 }
 
-export default memo(DragabbleBrickWrapper);
+// export default memo(DragabbleBrickWrapper);
 
-export function BrickPlaceholder({ type, props, ...attrs }: ComponentProps<"div"> & Brick) {
+export function BrickPlaceholder({ type, props, className, ...attrs }: ComponentProps<"div"> & Brick) {
   return (
     <div
       className={tx(
-        "rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50",
+        "rounded overflow-hidden bg-black bg-opacity-10 h-full transition-all duration-200",
+        className,
       )}
       {...attrs}
     />
   );
 }
 
-export function BrickOverlay({ type, props, ...attrs }: ComponentProps<"div"> & Brick) {
+export function BrickOverlay({ type, props, placeholder, ...attrs }: ComponentProps<"div"> & Brick) {
   return (
     <div
       className={tx(
-        "rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50",
+        "rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50 transition-all duration-200",
       )}
       {...attrs}
     >
       <MemoBrickComponent type={type} props={props} />
     </div>
   );
+}
+
+export function getBrickWrapperClass(index: number, variant: ContainerVariant) {
+  let colSpan = "col-span-1";
+  if (
+    (variant === "1-2" && index === 1) ||
+    (variant === "2-1" && index === 0) ||
+    (variant === "1-1-2" && index === 2) ||
+    (variant === "1-2-1" && index === 1) ||
+    (variant === "2-1-1" && index === 0)
+  ) {
+    colSpan = "col-span-2";
+  } else if ((variant === "1-3" && index === 1) || (variant === "3-1" && index === 0)) {
+    colSpan = "col-span-3";
+  }
+  return clsx("bg-gray-200", colSpan);
 }

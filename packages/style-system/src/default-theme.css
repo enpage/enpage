@@ -5,16 +5,16 @@ html[data-theme="default"] {
   --color-tertiary: #28a745;    /* Accent color */
 
   /* Text Colors */
-  --color-text-light: #ffffff;     /* Light text color */
-  --color-text-dark: #000000;      /* Dark text color */
-  --color-text-primary: #333333;   /* Main text color */
-  --color-text-secondary: #666666; /* Less emphasized text */
-  --color-text-tertiary: #777777;  /* Adjusted for better contrast */
+  --color-text-light: #ffffff;  /* Light text color */
+  --color-text-dark: #000000;   /* Dark text color */
+  --color-text-primary: color-contrast(var(--color-bg-main) vs var(--color-text-light), var(--color-text-dark));
+  --color-text-secondary: color-contrast(var(--color-bg-secondary) vs var(--color-text-light), var(--color-text-dark));
+  --color-text-tertiary: color-contrast(var(--color-bg-tertiary) vs var(--color-text-light), var(--color-text-dark));
 
-  /* Background Colors */
-  --color-bg-main: #ffffff;        /* Primary background */
-  --color-bg-secondary: #f8f9fa;   /* Secondary background */
-  --color-bg-tertiary: #e9ecef;    /* Tertiary background */
+  /* Background Colors (Derived from Base Colors) */
+  --color-bg-main: color-mix(in sRGB, var(--color-primary) 95%, white 5%);        /* Primary background */
+  --color-bg-secondary: color-mix(in sRGB, var(--color-secondary) 95%, white 5%); /* Secondary background */
+  --color-bg-tertiary: color-mix(in sRGB, var(--color-tertiary) 95%, white 5%);   /* Tertiary background */
 
   /* UI Element Colors */
   --color-button-primary-bg: var(--color-primary);
@@ -36,12 +36,14 @@ html[data-theme="default"] {
   --color-link-hover: var(--color-primary-dark);
 
   /* Card Background Colors */
-  --color-card-bg-1: #f0f8ff; /* AliceBlue */
-  --color-card-bg-2: #ffe4e1; /* MistyRose */
-  --color-card-bg-3: #e6ffe6; /* Honeydew */
+  --color-card-bg-primary: var(--color-primary-light);
+  --color-card-bg-secondary: var(--color-secondary-light);
+  --color-card-bg-tertiary: var(--color-tertiary-light);
 
+  --color-card-bg-primary-dark: var(--color-primary-dark);
+  --color-card-bg-secondary-dark: var(--color-secondary-dark);
+  --color-card-bg-tertiary-dark: var(--color-tertiary-dark);
 }
-
 
 :root {
   /* Derived Shades */
@@ -54,8 +56,13 @@ html[data-theme="default"] {
   --color-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 80%, white 20%);
   --color-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 80%, black 20%);
 
-  /* Derived Card Text Colors */
-  --color-card-text-1: color-contrast(var(--color-card-bg-1) vs var(--color-text-light), var(--color-text-dark));
-  --color-card-text-2: color-contrast(var(--color-card-bg-2) vs var(--color-text-light), var(--color-text-dark));
-  --color-card-text-3: color-contrast(var(--color-card-bg-3) vs var(--color-text-light), var(--color-text-dark));
+  /* Derived Card Colors */
+  --color-card-primary-light: color-mix(in sRGB, var(--color-primary) 90%, white 10%);
+  --color-card-primary-dark: color-mix(in sRGB, var(--color-primary) 70%, black 30%);
+
+  --color-card-secondary-light: color-mix(in sRGB, var(--color-secondary) 90%, white 10%);
+  --color-card-secondary-dark: color-mix(in sRGB, var(--color-secondary) 70%, black 30%);
+
+  --color-card-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 90%, white 10%);
+  --color-card-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 70%, black 30%);
 }

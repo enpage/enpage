@@ -19,6 +19,8 @@ import {
   type CollisionDetection,
   pointerWithin,
   rectIntersection,
+  MeasuringFrequency,
+  MeasuringStrategy,
 } from "@dnd-kit/core";
 import { BrickOverlay } from "./brick";
 import { createPortal } from "react-dom";
@@ -27,7 +29,15 @@ import { o } from "vitest/dist/chunks/reporters.C_zwCd4j.js";
 export default function Page(props: { bricks: BricksContainer[] }) {
   const editorEnabled = useEditorEnabled();
   const draft = useDraft();
-  const sensors = [useSensor(PointerSensor)];
+  const sensors = [
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        // Require pointer to move by 5 pixels before activating draggable
+        // Allows nested onClicks/buttons/interactions to be accessed
+        distance: 5,
+      },
+    }),
+  ];
   const dragTypeRef = useRef<BricksContainer["type"] | Brick["type"]>("container");
   const [activeElement, setActiveElement] = useState<{
     type: "container" | "brick";
@@ -54,12 +64,16 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const handleDragEnd = (props: DragEndEvent) => {
     const { active, over } = props;
-    if (!over || over.id === active.id) return;
-    console.log("drag end", active, over);
     setActiveElement(null);
+    if (!over || over.id === active.id) {
+      console.warn("Skipping dragend reordering because over is null or active is over");
+      return;
+    }
+
     if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
       updateContainers(active, over);
-    } else if (active.data.current?.type === "brick") {
+    } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
+      updateBricks(active, over);
     }
   };
 
@@ -69,49 +83,60 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     console.log("drag over", e);
     // e.activatorEvent?.stopPropagation();
     if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
-      console.log("updating containers");
       updateContainers(active, over);
     } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
-      updateBricks(active, over);
+      // update the activeElement rect by the overed element rect
+      setActiveElement((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          rect: document.getElementById(over.id as string)?.getBoundingClientRect() as DOMRect,
+        };
+      });
+      updateBricks(active, over, true);
     }
   };
 
   const updateBricks = useCallback(
-    (active: Active, over: Over) => {
-      if (active.id !== over.id) {
-        console.log("updating bricks", { over, active, containers });
+    (active: Active, over: Over, temporary = false) => {
+      console.log("updating bricks", { over, active, containers });
 
-        const allBricks = containers.flatMap((ct) => ct.bricks);
+      const allBricks = containers.flatMap((ct) => ct.bricks);
 
-        // find the container id of the active and over
-        const activeContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === active.id));
-        const overContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === over.id));
+      // find the container id of the active and over
+      const activeContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === active.id));
+      const overContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === over.id));
 
-        // find active and over bricks
-        const activeBrick = allBricks.find((b) => b.props.id === active.id);
-        const overBrick = allBricks.find((b) => b.props.id === over.id);
+      // find active and over bricks
+      const activeBrick = allBricks.find((b) => b.props.id === active.id);
+      const overBrick = allBricks.find((b) => b.props.id === over.id);
 
-        if (!overBrick || !activeBrick || !activeContainer || !overContainer) {
-          return;
+      if (!overBrick || !activeBrick || !activeContainer || !overContainer) {
+        return;
+      }
+
+      // replace
+      const newContainers = containers.map((ct) => {
+        if (ct.id === activeContainer.id || ct.id === overContainer.id) {
+          return {
+            ...ct,
+            bricks: ct.bricks.map((b) =>
+              b.props.id === active.id
+                ? overBrick
+                : b.props.id === over.id
+                  ? {
+                      ...activeBrick,
+                      placeholder: temporary,
+                    }
+                  : b,
+            ),
+          };
         }
 
-        // replace
-        const newContainers = containers.map((ct) => {
-          if (ct.id === activeContainer.id || ct.id === overContainer.id) {
-            return {
-              ...ct,
-              bricks: ct.bricks.map((b) =>
-                b.props.id === active.id ? overBrick : b.props.id === over.id ? activeBrick : b,
-              ),
-            };
-          }
+        return ct;
+      });
 
-          return ct;
-        });
-
-        draft.setContainers(newContainers);
-        console.log({ activeContainer, overContainer });
-      }
+      draft.setContainers(newContainers);
     },
     [containers, draft],
   );
@@ -130,21 +155,15 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const handleDragStart = (e: DragStartEvent) => {
     console.log("drag start", e);
-    if (e.active.data.current?.type === "container") {
-      dragTypeRef.current = "container";
-      setActiveElement({
-        type: "container",
-        id: e.active.id as string,
-        rect: document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect,
-      });
-    } else if (e.active.data.current?.type === "brick") {
-      dragTypeRef.current = "brick";
-      setActiveElement({
-        type: "brick",
-        id: e.active.id as string,
-        rect: document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect,
-      });
-    }
+    if (!e.active.data.current) return;
+    const rect = document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect;
+    dragTypeRef.current = e.active.data.current.type;
+    console.log("active element drag rect", rect);
+    setActiveElement({
+      type: e.active.data.current.type,
+      id: e.active.id as string,
+      rect,
+    });
   };
 
   const sortableIds = useMemo(() => {
@@ -153,14 +172,6 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       ...containers.flatMap((ct) => ct.bricks.map((b) => b.props.id)),
     ];
   }, [containers]);
-
-  // const sortableContainers = useMemo(() => {
-  //   return containers.map((ct) => ct.id);
-  // }, [containers]);
-
-  // const sortableBrikcs = useMemo(() => {
-  //   return containers.flatMap((ct) => ct.bricks.map((b) => b.props.id));
-  // }, [containers]);
 
   const detectCollisions: CollisionDetection = (props) => {
     const { droppableContainers, ...args } = props;
@@ -189,11 +200,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       return rectIntersectionCollisions;
     }
 
-    // Compute other collisions
-    return closestCorners({
-      ...args,
-      droppableContainers: elligibaleDroppables,
-    });
+    return [];
   };
 
   return (
@@ -201,6 +208,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     <DndContext
       sensors={sensors}
       collisionDetection={detectCollisions}
+      autoScroll
       // collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
@@ -218,12 +226,18 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         {createPortal(
           <DragOverlay>
             {activeElement?.type === "container" && (
-              <Container {...(getActiveElementData() as BricksContainer)} dragging={true} />
+              <Container
+                {...(getActiveElementData() as BricksContainer)}
+                dragging={true}
+                style={{ height: `${activeElement.rect.height}px`, width: `${activeElement.rect.width}px` }}
+              />
             )}
             {activeElement?.type === "brick" && (
               <BrickOverlay
                 {...(getActiveElementData() as Brick)}
-                style={{ height: `${activeElement.rect.height}px` }}
+                style={{
+                  height: `${activeElement.rect.height}px` /*, width: `${activeElement.rect.width}px`*/,
+                }}
               />
             )}
           </DragOverlay>,

@@ -10,16 +10,18 @@ import {
   useMemo,
   type CSSProperties,
   memo,
+  useLayoutEffect,
 } from "react";
 import { useSortable, SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable";
 import clsx from "clsx";
 import { tx, apply } from "@twind/core";
-import DragabbleBrickWrapper from "./brick";
+import DragabbleBrickWrapper, { getBrickWrapperClass } from "./brick";
 import { useDraft, useEditorEnabled } from "./use-editor";
 import { CSS } from "@dnd-kit/utilities";
 import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessui/react";
 import { CgArrowsV } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
+import { use } from "marked";
 
 type ContainerProps = PropsWithChildren<
   {
@@ -36,9 +38,9 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
     const containerBaseStyles = apply(
       "grid gap-2 relative w-full transition-all duration-300",
       {
-        "rounded overflow-hidden z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
+        "rounded z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
           dragging,
-        "hover:ring hover:ring-primary-500 hover:ring-opacity-80 hover:shadow-lg hover:bg-primary-500 hover:bg-opacity-50":
+        "hover:rounded hover:ring hover:ring-primary-500 hover:ring-opacity-80 hover:shadow-lg hover:bg-primary-500 hover:bg-opacity-50":
           !dragging && !placeholder && !hidden,
         "bg-black bg-opacity-20 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
@@ -46,6 +48,35 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
       },
       !hidden && getContainerClasses(variant),
     );
+
+    // Containers don't have a fixed height, which makes flickering when dragging.
+    // To avoid this, we set a fixed height after the element is mounted.
+    // useEffect(() => {
+    //   if (!dragging) {
+    //     return;
+    //   }
+    //   const measureHeight = () => {
+    //     const element = document.getElementById(id);
+    //     if (element) {
+    //       const rect = element.getBoundingClientRect();
+    //       if (rect.height > 0) {
+    //         console.log("Setting height", rect.height);
+    //         element.style.height = `${rect.height}px`;
+    //       }
+    //     }
+    //   };
+
+    //   // Measure after a short delay to ensure children are rendered
+    //   const timeoutId = setTimeout(measureHeight, 150);
+
+    //   // Measure again after images and other resources are loaded
+    //   window.addEventListener("load", measureHeight);
+
+    //   return () => {
+    //     clearTimeout(timeoutId);
+    //     window.removeEventListener("load", measureHeight);
+    //   };
+    // }, [id, dragging]);
 
     if (hidden) {
       return (
@@ -64,7 +95,7 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
         {bricks.map((child, index) => (
           <DragabbleBrickWrapper
             key={child.props.id}
-            className={tx(apply(getColClasses(index, variant)), child.props.className)}
+            className={tx(apply(getBrickWrapperClass(index, variant)), child.props.className)}
             {...child}
           />
         ))}
@@ -119,22 +150,6 @@ export function ContainerList(props: ContainerListProps) {
   }
 
   return props.containers.map((container) => <SortableContainer {...container} key={container.id} />);
-}
-
-function getColClasses(index: number, variant: ContainerVariant) {
-  let colSpan = "col-span-1";
-  if (
-    (variant === "1-2" && index === 1) ||
-    (variant === "2-1" && index === 0) ||
-    (variant === "1-1-2" && index === 2) ||
-    (variant === "1-2-1" && index === 1) ||
-    (variant === "2-1-1" && index === 0)
-  ) {
-    colSpan = "col-span-2";
-  } else if ((variant === "1-3" && index === 1) || (variant === "3-1" && index === 0)) {
-    colSpan = "col-span-3";
-  }
-  return clsx("bg-gray-200", colSpan);
 }
 
 function getContainerClasses(variant: ContainerVariant) {
