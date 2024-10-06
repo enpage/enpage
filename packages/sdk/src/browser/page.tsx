@@ -24,7 +24,6 @@ import {
 } from "@dnd-kit/core";
 import { BrickOverlay } from "./brick";
 import { createPortal } from "react-dom";
-import { o } from "vitest/dist/chunks/reporters.C_zwCd4j.js";
 
 export default function Page(props: { bricks: BricksContainer[] }) {
   const editorEnabled = useEditorEnabled();
@@ -49,9 +48,6 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     return editorEnabled ? draft.containers : props.bricks;
   }, [editorEnabled, props.bricks, draft.containers]);
 
-  // const [activeContainerId, setActiveContainerId] = useState<string | null>(null);
-  // const [activeBrickId, setActiveBrickId] = useState<string | null>(null);
-
   const getActiveElementData = useCallback(() => {
     if (!activeElement) {
       return null;
@@ -59,22 +55,25 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     if (activeElement.type === "container") {
       return containers.find((ct) => ct.id === activeElement.id);
     }
-    return containers.flatMap((ct) => ct.bricks).find((b) => b.props.id === activeElement.id);
+    return containers.flatMap((ct) => ct.bricks).find((b) => b.id === activeElement.id);
   }, [activeElement, containers]);
 
   const handleDragEnd = (props: DragEndEvent) => {
     const { active, over } = props;
     setActiveElement(null);
-    if (!over || over.id === active.id) {
-      console.warn("Skipping dragend reordering because over is null or active is over");
-      return;
+
+    // Normally, the draft is already up to date because it is updated during drag move
+    // But just in case, we update the draft here if there is a diff between active and over
+    if (over && over.id !== active.id) {
+      if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
+        updateContainers(active, over);
+      } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
+        updateBricks(active, over);
+      }
     }
 
-    if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
-      updateContainers(active, over);
-    } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
-      updateBricks(active, over);
-    }
+    // save the changes
+    draft.save();
   };
 
   const handleDragOver = (e: DragOverEvent) => {
@@ -104,12 +103,12 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       const allBricks = containers.flatMap((ct) => ct.bricks);
 
       // find the container id of the active and over
-      const activeContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === active.id));
-      const overContainer = containers.find((ct) => ct.bricks.some((b) => b.props.id === over.id));
+      const activeContainer = containers.find((ct) => ct.bricks.some((b) => b.id === active.id));
+      const overContainer = containers.find((ct) => ct.bricks.some((b) => b.id === over.id));
 
       // find active and over bricks
-      const activeBrick = allBricks.find((b) => b.props.id === active.id);
-      const overBrick = allBricks.find((b) => b.props.id === over.id);
+      const activeBrick = allBricks.find((b) => b.id === active.id);
+      const overBrick = allBricks.find((b) => b.id === over.id);
 
       if (!overBrick || !activeBrick || !activeContainer || !overContainer) {
         return;
@@ -121,9 +120,9 @@ export default function Page(props: { bricks: BricksContainer[] }) {
           return {
             ...ct,
             bricks: ct.bricks.map((b) =>
-              b.props.id === active.id
+              b.id === active.id
                 ? overBrick
-                : b.props.id === over.id
+                : b.id === over.id
                   ? {
                       ...activeBrick,
                       placeholder: temporary,
@@ -167,10 +166,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   };
 
   const sortableIds = useMemo(() => {
-    return [
-      ...containers.map((ct) => ct.id),
-      ...containers.flatMap((ct) => ct.bricks.map((b) => b.props.id)),
-    ];
+    return [...containers.map((ct) => ct.id), ...containers.flatMap((ct) => ct.bricks.map((b) => b.id))];
   }, [containers]);
 
   const detectCollisions: CollisionDetection = (props) => {
@@ -223,6 +219,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
           <ContainerList containers={containers} />
         </div>
         <p className={tx("mx-auto p-4")}>activeElement: {JSON.stringify(activeElement)}</p>
+        <pre>{JSON.stringify(draft.containers, null, 2)}</pre>
         {createPortal(
           <DragOverlay>
             {activeElement?.type === "container" && (
@@ -236,7 +233,9 @@ export default function Page(props: { bricks: BricksContainer[] }) {
               <BrickOverlay
                 {...(getActiveElementData() as Brick)}
                 style={{
-                  height: `${activeElement.rect.height}px` /*, width: `${activeElement.rect.width}px`*/,
+                  height: `${activeElement.rect.height}px`,
+                  // width: `${activeElement.rect.width}px`,
+                  // ...(isEndDragging ? { width: `${activeElement.rect.width}px` } : {}),
                 }}
               />
             )}

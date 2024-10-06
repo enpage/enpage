@@ -10,7 +10,7 @@ import {
 } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { tx } from "@twind/core";
+import { tx, style, css } from "@twind/core";
 import clsx from "clsx";
 import { useEditor, useEditorEnabled } from "./use-editor";
 
@@ -41,20 +41,21 @@ const MemoBrickComponent = memo(BrickComponent);
 
 export default function DragabbleBrickWrapper({
   type,
+  id,
   props,
   placeholder,
   ...wrapperAttrs
-}: Brick & ComponentProps<"div">) {
+}: Brick & Omit<ComponentProps<"div">, "id">) {
   const editor = useEditor();
   const onClick = editor.enabled
     ? (e: MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-        editor.setSelectedBrick({ type, props });
+        editor.setSelectedBrick({ type, id, props });
       }
     : undefined;
 
   const { setNodeRef, attributes, listeners, transform, over, active } = useSortable({
-    id: props.id,
+    id,
     data: { type: "brick" },
   });
 
@@ -68,17 +69,17 @@ export default function DragabbleBrickWrapper({
   return (
     <div
       ref={setNodeRef}
-      id={props.id}
+      id={id}
       style={style}
       {...wrapperAttrs}
       {...listeners}
       {...attributes}
       onClick={onClick}
     >
-      {active?.id === props.id ? (
-        <BrickPlaceholder type={type} props={props} />
+      {active?.id === id ? (
+        <BrickPlaceholder type={type} id={id} props={props} />
       ) : (
-        <MemoBrickComponent type={type} props={props} />
+        <MemoBrickComponent type={type} id={id} props={props} />
       )}
     </div>
   );
@@ -98,7 +99,7 @@ export function BrickPlaceholder({ type, props, className, ...attrs }: Component
   );
 }
 
-export function BrickOverlay({ type, props, placeholder, ...attrs }: ComponentProps<"div"> & Brick) {
+export function BrickOverlay({ type, id, props, placeholder, ...attrs }: ComponentProps<"div"> & Brick) {
   return (
     <div
       className={tx(
@@ -106,7 +107,7 @@ export function BrickOverlay({ type, props, placeholder, ...attrs }: ComponentPr
       )}
       {...attrs}
     >
-      <MemoBrickComponent type={type} props={props} />
+      <MemoBrickComponent type={type} id={id} props={props} />
     </div>
   );
 }
@@ -124,5 +125,5 @@ export function getBrickWrapperClass(index: number, variant: ContainerVariant) {
   } else if ((variant === "1-3" && index === 1) || (variant === "3-1" && index === 0)) {
     colSpan = "col-span-3";
   }
-  return clsx("bg-gray-200", colSpan);
+  return clsx("bg-gray-50 hover:(ring ring-orange-500 rounded)", colSpan);
 }

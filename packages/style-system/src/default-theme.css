@@ -16,19 +16,25 @@ html[data-theme="default"] {
   --color-bg-secondary: color-mix(in sRGB, var(--color-secondary) 95%, white 5%); /* Secondary background */
   --color-bg-tertiary: color-mix(in sRGB, var(--color-tertiary) 95%, white 5%);   /* Tertiary background */
 
+  /* Neutral Colors */
+  --color-neutral-light: #f0f0f0;
+  --color-neutral-dark: #a0a0a0;
+
   /* UI Element Colors */
   --color-button-primary-bg: var(--color-primary);
   --color-button-secondary-bg: var(--color-secondary);
   --color-button-tertiary-bg: var(--color-tertiary);
   --color-button-text: var(--color-text-light);
   --color-input-bg: var(--color-bg-main);
-  --color-border: #ced4da;
+  --color-border: var(--color-neutral-dark);
 
   /* State Colors */
   --color-success: var(--color-tertiary);
   --color-error: #dc3545;
   --color-warning: #e0a800;
   --color-info: var(--color-primary);
+  --color-warning-bg: color-mix(in sRGB, var(--color-warning) 90%, white 10%);
+  --color-error-bg: color-mix(in sRGB, var(--color-error) 90%, white 10%);
 
   /* Link Colors */
   --color-link: var(--color-primary);
@@ -65,4 +71,104 @@ html[data-theme="default"] {
 
   --color-card-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 90%, white 10%);
   --color-card-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 70%, black 30%);
+
+  /* Transition Properties */
+  --transition-duration: 0.3s;
+  --transition-ease: ease-in-out;
+
+  --base-padding-test: 2rem;
 }
+
+/* Utility Classes for Transitions */
+.button {
+  transition: background-color var(--transition-duration) var(--transition-ease), color var(--transition-duration) var(--transition-ease);
+}
+
+.card {
+  transition: box-shadow var(--transition-duration) var(--transition-ease);
+}
+
+/* Utility Classes for Cards */
+.card-primary {
+  background-color: var(--color-card-bg-primary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.card-secondary {
+  background-color: var(--color-card-bg-secondary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.card-tertiary {
+  background-color: var(--color-card-bg-tertiary);
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.card-hover {
+  transition: transform var(--transition-duration) var(--transition-ease), box-shadow var(--transition-duration) var(--transition-ease);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Utility Classes for Form Elements */
+.input {
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition-duration) var(--transition-ease), box-shadow var(--transition-duration) var(--transition-ease);
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.textarea {
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition-duration) var(--transition-ease), box-shadow var(--transition-duration) var(--transition-ease);
+}
+
+.textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.select {
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition-duration) var(--transition-ease), box-shadow var(--transition-duration) var(--transition-ease);
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.button-primary {
+  background-color: var(--color-button-primary-bg);
+  color: var(--color-button-text);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-duration) var(--transition-ease), box-shadow var(--transition-duration) var(--transition-ease);
+}
+
+.button-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+

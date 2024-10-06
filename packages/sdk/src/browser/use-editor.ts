@@ -1,12 +1,10 @@
 import { createStore, useStore } from "zustand";
-import type { StoreApi, UseBoundStore } from "zustand";
-
+import { throttle } from "lodash-es";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createContext, useContext } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "~/shared/responsive";
-import type { ElementSelectedPayload } from "./types";
 import invariant from "~/shared/utils/invariant";
 import type { Brick, BricksContainer } from "~/shared/bricks";
 export { type Immer } from "immer";
@@ -95,6 +93,7 @@ export interface DraftState extends DraftStateProps {
   toggleContainerVisibility: (id: string) => void;
   deleteContainer: (id: string) => void;
   updateContainer: (id: string, container: Partial<BricksContainer>) => void;
+  save(): Promise<void>;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
@@ -126,12 +125,22 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
                 item.id === id ? { ...item, ...container } : item,
               );
             }),
+          save: async () => {
+            console.log("saving");
+          },
         })),
         {
           name: "draft-state",
           skipHydration: true,
         },
       ),
+      {
+        handleSet: (handleSet) =>
+          throttle<typeof handleSet>((state) => {
+            console.info("handleSet called");
+            handleSet(state);
+          }, 200),
+      },
     ),
   );
 };

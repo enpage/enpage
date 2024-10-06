@@ -35,53 +35,27 @@ type ContainerProps = PropsWithChildren<
 
 export const Container = forwardRef<HTMLElement, ContainerProps>(
   ({ bricks, variant, className, id, children, dragging, placeholder, hidden, ...props }, ref) => {
+    const draft = useDraft();
     const containerBaseStyles = apply(
       "grid gap-2 relative w-full transition-all duration-300",
       {
         "rounded z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
           dragging,
-        "hover:rounded hover:ring hover:ring-primary-500 hover:ring-opacity-80 hover:shadow-lg hover:bg-primary-500 hover:bg-opacity-50":
+        "hover:rounded hover:shadow-lg hover:bg-primary-500 hover:bg-opacity-50":
           !dragging && !placeholder && !hidden,
-        "bg-black bg-opacity-20 rounded": placeholder,
+        "bg-black bg-opacity-10 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
         "h-48": !hidden,
       },
       !hidden && getContainerClasses(variant),
     );
 
-    // Containers don't have a fixed height, which makes flickering when dragging.
-    // To avoid this, we set a fixed height after the element is mounted.
-    // useEffect(() => {
-    //   if (!dragging) {
-    //     return;
-    //   }
-    //   const measureHeight = () => {
-    //     const element = document.getElementById(id);
-    //     if (element) {
-    //       const rect = element.getBoundingClientRect();
-    //       if (rect.height > 0) {
-    //         console.log("Setting height", rect.height);
-    //         element.style.height = `${rect.height}px`;
-    //       }
-    //     }
-    //   };
-
-    //   // Measure after a short delay to ensure children are rendered
-    //   const timeoutId = setTimeout(measureHeight, 150);
-
-    //   // Measure again after images and other resources are loaded
-    //   window.addEventListener("load", measureHeight);
-
-    //   return () => {
-    //     clearTimeout(timeoutId);
-    //     window.removeEventListener("load", measureHeight);
-    //   };
-    // }, [id, dragging]);
-
     if (hidden) {
       return (
         <section ref={ref} id={id} className={clsx(tx(containerBaseStyles, className), "brick")}>
-          Hidden row
+          <button type="button" onClick={() => draft.toggleContainerVisibility(id)}>
+            Hidden row
+          </button>
         </section>
       );
     }
@@ -94,13 +68,27 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
       <section ref={ref} id={id} className={tx(containerBaseStyles, className)} {...props}>
         {bricks.map((child, index) => (
           <DragabbleBrickWrapper
-            key={child.props.id}
-            className={tx(apply(getBrickWrapperClass(index, variant)), child.props.className)}
+            key={child.id}
+            className={tx(apply(getBrickWrapperClass(index, variant)))}
             {...child}
           />
         ))}
         {children}
         {dragging && <ContainerDragHandle forceVisible />}
+      </section>
+    );
+  },
+);
+
+const HiddenContainer = forwardRef<HTMLElement, ContainerProps>(
+  ({ className, id, children, ...props }, ref) => {
+    const draft = useDraft();
+    // todo: FINISH
+    return (
+      <section ref={ref} id={id} className={className}>
+        <button type="button" onClick={() => draft.toggleContainerVisibility(id)}>
+          Hidden row
+        </button>
       </section>
     );
   },
@@ -132,8 +120,16 @@ export function SortableContainer(props: ContainerProps) {
       {...container}
       {...attributes}
     >
-      {!active && <ContainerDragHandle {...listeners} ref={setActivatorNodeRef} />}
-      {!active && <ContainerMenu container={container} bricksCount={container.bricks.length} />}
+      {!active && (
+        <div
+          className={tx(
+            "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 group-hover:(opacity-100) -right-12 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 flex flex-col gap-2 items-center justify-center",
+          )}
+        >
+          <ContainerDragHandle {...listeners} ref={setActivatorNodeRef} />
+          <ContainerMenu container={container} bricksCount={container.bricks.length} />
+        </div>
+      )}
     </Container>
   );
 }
@@ -180,9 +176,9 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
       className={clsx(
         "container-handle",
         tx(
-          "top-1/2 -translate-y-1/2 ",
-          "text-white shadow-sm absolute transition-opacity duration-300 \
-          -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded-l flex items-center justify-center cursor-grab",
+          // "top-1/2 -translate-y-1/2 ",
+          "text-white shadow-sm transition-opacity duration-300 \
+          -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center cursor-grab",
           "group-hover:(opacity-100) hover:opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
           { "opacity-100": forceVisible },
         ),
@@ -193,12 +189,6 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
     </div>
   );
 });
-
-type ContainerMenuProps = {
-  container: BricksContainer;
-  forceVisible?: boolean;
-  bricksCount: number;
-};
 
 function computeNextVariant(variant: ContainerVariant): ContainerVariant | undefined {
   switch (variant) {
@@ -215,6 +205,12 @@ function computeNextVariant(variant: ContainerVariant): ContainerVariant | undef
   }
 }
 
+type ContainerMenuProps = {
+  container: BricksContainer;
+  forceVisible?: boolean;
+  bricksCount: number;
+};
+
 function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuProps) {
   const draft = useDraft();
 
@@ -229,9 +225,8 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
         className={clsx(
           "container-menu-button",
           tx(
-            "top-1/2 -translate-y-1/2 mt-10",
-            "text-white shadow-sm absolute transition-opacity duration-300 \
-            -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded-l flex items-center justify-center",
+            "text-white shadow-sm transition-opacity duration-300 \
+            -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center",
             "group-hover:(opacity-100) hover:opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
             { "opacity-100": forceVisible },
           ),

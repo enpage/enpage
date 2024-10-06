@@ -1,7 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { customAlphabet } from "nanoid";
 
-export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbn", 7);
+export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN", 7);
 
 export function getCommonBrickProps(defaultClassName: string) {
   return {

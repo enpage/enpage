@@ -1,4 +1,3 @@
-import type { ComponentProps } from "react";
 import { generateId } from "~/browser/bricks/common";
 
 export type ContainerVariant =
@@ -26,16 +25,14 @@ export type BricksContainer = {
   hidden?: boolean;
 };
 
-export type BrickContainerSlot = string;
-export type BrickId = string;
-
 export type Brick = {
   type: string;
-  props: { id: string; className?: string };
+  id: string;
+  props: { /*id: string; className?: string */ customStyles?: Record<string, string> };
   placeholder?: boolean;
 };
 
-type DefinedBrick = Omit<Brick, "props"> & { props: ComponentProps<"div"> };
+type DefinedBrick = Omit<Brick, "id">;
 type DefinedContainers = Omit<BricksContainer, "id" | "bricks"> & { bricks: DefinedBrick[] };
 
 export function defineBricks<B extends DefinedContainers[]>(containers: B): BricksContainer[] {
@@ -43,8 +40,8 @@ export function defineBricks<B extends DefinedContainers[]>(containers: B): Bric
     ...ct,
     id: `container-${generateId()}`,
     bricks: ct.bricks.map((child) => ({
+      id: `brick-${generateId()}`,
       ...child,
-      props: { ...child.props, id: `brick-${generateId()}` },
     })),
   }));
 }
