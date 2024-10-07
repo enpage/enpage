@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { renderTemplatePlugin } from "./plugin-renderer";
 import { insertBasePlugin } from "./plugin-base-url";
 import { contextPlugin } from "./plugin-context";
-import { virtualFilesPlugin } from "./plugin-virtual-files";
+import { virtualFilesPlugin, pluginVirtual } from "./plugin-virtual-files";
 import { manifestPlugin } from "./plugin-manifest";
 import type { EnpageEnv } from "~/shared/env";
 import inspectPlugin from "vite-plugin-inspect";
@@ -15,12 +15,18 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import { existsSync } from "node:fs";
 import { loadConfigFromJsFile } from "../shared/config";
 import react from "@vitejs/plugin-react";
+import { getPageContext } from "./page-context";
+import { updateVirtualModule } from "vite-plugin-virtual";
+import type { GenericPageConfig } from "~/shared/page-config";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // return partial config (recommended)
 const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: EnpageEnv): Plugin => {
   const styleSystemPath = dirname(fileURLToPath(resolvePackage("@enpage/style-system", import.meta.url)));
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  let virtualFilesPlugin: Plugin<any> | undefined;
 
   return {
     name: "enpage",
@@ -78,6 +84,39 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
             : {},
       };
     },
+    configResolved(config) {
+      virtualFilesPlugin = config.plugins.find((plugin) => plugin.name === "vite-plugin-virtual");
+    },
+    async handleHotUpdate({ file, server }) {
+      if (file.endsWith("enpage.config.js")) {
+        if (virtualFilesPlugin) {
+          const cfgPath = join(process.cwd(), "enpage.config.js");
+          const templateConfig = await loadConfigFromJsFile(cfgPath);
+          const context = await getPageContext(config, viteEnv, env);
+
+          if (!context) {
+            return;
+          }
+
+          updateVirtualModule(
+            virtualFilesPlugin,
+            "virtual:enpage-page-config.json",
+            JSON.stringify({
+              attributes: templateConfig.attributes,
+              datasources: templateConfig.datasources,
+              data: context.data,
+              attr: context.attr,
+              templateManifest: templateConfig.manifest,
+              bricks: context.bricks ?? [],
+              ssrManifest: {},
+            } satisfies GenericPageConfig),
+          );
+        }
+        server.ws.send({
+          type: "full-reload",
+        });
+      }
+    },
   };
 };
 
@@ -93,13 +132,15 @@ export default async function enpageMetaPlugin(viteEnv: ConfigEnv) {
   const cfgPath = join(process.cwd(), "enpage.config.js");
 
   const config = await loadConfigFromJsFile(cfgPath);
+  const pageContext = await getPageContext(config, viteEnv, env);
 
   return [
     inspectPlugin(),
     react() as unknown as Plugin,
-    virtualFilesPlugin(config, viteEnv, env),
+    // virtualFilesPlugin(config, viteEnv, env),
+    pluginVirtual(config, viteEnv, env),
     enpagePlugin(config, viteEnv, env),
-    contextPlugin(config, viteEnv, env),
+    contextPlugin(pageContext),
     renderTemplatePlugin(config, viteEnv, env),
     insertBasePlugin(config, viteEnv, env),
     manifestPlugin(config, viteEnv, env),

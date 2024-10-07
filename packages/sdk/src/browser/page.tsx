@@ -218,8 +218,8 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         >
           <ContainerList containers={containers} />
         </div>
-        <p className={tx("mx-auto p-4")}>activeElement: {JSON.stringify(activeElement)}</p>
-        <pre>{JSON.stringify(draft.containers, null, 2)}</pre>
+        {/* <p className={tx("mx-auto p-4")}>activeElement: {JSON.stringify(activeElement)}</p> */}
+        {/* <pre>{JSON.stringify(draft.containers, null, 2)}</pre> */}
         {createPortal(
           <DragOverlay>
             {activeElement?.type === "container" && (
@@ -231,7 +231,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
             )}
             {activeElement?.type === "brick" && (
               <BrickOverlay
-                {...(getActiveElementData() as Brick)}
+                brick={getActiveElementData() as Brick}
                 style={{
                   height: `${activeElement.rect.height}px`,
                   // width: `${activeElement.rect.width}px`,

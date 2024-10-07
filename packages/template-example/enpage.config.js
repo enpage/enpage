@@ -81,7 +81,24 @@ export const manifest = defineManifest({
 });
 
 export const bricks = defineBricks([
-  { type: "container", variant: "full", bricks: [{ type: "text", props: { content: "My content" } }] },
+  {
+    type: "container",
+    variant: "full",
+    bricks: [
+      {
+        type: "image",
+        props: {
+          src: "https://cdn.enpage.co/enpage.svg",
+          className: "max-h-24",
+        },
+      },
+    ],
+  },
+  {
+    type: "container",
+    variant: "full",
+    bricks: [{ type: "text", props: { content: "My content" }, wrapper: { customClasses: "card-1" } }],
+  },
   {
     type: "container",
     variant: "2-1",

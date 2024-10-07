@@ -1,18 +1,14 @@
 import type { BricksContainer, ContainerVariant } from "~/shared/bricks";
 import {
   useState,
-  type ComponentProps,
   forwardRef,
   useEffect,
-  useRef,
   type PropsWithChildren,
   useCallback,
-  useMemo,
   type CSSProperties,
-  memo,
   useLayoutEffect,
 } from "react";
-import { useSortable, SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
 import clsx from "clsx";
 import { tx, apply } from "@twind/core";
 import DragabbleBrickWrapper, { getBrickWrapperClass } from "./brick";
@@ -21,7 +17,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessui/react";
 import { CgArrowsV } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
-import { use } from "marked";
+import { useDndContext } from "@dnd-kit/core";
+import { generateId } from "./bricks/common";
 
 type ContainerProps = PropsWithChildren<
   {
@@ -35,32 +32,38 @@ type ContainerProps = PropsWithChildren<
 
 export const Container = forwardRef<HTMLElement, ContainerProps>(
   ({ bricks, variant, className, id, children, dragging, placeholder, hidden, ...props }, ref) => {
-    const draft = useDraft();
     const containerBaseStyles = apply(
       "grid gap-2 relative w-full transition-all duration-300",
       {
         "rounded z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
           dragging,
-        "hover:rounded hover:(ring ring-gray-400)": !dragging && !placeholder && !hidden,
+        "hover:rounded hover:(ring ring-primary-100)": !dragging && !placeholder && !hidden,
         "bg-black bg-opacity-10 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
-        "h-48": !hidden,
+        "h-auto": !hidden && !props.style?.height,
       },
       !hidden && getContainerClasses(variant),
     );
 
     if (hidden) {
       return (
-        <section ref={ref} id={id} className={clsx(tx(containerBaseStyles, className), "brick")}>
-          <button type="button" onClick={() => draft.toggleContainerVisibility(id)}>
-            Hidden row
-          </button>
-        </section>
+        <HiddenContainer
+          ref={ref}
+          id={id}
+          className={clsx(tx(containerBaseStyles, className), "brick justify-center h-12")}
+        />
       );
     }
 
     if (placeholder) {
-      return <section ref={ref} id={id} className={tx(containerBaseStyles, className)} />;
+      return (
+        <section
+          ref={ref}
+          id={id}
+          style={{ height: props.style?.height }}
+          className={tx(containerBaseStyles, className)}
+        />
+      );
     }
 
     return (
@@ -68,15 +71,18 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
         {bricks.map((child, index) => (
           <DragabbleBrickWrapper
             key={child.id}
-            className={tx(apply(getBrickWrapperClass(index, variant)))}
-            {...child}
+            className={tx(apply(getBrickWrapperClass(child, index, variant)))}
+            brick={child}
           />
         ))}
         {children}
         {dragging && (
+          /* repeat the container menu because it would disapear while dragging */
           <div
             className={tx(
-              "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 flex flex-col gap-2 items-center justify-center",
+              "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 \
+              group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 \
+              flex flex-col gap-2 items-center justify-center",
             )}
           >
             <ContainerDragHandle forceVisible />
@@ -92,14 +98,29 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
   },
 );
 
-const HiddenContainer = forwardRef<HTMLElement, ContainerProps>(
-  ({ className, id, children, ...props }, ref) => {
+const HiddenContainer = forwardRef<HTMLElement, Pick<HTMLDivElement, "id" | "className">>(
+  ({ className, id, ...props }, ref) => {
     const draft = useDraft();
-    // todo: FINISH
+    const [text, setText] = useState("Hidden container");
+    const [over, setOver] = useState(false);
+
+    useEffect(() => {
+      setText(over ? "Click to show" : "Hidden container");
+    }, [over]);
+
     return (
-      <section ref={ref} id={id} className={className}>
+      <section
+        ref={ref}
+        id={id}
+        className={className}
+        onMouseOver={() => setOver(true)}
+        onFocus={() => setOver(true)}
+        onMouseLeave={() => setOver(false)}
+        onBlur={() => setOver(false)}
+        {...props}
+      >
         <button type="button" onClick={() => draft.toggleContainerVisibility(id)}>
-          Hidden row
+          {text}
         </button>
       </section>
     );
@@ -108,6 +129,10 @@ const HiddenContainer = forwardRef<HTMLElement, ContainerProps>(
 
 export function SortableContainer(props: ContainerProps) {
   const { children, className, ...container } = props;
+  // compute the effective container height once mounted
+  const [containerHeight, setContainerHeight] = useState(0);
+  const dndCtx = useDndContext();
+
   const { setNodeRef, setActivatorNodeRef, attributes, listeners, transition, transform, over, active } =
     useSortable({
       id: props.id,
@@ -121,7 +146,18 @@ export function SortableContainer(props: ContainerProps) {
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
+    ...(dndCtx.active && containerHeight ? { height: `${containerHeight}px` } : {}),
   };
+
+  // Always update the container height when the container is mounted
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useLayoutEffect(() => {
+    const container = document.getElementById(props.id);
+    const tmt = setTimeout(() => {
+      setContainerHeight(container?.offsetHeight ?? 0);
+    }, 100);
+    return () => clearTimeout(tmt);
+  }, []);
 
   return (
     <Container
@@ -133,9 +169,12 @@ export function SortableContainer(props: ContainerProps) {
       {...attributes}
     >
       {!active && (
+        /* Wrapper for container menu */
         <div
           className={tx(
-            "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 flex flex-col gap-2 items-center justify-center",
+            "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 \
+            group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 \
+            flex flex-col gap-2 items-center justify-center",
           )}
         >
           <ContainerDragHandle {...listeners} ref={setActivatorNodeRef} />
@@ -188,7 +227,6 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
       className={clsx(
         "container-handle",
         tx(
-          // "top-1/2 -translate-y-1/2 ",
           "text-white shadow-sm transition-opacity duration-300 \
           -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center cursor-grab",
           "group-hover:(opacity-100) hover:opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
@@ -209,6 +247,9 @@ function computeNextVariant(variant: ContainerVariant): ContainerVariant | undef
     case "1-1":
       return "1-1-1";
     case "1-1-1":
+    case "1-1-2":
+    case "1-2-1":
+    case "2-1-1":
       return "1-1-1-1";
     case "1-2":
       return "1-1-2";
@@ -228,7 +269,22 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
 
   const addColumn = useCallback(() => {
     const newVariant = computeNextVariant(container.variant);
-    if (newVariant) draft.updateContainer(container.id, { variant: newVariant });
+    if (newVariant) {
+      draft.updateContainer(container.id, {
+        variant: newVariant,
+        bricks: [
+          ...container.bricks,
+          {
+            id: `brick-${generateId()}`,
+            type: "text",
+            props: {
+              content: "New brick content",
+            },
+            wrapper: {},
+          },
+        ],
+      });
+    }
   }, [container, draft]);
 
   return (

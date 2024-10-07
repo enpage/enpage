@@ -126,7 +126,7 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
               );
             }),
           save: async () => {
-            console.log("saving");
+            //todo: call API
           },
         })),
         {
@@ -137,7 +137,6 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
       {
         handleSet: (handleSet) =>
           throttle<typeof handleSet>((state) => {
-            console.info("handleSet called");
             handleSet(state);
           }, 200),
       },

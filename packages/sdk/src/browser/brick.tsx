@@ -30,9 +30,11 @@ const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
     default:
       return <></>;
   }
+  const { wrapper, ...rest } = props;
+
   return (
     <Suspense>
-      <BrickModule {...props} />
+      <BrickModule {...rest} />
     </Suspense>
   );
 };
@@ -40,22 +42,21 @@ const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
 const MemoBrickComponent = memo(BrickComponent);
 
 export default function DragabbleBrickWrapper({
-  type,
-  id,
-  props,
-  placeholder,
+  className,
+  brick,
   ...wrapperAttrs
-}: Brick & Omit<ComponentProps<"div">, "id">) {
+}: { brick: Brick } & ComponentProps<"div">) {
   const editor = useEditor();
+
   const onClick = editor.enabled
     ? (e: MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-        editor.setSelectedBrick({ type, id, props });
+        editor.setSelectedBrick(brick);
       }
     : undefined;
 
   const { setNodeRef, attributes, listeners, transform, over, active } = useSortable({
-    id,
+    id: brick.id,
     data: { type: "brick" },
   });
 
@@ -69,50 +70,47 @@ export default function DragabbleBrickWrapper({
   return (
     <div
       ref={setNodeRef}
-      id={id}
+      id={brick.id}
       style={style}
       {...wrapperAttrs}
       {...listeners}
       {...attributes}
       onClick={onClick}
+      className={tx("brick", className)}
     >
-      {active?.id === id ? (
-        <BrickPlaceholder type={type} id={id} props={props} />
-      ) : (
-        <MemoBrickComponent type={type} id={id} props={props} />
-      )}
+      {active?.id === brick.id ? <BrickPlaceholder /> : <MemoBrickComponent {...brick} />}
     </div>
   );
 }
 
 // export default memo(DragabbleBrickWrapper);
 
-export function BrickPlaceholder({ type, props, className, ...attrs }: ComponentProps<"div"> & Brick) {
+export function BrickPlaceholder() {
   return (
     <div
       className={tx(
-        "rounded overflow-hidden bg-black bg-opacity-10 h-full transition-all duration-200",
-        className,
+        "rounded overflow-hidden bg-black bg-opacity-10 h-full transition-all duration-200 flex-1",
       )}
-      {...attrs}
     />
   );
 }
 
-export function BrickOverlay({ type, id, props, placeholder, ...attrs }: ComponentProps<"div"> & Brick) {
+export function BrickOverlay({ brick, className, ...attrs }: ComponentProps<"div"> & { brick: Brick }) {
   return (
     <div
       className={tx(
-        "rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50 transition-all duration-200",
+        "brick rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 \
+        shadow-lg bg-primary-500 bg-opacity-50 transition-all duration-200",
+        className,
       )}
       {...attrs}
     >
-      <MemoBrickComponent type={type} id={id} props={props} />
+      <MemoBrickComponent {...brick} />
     </div>
   );
 }
 
-export function getBrickWrapperClass(index: number, variant: ContainerVariant) {
+export function getBrickWrapperClass(brick: Brick, index: number, variant: ContainerVariant) {
   let colSpan = "md:col-span-1";
   if (
     (variant === "1-2" && index === 1) ||
@@ -125,5 +123,10 @@ export function getBrickWrapperClass(index: number, variant: ContainerVariant) {
   } else if ((variant === "1-3" && index === 1) || (variant === "3-1" && index === 0)) {
     colSpan = "md:col-span-3";
   }
-  return clsx("bg-gray-50 hover:(ring ring-primary-500 rounded)", colSpan);
+  return clsx(
+    "hover:(ring ring-primary-400 rounded) min-h-full",
+    colSpan,
+    brick.wrapper?.baseClasses,
+    brick.wrapper?.customClasses,
+  );
 }

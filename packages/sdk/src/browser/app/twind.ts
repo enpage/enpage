@@ -1,7 +1,7 @@
-import { install } from "@twind/core";
+import install from "@twind/with-react";
 import config from "~/shared/twind.config";
 
-install(config);
+export default install(config, import.meta.env.PROD);
 
 // setup({
 //   theme: {

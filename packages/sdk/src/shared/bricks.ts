@@ -25,10 +25,26 @@ export type BricksContainer = {
   hidden?: boolean;
 };
 
+type BrickWrapper = {
+  // Base styles are always applied but can be overridden by fixed or custom styles
+  baseStyles?: Record<string, string>;
+  // Fixed styles are always applied and cannot be overridden
+  fixedStyles?: Record<string, string>;
+  // Custom styles are always applied and can override base styles
+  customStyles?: Record<string, string>;
+  // Base classes are always applied but can be overridden by fixed or custom classes
+  baseClasses?: string | string[];
+  // Fixed classes are always applied and cannot be overridden
+  fixedClasses?: string | string[];
+  // Custom classes are always applied and can override base classes
+  customClasses?: string | string[];
+};
+
 export type Brick = {
   type: string;
   id: string;
-  props: { /*id: string; className?: string */ customStyles?: Record<string, string> };
+  props: Record<string, unknown>;
+  wrapper: BrickWrapper;
   placeholder?: boolean;
 };
 

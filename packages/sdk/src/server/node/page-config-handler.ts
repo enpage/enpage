@@ -1,12 +1,9 @@
-import type { PageConfig } from "../../shared/page-config";
+import type { GenericPageConfig, PageConfig } from "../../shared/page-config";
 import type { RequestContext } from "@hattip/compose";
 import { fsCache, memoryCache } from "./cache";
 import { getPageConfig } from "../common/get-page-config";
 import type { NodePlatformInfo } from "@hattip/adapter-node";
 import { getLocalPageConfig } from "./local-page-config";
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type GenericPageConfig = PageConfig<any, any>;
 
 export default async function pageConfigHandler(ctx: RequestContext<NodePlatformInfo>) {
   const url = new URL(ctx.request.url);

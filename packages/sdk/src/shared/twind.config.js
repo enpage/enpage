@@ -3,7 +3,7 @@ import presetAutoprefix from "@twind/preset-autoprefix";
 import presetTailwind from "@twind/preset-tailwind";
 import presetExt from "@twind/preset-ext";
 import presetLineClamp from "@twind/preset-line-clamp";
-import presettailwindForms from "@twind/preset-tailwind-forms";
+import presetForms from "@twind/preset-tailwind-forms";
 import presetTypo from "@twind/preset-typography";
 
 export default defineConfig({
@@ -12,10 +12,11 @@ export default defineConfig({
     presetTailwind(),
     presetExt(),
     presetLineClamp(),
-    presettailwindForms(),
+    presetForms(),
     presetTypo(),
   ],
   rules: [
+    ["brick", { display: "flex", height: "inherit" }],
     ["card-1", { color: "var(--color-card-text-1)", "background-color": "var(--color-card-bg-1)" }],
     ["card-2", { color: "var(--color-card-text-2)", "background-color": "var(--color-card-bg-2)" }],
     ["card-3", { color: "var(--color-card-text-3)", "background-color": "var(--color-card-bg-3)" }],
