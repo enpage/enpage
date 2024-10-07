@@ -60,7 +60,7 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
         <section
           ref={ref}
           id={id}
-          style={{ height: props.style?.height }}
+          style={{ height: props.style?.height, minHeight: props.style?.height }}
           className={tx(containerBaseStyles, className)}
         />
       );
@@ -146,7 +146,10 @@ export function SortableContainer(props: ContainerProps) {
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
-    ...(dndCtx.active && containerHeight ? { height: `${containerHeight}px` } : {}),
+    // maintain a fixed height while dragging to avoid layout shift
+    ...(dndCtx.active && containerHeight
+      ? { height: `${containerHeight}px`, minHeight: `${containerHeight}px` }
+      : {}),
   };
 
   // Always update the container height when the container is mounted
@@ -154,6 +157,7 @@ export function SortableContainer(props: ContainerProps) {
   useLayoutEffect(() => {
     const container = document.getElementById(props.id);
     const tmt = setTimeout(() => {
+      console.log("compute container height", container?.offsetHeight);
       setContainerHeight(container?.offsetHeight ?? 0);
     }, 100);
     return () => clearTimeout(tmt);
@@ -173,7 +177,7 @@ export function SortableContainer(props: ContainerProps) {
         <div
           className={tx(
             "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 \
-            group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 \
+            group-hover:(opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
             flex flex-col gap-2 items-center justify-center",
           )}
         >
@@ -229,7 +233,7 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
         tx(
           "text-white shadow-sm transition-opacity duration-300 \
           -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center cursor-grab",
-          "group-hover:(opacity-100) hover:opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
+          "group-hover:(opacity-70) hover:!opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
           { "opacity-100": forceVisible },
         ),
       )}
@@ -295,7 +299,7 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
           tx(
             "text-white shadow-sm transition-opacity duration-300 \
             -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center",
-            "group-hover:(opacity-100) hover:opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
+            "group-hover:(opacity-70) hover:!opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
             { "opacity-100": forceVisible },
           ),
         )}

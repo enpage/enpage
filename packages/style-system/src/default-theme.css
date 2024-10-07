@@ -7,6 +7,7 @@ html[data-theme="default"] {
   /* Text Colors */
   --color-text-light: #ffffff;  /* Light text color */
   --color-text-dark: #000000;   /* Dark text color */
+
   --color-text-primary: color-contrast(var(--color-bg-main) vs var(--color-text-light), var(--color-text-dark));
   --color-text-secondary: color-contrast(var(--color-bg-secondary) vs var(--color-text-light), var(--color-text-dark));
   --color-text-tertiary: color-contrast(var(--color-bg-tertiary) vs var(--color-text-light), var(--color-text-dark));
@@ -42,13 +43,17 @@ html[data-theme="default"] {
   --color-link-hover: var(--color-primary-dark);
 
   /* Card Background Colors */
-  --color-card-bg-primary: var(--color-primary-light);
-  --color-card-bg-secondary: var(--color-secondary-light);
-  --color-card-bg-tertiary: var(--color-tertiary-light);
+  --color-brick-bg-primary: var(--color-primary-light);
+  --color-brick-bg-secondary: var(--color-secondary-light);
+  --color-brick-bg-tertiary: var(--color-tertiary-light);
 
-  --color-card-bg-primary-dark: var(--color-primary-dark);
-  --color-card-bg-secondary-dark: var(--color-secondary-dark);
-  --color-card-bg-tertiary-dark: var(--color-tertiary-dark);
+  --color-brick-bg-primary-dark: var(--color-primary-dark);
+  --color-brick-bg-secondary-dark: var(--color-secondary-dark);
+  --color-brick-bg-tertiary-dark: var(--color-tertiary-dark);
+
+  --color-brick-bg-primary-light: var(--color-primary-light);
+  --color-brick-bg-secondary-light: var(--color-secondary-light);
+  --color-brick-bg-tertiary-light: var(--color-tertiary-light);
 }
 
 :root {
@@ -62,21 +67,10 @@ html[data-theme="default"] {
   --color-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 80%, white 20%);
   --color-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 80%, black 20%);
 
-  /* Derived Card Colors */
-  --color-card-primary-light: color-mix(in sRGB, var(--color-primary) 90%, white 10%);
-  --color-card-primary-dark: color-mix(in sRGB, var(--color-primary) 70%, black 30%);
-
-  --color-card-secondary-light: color-mix(in sRGB, var(--color-secondary) 90%, white 10%);
-  --color-card-secondary-dark: color-mix(in sRGB, var(--color-secondary) 70%, black 30%);
-
-  --color-card-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 90%, white 10%);
-  --color-card-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 70%, black 30%);
-
   /* Transition Properties */
   --transition-duration: 0.3s;
   --transition-ease: ease-in-out;
 
-  --base-padding-test: 2rem;
 }
 
 /* Utility Classes for Transitions */
@@ -84,43 +78,61 @@ html[data-theme="default"] {
   transition: background-color var(--transition-duration) var(--transition-ease), color var(--transition-duration) var(--transition-ease);
 }
 
-.card {
-  transition: box-shadow var(--transition-duration) var(--transition-ease);
-}
-
-/* Utility Classes for Cards */
-.card-primary {
-  background-color: var(--color-card-bg-primary);
+/* Utility Classes for Bricks */
+.brick-primary {
+  background-color: var(--color-brick-bg-primary);
   color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  padding: 1rem;
-  border-radius: 8px;
+  border-color: var(--color-border);
 }
 
-.card-secondary {
-  background-color: var(--color-card-bg-secondary);
+.brick-primary-light {
+  background-color: var(--color-brick-bg-primary-light);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.brick-primary-dark {
+  background-color: var(--color-brick-bg-primary-dark);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.brick-secondary {
+  background-color: var(--color-brick-bg-secondary);
   color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-  padding: 1rem;
-  border-radius: 8px;
+  border-color: var(--color-border);
 }
 
-.card-tertiary {
-  background-color: var(--color-card-bg-tertiary);
+.brick-secondary-light {
+  background-color: var(--color-brick-bg-secondary-light);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.brick-secondary-dark {
+  background-color: var(--color-brick-bg-secondary-dark);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.brick-tertiary {
+  background-color: var(--color-brick-bg-tertiary);
   color: var(--color-text-tertiary);
   border: 1px solid var(--color-border);
-  padding: 1rem;
-  border-radius: 8px;
 }
 
-.card-hover {
-  transition: transform var(--transition-duration) var(--transition-ease), box-shadow var(--transition-duration) var(--transition-ease);
+.brick-tertiary-light {
+  background-color: var(--color-brick-bg-tertiary-light);
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border);
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+.brick-tertiary-dark {
+  background-color: var(--color-brick-bg-tertiary-dark);
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border);
 }
+
 
 /* Utility Classes for Form Elements */
 .input {

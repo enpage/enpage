@@ -27,6 +27,9 @@ const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
     case "text-with-title":
       BrickModule = lazy(() => import(`./bricks/text-with-title`));
       break;
+    case "hero":
+      BrickModule = lazy(() => import(`./bricks/hero`));
+      break;
     default:
       return <></>;
   }

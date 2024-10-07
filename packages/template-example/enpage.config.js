@@ -97,21 +97,53 @@ export const bricks = defineBricks([
   {
     type: "container",
     variant: "full",
-    bricks: [{ type: "text", props: { content: "My content" }, wrapper: { customClasses: "card-1" } }],
+    bricks: [
+      {
+        type: "hero",
+        props: {
+          content: "The best way to go to India",
+          justify: "text-center",
+        },
+      },
+    ],
+  },
+  {
+    type: "container",
+    variant: "full",
+    bricks: [
+      {
+        type: "text",
+        props: {
+          content:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+          justify: "text-center",
+        },
+        wrapper: { customClasses: "brick-pink" },
+      },
+    ],
   },
   {
     type: "container",
     variant: "2-1",
     bricks: [
-      { type: "text-with-title", props: { title: "My title", content: "Hey there!" } },
-      { type: "text", props: { content: "Something" } },
+      {
+        type: "text-with-title",
+        props: { title: "My title", content: "Hey there!" },
+        wrapper: { customClasses: "brick-light-primary" },
+      },
+      { type: "text", props: { content: "Something" }, wrapper: { customClasses: "brick-primary" } },
     ],
   },
   {
     type: "container",
     variant: "1-2",
     bricks: [
-      { type: "image", props: {} },
+      {
+        type: "image",
+        props: {
+          className: "min-h-24",
+        },
+      },
       { type: "text", props: { content: "Joe joe" } },
     ],
   },
@@ -119,9 +151,13 @@ export const bricks = defineBricks([
     type: "container",
     variant: "1-1-1",
     bricks: [
-      { type: "text", props: { content: "Sample here" } },
-      { type: "text", props: { content: "Hello World" } },
-      { type: "text", props: { content: "Blabla" } },
+      {
+        type: "text",
+        props: { content: "Sample here" },
+        wrapper: { customClasses: "brick-light-red" },
+      },
+      { type: "text", props: { content: "Hello World" }, wrapper: { customClasses: "brick-normal-red" } },
+      { type: "text", props: { content: "Blabla" }, wrapper: { customClasses: "brick-dark-red" } },
     ],
   },
   {

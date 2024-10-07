@@ -11,10 +11,10 @@ import { getCommonBrickProps } from "./common";
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
-  type: "text",
-  title: "Text",
-  description: "A textual brick",
-  icon: "text",
+  type: "hero",
+  title: "hero",
+  description: "A hero brick",
+  icon: "hero",
   file: filename,
   props: Type.Object({
     content: Type.String({
@@ -52,7 +52,7 @@ export const manifest = defineBrickManifest({
         "ui:display": "button-group",
       },
     ),
-    ...getCommonBrickProps("p-4"),
+    ...getCommonBrickProps("p-4 hero-5 font-extrabold"),
   }),
 });
 

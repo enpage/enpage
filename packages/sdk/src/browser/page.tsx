@@ -24,10 +24,20 @@ import {
 } from "@dnd-kit/core";
 import { BrickOverlay } from "./brick";
 import { createPortal } from "react-dom";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export default function Page(props: { bricks: BricksContainer[] }) {
   const editorEnabled = useEditorEnabled();
   const draft = useDraft();
+
+  useHotkeys("mod+c", () => {
+    // let the browser handle the copy event
+    const sel = window.getSelection();
+    if (!sel?.rangeCount) {
+      console.log("mod+c pressed");
+    }
+  });
+
   const sensors = [
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -232,11 +242,13 @@ export default function Page(props: { bricks: BricksContainer[] }) {
             {activeElement?.type === "brick" && (
               <BrickOverlay
                 brick={getActiveElementData() as Brick}
-                style={{
-                  height: `${activeElement.rect.height}px`,
-                  // width: `${activeElement.rect.width}px`,
-                  // ...(isEndDragging ? { width: `${activeElement.rect.width}px` } : {}),
-                }}
+                style={
+                  {
+                    // height: `${activeElement.rect.height}px`,
+                    // width: `${activeElement.rect.width}px`,
+                    // ...(isEndDragging ? { width: `${activeElement.rect.width}px` } : {}),
+                  }
+                }
               />
             )}
           </DragOverlay>,

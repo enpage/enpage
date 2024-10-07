@@ -43,6 +43,29 @@ export const manifest = defineBrickManifest({
         "ui:display": "button-group",
       },
     ),
+    titleClassName: Type.String({
+      default: "text-lg font-bold",
+      title: "Title Class Name",
+      description: "The class name to apply to the title",
+      "ui:field": "hidden",
+    }),
+    titleLevel: Type.Union(
+      [
+        Type.Literal("h1", { title: "h1", description: "Title" }),
+        Type.Literal("h2", { title: "h2", description: "Subtitle" }),
+        Type.Literal("h3", { title: "h3", description: "Heading level 3" }),
+        Type.Literal("h4", { title: "h4", description: "Heading level 4" }),
+        Type.Literal("h5", { title: "h5", description: "Heading level 5" }),
+        Type.Literal("h6", { title: "h6", description: "Heading level 6" }),
+      ],
+      {
+        default: "h2",
+        title: "Title Level",
+        description: "The title level",
+        "ui:field": "enum",
+        "ui:display": "button-group",
+      },
+    ),
     ...getCommonBrickProps("p-4"),
   }),
 });
@@ -52,15 +75,17 @@ export const defaults = Value.Create(manifest);
 
 const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { format, title, content, className, ...attrs } = props;
+  let { format, title, content, className, titleClassName, titleLevel, ...attrs } = props;
 
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
 
+  const TitleTag = titleLevel as keyof JSX.IntrinsicElements;
+
   if (format === "html") {
     return (
       <div ref={ref} className={tx(className)} {...attrs}>
-        <div>{title}</div>
+        <TitleTag className={tx(titleClassName)}>{title}</TitleTag>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content */}
         <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
       </div>
@@ -68,7 +93,7 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
   } else if (format === "markdown") {
     return (
       <div ref={ref} className={tx(className)} {...attrs}>
-        <div>{title}</div>
+        <TitleTag className={tx(titleClassName)}>{title}</TitleTag>
         <div
           // biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content
           dangerouslySetInnerHTML={{
@@ -85,7 +110,7 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
   } else {
     return (
       <div ref={ref} className={tx(className)} {...attrs}>
-        <h2>twt title: {title}</h2>
+        <TitleTag className={tx(titleClassName)}>twt title: {title}</TitleTag>
         <div>twt content: {content}</div>
       </div>
     );
