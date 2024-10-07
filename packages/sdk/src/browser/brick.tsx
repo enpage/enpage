@@ -113,7 +113,7 @@ export function BrickOverlay({ type, id, props, placeholder, ...attrs }: Compone
 }
 
 export function getBrickWrapperClass(index: number, variant: ContainerVariant) {
-  let colSpan = "col-span-1";
+  let colSpan = "md:col-span-1";
   if (
     (variant === "1-2" && index === 1) ||
     (variant === "2-1" && index === 0) ||
@@ -121,9 +121,9 @@ export function getBrickWrapperClass(index: number, variant: ContainerVariant) {
     (variant === "1-2-1" && index === 1) ||
     (variant === "2-1-1" && index === 0)
   ) {
-    colSpan = "col-span-2";
+    colSpan = "md:col-span-2";
   } else if ((variant === "1-3" && index === 1) || (variant === "3-1" && index === 0)) {
-    colSpan = "col-span-3";
+    colSpan = "md:col-span-3";
   }
-  return clsx("bg-gray-50 hover:(ring ring-orange-500 rounded)", colSpan);
+  return clsx("bg-gray-50 hover:(ring ring-primary-500 rounded)", colSpan);
 }

@@ -41,8 +41,7 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
       {
         "rounded z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
           dragging,
-        "hover:rounded hover:shadow-lg hover:bg-primary-500 hover:bg-opacity-50":
-          !dragging && !placeholder && !hidden,
+        "hover:rounded hover:(ring ring-gray-400)": !dragging && !placeholder && !hidden,
         "bg-black bg-opacity-10 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
         "h-48": !hidden,
@@ -74,7 +73,20 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
           />
         ))}
         {children}
-        {dragging && <ContainerDragHandle forceVisible />}
+        {dragging && (
+          <div
+            className={tx(
+              "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 flex flex-col gap-2 items-center justify-center",
+            )}
+          >
+            <ContainerDragHandle forceVisible />
+            <ContainerMenu
+              forceVisible
+              container={{ id, bricks, variant, type: "container" }}
+              bricksCount={1}
+            />
+          </div>
+        )}
       </section>
     );
   },
@@ -123,7 +135,7 @@ export function SortableContainer(props: ContainerProps) {
       {!active && (
         <div
           className={tx(
-            "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 group-hover:(opacity-100) -right-12 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 flex flex-col gap-2 items-center justify-center",
+            "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 flex flex-col gap-2 items-center justify-center",
           )}
         >
           <ContainerDragHandle {...listeners} ref={setActivatorNodeRef} />
@@ -152,8 +164,8 @@ function getContainerClasses(variant: ContainerVariant) {
   return {
     "grid-cols-1": variant === "full",
     "grid-cols-2": variant === "1-1",
-    "grid-cols-3": variant === "1-1-1" || variant === "1-2" || variant === "2-1",
-    "grid-cols-4":
+    "md:grid-cols-3": variant === "1-1-1" || variant === "1-2" || variant === "2-1",
+    "md:grid-cols-4":
       variant === "1-1-1-1" ||
       variant === "1-1-2" ||
       variant === "2-2" ||
