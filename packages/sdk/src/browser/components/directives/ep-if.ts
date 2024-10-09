@@ -64,11 +64,8 @@ class EPIf extends CustomElement {
   }
 
   protected render(): void {
-    super.render();
-
     if (this.evaluateCondition()) {
-      this.innerHTML = "";
-      this.appendChild(this._content.cloneNode(true));
+      this.replaceChildren(this._content.cloneNode(true));
     } else {
       this.innerHTML = "";
     }

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import App from "./App";
 import type { Request } from "express";
+import { createJSDOM } from "./utils/dom";
 
 const IFRAME_MODE: "url" | "srcdoc" = "srcdoc";
 
@@ -19,7 +20,9 @@ export async function render(req: Request) {
   if (!req.query.templateUrl) {
     throw new Error("templateUrl query param is required");
   }
-  let contents: string | undefined;
+  let html = "";
+  let body = "";
+
   const templateUrl = new URL(req.query.templateUrl as string);
 
   if (templateUrl.hostname !== "localhost") {
@@ -29,21 +32,28 @@ export async function render(req: Request) {
   // fetch contents from templateUrl query param
   try {
     if (IFRAME_MODE === "srcdoc") {
-      contents = await fetch(templateUrl.href).then((res) => res.text());
+      html = (await fetch(templateUrl.href).then((res) => res.text())) as string;
+      const dom = createJSDOM(html);
+      const bodyContents = dom.body?.outerHTML;
+      body = bodyContents ?? "nobody";
     }
   } catch (e) {
-    contents = ERROR_CONTENTS;
+    console.error("Error loading template", e);
+    html = ERROR_CONTENTS;
   }
+
   // render the app
-  const html = ReactDOMServer.renderToString(
+  const html_ = ReactDOMServer.renderToString(
     <React.StrictMode>
-      <App html={contents} templateUrl={templateUrl.href} />
+      <App html={html} body={body} templateUrl={templateUrl.href} />
     </React.StrictMode>,
   );
+
   return {
-    html,
+    html: html_,
     state: JSON.stringify({
-      templateContents: bytesToBase64(new TextEncoder().encode(contents)),
+      html: bytesToBase64(new TextEncoder().encode(html)),
+      body: bytesToBase64(new TextEncoder().encode(body)),
       templateUrl,
     }),
   };

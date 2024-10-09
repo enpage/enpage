@@ -34,6 +34,8 @@
     "@vitest/ui": "2.0.5",
     "autoprefixer": "10.4.20",
     "dotenv": "16.4.5",
+    "happy-dom": "15.7.4",
+    "happy-dom-without-node": "14.12.3",
     "json-schema-to-markdown": "1.1.1",
     "nx": "19.7.2",
     "postcss": "8.4.42",
@@ -52,9 +54,9 @@
     }
   },
   "postcss": {
-		"plugins": {
-			"tailwindcss": {},
-			"autoprefixer": {}
-		}
-	}
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
+  }
 }

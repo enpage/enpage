@@ -10,13 +10,16 @@ import { IoImageOutline } from "react-icons/io5";
 import { GoVideo } from "react-icons/go";
 
 type BlockDescription = {
-  type: BlockType;
+  type: BlockType | string;
   label: string;
   icon: ReactNode;
 };
 
 const iconsProps = { size: 20 };
 
+/**
+ * @deprecated
+ */
 export const blockDescriptions: BlockDescription[] = [
   {
     type: "text",

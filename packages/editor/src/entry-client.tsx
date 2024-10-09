@@ -9,16 +9,23 @@ function base64ToBytes(base64: string) {
 }
 
 // @ts-ignore
-const html = window.__INITIAL_STATE__.templateContents
+const html = window.__INITIAL_STATE__.html
   ? // @ts-ignore
-    new TextDecoder().decode(base64ToBytes(window.__INITIAL_STATE__.templateContents))
-  : undefined;
+    new TextDecoder().decode(base64ToBytes(window.__INITIAL_STATE__.html))
+  : "";
+
+// @ts-ignore
+const body = window.__INITIAL_STATE__.body
+  ? // @ts-ignore
+    new TextDecoder().decode(base64ToBytes(window.__INITIAL_STATE__.body))
+  : "";
+
 // @ts-ignore
 const templateUrl = window.__INITIAL_STATE__.templateUrl as string;
 
 ReactDOM.hydrateRoot(
   document.getElementById("root") as HTMLElement,
   <React.StrictMode>
-    <App html={html} templateUrl={templateUrl} />
+    <App html={html} body={body} templateUrl={templateUrl} />
   </React.StrictMode>,
 );

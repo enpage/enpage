@@ -1,6 +1,11 @@
 /* Inspired by https://gist.github.com/jarthod/8719db9fef8deb937f4f */
 .desktop {
-  @apply h-[88dvh] aspect-[16/9] bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600;
+  @apply h-screen w-screen
+        bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600
+        ;
+  /* @apply h-[88dvh] w-[67dvw] max-w-[67dvw] aspect-[16/9]
+        bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600
+        ; */
   /* @apply max-h-[75dvh] aspect-[16/9] max-w-[85dvw] w-[80dvw]; */
   box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.2);
   border-radius: 6px 6px 0 0;
@@ -8,12 +13,13 @@
 }
 
 .desktopBar {
-  @apply w-full h-10 bg-gradient-to-t from-gray-300 to-gray-100 dark:from-gray-700 dark:to-gray-600;
+  @apply w-full h-10 bg-gradient-to-t from-gray-300 to-gray-100 dark:from-dark-700 dark:to-dark-600;
   position: relative;
   /* background: linear-gradient(to top, #CCC, #EEE); */
   backdrop-filter: blur(10px);
   border-radius: inherit;
 
+  /* buttons */
   &:before {
     display: block;
     position: absolute;
@@ -33,12 +39,12 @@
     content: attr(data-url);
     padding: 0.1em 0.8em;
     font-size: 1em;
-    top: .4em;
+    top: .36em;
     left: 5.5em;
     width: calc(100% - 6em);
     border-radius: 9999px;
-    border: 1px inset rgba(0, 0, 0, 0.2);
-    @apply bg-white dark:bg-gray-700 text-gray-800 dark:text-white/60;
+    border: 1px inset rgba(0, 0, 0, 0.3);
+    @apply bg-white dark:bg-dark-500 text-gray-800 dark:text-white/60;
   }
 }
 
@@ -54,7 +60,7 @@
 }
 
 .tablet{
-  @apply h-[80dvh] aspect-[3/4];
+  @apply h-[80dvh] aspect-[3/4] max-w-3xl;
 }
 
 .mobile {

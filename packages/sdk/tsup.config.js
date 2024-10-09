@@ -17,7 +17,7 @@ const external = [
   // "jsdom",
   "vite",
   "vite-plugin-inspect",
-  // "@vitejs/plugin-react",
+  "@vitejs/plugin-react",
   // "vite-tsconfig-paths",
   // "postcss",
   // "postcss-preset-env",
@@ -28,19 +28,21 @@ const external = [
   // "axe-core",
   "fsevents",
   "lightningcss",
-  "virtual:enpage-template:index.html",
   "virtual:enpage-page-config.json",
   "__STATIC_CONTENT_MANIFEST",
 ];
 
+const ignored = ["!**/*.md", "!**/tests/**/*"];
+
 export default defineConfig((options) => {
   return [
     {
-      entry: ["src/node", "!src/node/**/*.md", "!src/node/**/__tests__/**/*", "!src/node/**/__mocks__/**/*"],
+      entry: ["src/node", ...ignored],
       outDir: "dist/node",
       target: "node20.10",
       format: ["esm"],
       dts: false,
+      clean: !options.watch,
       minify: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
@@ -57,19 +59,17 @@ export default defineConfig((options) => {
     // The dev-client uses Vite's import.meta.env.DEV
     // We bundle it using tsup to avoid the automatic replacement at build time
     {
-      entry: [
-        "src/browser",
-        "!src/browser/**/*.md",
-        "!src/browser/**/__tests__/**/*",
-        "!src/browser/**/__mocks__/**/*",
-      ],
+      entry: ["src/browser", ...ignored],
       outDir: "dist/browser",
       target: "es2020",
       format: ["esm"],
-      dts: true,
+      dts: !options.watch,
+      verbose: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
+      splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;
@@ -77,19 +77,16 @@ export default defineConfig((options) => {
       loader,
     },
     {
-      entry: [
-        "src/shared",
-        "!src/shared/**/*.md",
-        "!src/shared/**/__tests__/**/*",
-        "!src/shared/**/__mocks__/**/*",
-      ],
+      entry: ["src/shared", ...ignored],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
-      dts: true,
+      dts: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
+      splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;
@@ -101,13 +98,13 @@ export default defineConfig((options) => {
       outDir: "dist/server/node",
       target: "node18",
       format: ["esm"],
-      dts: false,
+      dts: !options.watch,
+      clean: !options.watch,
       minify: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
       splitting: false,
       external,
-      clean: true,
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -117,10 +114,10 @@ export default defineConfig((options) => {
       outDir: "dist/server/cloudflare",
       target: "es2020",
       format: ["esm"],
-      dts: false,
-      clean: true,
+      dts: !options.watch,
       splitting: false,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
       external,
