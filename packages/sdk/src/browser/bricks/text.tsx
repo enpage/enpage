@@ -3,9 +3,11 @@ import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import { parse } from "marked";
 import DOMPurify from "dompurify";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { tx } from "@twind/core";
 import { getCommonBrickProps } from "./common";
+import ReactQuill, { Quill } from "react-quill";
+import clsx from "clsx";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -59,14 +61,58 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const Text = forwardRef<HTMLDivElement, Manifest["props"] & { textEditable?: boolean }>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { format, content, className, justify, ...attrs } = props;
+  let { format, content, className, justify, textEditable, ...attrs } = props;
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
 
+  const [textValue, setTextValue] = useState(DOMPurify.sanitize(content));
+  const [hasFocus, setHasFocus] = useState(false);
+
   if (format === "html") {
-    return (
+    return textEditable ? (
+      <div
+        className={tx("flex-1 relative", className)}
+        onMouseEnter={() => setHasFocus(true)}
+        onMouseLeave={() => setHasFocus(false)}
+      >
+        <div
+          className={clsx(
+            `toolbar-${props.id}`,
+            "bg-primary-300 absolute -top-8 z-50 h-8 p-1 rounded w-48 items-center transition-all duration-300 gap-1",
+            tx({ flex: hasFocus, hidden: !hasFocus }),
+          )}
+        >
+          <button
+            type="button"
+            className="ql-bold fill-transparent stroke-white w-5"
+            style={{ strokeWidth: "2px" }}
+          />
+          <button type="button" className="ql-italic stroke-white w-5 " />
+        </div>
+        <ReactQuill
+          theme="bubble"
+          value={textValue}
+          onChange={setTextValue}
+          onChangeSelection={(range, source, editor) => {
+            console.log("selection", range, source, editor);
+          }}
+          formats={["bold", "italic"]}
+          onFocus={() => {
+            setHasFocus(true);
+          }}
+          onBlur={() => {
+            setHasFocus(false);
+          }}
+          modules={{
+            // biome-ignore lint/style/useTemplate: <explanation>
+            toolbar: ".toolbar-" + props.id,
+          }}
+          {...attrs}
+        />
+      </div>
+    ) : (
       <div
         ref={ref}
         className={tx("flex-1", className, justify)}

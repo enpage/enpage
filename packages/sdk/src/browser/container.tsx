@@ -19,6 +19,9 @@ import { CgArrowsV } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useDndContext } from "@dnd-kit/core";
 import { generateId } from "./bricks/common";
+import { useMutationObserver } from "./use-mutation-observer";
+import { IoMoveOutline } from "react-icons/io5";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 type ContainerProps = PropsWithChildren<
   {
@@ -153,15 +156,15 @@ export function SortableContainer(props: ContainerProps) {
   };
 
   // Always update the container height when the container is mounted
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useLayoutEffect(() => {
+  useEffect(() => {
     const container = document.getElementById(props.id);
-    const tmt = setTimeout(() => {
-      console.log("compute container height", container?.offsetHeight);
+    const tmt = setInterval(() => {
+      // console.log("compute container height", container?.offsetHeight);
+      // console.log("compute rect height", container?.getBoundingClientRect().height);
       setContainerHeight(container?.offsetHeight ?? 0);
-    }, 100);
-    return () => clearTimeout(tmt);
-  }, []);
+    }, 333);
+    return () => clearInterval(tmt);
+  }, [props.id]);
 
   return (
     <Container
@@ -171,14 +174,15 @@ export function SortableContainer(props: ContainerProps) {
       style={style}
       {...container}
       {...attributes}
+      data-height={containerHeight}
     >
       {!active && (
         /* Wrapper for container menu */
         <div
           className={tx(
             "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 \
-            group-hover:(opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
-            flex flex-col gap-2 items-center justify-center",
+            group-hover:(opacity-100) hover:(!opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
+            flex flex-col gap-2 items-center justify-start",
           )}
         >
           <ContainerDragHandle {...listeners} ref={setActivatorNodeRef} />
@@ -232,14 +236,14 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
         "container-handle",
         tx(
           "text-white shadow-sm transition-opacity duration-300 \
-          -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center cursor-grab",
+          -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 rounded flex items-center justify-center cursor-grab",
           "group-hover:(opacity-70) hover:!opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
           { "opacity-100": forceVisible },
         ),
       )}
       {...props}
     >
-      <CgArrowsV className={tx("w-5 h-5 mx-auto select-none")} />
+      <IoMoveOutline className={tx("w-5 h-5 mx-auto select-none")} />
     </div>
   );
 });
@@ -298,7 +302,7 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
           "container-menu-button",
           tx(
             "text-white shadow-sm transition-opacity duration-300 \
-            -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 opacity-0 rounded flex items-center justify-center",
+            -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 rounded flex items-center justify-center",
             "group-hover:(opacity-70) hover:!opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
             { "opacity-100": forceVisible },
           ),

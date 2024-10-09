@@ -117,6 +117,7 @@ export const bricks = defineBricks([
           content:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
           justify: "text-center",
+          format: "html",
         },
         wrapper: { customClasses: "brick-pink" },
       },

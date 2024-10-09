@@ -17,19 +17,25 @@ import { useEditor, useEditorEnabled } from "./use-editor";
 const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   let BrickModule: LazyExoticComponent<ComponentType<any>>;
+  const otherProps = {} as Record<string, unknown>;
+
   switch (type) {
     case "text":
       BrickModule = lazy(() => import(`./bricks/text`));
+      otherProps.textEditable = true;
+      break;
+    case "text-with-title":
+      BrickModule = lazy(() => import(`./bricks/text-with-title`));
+      otherProps.textEditable = true;
+      break;
+    case "hero":
+      BrickModule = lazy(() => import(`./bricks/hero`));
+      otherProps.textEditable = true;
       break;
     case "image":
       BrickModule = lazy(() => import(`./bricks/image`));
       break;
-    case "text-with-title":
-      BrickModule = lazy(() => import(`./bricks/text-with-title`));
-      break;
-    case "hero":
-      BrickModule = lazy(() => import(`./bricks/hero`));
-      break;
+
     default:
       return <></>;
   }
@@ -37,7 +43,7 @@ const BrickComponent = ({ type, props }: Brick & { overlay?: boolean }) => {
 
   return (
     <Suspense>
-      <BrickModule {...rest} />
+      <BrickModule {...rest} {...otherProps} />
     </Suspense>
   );
 };
@@ -102,9 +108,10 @@ export function BrickOverlay({ brick, className, ...attrs }: ComponentProps<"div
   return (
     <div
       className={tx(
-        "brick rounded overflow-hidden bg-primary-100 z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 \
-        shadow-lg bg-primary-500 bg-opacity-50 transition-all duration-200",
+        "brick rounded overflow-hidden z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 \
+        shadow-lg transition-all duration-200",
         className,
+        getBrickDefinedClass(brick),
       )}
       {...attrs}
     >
@@ -126,10 +133,9 @@ export function getBrickWrapperClass(brick: Brick, index: number, variant: Conta
   } else if ((variant === "1-3" && index === 1) || (variant === "3-1" && index === 0)) {
     colSpan = "md:col-span-3";
   }
-  return clsx(
-    "hover:(ring ring-primary-400 rounded) min-h-full",
-    colSpan,
-    brick.wrapper?.baseClasses,
-    brick.wrapper?.customClasses,
-  );
+  return clsx("hover:(ring ring-primary-400 rounded) min-h-full", colSpan, getBrickDefinedClass(brick));
+}
+
+function getBrickDefinedClass(brick: Brick) {
+  return [brick.wrapper.baseClasses, brick.wrapper.customClasses];
 }

@@ -48,7 +48,7 @@ export type Brick = {
   placeholder?: boolean;
 };
 
-type DefinedBrick = Omit<Brick, "id">;
+type DefinedBrick = Omit<Brick, "id" | "wrapper"> & { wrapper?: BrickWrapper };
 type DefinedContainers = Omit<BricksContainer, "id" | "bricks"> & { bricks: DefinedBrick[] };
 
 export function defineBricks<B extends DefinedContainers[]>(containers: B): BricksContainer[] {
@@ -57,6 +57,7 @@ export function defineBricks<B extends DefinedContainers[]>(containers: B): Bric
     id: `container-${generateId()}`,
     bricks: ct.bricks.map((child) => ({
       id: `brick-${generateId()}`,
+      wrapper: {},
       ...child,
     })),
   }));
