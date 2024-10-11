@@ -26,6 +26,21 @@ export type BricksContainer = {
 };
 
 type BrickWrapper = {
+  /**
+   * The column start (1-based). When not provided, the brick will just be appended to the row
+   * and placed in the next available column.
+   */
+  colStart?: number;
+  /**
+   * The column span. If not provided, the brick are divided equally among the columns.
+   */
+  colSpan?: number;
+  /**
+   * The span of rows. If not provided, the brick will be 1 row tall.
+   * Note that the rown number is determined by the array index of the brick.
+   */
+  rowSpan?: number;
+
   // Base styles are always applied but can be overridden by fixed or custom styles
   baseStyles?: Record<string, string>;
   // Fixed styles are always applied and cannot be overridden
@@ -45,7 +60,7 @@ export type Brick = {
   id: string;
   props: Record<string, unknown>;
   wrapper: BrickWrapper;
-  placeholder?: boolean;
+  // placeholder?: boolean;
 };
 
 type DefinedBrick = Omit<Brick, "id" | "wrapper"> & { wrapper?: BrickWrapper };

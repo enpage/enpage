@@ -3,7 +3,12 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import type { Brick, BricksContainer } from "~/shared/bricks";
 import Container, { ContainerList } from "./container";
 import { useDraft, useEditorEnabled } from "./use-editor";
-import { arraySwap, SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable";
+import {
+  arraySwap,
+  SortableContext,
+  rectSwappingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import {
   closestCenter,
   DndContext,
@@ -63,15 +68,28 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       return null;
     }
     if (activeElement.type === "container") {
-      return containers.find((ct) => ct.id === activeElement.id);
+      return {
+        container: containers.find((ct) => ct.id === activeElement.id),
+      };
     }
-    return containers.flatMap((ct) => ct.bricks).find((b) => b.id === activeElement.id);
+    for (const container of containers) {
+      const brick = container.bricks.find((b) => b.id === activeElement.id);
+      if (brick) {
+        return { brick, container };
+      }
+    }
+  }, [activeElement, containers]);
+
+  const getActiveContainerIndex = useCallback(() => {
+    if (!activeElement) {
+      return 0;
+    }
+    return containers.findIndex((ct) => ct.id === activeElement.id) ?? 0;
   }, [activeElement, containers]);
 
   const handleDragEnd = (props: DragEndEvent) => {
     const { active, over } = props;
     setActiveElement(null);
-
     // Normally, the draft is already up to date because it is updated during drag move
     // But just in case, we update the draft here if there is a diff between active and over
     if (over && over.id !== active.id) {
@@ -88,21 +106,37 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const handleDragOver = (e: DragOverEvent) => {
     const { active, over } = e;
-    if (!over || over.id === active.id) return;
-    console.log("drag over", e);
+
+    if (!over) {
+      return;
+    }
+
+    if (
+      active.data.current?.type === "container" &&
+      over?.data.current?.type === "container" &&
+      over.id !== active.id
+    ) {
+      return;
+      // return updateContainers(active, over);
+    }
+
     // e.activatorEvent?.stopPropagation();
-    if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
-      updateContainers(active, over);
-    } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
+    if (active.data.current?.type === "brick" && active.data.current?.type === over?.data.current?.type) {
       // update the activeElement rect by the overed element rect
+      const overRect = (
+        active.id === over.id
+          ? over.rect
+          : document.getElementById(over.id as string)?.getBoundingClientRect()
+      ) as DOMRect;
+
       setActiveElement((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
-          rect: document.getElementById(over.id as string)?.getBoundingClientRect() as DOMRect,
+          rect: overRect,
         };
       });
-      updateBricks(active, over, true);
+      // updateBricks(active, over, true);
     }
   };
 
@@ -152,6 +186,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const updateContainers = useCallback(
     (active: Active, over: Over) => {
+      console.log("updating containers", { over, active, containers });
       if (active.id !== over.id) {
         const oldIndex = containers.findIndex((item) => item.id === active.id);
         const newIndex = containers.findIndex((item) => item.id === over.id);
@@ -163,11 +198,9 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   );
 
   const handleDragStart = (e: DragStartEvent) => {
-    console.log("drag start", e);
     if (!e.active.data.current) return;
     const rect = document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect;
     dragTypeRef.current = e.active.data.current.type;
-    console.log("active element drag rect", rect);
     setActiveElement({
       type: e.active.data.current.type,
       id: e.active.id as string,
@@ -220,11 +253,22 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
-      <SortableContext items={sortableIds} strategy={rectSwappingStrategy}>
+      <SortableContext
+        items={sortableIds}
+        strategy={activeElement?.type === "container" ? verticalListSortingStrategy : rectSwappingStrategy}
+      >
         <div
           className={tx(
-            "mt-5 mx-auto flex flex-col gap-2 w-full md:max-w-[90%] xl:max-w-screen-lg transition-all duration-200",
+            "mt-5 mx-auto grid w-full md:max-w-[90%] xl:max-w-screen-xl transition-all duration-200",
+            {
+              "gap-y-1": activeElement?.type === "container",
+            },
           )}
+          style={{
+            gridTemplateColumns: "repeat(12, 1fr)",
+            gridTemplateRows: `repeat(${containers.length}, fit-content())`,
+            gridAutoFlow: "row",
+          }}
         >
           <ContainerList containers={containers} />
         </div>
@@ -234,22 +278,14 @@ export default function Page(props: { bricks: BricksContainer[] }) {
           <DragOverlay>
             {activeElement?.type === "container" && (
               <Container
-                {...(getActiveElementData() as BricksContainer)}
-                dragging={true}
+                container={getActiveElementData()?.container as BricksContainer}
+                containerIndex={getActiveContainerIndex()}
+                overlay={true}
                 style={{ height: `${activeElement.rect.height}px`, width: `${activeElement.rect.width}px` }}
               />
             )}
             {activeElement?.type === "brick" && (
-              <BrickOverlay
-                brick={getActiveElementData() as Brick}
-                style={
-                  {
-                    // height: `${activeElement.rect.height}px`,
-                    // width: `${activeElement.rect.width}px`,
-                    // ...(isEndDragging ? { width: `${activeElement.rect.width}px` } : {}),
-                  }
-                }
-              />
+              <BrickOverlay {...(getActiveElementData() as { brick: Brick; container: BricksContainer })} />
             )}
           </DragOverlay>,
           document.body,

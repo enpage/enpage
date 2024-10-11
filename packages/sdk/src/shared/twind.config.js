@@ -16,7 +16,16 @@ export default defineConfig({
     presetTypo(),
   ],
   rules: [
-    ["brick", { display: "flex", height: "inherit" }],
+    ["brick", {}],
+    [
+      "brick-container",
+      {
+        display: "grid",
+        gridTemplateColumns: "subgrid",
+        gridTemplateRows: "subgrid",
+        gridColumn: "1 / span 12",
+      },
+    ],
     ["brick-light-", ({ $$ }) => `bg-${$$}-300 text-${$$}-50`],
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],

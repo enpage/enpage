@@ -61,9 +61,9 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Text = forwardRef<HTMLDivElement, Manifest["props"] & { textEditable?: boolean }>((props, ref) => {
+const Text = forwardRef<HTMLDivElement, Manifest["props"] & { contentEditable?: boolean }>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { format, content, className, justify, textEditable, ...attrs } = props;
+  let { format, content, className, justify, contentEditable, ...attrs } = props;
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
 
@@ -71,7 +71,7 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"] & { textEditable?: boo
   const [hasFocus, setHasFocus] = useState(false);
 
   if (format === "html") {
-    return textEditable ? (
+    return contentEditable ? (
       <div
         className={tx("flex-1 relative", className)}
         onMouseEnter={() => setHasFocus(true)}

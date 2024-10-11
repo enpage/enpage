@@ -91,6 +91,9 @@ export const bricks = defineBricks([
           src: "https://cdn.enpage.co/enpage.svg",
           className: "max-h-24",
         },
+        wrapper: {
+          colSpan: 3,
+        },
       },
     ],
   },
@@ -101,7 +104,7 @@ export const bricks = defineBricks([
       {
         type: "hero",
         props: {
-          content: "The best way to go to India",
+          content: "Build your launch page",
           justify: "text-center",
         },
       },
@@ -135,40 +138,40 @@ export const bricks = defineBricks([
       { type: "text", props: { content: "Something" }, wrapper: { customClasses: "brick-primary" } },
     ],
   },
-  {
-    type: "container",
-    variant: "1-2",
-    bricks: [
-      {
-        type: "image",
-        props: {
-          className: "min-h-24",
-        },
-      },
-      { type: "text", props: { content: "Joe joe" } },
-    ],
-  },
-  {
-    type: "container",
-    variant: "1-1-1",
-    bricks: [
-      {
-        type: "text",
-        props: { content: "Sample here" },
-        wrapper: { customClasses: "brick-light-red" },
-      },
-      { type: "text", props: { content: "Hello World" }, wrapper: { customClasses: "brick-normal-red" } },
-      { type: "text", props: { content: "Blabla" }, wrapper: { customClasses: "brick-dark-red" } },
-    ],
-  },
-  {
-    type: "container",
-    variant: "1-1-1-1",
-    bricks: [
-      { type: "text", props: { content: "Sample here" } },
-      { type: "text", props: { content: "Hello World" } },
-      { type: "text", props: { content: "Blabla" } },
-      { type: "text", props: { content: "Blabla 2" } },
-    ],
-  },
+  // {
+  //   type: "container",
+  //   variant: "1-2",
+  //   bricks: [
+  //     {
+  //       type: "image",
+  //       props: {
+  //         className: "min-h-24",
+  //       },
+  //     },
+  //     { type: "text", props: { content: "Joe joe" } },
+  //   ],
+  // },
+  // {
+  //   type: "container",
+  //   variant: "1-1-1",
+  //   bricks: [
+  //     {
+  //       type: "text",
+  //       props: { content: "Sample here" },
+  //       wrapper: { customClasses: "brick-light-red" },
+  //     },
+  //     { type: "text", props: { content: "Hello World" }, wrapper: { customClasses: "brick-normal-red" } },
+  //     { type: "text", props: { content: "Blabla" }, wrapper: { customClasses: "brick-dark-red" } },
+  //   ],
+  // },
+  // {
+  //   type: "container",
+  //   variant: "1-1-1-1",
+  //   bricks: [
+  //     { type: "text", props: { content: "Sample here" } },
+  //     { type: "text", props: { content: "Hello World" } },
+  //     { type: "text", props: { content: "Blabla" } },
+  //     { type: "text", props: { content: "Blabla 2" } },
+  //   ],
+  // },
 ]);

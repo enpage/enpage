@@ -6,46 +6,50 @@ import {
   type PropsWithChildren,
   useCallback,
   type CSSProperties,
-  useLayoutEffect,
 } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import clsx from "clsx";
-import { tx, apply } from "@twind/core";
+import { tx, apply, css } from "@twind/core";
 import DragabbleBrickWrapper, { getBrickWrapperClass } from "./brick";
 import { useDraft, useEditorEnabled } from "./use-editor";
 import { CSS } from "@dnd-kit/utilities";
 import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessui/react";
-import { CgArrowsV } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useDndContext } from "@dnd-kit/core";
 import { generateId } from "./bricks/common";
-import { useMutationObserver } from "./use-mutation-observer";
-import { IoMoveOutline } from "react-icons/io5";
-import { RxDragHandleDots2 } from "react-icons/rx";
+import { PiArrowsOutLineVertical } from "react-icons/pi";
 
 type ContainerProps = PropsWithChildren<
   {
+    containerIndex: number;
     className?: string;
     style?: CSSProperties;
-    dragging?: boolean;
+    overlay?: boolean;
     active?: boolean;
     placeholder?: boolean;
-  } & BricksContainer
+  } & { container: BricksContainer }
 >;
 
 export const Container = forwardRef<HTMLElement, ContainerProps>(
-  ({ bricks, variant, className, id, children, dragging, placeholder, hidden, ...props }, ref) => {
+  ({ container, containerIndex, className, children, overlay, placeholder, ...props }, ref) => {
+    const { active, over } = useDndContext();
+    const { bricks, variant, id, hidden } = container;
     const containerBaseStyles = apply(
-      "grid gap-2 relative w-full transition-all duration-300",
+      "brick-container relative w-full transition-all duration-300",
       {
-        "rounded z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 shadow-lg bg-primary-500 bg-opacity-50":
-          dragging,
-        "hover:rounded hover:(ring ring-primary-100)": !dragging && !placeholder && !hidden,
-        "bg-black bg-opacity-10 rounded": placeholder,
+        "rounded z-[9999] ring ring-primary-200 ring-offset-4 shadow-xl bg-primary-500 bg-opacity-30":
+          overlay,
+        "hover:(rounded ring ring-primary-100 ring-offset-4)": !overlay && !placeholder && !hidden,
+        // "bg-black/50 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
         "h-auto": !hidden && !props.style?.height,
       },
-      !hidden && getContainerClasses(variant),
+      overlay &&
+        css({
+          gridTemplateColumns: "repeat(12, 1fr)",
+          gridTemplateRows: "auto",
+        }),
+      // !hidden && getContainerClasses(variant),
     );
 
     if (hidden) {
@@ -58,28 +62,27 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
       );
     }
 
-    if (placeholder) {
-      return (
-        <section
-          ref={ref}
-          id={id}
-          style={{ height: props.style?.height, minHeight: props.style?.height }}
-          className={tx(containerBaseStyles, className)}
-        />
-      );
-    }
-
     return (
-      <section ref={ref} id={id} className={tx(containerBaseStyles, className)} {...props}>
-        {bricks.map((child, index) => (
+      <section
+        ref={ref}
+        id={overlay ? `overlay-${id}` : id}
+        className={tx(containerBaseStyles, className)}
+        {...props}
+      >
+        {bricks.map((brick, brickIndex) => (
           <DragabbleBrickWrapper
-            key={child.id}
-            className={tx(apply(getBrickWrapperClass(child, index, variant)))}
-            brick={child}
+            key={brick.id}
+            className={tx(
+              getBrickWrapperClass(brick, brickIndex, container.bricks.length, overlay ? 0 : containerIndex),
+              placeholder && "opacity-10 grayscale",
+            )}
+            brick={brick}
+            container={container}
+            placeholder={placeholder}
           />
         ))}
         {children}
-        {dragging && (
+        {overlay && (
           /* repeat the container menu because it would disapear while dragging */
           <div
             className={tx(
@@ -131,14 +134,14 @@ const HiddenContainer = forwardRef<HTMLElement, Pick<HTMLDivElement, "id" | "cla
 );
 
 export function SortableContainer(props: ContainerProps) {
-  const { children, className, ...container } = props;
+  const { className, container, containerIndex, overlay: dragging } = props;
   // compute the effective container height once mounted
   const [containerHeight, setContainerHeight] = useState(0);
   const dndCtx = useDndContext();
 
   const { setNodeRef, setActivatorNodeRef, attributes, listeners, transition, transform, over, active } =
     useSortable({
-      id: props.id,
+      id: container.id,
       data: { type: "container" },
       transition: {
         duration: 250, // milliseconds
@@ -148,33 +151,42 @@ export function SortableContainer(props: ContainerProps) {
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform:
+      dndCtx.over?.id === props.container.id
+        ? CSS.Transform.toString(transform ? { ...transform, scaleY: 1 } : null)
+        : CSS.Transform.toString(transform),
     // maintain a fixed height while dragging to avoid layout shift
-    ...(dndCtx.active && containerHeight
+    ...(dndCtx.active && containerHeight > 0
       ? { height: `${containerHeight}px`, minHeight: `${containerHeight}px` }
       : {}),
   };
 
   // Always update the container height when the container is mounted
   useEffect(() => {
-    const container = document.getElementById(props.id);
+    // const observer = new MutationObserver(() => {
+    //   const el = document.getElementById(container.id);
+    //   setContainerHeight(el?.offsetHeight ?? 0);
+    // });
+
+    // observer.observe(document.body, { childList: true, subtree: true });
+    // return () => observer.disconnect();
+
+    const el = document.getElementById(container.id);
     const tmt = setInterval(() => {
-      // console.log("compute container height", container?.offsetHeight);
-      // console.log("compute rect height", container?.getBoundingClientRect().height);
-      setContainerHeight(container?.offsetHeight ?? 0);
+      setContainerHeight(el?.offsetHeight ?? 0);
     }, 333);
     return () => clearInterval(tmt);
-  }, [props.id]);
+  }, [container.id]);
 
   return (
     <Container
       ref={setNodeRef}
       className={tx(apply("relative touch-none group"), className)}
-      placeholder={active?.data.current?.type === "container" && over?.id === props.id}
+      placeholder={active?.data.current?.type === "container" && active?.id === container.id}
       style={style}
-      {...container}
+      containerIndex={containerIndex}
+      container={container}
       {...attributes}
-      data-height={containerHeight}
     >
       {!active && (
         /* Wrapper for container menu */
@@ -201,24 +213,14 @@ export function ContainerList(props: ContainerListProps) {
   const editorEnabled = useEditorEnabled();
 
   if (!editorEnabled) {
-    return props.containers.map((container) => <Container {...container} key={container.id} />);
+    return props.containers.map((container, index) => (
+      <Container container={container} containerIndex={index} key={container.id} />
+    ));
   }
 
-  return props.containers.map((container) => <SortableContainer {...container} key={container.id} />);
-}
-
-function getContainerClasses(variant: ContainerVariant) {
-  return {
-    "grid-cols-1": variant === "full",
-    "grid-cols-2": variant === "1-1",
-    "md:grid-cols-3": variant === "1-1-1" || variant === "1-2" || variant === "2-1",
-    "md:grid-cols-4":
-      variant === "1-1-1-1" ||
-      variant === "1-1-2" ||
-      variant === "2-2" ||
-      variant === "1-2-1" ||
-      variant === "2-1-1",
-  };
+  return props.containers.map((container, index) => (
+    <SortableContainer container={container} containerIndex={index} key={container.id} />
+  ));
 }
 
 type ContainerDragHandleProps = {
@@ -243,7 +245,7 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
       )}
       {...props}
     >
-      <IoMoveOutline className={tx("w-5 h-5 mx-auto select-none")} />
+      <PiArrowsOutLineVertical className={tx("w-5 h-5 mx-auto select-none")} />
     </div>
   );
 });
