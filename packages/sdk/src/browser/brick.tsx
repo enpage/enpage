@@ -1,5 +1,6 @@
 import type { Brick, BricksContainer, ContainerVariant } from "~/shared/bricks";
 import {
+  act,
   lazy,
   memo,
   Suspense,
@@ -15,6 +16,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { tx, style, css, apply } from "@twind/core";
 import clsx from "clsx";
 import { useEditor, useEditorEnabled } from "./use-editor";
+import { borderRadius } from "polished";
 
 const GRID_COLS = 12;
 
@@ -61,10 +63,18 @@ const MemoBrickComponent = memo(BrickComponent);
 export default function DragabbleBrickWrapper({
   className,
   brick,
+  brickIndex,
   container,
+  containerIndex,
   placeholder,
   ...wrapperAttrs
-}: { brick: Brick; container: BricksContainer; placeholder?: boolean } & ComponentProps<"div">) {
+}: {
+  brick: Brick;
+  brickIndex: number;
+  container: BricksContainer;
+  containerIndex: number;
+  placeholder?: boolean;
+} & ComponentProps<"div">) {
   const editor = useEditor();
 
   const onClick = editor.enabled
@@ -79,8 +89,13 @@ export default function DragabbleBrickWrapper({
     data: {
       type: "brick",
       brick,
-      brickIndex: container.bricks.findIndex((b) => b.id === brick.id),
+      brickIndex,
       bricksCount: container.bricks.length,
+      containerIndex,
+    },
+    transition: {
+      duration: 200, // milliseconds
+      easing: "cubic-bezier(0.25, 0.1, 0.25, 1)",
     },
   });
 
@@ -90,14 +105,19 @@ export default function DragabbleBrickWrapper({
       : over && active?.id === brick.id
         ? {
             backgroundColor: "#00000015",
-            transform: CSS.Transform.toString(transform),
+            transform: CSS.Transform.toString(transform ? { ...transform } : null),
             transformOrigin: "top left",
+            borderRadius: "0.5rem",
           }
-        : {
-            // Prevent scaling when not over
-            transform: CSS.Transform.toString(transform ? { ...transform, scaleX: 1, scaleY: 1 } : null),
-            transformOrigin: "top left",
-          }),
+        : active && over
+          ? {
+              // Prevent scaling when not over
+              transform: CSS.Transform.toString(
+                transform ? { ...transform, /*scaleX: 1,*/ scaleY: 1 } : null,
+              ),
+              transformOrigin: "top left",
+            }
+          : {}),
   };
 
   return (
@@ -109,10 +129,14 @@ export default function DragabbleBrickWrapper({
       {...listeners}
       {...attributes}
       onClick={onClick}
-      className={tx("brick", className)}
+      className={tx(
+        getBrickWrapperClass(brick, brickIndex, container.bricks.length, containerIndex),
+        // used when dragging the row
+        placeholder && "opacity-10 grayscale",
+      )}
     >
-      {active?.id === brick.id || placeholder ? (
-        <BrickPlaceholder brick={brick} container={container} style={style} />
+      {active?.id === brick.id ? (
+        <BrickPlaceholder brick={brick} container={container} />
       ) : (
         <MemoBrickComponent brick={brick} container={container} />
       )}
@@ -120,23 +144,10 @@ export default function DragabbleBrickWrapper({
   );
 }
 
-// export function BrickWrapper({ brick, className }: { brick: Brick } & ComponentProps<"div">) {
-//   return (
-//     <div className={tx("brick", className)}>
-//       <MemoBrickComponent brick={brick} />
-//     </div>
-//   );
-// }
-
-export function BrickPlaceholder({
-  brick,
-  container,
-  style,
-}: { brick: Brick; container: BricksContainer; style: CSSProperties }) {
-  // console.log("over", over);
-  // console.log("brick", brick);
+export function BrickPlaceholder({ brick, container }: { brick: Brick; container: BricksContainer }) {
   return (
-    <div className={tx("rounded flex-1 shrink-0 transition-all duration-200 opacity-0")}>
+    /* Put the brick component so it takes its natural place but don't show it */
+    <div className={tx("flex-1 shrink-0 opacity-0")}>
       <MemoBrickComponent brick={brick} container={container} />
     </div>
   );
@@ -153,7 +164,7 @@ export function BrickOverlay({
       className={tx(
         apply(
           "brick rounded overflow-hidden z-[9999] ring ring-primary-500 ring-opacity-80 ring-offset-3 \
-        shadow-lg transition-all duration-200 bg-white/40",
+        shadow-lg  bg-white/40",
         ),
         className,
         getBrickDefinedClass(brick),
@@ -172,12 +183,12 @@ export function getBrickWrapperClass(
   containerIndex: number,
 ) {
   return clsx(
-    "hover:(ring ring-primary-400 rounded) transition-all duration-300",
+    "hover:(ring ring-primary-400 rounded)",
     getBrickDefinedClass(brick),
     css({
       gridTemplateColumns: "subgrid",
       gridTemplateRows: "subgrid",
-      gridRow: `${containerIndex + 1} / span ${brick.wrapper.rowSpan ?? 1}`,
+      gridRow: `${containerIndex + 1} / span ${brick.position.rowSpan ?? 1}`,
       gridColumnStart: computeColStart(brick, brickIndex, bricksCount),
       gridColumnEnd: computeColEnd(brick, brickIndex, bricksCount),
     }),
@@ -191,13 +202,10 @@ export function getBrickWrapperClass(
  * @param container
  */
 function computeColStart(brick: Brick, brickIndex: number, bricksCount: number) {
-  if (brick.wrapper.colStart) {
-    return brick.wrapper.colStart;
+  if (brick.position.colStart) {
+    return brick.position.colStart;
   }
-
-  const colStart = (GRID_COLS / bricksCount) * brickIndex + 1;
-
-  return colStart;
+  return (GRID_COLS / bricksCount) * brickIndex + 1;
 }
 
 /**
@@ -208,16 +216,15 @@ function computeColStart(brick: Brick, brickIndex: number, bricksCount: number) 
  * @param container
  */
 function computeColEnd(brick: Brick, brickIndex: number, bricksCount: number) {
-  if (brick.wrapper.colSpan) {
-    return `span ${brick.wrapper.colSpan}`;
+  if (brick.position.colSpan) {
+    return `span ${brick.position.colSpan}`;
   }
   // check if the brick is the last one in the container
   if (brickIndex === bricksCount - 1) {
     return -1;
   }
 
-  const colEnd = (GRID_COLS / bricksCount) * (brickIndex + 1) + 1;
-  return colEnd;
+  return (GRID_COLS / bricksCount) * (brickIndex + 1) + 1;
 }
 
 function getBrickDefinedClass(brick: Brick) {

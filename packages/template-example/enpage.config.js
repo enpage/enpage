@@ -91,7 +91,7 @@ export const bricks = defineBricks([
           src: "https://cdn.enpage.co/enpage.svg",
           className: "max-h-24",
         },
-        wrapper: {
+        position: {
           colSpan: 3,
         },
       },
@@ -138,19 +138,39 @@ export const bricks = defineBricks([
       { type: "text", props: { content: "Something" }, wrapper: { customClasses: "brick-primary" } },
     ],
   },
-  // {
-  //   type: "container",
-  //   variant: "1-2",
-  //   bricks: [
-  //     {
-  //       type: "image",
-  //       props: {
-  //         className: "min-h-24",
-  //       },
-  //     },
-  //     { type: "text", props: { content: "Joe joe" } },
-  //   ],
-  // },
+  {
+    type: "container",
+    variant: "1-2",
+    bricks: [
+      {
+        type: "text",
+        props: {
+          className: "min-h-24",
+          content: "First",
+        },
+        wrapper: {
+          customClasses: "brick-primary",
+        },
+        position: {
+          colSpan: 6,
+        },
+      },
+      {
+        type: "text",
+        props: { content: "Second" },
+        position: {
+          colStart: 7,
+        },
+      },
+      {
+        type: "text",
+        props: { content: "Third" },
+        position: {
+          colStart: 10,
+        },
+      },
+    ],
+  },
   // {
   //   type: "container",
   //   variant: "1-1-1",

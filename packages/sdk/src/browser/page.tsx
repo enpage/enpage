@@ -90,6 +90,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   const handleDragEnd = (props: DragEndEvent) => {
     const { active, over } = props;
     setActiveElement(null);
+
     // Normally, the draft is already up to date because it is updated during drag move
     // But just in case, we update the draft here if there is a diff between active and over
     if (over && over.id !== active.id) {
@@ -99,7 +100,6 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         updateBricks(active, over);
       }
     }
-
     // save the changes
     draft.save();
   };
@@ -109,15 +109,6 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
     if (!over) {
       return;
-    }
-
-    if (
-      active.data.current?.type === "container" &&
-      over?.data.current?.type === "container" &&
-      over.id !== active.id
-    ) {
-      return;
-      // return updateContainers(active, over);
     }
 
     // e.activatorEvent?.stopPropagation();
@@ -136,14 +127,11 @@ export default function Page(props: { bricks: BricksContainer[] }) {
           rect: overRect,
         };
       });
-      // updateBricks(active, over, true);
     }
   };
 
   const updateBricks = useCallback(
     (active: Active, over: Over, temporary = false) => {
-      console.log("updating bricks", { over, active, containers });
-
       const allBricks = containers.flatMap((ct) => ct.bricks);
 
       // find the container id of the active and over
@@ -155,10 +143,11 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       const overBrick = allBricks.find((b) => b.id === over.id);
 
       if (!overBrick || !activeBrick || !activeContainer || !overContainer) {
+        console.log("could not find active or over brick or container");
         return;
       }
 
-      // replace
+      // swap bricks
       const newContainers = containers.map((ct) => {
         if (ct.id === activeContainer.id || ct.id === overContainer.id) {
           return {
@@ -186,7 +175,6 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const updateContainers = useCallback(
     (active: Active, over: Over) => {
-      console.log("updating containers", { over, active, containers });
       if (active.id !== over.id) {
         const oldIndex = containers.findIndex((item) => item.id === active.id);
         const newIndex = containers.findIndex((item) => item.id === over.id);

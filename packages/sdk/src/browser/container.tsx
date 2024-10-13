@@ -32,10 +32,9 @@ type ContainerProps = PropsWithChildren<
 
 export const Container = forwardRef<HTMLElement, ContainerProps>(
   ({ container, containerIndex, className, children, overlay, placeholder, ...props }, ref) => {
-    const { active, over } = useDndContext();
     const { bricks, variant, id, hidden } = container;
     const containerBaseStyles = apply(
-      "brick-container relative w-full transition-all duration-300",
+      "brick-container relative",
       {
         "rounded z-[9999] ring ring-primary-200 ring-offset-4 shadow-xl bg-primary-500 bg-opacity-30":
           overlay,
@@ -72,12 +71,10 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
         {bricks.map((brick, brickIndex) => (
           <DragabbleBrickWrapper
             key={brick.id}
-            className={tx(
-              getBrickWrapperClass(brick, brickIndex, container.bricks.length, overlay ? 0 : containerIndex),
-              placeholder && "opacity-10 grayscale",
-            )}
             brick={brick}
             container={container}
+            brickIndex={brickIndex}
+            containerIndex={containerIndex}
             placeholder={placeholder}
           />
         ))}
@@ -87,7 +84,7 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
           <div
             className={tx(
               "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 \
-              group-hover:(opacity-100) -right-14 top-0 rounded-r overflow-hidden bg-gray-100 w-12 bottom-0 \
+              group-hover:(opacity-100) -right-16 top-0 rounded overflow-hidden bg-gray-100 w-12 bottom-0 \
               flex flex-col gap-2 items-center justify-center",
             )}
           >
@@ -193,7 +190,7 @@ export function SortableContainer(props: ContainerProps) {
         <div
           className={tx(
             "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 \
-            group-hover:(opacity-100) hover:(!opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
+            group-hover:(opacity-100) hover:(!opacity-100) -right-16 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
             flex flex-col gap-2 items-center justify-start",
           )}
         >
@@ -291,6 +288,7 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
               content: "New brick content",
             },
             wrapper: {},
+            position: {},
           },
         ],
       });
