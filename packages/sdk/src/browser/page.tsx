@@ -489,7 +489,9 @@ export default function Page(props: { bricks: BricksContainer[] }) {
             {activeElement?.type === "brick" && (
               <BrickOverlay
                 {...(getActiveElementData() as { brick: Brick; container: BricksContainer })}
-                style={{ height: `${activeElement.rect!.height}px` }}
+                style={{
+                  height: `${activeElement.rect!.height}px`,
+                }}
               />
             )}
             {activeElement?.type === "resize-handle" && (

@@ -18,6 +18,7 @@ import { MdDragHandle } from "react-icons/md";
 import { useDndContext, useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
+import { position } from "polished";
 
 const BrickComponent = ({
   brick,
@@ -120,7 +121,7 @@ export default function DragabbleBrickWrapper({
         : active && over
           ? {
               // Prevent scaling when not over
-              transform: CSS.Transform.toString(transform ? { ...transform, scaleX: 1, scaleY: 1 } : null),
+              transform: CSS.Transform.toString(transform ? { ...transform } : null),
               transformOrigin: "top left",
             }
           : {}),
@@ -142,6 +143,7 @@ export default function DragabbleBrickWrapper({
         getBrickWrapperClass(brick, containerIndex),
         // used when dragging the row
         placeholder && "opacity-10 grayscale",
+        { "&>*:opacity-0 opacity-80": over?.id === brick.id },
       )}
     >
       {active?.id === brick.id ? (

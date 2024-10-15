@@ -16,7 +16,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessui/react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useDndContext } from "@dnd-kit/core";
-import { generateId } from "./bricks/common";
 import { PiArrowsOutLineVertical } from "react-icons/pi";
 
 type ContainerProps = PropsWithChildren<
