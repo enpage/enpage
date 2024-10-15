@@ -1,16 +1,27 @@
 import { tx } from "@twind/core";
-import { useCallback, useMemo, useRef, useState } from "react";
-import type { Brick, BricksContainer } from "~/shared/bricks";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DOMAttributes,
+} from "react";
+import { flushSync } from "react-dom";
+import { GRID_COLS, type Brick, type BricksContainer } from "~/shared/bricks";
 import Container, { ContainerList } from "./container";
 import { useDraft, useEditorEnabled } from "./use-editor";
+import { debounce } from "lodash-es";
+import { useScrollLock } from "usehooks-ts";
 import {
   arraySwap,
   SortableContext,
   rectSwappingStrategy,
   verticalListSortingStrategy,
+  horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import {
-  closestCenter,
   DndContext,
   DragOverlay,
   PointerSensor,
@@ -20,20 +31,43 @@ import {
   type DragOverEvent,
   type Over,
   type DragEndEvent,
-  closestCorners,
   type CollisionDetection,
   pointerWithin,
   rectIntersection,
-  MeasuringFrequency,
-  MeasuringStrategy,
+  type Modifier,
+  type DragMoveEvent,
 } from "@dnd-kit/core";
-import { BrickOverlay } from "./brick";
+import {
+  restrictToHorizontalAxis,
+  restrictToVerticalAxis,
+  snapCenterToCursor,
+  createSnapModifier,
+} from "@dnd-kit/modifiers";
+
+import { BrickOverlay, BrickResizeHandle } from "./brick";
 import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export default function Page(props: { bricks: BricksContainer[] }) {
   const editorEnabled = useEditorEnabled();
   const draft = useDraft();
+  const pageRef = useRef<HTMLDivElement>(null);
+  const resizingRef = useRef<{
+    brickId: Brick["id"];
+    resizeBy: number;
+    handle: "left" | "right";
+  } | null>(null);
+  const [gridColSize, setGridColSize] = useState(1280 / 12);
+  const { lock, unlock } = useScrollLock({
+    autoLock: false,
+  });
+
+  useEffect(() => {
+    // compute the grid col size from the pageRef width / 12
+    if (pageRef.current) {
+      setGridColSize(pageRef.current.clientWidth / 12);
+    }
+  }, []);
 
   useHotkeys("mod+c", () => {
     // let the browser handle the copy event
@@ -52,16 +86,91 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       },
     }),
   ];
+
   const dragTypeRef = useRef<BricksContainer["type"] | Brick["type"]>("container");
+
   const [activeElement, setActiveElement] = useState<{
-    type: "container" | "brick";
+    type: "container" | "brick" | "resize-handle";
     id: string;
-    rect: DOMRect;
+    rect?: DOMRect;
+    attributes: Record<string, string>;
   } | null>(null);
 
   const containers = useMemo(() => {
     return editorEnabled ? draft.containers : props.bricks;
   }, [editorEnabled, props.bricks, draft.containers]);
+
+  const snapToGrid: Modifier = useCallback(
+    ({ transform }) => {
+      return {
+        x: Math.round(transform.x / gridColSize) * gridColSize,
+        y: 0,
+        scaleX: transform.scaleX,
+        scaleY: 1,
+      };
+    },
+    [gridColSize],
+  );
+
+  const restrictToBounds: Modifier = useCallback(
+    ({ transform }) => {
+      if (!activeElement) {
+        return transform;
+      }
+
+      const brickId = activeElement.id.replace(/resize-handle-(left|right)-/, "");
+      const isLeftHandle = activeElement.id.includes("left");
+
+      // we want to restrict dragging the resize handle up to the previous or next brick
+      // for this, we have to find the related prev and next brick
+
+      // first find which container the activeElement belongs to
+      const container = containers.find((ct) => ct.bricks.some((b) => b.id === brickId));
+      if (!container) {
+        return transform;
+      }
+
+      // find the activeElement brick index
+      const activeBrick = container.bricks.find((b) => b.id === brickId);
+      const activeBrickIndex = container.bricks.findIndex((b) => b.id === brickId);
+
+      if (!activeBrick || activeBrickIndex === -1) {
+        return transform;
+      }
+
+      // find the prev and next bricks
+      const prevBrick = container.bricks[activeBrickIndex - 1];
+      const nextBrick = container.bricks[activeBrickIndex + 1];
+
+      // get the end column index of the prev brick
+      const currentCol = isLeftHandle ? activeBrick.position.colStart : activeBrick.position.colEnd;
+
+      const minCol = isLeftHandle
+        ? prevBrick?.position.colStart
+          ? prevBrick.position.colStart + 1
+          : 1
+        : activeBrick?.position.colStart + 1;
+
+      // get the start column index of the next brick
+      const maxCol = isLeftHandle
+        ? activeBrick.position.colEnd - 1
+        : nextBrick
+          ? nextBrick.position.colEnd - 1
+          : GRID_COLS + 1;
+
+      // get delta from current col to the min and max cols
+      const minColDelta = (minCol - currentCol) * gridColSize;
+      const maxColDelta = (maxCol - currentCol) * gridColSize;
+      const computedCol = Math.round(transform.x / GRID_COLS) * GRID_COLS;
+
+      return {
+        ...transform,
+        x: Math.max(minColDelta, Math.min(maxColDelta, computedCol)),
+        y: 0,
+      };
+    },
+    [containers, activeElement, gridColSize],
+  );
 
   const getActiveElementData = useCallback(() => {
     if (!activeElement) {
@@ -87,22 +196,100 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     return containers.findIndex((ct) => ct.id === activeElement.id) ?? 0;
   }, [activeElement, containers]);
 
-  const handleDragEnd = (props: DragEndEvent) => {
-    const { active, over } = props;
-    setActiveElement(null);
+  const handleDragEnd = useCallback(
+    (props: DragEndEvent) => {
+      unlock();
+      const { active, over } = props;
 
-    // Normally, the draft is already up to date because it is updated during drag move
-    // But just in case, we update the draft here if there is a diff between active and over
-    if (over && over.id !== active.id) {
-      if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
-        updateContainers(active, over);
-      } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
-        updateBricks(active, over);
+      setActiveElement(null);
+
+      if (resizingRef.current) {
+        const brickId = resizingRef.current?.brickId;
+        const isLeftHandle = resizingRef.current?.handle === "left";
+
+        // first find which container the activeElement belongs to
+        const container = containers.find((ct) => ct.bricks.some((b) => b.id === brickId))!;
+        const activeBrickIndex = container.bricks.findIndex((b) => b.id === brickId)!;
+        const activeBrick = container.bricks.find((b) => b.id === brickId)!;
+        const nextBrick = container.bricks[activeBrickIndex + 1];
+        const prevBrick = container.bricks[activeBrickIndex - 1];
+
+        const minCol = prevBrick?.position.colStart ? prevBrick.position.colStart + 1 : isLeftHandle ? 1 : 2;
+        const minColDelta = isLeftHandle
+          ? -(activeBrick.position.colStart - minCol)
+          : -(activeBrick.position.colEnd - minCol);
+
+        const maxCol = nextBrick ? nextBrick.position.colEnd - 1 : GRID_COLS + 1;
+        const maxColDelta = isLeftHandle
+          ? maxCol - activeBrick.position.colStart
+          : maxCol - activeBrick.position.colEnd;
+
+        const resizeBy =
+          resizingRef.current.resizeBy < 0
+            ? Math.max(minColDelta, resizingRef.current.resizeBy)
+            : Math.min(resizingRef.current.resizeBy, maxColDelta);
+
+        if (isLeftHandle) {
+          draft.updateContainer(container.id, {
+            bricks: container.bricks.map((b, index) =>
+              index === activeBrickIndex
+                ? { ...b, position: { ...b.position, colStart: b.position.colStart + resizeBy } }
+                : index === activeBrickIndex - 1
+                  ? { ...b, position: { ...b.position, colEnd: b.position.colEnd + resizeBy } }
+                  : b,
+            ),
+          });
+        } else {
+          draft.updateContainer(container.id, {
+            bricks: container.bricks.map((b, index) =>
+              index === activeBrickIndex
+                ? { ...b, position: { ...b.position, colEnd: b.position.colEnd + resizeBy } }
+                : index === activeBrickIndex + 1
+                  ? { ...b, position: { ...b.position, colStart: b.position.colStart + resizeBy } }
+                  : b,
+            ),
+          });
+        }
+
+        resizingRef.current = null;
+        // save the changes
+        draft.save();
+
+        return;
       }
-    }
-    // save the changes
-    draft.save();
-  };
+
+      // Normally, the draft is already up to date because it is updated during drag move
+      // But just in case, we update the draft here if there is a diff between active and over
+      if (over && over.id !== active.id) {
+        if (active.data.current?.type === "container" && over?.data.current?.type === "container") {
+          updateContainers(active, over);
+        } else if (active.data.current?.type === "brick" && over?.data.current?.type === "brick") {
+          updateBricks(active, over);
+        }
+        // save the changes
+        draft.save();
+      }
+    },
+    [containers, draft, unlock],
+  );
+
+  const handleDragMove = useCallback(
+    (e: DragMoveEvent) => {
+      const handleId = `${e.active.id}`;
+      // only handle the drag move event for resize handles
+      if (handleId.startsWith("resize-handle")) {
+        const delta = e.delta.x;
+        const brickId = handleId.replace(/resize-handle-(left|right)-/, "");
+        const resizing = Math.round(delta / gridColSize);
+        resizingRef.current = {
+          brickId,
+          resizeBy: resizing,
+          handle: handleId.includes("left") ? "left" : "right",
+        };
+      }
+    },
+    [gridColSize],
+  );
 
   const handleDragOver = (e: DragOverEvent) => {
     const { active, over } = e;
@@ -132,6 +319,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const updateBricks = useCallback(
     (active: Active, over: Over, temporary = false) => {
+      console.log("updateBricks", active, over, temporary);
       const allBricks = containers.flatMap((ct) => ct.bricks);
 
       // find the container id of the active and over
@@ -152,12 +340,14 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         if (ct.id === activeContainer.id || ct.id === overContainer.id) {
           return {
             ...ct,
+            // switch the brick positions
             bricks: ct.bricks.map((b) =>
               b.id === active.id
-                ? overBrick
+                ? { ...overBrick, position: activeBrick.position }
                 : b.id === over.id
                   ? {
                       ...activeBrick,
+                      position: overBrick.position,
                       placeholder: temporary,
                     }
                   : b,
@@ -186,18 +376,28 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   );
 
   const handleDragStart = (e: DragStartEvent) => {
+    lock();
     if (!e.active.data.current) return;
-    const rect = document.getElementById(e.active.id as string)?.getBoundingClientRect() as DOMRect;
+
     dragTypeRef.current = e.active.data.current.type;
+
+    const el = document.getElementById(e.active.id as string);
+
     setActiveElement({
       type: e.active.data.current.type,
       id: e.active.id as string,
-      rect,
+      rect: el?.getBoundingClientRect() as DOMRect,
+      attributes: el?.dataset as Record<string, string>,
     });
   };
 
   const sortableIds = useMemo(() => {
-    return [...containers.map((ct) => ct.id), ...containers.flatMap((ct) => ct.bricks.map((b) => b.id))];
+    return [
+      ...containers.map((ct) => ct.id),
+      ...containers.flatMap((ct) => ct.bricks.map((b) => b.id)),
+      // ...containers.flatMap((ct) => ct.bricks.map((b) => `resize-handle-left-${b.id}`)),
+      // ...containers.flatMap((ct) => ct.bricks.map((b) => `resize-handle-right-${b.id}`)),
+    ];
   }, [containers]);
 
   const detectCollisions: CollisionDetection = (props) => {
@@ -231,27 +431,31 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   };
 
   return (
-    // DndContext ofr the containers
     <DndContext
       sensors={sensors}
       collisionDetection={detectCollisions}
       autoScroll
-      // collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
+      onDragMove={handleDragMove}
     >
       <SortableContext
         items={sortableIds}
-        strategy={activeElement?.type === "container" ? verticalListSortingStrategy : rectSwappingStrategy}
+        strategy={
+          activeElement?.type === "container"
+            ? verticalListSortingStrategy
+            : activeElement?.type === "resize-handle"
+              ? horizontalListSortingStrategy
+              : rectSwappingStrategy
+        }
       >
         <div
-          className={tx(
-            "mt-5 mx-auto grid w-full md:max-w-[90%] xl:max-w-screen-xl transition-all duration-200",
-            {
-              "gap-y-1": activeElement?.type === "container",
-            },
-          )}
+          id="page"
+          ref={pageRef}
+          className={tx("mt-5 mx-auto grid w-full md:max-w-[90%] xl:max-w-screen-xl ", {
+            // "gap-y-1": activeElement?.type === "container",
+          })}
           style={{
             gridTemplateColumns: "repeat(12, 1fr)",
             gridTemplateRows: `repeat(${containers.length}, fit-content())`,
@@ -260,20 +464,40 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         >
           <ContainerList containers={containers} />
         </div>
-        {/* <p className={tx("mx-auto p-4")}>activeElement: {JSON.stringify(activeElement)}</p> */}
-        {/* <pre>{JSON.stringify(draft.containers, null, 2)}</pre> */}
         {createPortal(
-          <DragOverlay>
+          <DragOverlay
+            className={dragTypeRef.current === "resize-handle" ? "transition-all duration-200" : undefined}
+            dropAnimation={dragTypeRef.current === "resize-handle" ? { duration: 0 } : undefined}
+            modifiers={
+              activeElement?.type === "container"
+                ? [restrictToVerticalAxis]
+                : activeElement?.type === "brick"
+                  ? []
+                  : activeElement?.type === "resize-handle"
+                    ? [restrictToHorizontalAxis, snapToGrid, restrictToBounds]
+                    : undefined
+            }
+          >
             {activeElement?.type === "container" && (
               <Container
                 container={getActiveElementData()?.container as BricksContainer}
                 containerIndex={getActiveContainerIndex()}
-                overlay={true}
-                style={{ height: `${activeElement.rect.height}px`, width: `${activeElement.rect.width}px` }}
+                overlay
+                style={{ height: `${activeElement.rect!.height}px`, width: `${activeElement.rect!.width}px` }}
               />
             )}
             {activeElement?.type === "brick" && (
-              <BrickOverlay {...(getActiveElementData() as { brick: Brick; container: BricksContainer })} />
+              <BrickOverlay
+                {...(getActiveElementData() as { brick: Brick; container: BricksContainer })}
+                style={{ height: `${activeElement.rect!.height}px` }}
+              />
+            )}
+            {activeElement?.type === "resize-handle" && (
+              <BrickResizeHandle
+                overlay
+                style={{ height: `${activeElement.rect!.height}px`, width: `${activeElement.rect!.width}px` }}
+                handleType={activeElement.id.includes("left") ? "left" : "right"}
+              />
             )}
           </DragOverlay>,
           document.body,

@@ -112,62 +112,7 @@ export async function initDevClient() {
         } satisfies DomUpdatedPayload,
         editorOrigin,
       );
-      setTimeout(allowElementsResizing, 200);
     };
-
-    function allowElementsResizing() {
-      document.querySelectorAll<HTMLElement>(".resizable").forEach((el) => {
-        if (el.dataset.hasResizeHandler) {
-          return;
-        }
-        el.dataset.hasResizeHandler = "true";
-
-        // set a fixed size for the element rect as its style
-        const rect = el.getBoundingClientRect();
-
-        if (!el.style.width) {
-          el.style.width = `${rect.width}px`;
-        }
-        if (!el.style.height) {
-          el.style.height = `auto`;
-        }
-
-        const handleBottom = document.createElement("div");
-        handleBottom.classList.add("resize-handle", "handle-bottom");
-        el.appendChild(handleBottom);
-
-        const handleTop = document.createElement("div");
-        handleTop.classList.add("resize-handle", "handle-top");
-        el.appendChild(handleTop);
-
-        const handleRight = document.createElement("div");
-        handleRight.classList.add("resize-handle", "handle-right");
-        el.appendChild(handleRight);
-
-        interact(el).resizable({
-          edges: { top: true, left: true, bottom: true, right: true },
-          allowFrom: ".resize-handle",
-          modifiers: [
-            interact.modifiers.aspectRatio({
-              modifiers: [interact.modifiers.restrictSize({ max: "parent" })],
-            }),
-          ],
-          listeners: {
-            start: () => {
-              resizing = true;
-            },
-            move: function (event) {
-              resizing = true;
-              Object.assign(event.target.style, {
-                width: `${event.rect.width}px`,
-                height: `${event.rect.height}px`,
-                // transform: `translate(${x}px, ${y}px)`,
-              });
-            },
-          },
-        });
-      });
-    }
 
     document.body.addEventListener("click", onElementClick, { capture: true });
 

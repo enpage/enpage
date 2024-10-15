@@ -1,11 +1,12 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
-import { parse } from "marked";
 import DOMPurify from "dompurify";
 import { tx } from "@twind/core";
-import { getCommonBrickProps } from "./common";
-import { forwardRef } from "react";
+import { getCommonBrickProps, getTextEditableBrickProps } from "./common";
+import { forwardRef, useState } from "react";
+import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
+import type { Brick } from "~/shared/bricks";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -29,20 +30,6 @@ export const manifest = defineBrickManifest({
       description: "The text content",
       "ep:prop-type": "content",
     }),
-    format: Type.Union(
-      [
-        Type.Literal("plain", { title: "Plain", description: "Plain text mode" }),
-        Type.Literal("html", { title: "HTML", description: "HTML mode" }),
-        Type.Literal("markdown", { title: "Markdown", description: "Markdown mode" }),
-      ],
-      {
-        default: "html",
-        title: "Format",
-        description: "The text format",
-        "ui:field": "enum",
-        "ui:display": "button-group",
-      },
-    ),
     titleClassName: Type.String({
       default: "text-lg font-bold",
       title: "Title Class Name",
@@ -66,6 +53,7 @@ export const manifest = defineBrickManifest({
         "ui:display": "button-group",
       },
     ),
+    ...getTextEditableBrickProps(),
     ...getCommonBrickProps("p-4"),
   }),
 });
@@ -75,46 +63,44 @@ export const defaults = Value.Create(manifest);
 
 const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { format, title, content, className, titleClassName, titleLevel, ...attrs } = props;
-
+  let { title, content, className, titleClassName, titleLevel, textEditable, brickId, ...attrs } = props;
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
+  // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
+  title = title.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
 
   const TitleTag = titleLevel as keyof JSX.IntrinsicElements;
 
-  if (format === "html") {
-    return (
-      <div ref={ref} className={tx(className)} {...attrs}>
-        <TitleTag className={tx(titleClassName)}>{title}</TitleTag>
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content */}
-        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
-      </div>
-    );
-  } else if (format === "markdown") {
-    return (
-      <div ref={ref} className={tx(className)} {...attrs}>
-        <TitleTag className={tx(titleClassName)}>{title}</TitleTag>
-        <div
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(
-              parse(content, {
-                async: false,
-                breaks: true,
-              }),
-            ),
-          }}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div ref={ref} className={tx(className)} {...attrs}>
-        <TitleTag className={tx(titleClassName)}>twt title: {title}</TitleTag>
-        <div>twt content: {content}</div>
-      </div>
-    );
-  }
+  return (
+    <div ref={ref} className={tx(className)} {...attrs}>
+      {textEditable ? (
+        <>
+          <TitleTag className={tx(titleClassName)}>
+            <TextEditor
+              initialContent={DOMPurify.sanitize(title)}
+              onUpdate={createTextEditorUpdateHandler(brickId, "title")}
+            />
+          </TitleTag>
+          <div className={tx(className)}>
+            <TextEditor
+              initialContent={DOMPurify.sanitize(content)}
+              onUpdate={createTextEditorUpdateHandler(brickId)}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <TitleTag
+            className={tx(titleClassName)}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml:  needed for html content
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(title) }}
+          />
+          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content */}
+          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+        </>
+      )}
+    </div>
+  );
 });
 
 export default TextWithTitle;

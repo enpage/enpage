@@ -1,4 +1,4 @@
-import type { BricksContainer, ContainerVariant } from "~/shared/bricks";
+import type { BricksContainer } from "~/shared/bricks";
 import {
   useState,
   forwardRef,
@@ -10,7 +10,7 @@ import {
 import { useSortable } from "@dnd-kit/sortable";
 import clsx from "clsx";
 import { tx, apply, css } from "@twind/core";
-import DragabbleBrickWrapper, { getBrickWrapperClass } from "./brick";
+import DragabbleBrickWrapper from "./brick";
 import { useDraft, useEditorEnabled } from "./use-editor";
 import { CSS } from "@dnd-kit/utilities";
 import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessui/react";
@@ -27,18 +27,20 @@ type ContainerProps = PropsWithChildren<
     overlay?: boolean;
     active?: boolean;
     placeholder?: boolean;
+    resizing?: boolean;
   } & { container: BricksContainer }
 >;
 
 export const Container = forwardRef<HTMLElement, ContainerProps>(
-  ({ container, containerIndex, className, children, overlay, placeholder, ...props }, ref) => {
-    const { bricks, variant, id, hidden } = container;
+  ({ container, containerIndex, className, children, overlay, placeholder, resizing, ...props }, ref) => {
+    const { bricks, id, hidden } = container;
     const containerBaseStyles = apply(
-      "brick-container relative",
+      "brick-container relative transition-all duration-200",
       {
         "rounded z-[9999] ring ring-primary-200 ring-offset-4 shadow-xl bg-primary-500 bg-opacity-30":
           overlay,
-        "hover:(rounded ring ring-primary-100 ring-offset-4)": !overlay && !placeholder && !hidden,
+        "hover:(rounded outline outline-2 outline-primary-200/70 outline-offset-4 outline-dashed z-50)":
+          !overlay && !placeholder && !hidden && !resizing,
         // "bg-black/50 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
         "h-auto": !hidden && !props.style?.height,
@@ -83,17 +85,13 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
           /* repeat the container menu because it would disapear while dragging */
           <div
             className={tx(
-              "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 \
-              group-hover:(opacity-100) -right-16 top-0 rounded overflow-hidden bg-gray-100 w-12 bottom-0 \
-              flex flex-col gap-2 items-center justify-center",
+              "absolute border-8 border-y-0 border-transparent transition-all duration-300 delay-200 p-2 opacity-0 \
+            group-hover:(opacity-100) hover:(!opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
+            flex flex-col gap-2 items-center justify-start",
             )}
           >
             <ContainerDragHandle forceVisible />
-            <ContainerMenu
-              forceVisible
-              container={{ id, bricks, variant, type: "container" }}
-              bricksCount={1}
-            />
+            <ContainerMenu forceVisible container={{ id, bricks, type: "container" }} bricksCount={1} />
           </div>
         )}
       </section>
@@ -131,7 +129,7 @@ const HiddenContainer = forwardRef<HTMLElement, Pick<HTMLDivElement, "id" | "cla
 );
 
 export function SortableContainer(props: ContainerProps) {
-  const { className, container, containerIndex, overlay: dragging } = props;
+  const { className, container, containerIndex } = props;
   // compute the effective container height once mounted
   const [containerHeight, setContainerHeight] = useState(0);
   const dndCtx = useDndContext();
@@ -160,14 +158,6 @@ export function SortableContainer(props: ContainerProps) {
 
   // Always update the container height when the container is mounted
   useEffect(() => {
-    // const observer = new MutationObserver(() => {
-    //   const el = document.getElementById(container.id);
-    //   setContainerHeight(el?.offsetHeight ?? 0);
-    // });
-
-    // observer.observe(document.body, { childList: true, subtree: true });
-    // return () => observer.disconnect();
-
     const el = document.getElementById(container.id);
     const tmt = setInterval(() => {
       setContainerHeight(el?.offsetHeight ?? 0);
@@ -183,14 +173,15 @@ export function SortableContainer(props: ContainerProps) {
       style={style}
       containerIndex={containerIndex}
       container={container}
+      resizing={dndCtx?.active?.id.toString().startsWith("resize-handle")}
       {...attributes}
     >
       {!active && (
         /* Wrapper for container menu */
         <div
           className={tx(
-            "absolute border-8 border-y-0 border-transparent transition-all duration-300 p-2 opacity-0 \
-            group-hover:(opacity-100) hover:(!opacity-100) -right-16 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
+            "absolute border-8 border-y-0 border-transparent transition-all duration-300 delay-200 p-2 opacity-0 \
+            group-hover:(opacity-100) hover:(!opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
             flex flex-col gap-2 items-center justify-start",
           )}
         >
@@ -247,24 +238,6 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
   );
 });
 
-function computeNextVariant(variant: ContainerVariant): ContainerVariant | undefined {
-  switch (variant) {
-    case "full":
-      return "1-1";
-    case "1-1":
-      return "1-1-1";
-    case "1-1-1":
-    case "1-1-2":
-    case "1-2-1":
-    case "2-1-1":
-      return "1-1-1-1";
-    case "1-2":
-      return "1-1-2";
-    case "2-1":
-      return "1-2-1";
-  }
-}
-
 type ContainerMenuProps = {
   container: BricksContainer;
   forceVisible?: boolean;
@@ -274,25 +247,31 @@ type ContainerMenuProps = {
 function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuProps) {
   const draft = useDraft();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: not important
   const addColumn = useCallback(() => {
-    const newVariant = computeNextVariant(container.variant);
-    if (newVariant) {
-      draft.updateContainer(container.id, {
-        variant: newVariant,
-        bricks: [
-          ...container.bricks,
-          {
-            id: `brick-${generateId()}`,
-            type: "text",
-            props: {
-              content: "New brick content",
-            },
-            wrapper: {},
-            position: {},
-          },
-        ],
-      });
-    }
+    // todo: implement addColumn
+    // const newVariant = computeNextVariant(container.variant);
+    // if (newVariant) {
+    //   draft.updateContainer(container.id, {
+    //     variant: newVariant,
+    //     bricks: [
+    //       ...container.bricks,
+    //       {
+    //         id: `brick-${generateId()}`,
+    //         type: "text",
+    //         props: {
+    //           content: "New brick content",
+    //         },
+    //         wrapper: {},
+    //         position: {
+    //           //todo: compute the correct colStart and colEnd
+    //           colStart: container.bricks.length,
+    //           colEnd: container.bricks.length + 1,
+    //         },
+    //       },
+    //     ],
+    //   });
+    // }
   }, [container, draft]);
 
   return (
@@ -313,7 +292,7 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
       <MenuItems
         anchor="bottom"
         className={tx(
-          "bg-white min-w-[9rem] flex flex-col shadow-xl text-sm border border-gray-200 rounded overflow-hidden text-gray-700",
+          "bg-white min-w-[9rem] z-[9999] flex flex-col shadow-xl text-sm border border-gray-200 rounded overflow-hidden text-gray-700",
         )}
       >
         <MenuItem

@@ -6,20 +6,3 @@ body {
 }
 
 
-/*
-flex max-sm:h-dvh w-full md:max-w-[90%] xl:max-w-screen-lg items-center justify-center
-   gap-10 md:rounded-3xl bg-gradient-to-tl from-gray-700 to-gray-800
-   p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20
-*/
-body > section {
-  display: grid;
-  gap: var(--size-3);
-  place-items: center;
-  padding: var(--size-3);
-  margin-inline: auto;
-
-  @media (--md-n-above) {
-    background-color: red !important;
-  }
-}
-

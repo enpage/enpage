@@ -305,14 +305,14 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
  * Adds stylesheets to the document head.
  */
 function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document, head: HTMLHeadElement) {
-  const styles = ["tailwind", "client", "anim"];
-  for (const style of styles) {
-    if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
-    const link = doc.createElement("link");
-    link.rel = "stylesheet";
-    link.href = `/@enpage/style-system/${style}.css`;
-    head.appendChild(link);
-  }
+  // const styles = ["tailwind", "client", "anim"];
+  // for (const style of styles) {
+  //   if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
+  //   const link = doc.createElement("link");
+  //   link.rel = "stylesheet";
+  //   link.href = `/@enpage/style-system/${style}.css`;
+  //   head.appendChild(link);
+  // }
 
   const link = doc.createElement("link");
   link.rel = "stylesheet";

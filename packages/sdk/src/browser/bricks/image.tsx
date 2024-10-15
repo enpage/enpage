@@ -4,6 +4,7 @@ import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
 import { tx } from "@twind/core";
 import { generateId, getCommonBrickProps } from "./common";
+import type { Brick } from "~/shared/bricks";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -34,7 +35,7 @@ export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
 const Image = forwardRef<HTMLImageElement, Manifest["props"] & ComponentProps<"img">>((props, ref) => {
-  const { alt, className, ...attrs } = { ...Value.Create(manifest).props, ...props };
+  const { alt, className, brickId, ...attrs } = { ...Value.Create(manifest).props, ...props };
   return <img {...attrs} ref={ref} alt={alt} className={tx(className)} />;
 });
 

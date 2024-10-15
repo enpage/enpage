@@ -1,4 +1,3 @@
-import type { ResponsiveMode } from "./responsive";
 import {
   Type,
   type TSchema,

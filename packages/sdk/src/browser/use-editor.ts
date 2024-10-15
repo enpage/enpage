@@ -90,9 +90,12 @@ export interface DraftStateProps {
 
 export interface DraftState extends DraftStateProps {
   setContainers: (containers: BricksContainer[]) => void;
+  getContainers: () => BricksContainer[];
   toggleContainerVisibility: (id: string) => void;
   deleteContainer: (id: string) => void;
   updateContainer: (id: string, container: Partial<BricksContainer>) => void;
+  updateBrick: (id: string, brick: Partial<Brick>) => void;
+  getBrick: (id: string) => Brick | undefined;
   save(): Promise<void>;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
@@ -125,8 +128,26 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
                 item.id === id ? { ...item, ...container } : item,
               );
             }),
+          updateBrick: (id, brick) =>
+            set((state) => {
+              // get the container
+              const containerIndex = state.containers.findIndex((item) =>
+                item.bricks.some((b) => b.id === id),
+              );
+              state.containers[containerIndex].bricks = state.containers[containerIndex].bricks.map((b) =>
+                b.id === id ? { ...b, ...brick } : b,
+              );
+            }),
+          getContainers: () => {
+            return _get().containers;
+          },
           save: async () => {
             //todo: call API
+          },
+          getBrick: (id) => {
+            return _get()
+              .containers.flatMap((c) => c.bricks)
+              .find((b) => b.id === id);
           },
         })),
         {

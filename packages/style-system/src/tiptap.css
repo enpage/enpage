@@ -1,0 +1,15 @@
+.tiptap {
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+}
