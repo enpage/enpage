@@ -41,7 +41,6 @@ export const renderTemplatePlugin = (
     transformIndexHtml: {
       order: "pre",
       handler: async (html: string, ctx) => {
-        console.log("transformIndexHtml called");
         const context = enpageCtx;
         const { head, doc, body, dom } = createJSDOM(html);
 
@@ -71,7 +70,7 @@ export const renderTemplatePlugin = (
         // add animate script
         addAnimationScript(doc, head);
 
-        if (isDevMode) addDevClient(doc, head);
+        // if (isDevMode) addDevClient(doc, head);
 
         // Hide sections when needed
         const sections = getPageSections(doc);
@@ -122,7 +121,7 @@ function createJSDOM(html: string) {
 
   const dom = new JSDOM(html, { virtualConsole });
   const doc = dom.window.document;
-  const head = doc.querySelector("head");
+  const head = doc.querySelector("head") as HTMLHeadElement;
   const body = doc.querySelector("body") as HTMLBodyElement;
   return { head, doc, body, dom };
 }
@@ -306,12 +305,17 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
  * Adds stylesheets to the document head.
  */
 function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document, head: HTMLHeadElement) {
-  const styles = ["tailwind", "client", "anim"];
-  for (const style of styles) {
-    if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
-    const link = doc.createElement("link");
-    link.rel = "stylesheet";
-    link.href = `/@enpage/style-system/${style}.css`;
-    head.appendChild(link);
-  }
+  // const styles = ["tailwind", "client", "anim"];
+  // for (const style of styles) {
+  //   if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
+  //   const link = doc.createElement("link");
+  //   link.rel = "stylesheet";
+  //   link.href = `/@enpage/style-system/${style}.css`;
+  //   head.appendChild(link);
+  // }
+
+  const link = doc.createElement("link");
+  link.rel = "stylesheet";
+  link.textContent = '@import "open-props/postcss/style";';
+  head.appendChild(link);
 }

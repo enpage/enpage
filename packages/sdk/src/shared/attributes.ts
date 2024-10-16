@@ -1,4 +1,3 @@
-import type { ResponsiveMode } from "./responsive";
 import {
   Type,
   type TSchema,
@@ -16,12 +15,6 @@ type EnumOption = {
   icon?: string;
 };
 
-type Responsive<T> =
-  | T
-  | {
-      [key in ResponsiveMode]?: T;
-    };
-
 type AttributeOptions<T extends Record<string, unknown>> = {
   group?: string;
   advanced?: boolean;
@@ -32,10 +25,6 @@ type GeoPoint = { lat: number; lng: number; name?: string };
 
 export type AttributesMap = {
   [key: string]: TSchema;
-};
-
-export type AttributesResolved<S extends AttributesMap> = {
-  [key in keyof S]: Responsive<Static<S[key]>>;
 };
 
 export function defineAttributes(attrs: AttributesMap) {
@@ -209,7 +198,7 @@ export const attr = {
 };
 
 // Default attributes
-const defaultAttributes: AttributesMap = {
+const defaultAttributes = {
   $siteLanguage: attr.enum("Page language", "en", {
     options: [
       { value: "en", name: "English" },
@@ -228,4 +217,11 @@ const defaultAttributes: AttributesMap = {
   $siteDescription: attr.string("Page description"),
   $siteKeywords: attr.string("Page keywords"),
   $siteLastUpdated: attr.datetime("Last updated"),
+};
+
+export type AttributesResolved<
+  S extends AttributesMap,
+  B extends S & typeof defaultAttributes = S & typeof defaultAttributes,
+> = {
+  [key in keyof B]: Static<B[key]>;
 };

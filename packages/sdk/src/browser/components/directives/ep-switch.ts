@@ -20,8 +20,6 @@ class EPSwitch extends CustomElement {
   }
 
   render(): void {
-    super.render();
-
     const matchedCase = this._cases.find((caseElement) => caseElement.evaluateCondition());
 
     this._cases.forEach((caseElement) => {
@@ -89,6 +87,11 @@ class EPCase extends CustomElement {
       console.error("Error evaluating condition:", error);
       return false;
     }
+  }
+
+  render() {
+    this.innerHTML = this.contents;
+    return this.innerHTML;
   }
 
   protected get contents(): string {

@@ -2,11 +2,16 @@ import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
 import type { AttributesMap, AttributesResolved } from "./attributes";
 import type { Manifest } from "vite";
 import type { TemplateManifest } from "./manifest";
+import type { BricksContainer } from "./bricks";
 
 /**
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
-export type PageConfig<D extends DatasourceManifestMap | undefined, A extends AttributesMap> = {
+export type PageConfig<
+  D extends DatasourceManifestMap | undefined,
+  A extends AttributesMap,
+  B extends BricksContainer[],
+> = {
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -25,17 +30,18 @@ export type PageConfig<D extends DatasourceManifestMap | undefined, A extends At
    * Resolved attributes for the page.
    */
   attr: AttributesResolved<A>;
+  bricks: B;
 
   ssrManifest?: Manifest;
   templateManifest: TemplateManifest;
 };
 
-export type GenericPageConfig = PageConfig<DatasourceManifestMap, AttributesMap>;
+export type GenericPageConfig = PageConfig<DatasourceManifestMap, AttributesMap, BricksContainer[]>;
 
-export type PageContext<D extends DatasourceManifestMap | undefined, A extends AttributesMap> = Pick<
-  PageConfig<D, A>,
-  "data" | "attr"
->;
+export type PageContext<
+  D extends DatasourceManifestMap | undefined,
+  A extends AttributesMap,
+  B extends BricksContainer[],
+> = Pick<PageConfig<D, A, B>, "data" | "attr" | "bricks">;
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type GenericPageContext = PageContext<any, any>;
+export type GenericPageContext = PageContext<DatasourceManifestMap, AttributesMap, BricksContainer[]>;

@@ -1,9 +1,31 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import type { PageContext } from "~/shared/page-config";
 import { samples } from "~/shared/datasources/samples";
-import type { AttributesResolved } from "~/shared/attributes";
+import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
+import type { ConfigEnv } from "vite";
+
+export async function getPageContext<Config extends EnpageTemplateConfig>(
+  cfg: Config,
+  viteEnv: ConfigEnv,
+  env: EnpageEnv,
+) {
+  const isBuildMode = viteEnv.command === "build";
+  const isSsrBuild = viteEnv.isSsrBuild;
+  const fullEnv: EnpageEnv = { ...process.env, ...env };
+
+  // If in dev mode, use fake context
+  if (!isBuildMode) {
+    console.warn("Using fake context.");
+    return createFakeContext(cfg);
+    // If in build mode, fetch context from API if not SSR build
+  } else if (!isSsrBuild) {
+    return (await fetchContext(cfg, fullEnv)) || createFakeContext(cfg);
+  }
+
+  return null;
+}
 
 export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
   let data: Record<string, unknown> | undefined;
@@ -20,14 +42,23 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
     }
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const attributes: AttributesResolved<any> = {};
+  const attr: AttributesResolved<AttributesMap> = {
+    $siteDescription: "This is a site description",
+    $siteKeywords: "site, keywords",
+    $siteTitle: "Site title",
+    $siteLanguage: "en",
+    $siteLastUpdated: new Date().toISOString(),
+  };
 
   for (const key in cfg.attributes.properties) {
-    attributes[key] = cfg.attributes.properties[key].default;
+    attr[key] = cfg.attributes.properties[key].default;
   }
 
-  return { data, attr: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return { data, attr, bricks: cfg.bricks } as PageContext<
+    typeof cfg.datasources,
+    typeof cfg.attributes,
+    typeof cfg.bricks
+  >;
 }
 
 /**
@@ -57,8 +88,11 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
     },
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  const context = (await response.json()) as PageContext<
+    typeof cfg.datasources,
+    typeof cfg.attributes | AttributesMap,
+    typeof cfg.bricks
+  >;
 
   return context;
 }

@@ -1,9 +1,8 @@
-import type { PageContext } from "../shared/page-config";
+import type { GenericPageContext } from "../shared/page-config";
 import type { NavigateEvent } from "./events";
 
 export type State = {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  ctx: PageContext<any, any>;
+  ctx: GenericPageContext;
   pageIndex: number;
 };
 

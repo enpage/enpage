@@ -53,7 +53,6 @@ The `vite-config.ts` is the equivalent of the `vite.config.js` file in a Vite pr
 - enpage meta: loads all enpage plugins
 - enpage: main plugin defining the vite config
 - enpage:virtual-files: plugin to handle virtual files. Hooks used: `resolveId`, `load`. It returns the content of the virtual files:
-  - `virtual:enpage-template:index.html`: the main index.html template file
   - `virtual:vite-entry-server`: the entry server file
   - `virtual:enpage-page-config.json`: returns  a virtual json file containing the GenericPageConfig.
 - enpage:context: plugin to handle the PageContext. In dev mode, it generates a fake context. In non-ssr build mode, it fetches the context from the server. Hooks used: `config`. It adds the

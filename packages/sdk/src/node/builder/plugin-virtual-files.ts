@@ -1,14 +1,11 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig, PageContext } from "~/shared/page-config";
 import type { ConfigEnv, Plugin } from "vite";
-import { resolve } from "node:path";
-import { readFileSync } from "node:fs";
 import type { GenericPageContext } from "~/shared/page-config";
 import type { EnpageEnv } from "~/shared/env";
-import { store } from "./store";
-
-const virtualIndexId = "virtual:enpage-template:index.html";
-const resolvedVirtualIndexId = `\0${virtualIndexId}`;
+import virtual from "vite-plugin-virtual";
+import { createFakeContext, fetchContext, getPageContext } from "./page-context";
+import invariant from "~/shared/utils/invariant";
 
 const virtualViteEntryServerId = "virtual:vite-entry-server";
 const resolvedVirtualViteEntryServerId = `\0${virtualViteEntryServerId}`;
@@ -17,13 +14,37 @@ const virtualEnpagePageConfig = "virtual:enpage-page-config.json";
 const resolvedVirtualEnpagePageConfig = `\0${virtualEnpagePageConfig}`;
 
 const virtualFilesMap = new Map([
-  [virtualIndexId, resolvedVirtualIndexId],
   [virtualViteEntryServerId, resolvedVirtualViteEntryServerId],
   [virtualEnpagePageConfig, resolvedVirtualEnpagePageConfig],
 ]);
 
+export async function pluginVirtual(
+  templateConfig: EnpageTemplateConfig,
+  viteEnv: ConfigEnv,
+  env: EnpageEnv,
+) {
+  const context = await getPageContext(templateConfig, viteEnv, env);
+  if (!context) {
+    return virtual();
+  }
+
+  return virtual({
+    "virtual:vite-entry-server": `export { render } from "@enpage/sdk/builder/vite-entry-server";`,
+    "virtual:enpage-page-config.json": JSON.stringify({
+      attributes: templateConfig.attributes,
+      datasources: templateConfig.datasources,
+      data: context?.data,
+      attr: context?.attr ?? {},
+      templateManifest: templateConfig.manifest,
+      bricks: context?.bricks ?? [],
+      ssrManifest: {},
+    } satisfies GenericPageConfig),
+  });
+}
+
 /**
  * @todo migrate to https://github.com/patak-dev/vite-plugin-virtual
+ * @deprecated
  */
 export const virtualFilesPlugin = (
   templateConfig: EnpageTemplateConfig,
@@ -45,12 +66,6 @@ export const virtualFilesPlugin = (
     },
     load(id) {
       switch (id) {
-        case resolvedVirtualIndexId: {
-          const htmlPath = resolve(process.cwd(), "index.html");
-          const htmlContent = readFileSync(htmlPath, "utf-8");
-          return `export const html = ${JSON.stringify(htmlContent)};
-          export const slugs = ${JSON.stringify(store.get("slugs"))};`;
-        }
         case resolvedVirtualViteEntryServerId: {
           return `export { render } from "@enpage/sdk/builder/vite-entry-server";`;
         }
@@ -61,6 +76,7 @@ export const virtualFilesPlugin = (
             data: pageContext?.data,
             attr: pageContext!.attr,
             templateManifest: templateConfig.manifest,
+            bricks: templateConfig.bricks,
             // todo: add ssrManifest
             ssrManifest: {},
           } satisfies GenericPageConfig);

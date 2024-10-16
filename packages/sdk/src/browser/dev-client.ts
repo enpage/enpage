@@ -1,58 +1,21 @@
 import { onDragOver, onDragEnd, getInsertPosition } from "./dnd";
 import editorCss from "@enpage/style-system/editor.css?url";
 import { debounce } from "lodash-es";
-
-export type ElementSelectedPayload = {
-  type: "element-selected";
-  element: {
-    tagName: string;
-    innerHTML: string;
-    innerText: string;
-    outerHTML: string;
-    computedStyles: string;
-    attributes: Record<string, string>;
-  };
-};
-
-export type DomUpdatedPayload = {
-  type: "dom-updated";
-  dom: string;
-};
-
-export type IframeFocusedPayload = {
-  type: "iframe-focused";
-};
-
-export type IframeBlurredPayload = {
-  type: "iframe-blurred";
-};
-
-export type IframeMessage =
-  | ElementSelectedPayload
-  | DomUpdatedPayload
-  | IframeFocusedPayload
-  | IframeBlurredPayload;
-
-export type EditorDragEndPayload = {
-  type: "editor-dragend";
-  coordinates: { x: number; y: number };
-};
-
-export type EditorDragOverPayload = {
-  type: "editor-dragover";
-  template: string;
-  coordinates: { x: number; y: number };
-};
-
-export type EditorDropPayload = {
-  type: "editor-drop";
-  template: string;
-  coordinates: { x: number; y: number };
-};
-
-export type EditorMessage = EditorDragEndPayload | EditorDragOverPayload | EditorDropPayload;
+import type {
+  IframeFocusedPayload,
+  IframeBlurredPayload,
+  ElementSelectedPayload,
+  DomUpdatedPayload,
+  EditorMessage,
+  EditorDragOverPayload,
+  EditorDropPayload,
+} from "./types";
+import { getElementLabel, serializeDomData, unserializeDomData } from "./components/utils";
+import type { BlockManifest } from "./components/base/ep-block-base";
 
 export async function initDevClient() {
+  let resizing = false;
+
   // enable drag and drop on touch devices
   const currentURL = new URL(import.meta.url);
   const editorHost = `${currentURL.hostname}:3008`;
@@ -82,38 +45,27 @@ export async function initDevClient() {
     //-----------------------------------
   } else {
     // add editor.css
-    const editorCssEl = document.createElement("link");
-    editorCssEl.rel = "stylesheet";
-    editorCssEl.href = editorCss;
-    document.head.appendChild(editorCssEl);
+    // const editorCssEl = document.createElement("link");
+    // editorCssEl.rel = "stylesheet";
+    // editorCssEl.href = editorCss;
+    // document.head.appendChild(editorCssEl);
 
     // enable drag and drop on touch devices
-    window.addEventListener("focus", () => {
-      window.parent.postMessage({ type: "iframe-focused" } satisfies IframeFocusedPayload, editorOrigin);
-    });
+    // window.addEventListener("focus", () => {
+    //   window.parent.postMessage({ type: "iframe-focused" } satisfies IframeFocusedPayload, editorOrigin);
+    // });
 
-    window.addEventListener("blur", () => {
-      window.parent.postMessage({ type: "iframe-blurred" } satisfies IframeBlurredPayload, editorOrigin);
-    });
+    // window.addEventListener("blur", () => {
+    //   window.parent.postMessage({ type: "iframe-blurred" } satisfies IframeBlurredPayload, editorOrigin);
+    // });
 
-    document.body.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
-      console.log("click", target);
-      // e.stopPropagation();
-      if (target.hasAttribute("ep-editable") === false) {
-        return;
-      }
-
-      e.stopPropagation();
-
-      const element = e.target as HTMLElement;
-      const elementClone = {
-        tagName: element.tagName,
+    function onElementSelected(element: HTMLElement) {
+      const clone = {
+        tagName: element.tagName.toLowerCase(),
         innerHTML: element.innerHTML,
         innerText: element.innerText,
         outerHTML: element.outerHTML,
-        label:
-          element.getAttribute("ep-label") ?? element.getAttribute("title") ?? element.getAttribute("alt"),
+        label: getElementLabel(element),
         computedStyles: window.getComputedStyle(element).cssText,
         attributes: Array.from(element.attributes).reduce(
           (acc, attr) => {
@@ -122,12 +74,46 @@ export async function initDevClient() {
           },
           {} as Record<string, string>,
         ),
+        manifest: element.dataset.manifest
+          ? unserializeDomData<BlockManifest>(element.dataset.manifest)
+          : null,
       };
       window.parent.postMessage(
-        { type: "element-selected", element: elementClone } satisfies ElementSelectedPayload,
+        {
+          type: "element-selected",
+          element: clone,
+        } satisfies ElementSelectedPayload,
         editorOrigin,
       );
-    });
+    }
+
+    const onElementClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.localName === "a" || target.localName === "button") {
+        e.preventDefault();
+      }
+
+      // e.stopPropagation();
+      if (target.hasAttribute("ep-editable") === false) {
+        return;
+      }
+
+      // e.stopPropagation();
+      onElementSelected(target);
+    };
+
+    const onDomChange = () => {
+      window.parent.postMessage(
+        {
+          type: "dom-updated",
+          head: document.head.outerHTML,
+          body: document.body.outerHTML,
+        } satisfies DomUpdatedPayload,
+        editorOrigin,
+      );
+    };
+
+    document.body.addEventListener("click", onElementClick, { capture: true });
 
     // post message to the parent window when an element with the [ep-editable] attribute is clicked
     // document.querySelectorAll("[ep-editable]").forEach((el) => {
@@ -168,13 +154,18 @@ export async function initDevClient() {
 
     // we are in the editor iframe, we want to disable all interactions like links, buttons, etc
     // we still want to intercept clicks, but we want to prevent their default behavior
-    document.body.addEventListener("click", (e) => {
-      const element = e.target as HTMLElement;
-      if (element.tagName === "A" || element.tagName === "BUTTON") {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    });
+    // document.body.addEventListener(
+    //   "click",
+    //   (e) => {
+    //     const element = e.target as HTMLElement;
+    //     console.log("click event intercepted", element.localName);
+    //     if (element.localName === "a" || element.localName === "button") {
+    //       e.preventDefault();
+    //       e.stopPropagation();
+    //     }
+    //   },
+    //   { capture: true },
+    // );
 
     // listen for drag events
     window.addEventListener("message", (e) => {
@@ -186,17 +177,17 @@ export async function initDevClient() {
           onDragEnd();
           break;
         case "editor-dragover": {
-          // transform the data.html string into a HTMLElement
-          const dragElement = createDragElement(data);
-          onDragOver(dragElement, data.coordinates);
+          onDragOver(data.block.type, data.coordinates);
           break;
         }
         case "editor-drop": {
           // handle drop
+          console.log("create from editor-drop", data);
           const dragElement = createDragElement(data);
-          const insertPosition = getInsertPosition({ dragElement, coordinates: data.coordinates });
+          const insertPosition = getInsertPosition(data.block.type, data.coordinates);
           if (insertPosition) {
             const { referenceElement, side } = insertPosition;
+            console.log("insert position", insertPosition);
             if (side.horizontal === "left" || side.vertical === "top") {
               // @ts-ignore before is wrongly typed by cloudflare/worker-types
               referenceElement.before(dragElement);
@@ -204,7 +195,14 @@ export async function initDevClient() {
               // @ts-ignore after is wrongly typed by cloudflare/worker-types
               referenceElement.after(dragElement);
             }
-            setTimeout(dragElement.click, 100);
+
+            // trigger dom-updated event
+            onDomChange();
+
+            // trigger element selection after drop
+            onElementSelected(dragElement);
+          } else {
+            console.warn("No insert position found for drag event", data);
           }
           break;
         }
@@ -213,27 +211,37 @@ export async function initDevClient() {
 
     const restoreOverflow = debounce(() => {
       document.body.style.opacity = "1";
-    }, 50);
+      resizing = false;
+    }, 150);
 
     document.body.style.transition = "all 0.2s";
 
     const resizeObserver = new ResizeObserver((entries) => {
+      if (resizing) {
+        return;
+      }
+      console.log("resize observer", entries);
       document.body.style.opacity = "0";
       document.body.style.transition = "all 50ms";
+      resizing = true;
       restoreOverflow();
     });
 
-    resizeObserver.observe(document.body, { box: "border-box" });
+    resizeObserver.observe(document.body, { box: "content-box" });
+
+    // allowElementsResizing();
   }
 }
 
-function createDragElement(data: EditorDragOverPayload | EditorDropPayload) {
-  const temp = document.createElement("div");
-  if (!data.template) {
+function createDragElement({ manifest, block }: EditorDragOverPayload | EditorDropPayload) {
+  if (!block.template) {
     throw Error("No template provided in the drag event");
   }
-  temp.innerHTML = data.template;
+  const temp = document.createElement("div");
+  temp.innerHTML = block.template;
   const dragElement = temp.firstElementChild as HTMLElement;
+  // dragElement.classList.add("resizable");
+  dragElement.dataset.manifest = serializeDomData(manifest);
   return dragElement;
 }
 
