@@ -4,22 +4,24 @@ import {
   lazy,
   memo,
   Suspense,
-  useRef,
+  useEffect,
+  useState,
   type ComponentProps,
   type ComponentType,
   type LazyExoticComponent,
   type MouseEvent,
+  type PropsWithChildren,
 } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { tx, style, css, apply, tw } from "@twind/core";
-import clsx from "clsx";
+import { tx, style, css, apply } from "@twind/core";
 import { useEditor, useEditorEnabled } from "./use-editor";
-import { useDndContext, useDraggable } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
-import mergeRefs from "merge-refs";
-import { useOnClickOutside } from "usehooks-ts";
+import { SlOptionsVertical } from "react-icons/sl";
+import { DropdownMenu, Button, IconButton } from "@radix-ui/themes";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 
 const BrickComponent = ({
   brick,
@@ -85,7 +87,6 @@ export default function DragabbleBrickWrapper({
   placeholder?: boolean;
 } & ComponentProps<"div">) {
   const editor = useEditor();
-  const BrickTag = (editor.enabled ? "button" : "div") as "div";
 
   const onClick = editor.enabled
     ? (e: MouseEvent<HTMLElement>) => {
@@ -96,7 +97,7 @@ export default function DragabbleBrickWrapper({
 
   const { setNodeRef, attributes, listeners, transform, over, active } = useSortable({
     id: brick.id,
-    disabled: !editor.enabled,
+    disabled: !editor.enabled || editor.isEditingTextForBrickId === brick.id,
     data: {
       type: "brick",
       brick,
@@ -152,6 +153,7 @@ export default function DragabbleBrickWrapper({
       ) : (
         <>
           <MemoBrickComponent brick={brick} container={container} />
+          <BrickOptionsButton brick={brick} />
           {!active && (
             <DraggableBrickResizeHanlde
               brick={brick}
@@ -208,6 +210,65 @@ function DraggableBrickResizeHanlde({
   );
 }
 
+function BrickOptionsButton({ brick }: { brick: Brick }) {
+  const editor = useEditor();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    console.log("new selected brick", editor.selectedBrick?.id);
+  }, [editor.selectedBrick]);
+
+  return (
+    <DropdownMenu.Root onOpenChange={setOpen}>
+      <DropdownMenu.Trigger>
+        <div className={tx("absolute right-1 top-1")}>
+          <IconButton
+            onClickCapture={(e) => {
+              console.log("btn click", e);
+            }}
+            variant="soft"
+            size="1"
+            radius="small"
+            className={tx(
+              {
+                "!opacity-0": !open,
+              },
+              "group/button bg-primary-600 group-hover/brick:!opacity-100 active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-primary-200/75 hover:!bg-primary-300 !px-0.5",
+            )}
+          >
+            <BiDotsVerticalRounded className="w-6 h-6 text-primary-500 group-hover/button:text-primary-600" />
+          </IconButton>
+        </div>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content>
+        <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
+        <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
+
+        <DropdownMenu.Sub>
+          <DropdownMenu.SubTrigger>More</DropdownMenu.SubTrigger>
+          <DropdownMenu.SubContent>
+            <DropdownMenu.Item>Move to project…</DropdownMenu.Item>
+            <DropdownMenu.Item>Move to folder…</DropdownMenu.Item>
+
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item>Advanced options…</DropdownMenu.Item>
+          </DropdownMenu.SubContent>
+        </DropdownMenu.Sub>
+
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>Share</DropdownMenu.Item>
+        <DropdownMenu.Item>Add to favorites</DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
+          Delete
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
+  );
+}
+
 export const BrickResizeHandle = forwardRef<
   HTMLDivElement,
   ComponentProps<"div"> & { overlay?: boolean; handleType: "left" | "right" }
@@ -261,26 +322,20 @@ export function BrickOverlay({
       )}
       {...attrs}
     >
-      <MemoBrickComponent brick={brick} container={container} />
+      <MemoBrickComponent brick={brick} container={container} overlay />
     </div>
   );
 }
 
 export function getBrickWrapperClass(brick: Brick, containerIndex: number) {
   return tx(
+    "brick",
     // DO NOT put transition classes here, they will make it flickering when dragging ends
     getBrickDefinedClass(brick),
     // mobile
     "max-sm:block",
     // large screen
     `md:(grid-cols-subgrid grid-rows-subgrid row-start-${containerIndex + 1} col-start-${brick.position.colStart} col-end-${brick.position.colEnd})`,
-    css({
-      // gridTemplateColumns: "subgrid",
-      // gridTemplateRows: "subgrid",
-      // gridRow: `${containerIndex + 1}`,
-      // gridColumnStart: brick.position.colStart,
-      // gridColumnEnd: brick.position.colEnd,
-    }),
   );
 }
 

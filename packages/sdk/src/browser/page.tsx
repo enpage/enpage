@@ -14,6 +14,7 @@ import Container, { ContainerList } from "./container";
 import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { debounce } from "lodash-es";
 import { useOnClickOutside, useScrollLock } from "usehooks-ts";
+import ContextMenuWrapper from "./context-menu";
 import {
   arraySwap,
   SortableContext,
@@ -58,6 +59,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     resizeBy: number;
     handle: "left" | "right";
   } | null>(null);
+
   const [gridColSize, setGridColSize] = useState(1280 / 12);
   const { lock, unlock } = useScrollLock({
     autoLock: false,
@@ -67,7 +69,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     const event = e as MouseEvent;
     const elementAtPoint = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
     if (!elementAtPoint.closest("[data-radix-popper-content-wrapper]")) {
-      console.log("hidding because clicked outside", elementAtPoint);
+      console.debug("deselecting brick because user clicked outside");
       editor.deselectBrick();
     }
   });
@@ -459,17 +461,19 @@ export default function Page(props: { bricks: BricksContainer[] }) {
               : rectSwappingStrategy
         }
       >
-        <div
-          id="page"
-          ref={pageRef}
-          className={tx(
-            "max-sm:(flex flex-col gap-y-1) mx-auto w-full md:max-w-[90%] xl:max-w-screen-xl md:(grid grid-cols-12 grid-flow-row)",
-            {
-              // "gap-y-1": activeElement?.type === "container",
-            },
-          )}
-        >
-          <ContainerList containers={containers} />
+        <div className="min-h-[100dvh] w-full ">
+          <div
+            id="page"
+            ref={pageRef}
+            className={tx(
+              "max-sm:(flex flex-col gap-y-1) mx-auto w-full md:max-w-[90%] xl:max-w-screen-xl md:(grid grid-cols-12 grid-flow-row)",
+              {
+                // "gap-y-1": activeElement?.type === "container",
+              },
+            )}
+          >
+            <ContainerList containers={containers} />
+          </div>
         </div>
         {createPortal(
           <DragOverlay
@@ -498,6 +502,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
                 {...(getActiveElementData() as { brick: Brick; container: BricksContainer })}
                 style={{
                   height: `${activeElement.rect!.height}px`,
+                  minHeight: `${activeElement.rect!.height}px`,
                 }}
               />
             )}

@@ -17,6 +17,7 @@ export interface EditorStateProps {
   editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
+  isEditingTextForBrickId?: string;
 }
 
 export interface EditorState extends EditorStateProps {
@@ -28,6 +29,7 @@ export interface EditorState extends EditorStateProps {
   setEditingPageIndex: (index: number) => void;
   setSelectedBrick: (brick: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
+  setIsEditingText: (forBrickId: string | false) => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
@@ -73,6 +75,10 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                 state.selectedBrick = undefined;
               }
             }),
+          setIsEditingText: (forBrickId: string | false) =>
+            set((state) => {
+              state.isEditingTextForBrickId = forBrickId || undefined;
+            }),
         })),
         {
           name: "editor-state",
@@ -103,6 +109,7 @@ export interface DraftState extends DraftStateProps {
   updateContainer: (id: string, container: Partial<BricksContainer>) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   getBrick: (id: string) => Brick | undefined;
+  getContainer: (id: string) => BricksContainer | undefined;
   save(): Promise<void>;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
@@ -147,6 +154,9 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
             }),
           getContainers: () => {
             return _get().containers;
+          },
+          getContainer: (id) => {
+            return _get().containers.find((c) => c.id === id);
           },
           save: async () => {
             //todo: call API

@@ -47,6 +47,7 @@
     "@hattip/core": "0.0.47",
     "@headlessui/react": "2.1.2",
     "@inquirer/prompts": "5.3.8",
+    "@radix-ui/react-context-menu": "2.2.2",
     "@radix-ui/react-toggle-group": "1.1.0",
     "@radix-ui/themes": "3.1.4",
     "@sinclair/typebox": "0.33.7",

@@ -10,7 +10,7 @@ import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
 import { Select } from "@radix-ui/themes";
 import { tx } from "@twind/core";
-import { useState, memo, useRef, forwardRef } from "react";
+import { useState, memo, useRef, forwardRef, useEffect } from "react";
 import {
   MdFormatBold,
   MdFormatAlignCenter,
@@ -24,6 +24,7 @@ import type { Brick } from "~/shared/bricks";
 import { useDraft, useEditor } from "../use-editor";
 import Code from "@tiptap/extension-code";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
+import { useDndContext } from "@dnd-kit/core";
 
 const extensions = [
   StarterKit,
@@ -44,6 +45,8 @@ const toolbarBtnCls =
   "first:rounded-l  last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-primary-100 leading-none data-[state=on]:(bg-primary-500 text-white)";
 
 const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = true }: Props) => {
+  const mainEditor = useEditor();
+  const dndCtx = useDndContext();
   const [editable, setEditable] = useState(enabled);
   const editor = useTextEditor({
     extensions,
@@ -58,10 +61,25 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = tr
     },
   });
 
+  useEffect(() => {
+    const onFocus = () => {
+      mainEditor.setIsEditingText(brickId);
+    };
+    const onBlur = () => {
+      mainEditor.setIsEditingText(false);
+    };
+    editor?.on("focus", onFocus);
+    editor?.on("blur", onBlur);
+    return () => {
+      editor?.off("focus", onFocus);
+      editor?.off("blur", onBlur);
+    };
+  }, [editor, mainEditor, brickId]);
+
   return (
     <>
       <EditorContent onClick={() => setEditable(true)} editor={editor} className="outline-none" />
-      {editor && <MenuBar brickId={brickId} editor={editor} />}
+      {editor && dndCtx.active === null && <MenuBar brickId={brickId} editor={editor} />}
       {/* <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
