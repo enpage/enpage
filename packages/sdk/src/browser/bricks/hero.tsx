@@ -40,7 +40,7 @@ export const manifest = defineBrickManifest({
       },
     ),
     ...getTextEditableBrickProps(),
-    ...getCommonBrickProps("p-4 hero-5 font-extrabold"),
+    ...getCommonBrickProps("p-1 hero-5 font-extrabold"),
   }),
 });
 
@@ -61,6 +61,7 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
         className={className}
         initialContent={DOMPurify.sanitize(content)}
         onUpdate={onUpdateHandler}
+        brickId={brickId}
       />
     </div>
   ) : (

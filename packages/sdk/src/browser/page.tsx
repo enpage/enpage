@@ -11,9 +11,9 @@ import {
 import { flushSync } from "react-dom";
 import { GRID_COLS, type Brick, type BricksContainer } from "~/shared/bricks";
 import Container, { ContainerList } from "./container";
-import { useDraft, useEditorEnabled } from "./use-editor";
+import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { debounce } from "lodash-es";
-import { useScrollLock } from "usehooks-ts";
+import { useOnClickOutside, useScrollLock } from "usehooks-ts";
 import {
   arraySwap,
   SortableContext,
@@ -50,6 +50,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 export default function Page(props: { bricks: BricksContainer[] }) {
   const editorEnabled = useEditorEnabled();
+  const editor = useEditor();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
   const resizingRef = useRef<{
@@ -60,6 +61,15 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   const [gridColSize, setGridColSize] = useState(1280 / 12);
   const { lock, unlock } = useScrollLock({
     autoLock: false,
+  });
+
+  useOnClickOutside(pageRef, (e) => {
+    const event = e as MouseEvent;
+    const elementAtPoint = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
+    if (!elementAtPoint.closest("[data-radix-popper-content-wrapper]")) {
+      console.log("hidding because clicked outside", elementAtPoint);
+      editor.deselectBrick();
+    }
   });
 
   useEffect(() => {
@@ -319,7 +329,6 @@ export default function Page(props: { bricks: BricksContainer[] }) {
 
   const updateBricks = useCallback(
     (active: Active, over: Over, temporary = false) => {
-      console.log("updateBricks", active, over, temporary);
       const allBricks = containers.flatMap((ct) => ct.bricks);
 
       // find the container id of the active and over
@@ -453,14 +462,12 @@ export default function Page(props: { bricks: BricksContainer[] }) {
         <div
           id="page"
           ref={pageRef}
-          className={tx("mt-5 mx-auto grid w-full md:max-w-[90%] xl:max-w-screen-xl ", {
-            // "gap-y-1": activeElement?.type === "container",
-          })}
-          style={{
-            gridTemplateColumns: "repeat(12, 1fr)",
-            gridTemplateRows: `repeat(${containers.length}, fit-content())`,
-            gridAutoFlow: "row",
-          }}
+          className={tx(
+            "max-sm:(flex flex-col gap-y-1) mx-auto w-full md:max-w-[90%] xl:max-w-screen-xl md:(grid grid-cols-12 grid-flow-row)",
+            {
+              // "gap-y-1": activeElement?.type === "container",
+            },
+          )}
         >
           <ContainerList containers={containers} />
         </div>

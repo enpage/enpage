@@ -27,6 +27,7 @@ export interface EditorState extends EditorStateProps {
   toggleSettingsVisible: () => void;
   setEditingPageIndex: (index: number) => void;
   setSelectedBrick: (brick: Brick) => void;
+  deselectBrick: (brickId?: Brick["id"]) => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
@@ -65,6 +66,12 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           setSelectedBrick: (brick) =>
             set((state) => {
               state.selectedBrick = brick;
+            }),
+          deselectBrick: (brickId) =>
+            set((state) => {
+              if (!brickId || state.selectedBrick?.id === brickId) {
+                state.selectedBrick = undefined;
+              }
             }),
         })),
         {

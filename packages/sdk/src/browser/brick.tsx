@@ -4,6 +4,7 @@ import {
   lazy,
   memo,
   Suspense,
+  useRef,
   type ComponentProps,
   type ComponentType,
   type LazyExoticComponent,
@@ -11,14 +12,14 @@ import {
 } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { tx, style, css, apply } from "@twind/core";
+import { tx, style, css, apply, tw } from "@twind/core";
 import clsx from "clsx";
 import { useEditor, useEditorEnabled } from "./use-editor";
-import { MdDragHandle } from "react-icons/md";
 import { useDndContext, useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
-import { position } from "polished";
+import mergeRefs from "merge-refs";
+import { useOnClickOutside } from "usehooks-ts";
 
 const BrickComponent = ({
   brick,
@@ -115,20 +116,20 @@ export default function DragabbleBrickWrapper({
       : over && active?.id === brick.id
         ? {
             backgroundColor: "#00000015",
-            transform: CSS.Transform.toString(transform ? { ...transform } : null),
+            transform: CSS.Transform.toString(transform),
             transformOrigin: "top left",
           }
         : active && over
           ? {
               // Prevent scaling when not over
-              transform: CSS.Transform.toString(transform ? { ...transform } : null),
+              transform: CSS.Transform.toString(transform),
               transformOrigin: "top left",
             }
           : {}),
   };
 
   return (
-    <BrickTag
+    <div
       ref={setNodeRef}
       id={brick.id}
       style={style}
@@ -138,8 +139,8 @@ export default function DragabbleBrickWrapper({
       onClick={onClick}
       className={tx(
         // DO NOT put transition classes here, they will make it flickering when dragging ends
-        "relative cursor-auto focus:cursor-grab group/brick",
-        { "hover:(z-50 shadow-lg)": !(active?.id as string)?.startsWith("resize-handle") },
+        "relative cursor-auto focus:cursor-grab group/brick text-left",
+        { "hover:(z-50)": !(active?.id as string)?.startsWith("resize-handle") },
         getBrickWrapperClass(brick, containerIndex),
         // used when dragging the row
         placeholder && "opacity-10 grayscale",
@@ -169,7 +170,7 @@ export default function DragabbleBrickWrapper({
           )}
         </>
       )}
-    </BrickTag>
+    </div>
   );
 }
 
@@ -266,15 +267,19 @@ export function BrickOverlay({
 }
 
 export function getBrickWrapperClass(brick: Brick, containerIndex: number) {
-  return clsx(
+  return tx(
     // DO NOT put transition classes here, they will make it flickering when dragging ends
     getBrickDefinedClass(brick),
+    // mobile
+    "max-sm:block",
+    // large screen
+    `md:(grid-cols-subgrid grid-rows-subgrid row-start-${containerIndex + 1} col-start-${brick.position.colStart} col-end-${brick.position.colEnd})`,
     css({
-      gridTemplateColumns: "subgrid",
-      gridTemplateRows: "subgrid",
-      gridRow: `${containerIndex + 1} / span ${brick.position.rowSpan ?? 1}`,
-      gridColumnStart: brick.position.colStart,
-      gridColumnEnd: brick.position.colEnd,
+      // gridTemplateColumns: "subgrid",
+      // gridTemplateRows: "subgrid",
+      // gridRow: `${containerIndex + 1}`,
+      // gridColumnStart: brick.position.colStart,
+      // gridColumnEnd: brick.position.colEnd,
     }),
   );
 }

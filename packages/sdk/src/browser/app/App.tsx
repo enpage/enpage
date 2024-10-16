@@ -7,10 +7,11 @@ import "@enpage/style-system/default-theme.css";
 // import "@enpage/style-system/quill.snow.css";
 import "@enpage/style-system/tiptap.css";
 import "@radix-ui/themes/styles.css";
+import "@enpage/style-system/radix.css";
 
 function App({ ctx: { bricks } }: { ctx: GenericPageContext }) {
   return (
-    <Theme>
+    <Theme accentColor="violet">
       <EditorWrapper initialBricks={bricks} enabled={true}>
         <Page bricks={bricks} />
       </EditorWrapper>

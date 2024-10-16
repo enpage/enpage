@@ -54,7 +54,7 @@ export const manifest = defineBrickManifest({
       },
     ),
     ...getTextEditableBrickProps(),
-    ...getCommonBrickProps("p-4"),
+    ...getCommonBrickProps("p-1"),
   }),
 });
 
@@ -79,12 +79,14 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
             <TextEditor
               initialContent={DOMPurify.sanitize(title)}
               onUpdate={createTextEditorUpdateHandler(brickId, "title")}
+              brickId={brickId}
             />
           </TitleTag>
           <div className={tx(className)}>
             <TextEditor
               initialContent={DOMPurify.sanitize(content)}
               onUpdate={createTextEditorUpdateHandler(brickId)}
+              brickId={brickId}
             />
           </div>
         </>

@@ -12,7 +12,6 @@ import type {
 } from "./types";
 import { getElementLabel, serializeDomData, unserializeDomData } from "./components/utils";
 import type { BlockManifest } from "./components/base/ep-block-base";
-import interact from "interactjs";
 
 export async function initDevClient() {
   let resizing = false;

@@ -42,7 +42,7 @@ export const manifest = defineBrickManifest({
     ),
 
     ...getTextEditableBrickProps(),
-    ...getCommonBrickProps("p-4"),
+    ...getCommonBrickProps("p-1"),
   }),
 });
 
@@ -57,11 +57,11 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const onUpdateHandler = useCallback(createTextEditorUpdateHandler(brickId), []);
 
   return textEditable ? (
-    <div className={tx("flex-1 relative", className)}>
-      <TextEditor initialContent={DOMPurify.sanitize(content)} onUpdate={onUpdateHandler} />
+    <div className={tx("flex-1", className)}>
+      <TextEditor initialContent={DOMPurify.sanitize(content)} onUpdate={onUpdateHandler} brickId={brickId} />
     </div>
   ) : (
-    <div className={tx("flex-1 relative", className)}>{DOMPurify.sanitize(content)}</div>
+    <div className={tx("flex-1", className)}>{DOMPurify.sanitize(content)}</div>
   );
 });
 

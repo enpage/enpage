@@ -34,7 +34,7 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
   ({ container, containerIndex, className, children, overlay, placeholder, resizing, ...props }, ref) => {
     const { bricks, id, hidden } = container;
     const containerBaseStyles = apply(
-      "brick-container relative transition-all duration-200",
+      "brick-container relative transition-all duration-200 max-sm:(flex flex-col gap-y-1)",
       {
         "rounded z-[9999] ring ring-primary-200 ring-offset-4 shadow-xl bg-primary-500 bg-opacity-30":
           overlay,
@@ -44,12 +44,12 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
         "h-auto": !hidden && !props.style?.height,
       },
+      // Overlays are rendered outside the main page (outside the grid), so we need to set the grid here
       overlay &&
         css({
           gridTemplateColumns: "repeat(12, 1fr)",
           gridTemplateRows: "auto",
         }),
-      // !hidden && getContainerClasses(variant),
     );
 
     if (hidden) {
