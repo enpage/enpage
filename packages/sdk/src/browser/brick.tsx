@@ -136,7 +136,11 @@ function DragabbleBrickWrapper({
       className={tx(
         // DO NOT put transition classes here, they will make it flickering when dragging ends
         "relative cursor-auto focus:cursor-grab group/brick text-left",
-        { "hover:(z-50)": !((active?.id as string) ?? "")?.startsWith("resize-handle") },
+        {
+          "hover:(outline outline-primary-200 outline-dotted)": !((active?.id as string) ?? "")?.startsWith(
+            "resize-handle",
+          ),
+        },
         getBrickWrapperClass(brick, containerIndex),
         // used when dragging the row
         placeholder && "opacity-10 grayscale",
@@ -311,7 +315,7 @@ export function BrickOverlay({
     <div
       className={tx(
         apply(
-          "brick rounded overflow-hidden z-[9999] outline outline-primary-400 shadow-lg bg-white/40 cursor-grabbing",
+          "brick rounded overflow-hidden z-[9999] outline outline-primary-400 shadow-lg bg-white/40 cursor-grabbing transition-all duration-150",
           // "brick rounded overflow-hidden z-[9999] ring ring-primary-400 ring-opacity-80 ring-offset-3 shadow-lg bg-white/40",
         ),
         className,
@@ -330,9 +334,9 @@ export function getBrickWrapperClass(brick: Brick, containerIndex: number) {
     // DO NOT put transition classes here, they will make it flickering when dragging ends
     getBrickDefinedClass(brick),
     // mobile
-    "@max-sm:block",
+    "block",
     // large screen
-    `@md:(grid-cols-subgrid grid-rows-subgrid row-start-${containerIndex + 1} col-start-${brick.position.colStart} col-end-${brick.position.colEnd})`,
+    `@md:(grid grid-cols-subgrid grid-rows-subgrid row-start-${containerIndex + 1} col-start-${brick.position.colStart} col-end-${brick.position.colEnd})`,
   );
 }
 

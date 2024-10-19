@@ -18,6 +18,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessu
 import { IoSettingsOutline } from "react-icons/io5";
 import { useDndContext } from "@dnd-kit/core";
 import { PiArrowsOutLineVertical } from "react-icons/pi";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 
 type ContainerProps = PropsWithChildren<
   {
@@ -222,6 +223,7 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
 ) {
   return (
     <div
+      title="Move container"
       ref={ref}
       className={clsx(
         "container-handle",
@@ -278,6 +280,7 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
   return (
     <Menu>
       <MenuButton
+        title="Container menu"
         className={clsx(
           "container-menu-button",
           tx(
@@ -288,7 +291,8 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
           ),
         )}
       >
-        <IoSettingsOutline className={tx("w-5 h-5 mx-auto select-none")} />
+        {/* <IoSettingsOutline className={tx("w-5 h-5 mx-auto select-none")} /> */}
+        <BiDotsVerticalRounded className="w-5 h-5 group-hover/button:text-primary-600 select-none mx-auto" />
       </MenuButton>
       <MenuItems
         anchor="bottom"

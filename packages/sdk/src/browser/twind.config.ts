@@ -73,9 +73,6 @@ export default defineConfig({
   ],
   theme: {
     extend: {
-      containers: {
-        "max-sm": "640px",
-      },
       colors: {
         primary: {
           50: "#f2f4fb",

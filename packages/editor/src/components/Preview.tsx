@@ -16,8 +16,7 @@ export function DeviceFrame({
   return (
     <div
       className={clsx(
-        // relatively positioned because on safari we'll have a iframe-overlay
-        "device-frame relative transition-[width,height] duration-300 mx-auto flex scrollbar-thin",
+        "device-frame flex-1 transition-[width,height] duration-300 mx-auto flex scrollbar-thin",
         styles[previewMode],
         {
           [styles.handled]: previewMode === "tablet" || previewMode === "mobile",
@@ -26,7 +25,6 @@ export function DeviceFrame({
       )}
       {...props}
     >
-      {/* {previewMode === "desktop" && <div className={styles.desktopBar} data-url="https://john.enpage.co" />} */}
       {children}
     </div>
   );
@@ -36,7 +34,7 @@ export function DeviceFrame({
 export function Preview({ previewMode }: PreviewIframeProps) {
   return (
     <div
-      className={clsx("flex-1 h-full relative pointer-events-auto", {
+      className={clsx("flex-1 h-full relative", {
         "rounded-none": previewMode === "desktop",
         "rounded-[inherit]": previewMode !== "desktop",
       })}

@@ -16,7 +16,7 @@ import "./Inspector.css";
 import { useLocalStorage } from "usehooks-ts";
 import type { Brick } from "@enpage/sdk/shared/bricks";
 
-function Inspector() {
+export default function Inspector() {
   const editor = useEditor();
   const [showHelp, setShowHelp] = useLocalStorage("inspector.show-help", false);
 
@@ -25,7 +25,7 @@ function Inspector() {
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-dark-700 border border-gray-300 dark:border-dark-700 shadow-xl rounded overflow-hidden">
+    <div className="bg-gray-50 dark:bg-dark-700 border border-gray-300 dark:border-dark-700 rounded overflow-hidden">
       <div className="flex justify-between bg-gray-200 dark:bg-dark-800 pr-0">
         <h2 className="py-1.5 px-2 flex justify-between items-center text-sm capitalize text-gray-600 dark:text-gray-200 flex-1 select-none">
           {editor.selectedBrick.type}
@@ -53,28 +53,6 @@ function InspectorIntro() {
     <div>
       <p>Help me</p>
     </div>
-  );
-}
-
-export default function InspectorWrapper() {
-  const editor = useEditor();
-  const isDesktop = useIsLargeDevice();
-
-  const onClosed = useCallback(() => {
-    editor.setSelectedBrick();
-  }, [editor]);
-
-  if (!isDesktop) {
-    return (
-      <HorizontalDrawer open={!!editor.selectedBrick} from="left" noBackdrop onClosed={onClosed}>
-        <Inspector />
-      </HorizontalDrawer>
-    );
-  }
-  return (
-    <FloatingPanel className="left-5 top-5">
-      <Inspector />
-    </FloatingPanel>
   );
 }
 

@@ -65,6 +65,7 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
       console.log("text focus");
       mainEditor.setIsEditingText(brickId);
     };
+
     const onBlur = () => {
       console.log("text blur");
       mainEditor.setIsEditingText(false);
@@ -72,7 +73,11 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
     };
 
     editor?.on("focus", onFocus);
-    editor?.on("blur", onBlur);
+    editor?.on("blur", (e) => {
+      console.log(e);
+      if ((e.event.target as HTMLElement)?.matches(".tiptap")) return;
+      onBlur();
+    });
 
     return () => {
       editor?.off("focus", onFocus);
@@ -83,7 +88,8 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
   return (
     <>
       <EditorContent
-        onDoubleClick={() => {
+        onDoubleClick={(e) => {
+          e.preventDefault();
           setEditable(true);
           setTimeout(() => {
             editor?.view.focus();

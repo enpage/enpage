@@ -5,46 +5,13 @@ import * as all from "@enpage/sdk/browser/components/blocks/all";
 import { Value } from "@sinclair/typebox/value";
 import { useCallback, type ComponentProps } from "react";
 import { useIsLargeDevice } from "../../hooks/use-is-device-type";
-import { FloatingPanel } from "../FloatingPanel";
 
-const FORCE_DRAWER = false;
-
-export default function BlocksLibraryWrapper() {
-  const editor = useEditor();
-  const isDesktop = useIsLargeDevice();
-
-  if (!isDesktop || FORCE_DRAWER) {
-    return (
-      <HorizontalDrawer
-        id="blocks-library"
-        open={editor.libraryVisible}
-        dismissable
-        noBackdrop
-        onClosed={() => {
-          editor.setLibraryVisible(false);
-        }}
-      >
-        <BlocksLibrary />
-      </HorizontalDrawer>
-    );
-  }
-  return (
-    <FloatingPanel className="right-5 top-5">
-      <BlocksLibrary />
-    </FloatingPanel>
-  );
-}
-
-export function BlocksLibrary() {
+export default function BlocksLibrary() {
   const editor = useEditor();
   const isTouchDevice = "ontouchstart" in window;
 
   return (
-    <div
-      className={clsx(
-        "flex flex-col bg-gray-50 dark:bg-dark-700 border border-gray-300 dark:border-dark-700 shadow-xl rounded overflow-hidden",
-      )}
-    >
+    <div className={clsx("flex flex-col  rounded overflow-hidden")}>
       <h2 className="py-1.5 px-2 text-sm capitalize bg-gray-200 dark:bg-dark-800 text-gray-600 dark:text-gray-200 flex-1 select-none">
         Library
       </h2>
