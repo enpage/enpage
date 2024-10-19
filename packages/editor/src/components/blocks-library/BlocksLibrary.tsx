@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEditor } from "../../hooks/use-editor-store";
+import { useEditor } from "@enpage/sdk/browser/use-editor";
 import { HorizontalDrawer } from "../Drawer";
 import * as all from "@enpage/sdk/browser/components/blocks/all";
 import { Value } from "@sinclair/typebox/value";

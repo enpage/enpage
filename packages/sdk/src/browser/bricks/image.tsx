@@ -2,9 +2,8 @@ import { Type, type Static } from "@sinclair/typebox";
 import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
-import { tx } from "@twind/core";
+import { tx } from "../twind";
 import { generateId, getCommonBrickProps } from "./common";
-import type { Brick } from "~/shared/bricks";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;

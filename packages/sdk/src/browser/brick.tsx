@@ -14,7 +14,7 @@ import {
 } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { tx, style, css, apply } from "@twind/core";
+import { tx, style, css, apply } from "./twind";
 import { useEditor, useEditorEnabled } from "./use-editor";
 import { useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
@@ -23,34 +23,26 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { DropdownMenu, Button, IconButton } from "@radix-ui/themes";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
+const BrickText = lazy(() => import("./bricks/text"));
+const BrickTextWithTitle = lazy(() => import("./bricks/text-with-title"));
+const BrickHero = lazy(() => import("./bricks/hero"));
+const BrickImage = lazy(() => import("./bricks/image"));
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const bricksMap: Record<string, LazyExoticComponent<ComponentType<any>>> = {
+  text: BrickText,
+  "text-with-title": BrickTextWithTitle,
+  hero: BrickHero,
+  image: BrickImage,
+};
+
 const BrickComponent = ({
   brick,
   container,
   ...otherProps
-}: { brick: Brick; container: BricksContainer; overlay?: boolean } & ComponentProps<"div">) => {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  let BrickModule: LazyExoticComponent<ComponentType<any>>;
-  // const otherProps = {} as Record<string, unknown>;
-  const { type, props } = brick;
-
-  switch (type) {
-    case "text":
-      BrickModule = lazy(() => import(`./bricks/text`));
-      break;
-    case "text-with-title":
-      BrickModule = lazy(() => import(`./bricks/text-with-title`));
-      break;
-    case "hero":
-      BrickModule = lazy(() => import(`./bricks/hero`));
-      break;
-    case "image":
-      BrickModule = lazy(() => import(`./bricks/image`));
-      break;
-
-    default:
-      return <></>;
-  }
-  const { wrapper, ...rest } = props;
+}: { brick: Brick; container: BricksContainer } & ComponentProps<"div">) => {
+  const BrickModule = bricksMap[brick.type];
+  const { wrapper, ...rest } = brick.props;
 
   return (
     <Suspense>
@@ -71,7 +63,10 @@ const MemoBrickComponent = memo(BrickComponent, (prevProps, nextProps) => {
   return compared;
 });
 
-export default function DragabbleBrickWrapper({
+const DragabbleBrickWrapperMemo = memo(DragabbleBrickWrapper);
+export default DragabbleBrickWrapperMemo;
+
+function DragabbleBrickWrapper({
   className,
   brick,
   brickIndex,
@@ -141,7 +136,7 @@ export default function DragabbleBrickWrapper({
       className={tx(
         // DO NOT put transition classes here, they will make it flickering when dragging ends
         "relative cursor-auto focus:cursor-grab group/brick text-left",
-        { "hover:(z-50)": !(active?.id as string)?.startsWith("resize-handle") },
+        { "hover:(z-50)": !((active?.id as string) ?? "")?.startsWith("resize-handle") },
         getBrickWrapperClass(brick, containerIndex),
         // used when dragging the row
         placeholder && "opacity-10 grayscale",
@@ -211,17 +206,12 @@ function DraggableBrickResizeHanlde({
 }
 
 function BrickOptionsButton({ brick }: { brick: Brick }) {
-  const editor = useEditor();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    console.log("new selected brick", editor.selectedBrick?.id);
-  }, [editor.selectedBrick]);
 
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
       <DropdownMenu.Trigger>
-        <div className={tx("absolute right-1 top-1")}>
+        <div className={tx("absolute right-1.5 top-1")}>
           <IconButton
             onClickCapture={(e) => {
               console.log("btn click", e);
@@ -233,7 +223,7 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
               {
                 "!opacity-0": !open,
               },
-              "group/button bg-primary-600 group-hover/brick:!opacity-100 active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-primary-200/75 hover:!bg-primary-300 !px-0.5",
+              "transition-all duration-300 group/button bg-primary-600 group-hover/brick:!opacity-100 active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-primary-200/75 hover:!bg-primary-300 !px-0.5",
             )}
           >
             <BiDotsVerticalRounded className="w-6 h-6 text-primary-500 group-hover/button:text-primary-600" />
@@ -241,7 +231,14 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
+        <DropdownMenu.Item
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log("Edit", brick);
+          }}
+        >
+          Resize
+        </DropdownMenu.Item>
         <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
@@ -322,7 +319,7 @@ export function BrickOverlay({
       )}
       {...attrs}
     >
-      <MemoBrickComponent brick={brick} container={container} overlay />
+      <MemoBrickComponent brick={brick} container={container} />
     </div>
   );
 }
@@ -333,9 +330,9 @@ export function getBrickWrapperClass(brick: Brick, containerIndex: number) {
     // DO NOT put transition classes here, they will make it flickering when dragging ends
     getBrickDefinedClass(brick),
     // mobile
-    "max-sm:block",
+    "@max-sm:block",
     // large screen
-    `md:(grid-cols-subgrid grid-rows-subgrid row-start-${containerIndex + 1} col-start-${brick.position.colStart} col-end-${brick.position.colEnd})`,
+    `@md:(grid-cols-subgrid grid-rows-subgrid row-start-${containerIndex + 1} col-start-${brick.position.colStart} col-end-${brick.position.colEnd})`,
   );
 }
 

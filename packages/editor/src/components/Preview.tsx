@@ -1,12 +1,10 @@
 import { clsx } from "../utils/component-utils";
-import { type ComponentProps, useRef } from "react";
+import { type ComponentProps, memo, useEffect, useMemo, useRef, useState } from "react";
 import type { ResponsiveMode } from "@enpage/sdk/responsive";
-import styles from "./Iframe.module.css";
-import { useIframeMessaging, useDragOverIframe, useIframeEditor } from "../hooks/use-iframe";
+import styles from "./Preview.module.css";
+import Page from "@enpage/sdk/browser/page";
 
 type PreviewIframeProps = {
-  html?: string;
-  url?: string;
   previewMode: ResponsiveMode;
 };
 
@@ -19,7 +17,7 @@ export function DeviceFrame({
     <div
       className={clsx(
         // relatively positioned because on safari we'll have a iframe-overlay
-        "device-frame relative transition-all duration-500 mx-auto flex scrollbar-thin",
+        "device-frame relative transition-[width,height] duration-300 mx-auto flex scrollbar-thin",
         styles[previewMode],
         {
           [styles.handled]: previewMode === "tablet" || previewMode === "mobile",
@@ -35,26 +33,17 @@ export function DeviceFrame({
 }
 
 // create a PreviewIframe and forward ref
-export function PreviewIframe({ html, url, previewMode }: PreviewIframeProps) {
-  const ref = useRef<HTMLIFrameElement>(null);
-  useIframeMessaging(ref);
-  useDragOverIframe(ref);
-  useIframeEditor(ref);
-
+export function Preview({ previewMode }: PreviewIframeProps) {
   return (
-    <iframe
-      ref={ref}
+    <div
       className={clsx("flex-1 h-full relative pointer-events-auto", {
         "rounded-none": previewMode === "desktop",
         "rounded-[inherit]": previewMode !== "desktop",
       })}
       id="preview"
-      name="preview"
       title="Site Preview"
-      srcDoc={html}
-      src={url}
-      allowFullScreen
-      sandbox="allow-scripts allow-same-origin allow-pointer-lock"
-    />
+    >
+      <Page />
+    </div>
   );
 }

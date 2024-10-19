@@ -1,4 +1,4 @@
-import { useDraft, useEditor } from "../hooks/use-editor-store";
+import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
 import Modal from "./Modal";
 
 export function Settings() {

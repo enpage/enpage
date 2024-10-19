@@ -3,7 +3,7 @@ import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import DOMPurify from "dompurify";
 import { forwardRef, memo, useCallback, useState } from "react";
-import { tx } from "@twind/core";
+import { tx } from "../twind";
 import { getCommonBrickProps, getTextEditableBrickProps } from "./common";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
 import type { Brick } from "~/shared/bricks";

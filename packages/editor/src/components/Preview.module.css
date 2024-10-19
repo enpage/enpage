@@ -1,12 +1,8 @@
 /* Inspired by https://gist.github.com/jarthod/8719db9fef8deb937f4f */
 .desktop {
-  @apply h-screen w-screen
-        bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600
-        ;
-  /* @apply h-[88dvh] w-[67dvw] max-w-[67dvw] aspect-[16/9]
-        bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600
-        ; */
-  /* @apply max-h-[75dvh] aspect-[16/9] max-w-[85dvw] w-[80dvw]; */
+  /*  h-screen w-screen*/
+  @apply bg-gray-100 dark:bg-gray-600 border border-gray-400 dark:border-gray-600      ;
+  @apply h-screen w-screen;
   box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.2);
   border-radius: 6px 6px 0 0;
   border-radius: 6px 6px 0 0;

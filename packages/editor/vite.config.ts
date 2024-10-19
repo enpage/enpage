@@ -1,11 +1,8 @@
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import Inspect from "vite-plugin-inspect";
 import bundlesize from "vite-plugin-bundlesize";
-
-process.env.ENPAGE_SITE_HOST ??= `localhost:3000`;
-const [, port] = process.env.ENPAGE_SITE_HOST.split(":");
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,7 +10,7 @@ export default defineConfig({
   base: "./",
   plugins: [
     Inspect(),
-    react(),
+    react() as PluginOption,
     dts({
       exclude: ["src/entry-client.tsx", "src/entry-server.tsx", "src/main.tsx", "src/App.tsx"],
     }),
@@ -21,6 +18,9 @@ export default defineConfig({
       limits: [{ name: "**/*", limit: "800 kB" }],
     }),
   ],
+  optimizeDeps: {
+    // include: ["@enpage/sdk"],
+  },
   server: {
     port: +(process.env.PORT ?? 3008),
   },
@@ -37,7 +37,6 @@ export default defineConfig({
         "react",
         "react-dom",
         "react/jsx-runtime",
-        "@enpage/sdk",
         "happy-dom",
         "happy-dom-without-node",
         "ajv",

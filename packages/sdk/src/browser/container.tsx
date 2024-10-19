@@ -6,10 +6,11 @@ import {
   type PropsWithChildren,
   useCallback,
   type CSSProperties,
+  memo,
 } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import clsx from "clsx";
-import { tx, apply, css } from "@twind/core";
+import { tx, apply, css, tw } from "./twind";
 import DragabbleBrickWrapper from "./brick";
 import { useDraft, useEditorEnabled } from "./use-editor";
 import { CSS } from "@dnd-kit/utilities";
@@ -34,12 +35,14 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
   ({ container, containerIndex, className, children, overlay, placeholder, resizing, ...props }, ref) => {
     const { bricks, id, hidden } = container;
     const containerBaseStyles = apply(
-      "brick-container relative transition-all duration-200 max-sm:(flex flex-col gap-y-1)",
+      "brick-container relative transition-all duration-100 max-sm:(flex flex-col gap-y-1)",
+
       {
         "rounded z-[9999] ring ring-primary-200 ring-offset-4 shadow-xl bg-primary-500 bg-opacity-30":
           overlay,
-        "hover:(rounded outline outline-2 outline-primary-200/70 outline-offset-4 outline-dashed z-50)":
+        "hasChildMenudHover:(rounded outline outline-2 outline-primary-200/70 outline-offset-4 outline-dashed z-50)":
           !overlay && !placeholder && !hidden && !resizing,
+
         // "bg-black/50 rounded": placeholder,
         "opacity-50 bg-gray-100 text-xs py-1 text-gray-600 text-center": hidden,
         "h-auto": !hidden && !props.style?.height,
@@ -84,7 +87,7 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
           /* repeat the container menu because it would disapear while dragging */
           <div
             className={tx(
-              "absolute border-8 border-y-0 border-transparent transition-all duration-300 delay-200 p-2 opacity-0 \
+              "absolute border-8 border-y-0 border-transparent p-2 opacity-0 \
             group-hover:(opacity-100) hover:(!opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
             flex flex-col gap-2 items-center justify-start",
             )}
@@ -127,11 +130,12 @@ const HiddenContainer = forwardRef<HTMLElement, Pick<HTMLDivElement, "id" | "cla
   },
 );
 
-export function SortableContainer(props: ContainerProps) {
+const SortableContainerMemo = memo(SortableContainer);
+
+function SortableContainer(props: ContainerProps) {
   const { className, container, containerIndex } = props;
   // compute the effective container height once mounted
-  const [containerHeight, setContainerHeight] = useState(0);
-  const dndCtx = useDndContext();
+  const [containerHeight, setContainerHeight] = useState<number | "auto">("auto");
 
   const { setNodeRef, setActivatorNodeRef, attributes, listeners, transition, transform, over, active } =
     useSortable({
@@ -146,20 +150,18 @@ export function SortableContainer(props: ContainerProps) {
   const style = {
     transition,
     transform:
-      dndCtx.over?.id === props.container.id
+      over?.id === props.container.id
         ? CSS.Transform.toString(transform ? { ...transform, scaleY: 1 } : null)
         : CSS.Transform.toString(transform),
     // maintain a fixed height while dragging to avoid layout shift
-    ...(dndCtx.active && containerHeight > 0
-      ? { height: `${containerHeight}px`, minHeight: `${containerHeight}px` }
-      : {}),
+    ...(active ? { height: `${containerHeight === "auto" ? "auto" : `${containerHeight}px`}` } : {}),
   };
 
   // Always update the container height when the container is mounted
   useEffect(() => {
     const el = document.getElementById(container.id);
     const tmt = setInterval(() => {
-      setContainerHeight(el?.offsetHeight ?? 0);
+      if (el?.offsetHeight) setContainerHeight(el?.offsetHeight ?? 0);
     }, 333);
     return () => clearInterval(tmt);
   }, [container.id]);
@@ -172,14 +174,14 @@ export function SortableContainer(props: ContainerProps) {
       style={style}
       containerIndex={containerIndex}
       container={container}
-      resizing={dndCtx?.active?.id.toString().startsWith("resize-handle")}
+      resizing={active?.id.toString().startsWith("resize-handle")}
       {...attributes}
     >
       {!active && (
         /* Wrapper for container menu */
         <div
           className={tx(
-            "absolute border-8 border-y-0 border-transparent transition-all duration-300 delay-200 p-2 opacity-0 \
+            "container-menu-wrapper absolute border-8 border-y-0 border-transparent duration-200 p-2 opacity-0 \
             group-hover:(opacity-100) hover:(!opacity-100) -right-14 -top-1 rounded overflow-hidden bg-gray-100 w-12 \
             flex flex-col gap-2 items-center justify-start",
           )}
@@ -206,7 +208,7 @@ export function ContainerList(props: ContainerListProps) {
   }
 
   return props.containers.map((container, index) => (
-    <SortableContainer container={container} containerIndex={index} key={container.id} />
+    <SortableContainerMemo container={container} containerIndex={index} key={container.id} />
   ));
 }
 

@@ -1,4 +1,4 @@
-import { useDraft, useEditor } from "./use-editor-store";
+import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
 import { type RefObject, useEffect, useRef } from "react";
 import type { IframeMessage } from "@enpage/sdk/browser/types";
 import { isEqual } from "lodash-es";
@@ -59,7 +59,7 @@ export function useIframeMessaging(iframeRef: RefObject<HTMLIFrameElement>) {
           break;
         case "element-selected":
           // console.log("element selected", payload.element);
-          editor.setSelectedElement(payload.element);
+          // editor.setSelectedBrick(payload.element);
           break;
         case "dom-updated":
           //
@@ -69,30 +69,7 @@ export function useIframeMessaging(iframeRef: RefObject<HTMLIFrameElement>) {
     };
     // listen for messages from iframe
     window.addEventListener("message", handleMessage);
-
-    // listen for mutations in the iframe
-    //   const observer = new MutationObserver(() => {
-    //     if (iframe.contentDocument) {
-    //       const doc = iframe.contentDocument.cloneNode(true) as Document;
-    //       const body = doc.querySelector("body")!;
-    //       body.querySelectorAll("[ep-ignore]").forEach((el) => el.remove());
-    //       if (draft.body !== body.outerHTML) {
-    //         const patch = createTwoFilesPatch("old.html", "new.html", draft.body, body.outerHTML);
-    //         console.log("body has changed from %d bytes to %d bytes", draft.body.length, body.outerHTML.length);
-    //         draft.setBody(body.outerHTML);
-    //       }
-    //     }
-    //   });
-
-    //   if (iframe.contentDocument) {
-    //     observer.observe(iframe.contentDocument, { attributes: false, childList: true, subtree: true });
-    //   }
-
-    //   return () => {
-    //     window.removeEventListener("message", handleMessage);
-    //     observer.disconnect();
-    //   };
-  }, [iframeRef.current, editor.setSelectedElement /* draft.setBody, draft.body*/]);
+  }, [iframeRef.current /* draft.setBody, draft.body*/]);
 }
 
 // Hook for handling drag and touch events over iframe

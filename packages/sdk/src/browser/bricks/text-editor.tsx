@@ -9,7 +9,7 @@ import {
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
 import { Select } from "@radix-ui/themes";
-import { tx } from "@twind/core";
+import { tx } from "../twind";
 import { useState, memo, useRef, forwardRef, useEffect } from "react";
 import {
   MdFormatBold,
@@ -22,7 +22,6 @@ import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
 import type { Brick } from "~/shared/bricks";
 import { useDraft, useEditor } from "../use-editor";
-import Code from "@tiptap/extension-code";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useDndContext } from "@dnd-kit/core";
 
@@ -44,7 +43,7 @@ type Props = {
 const toolbarBtnCls =
   "first:rounded-l  last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-primary-100 leading-none data-[state=on]:(bg-primary-500 text-white)";
 
-const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = true }: Props) => {
+const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = false }: Props) => {
   const mainEditor = useEditor();
   const dndCtx = useDndContext();
   const [editable, setEditable] = useState(enabled);
@@ -56,20 +55,25 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = tr
     editable,
     editorProps: {
       attributes: {
-        class: tx("max-w-[100%] focus:outline-none", className),
+        class: tx("max-w-[100%] focus:outline focus:outline-offset-2", className),
       },
     },
   });
 
   useEffect(() => {
     const onFocus = () => {
+      console.log("text focus");
       mainEditor.setIsEditingText(brickId);
     };
     const onBlur = () => {
+      console.log("text blur");
       mainEditor.setIsEditingText(false);
+      setEditable(false);
     };
+
     editor?.on("focus", onFocus);
     editor?.on("blur", onBlur);
+
     return () => {
       editor?.off("focus", onFocus);
       editor?.off("blur", onBlur);
@@ -78,8 +82,17 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = tr
 
   return (
     <>
-      <EditorContent onClick={() => setEditable(true)} editor={editor} className="outline-none" />
-      {editor && dndCtx.active === null && <MenuBar brickId={brickId} editor={editor} />}
+      <EditorContent
+        onDoubleClick={() => {
+          setEditable(true);
+          setTimeout(() => {
+            editor?.view.focus();
+          }, 200);
+        }}
+        editor={editor}
+        className="outline-none"
+      />
+      {editor && editable && dndCtx.active === null && <MenuBar brickId={brickId} editor={editor} />}
       {/* <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
@@ -122,7 +135,8 @@ const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) 
     <div
       ref={ref}
       className={tx(
-        "z-[99999] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-primary-400/75 to-primary-200/75 shadow-lg rounded absolute -top-11 left-0 right-auto text-sm backdrop-blur transition-all duration-100",
+        "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-primary-400/75 to-primary-200/75 \
+        shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
         {
           "scale-90 opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
         },
@@ -131,94 +145,8 @@ const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) 
       <ButtonGroup>
         <TextSizeSelect editor={editor} />
       </ButtonGroup>
-
       <TextStyleButtonGroup editor={editor} />
-
       <TextAlignButtonGroup editor={editor} />
-
-      {/* <ButtonGroup>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={tx(btnBase, editor.isActive("bold") && btnActive)}
-        >
-          <MdFormatBold className="w-5 h-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={tx(btnBase, editor.isActive("italic") && btnActive)}
-        >
-          <MdOutlineFormatItalic className="w-5 h-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={tx(btnBase, editor.isActive("strike") && btnActive)}
-        >
-          <MdStrikethroughS className="w-5 h-5" />
-        </button>
-      </ButtonGroup> */}
-      {/*
-      <div className="flex gap-0">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          className={editor.isActive("paragraph") ? "is-active" : ""}
-        >
-          Paragraph
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={editor.isActive("bold") ? "is-active" : ""}
-        >
-          Bold
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={editor.isActive("italic") ? "is-active" : ""}
-        >
-          Italic
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={editor.isActive("strike") ? "is-active" : ""}
-        >
-          Strike
-        </button>
-
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
-        >
-          Left
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
-        >
-          Center
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
-        >
-          Right
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          className={editor.isActive({ textAlign: "justify" }) ? "is-active" : ""}
-        >
-          Justify
-        </button>
-      </div> */}
     </div>
   );
 };

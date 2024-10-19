@@ -1,3 +1,4 @@
+// @ts-check
 import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";

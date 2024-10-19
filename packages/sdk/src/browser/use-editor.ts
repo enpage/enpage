@@ -12,12 +12,12 @@ export { type Immer } from "immer";
 export interface EditorStateProps {
   enabled: boolean;
   previewMode?: ResponsiveMode;
-  templateUrl?: string;
   libraryVisible: boolean;
   editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   isEditingTextForBrickId?: string;
+  isResizingForContainerId?: string;
 }
 
 export interface EditorState extends EditorStateProps {
@@ -27,9 +27,10 @@ export interface EditorState extends EditorStateProps {
   setSettingsVisible: (visible: boolean) => void;
   toggleSettingsVisible: () => void;
   setEditingPageIndex: (index: number) => void;
-  setSelectedBrick: (brick: Brick) => void;
+  setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
+  setIsResizing: (forContainerid: string | false) => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
@@ -79,6 +80,10 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             set((state) => {
               state.isEditingTextForBrickId = forBrickId || undefined;
             }),
+          setIsResizing: (forContainerId: string | false) =>
+            set((state) => {
+              state.isResizingForContainerId = forContainerId || undefined;
+            }),
         })),
         {
           name: "editor-state",
@@ -86,7 +91,14 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           partialize: (state) =>
             Object.fromEntries(
               Object.entries(state).filter(
-                ([key]) => !["selectedBrick", "libraryVisible", "previewMode"].includes(key),
+                ([key]) =>
+                  ![
+                    "selectedBrick",
+                    "libraryVisible",
+                    "previewMode",
+                    "isResizingForContainerId",
+                    "isEditingTextForBrickId",
+                  ].includes(key),
               ),
             ),
         },
@@ -104,12 +116,12 @@ export interface DraftStateProps {
 export interface DraftState extends DraftStateProps {
   setContainers: (containers: BricksContainer[]) => void;
   getContainers: () => BricksContainer[];
-  toggleContainerVisibility: (id: string) => void;
-  deleteContainer: (id: string) => void;
-  updateContainer: (id: string, container: Partial<BricksContainer>) => void;
-  updateBrick: (id: string, brick: Partial<Brick>) => void;
-  getBrick: (id: string) => Brick | undefined;
   getContainer: (id: string) => BricksContainer | undefined;
+  updateContainer: (id: string, container: Partial<BricksContainer>) => void;
+  deleteContainer: (id: string) => void;
+  toggleContainerVisibility: (id: string) => void;
+  getBrick: (id: string) => Brick | undefined;
+  updateBrick: (id: string, brick: Partial<Brick>) => void;
   save(): Promise<void>;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
@@ -138,9 +150,11 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
             }),
           updateContainer: (id, container) =>
             set((state) => {
-              state.containers = state.containers.map((item) =>
-                item.id === id ? { ...item, ...container } : item,
-              );
+              const containerIndex = state.containers.findIndex((item) => item.id === id);
+              state.containers[containerIndex] = { ...state.containers[containerIndex], ...container };
+              // state.containers = state.containers.map((item) =>
+              //   item.id === id ? { ...item, ...container } : item,
+              // );
             }),
           updateBrick: (id, brick) =>
             set((state) => {
@@ -189,6 +203,9 @@ export const DraftStoreContext = createContext<DraftStore | null>(null);
 
 export const useEditorStoreContext = () => {
   const store = useContext(EditorStoreContext);
+  if (!store) {
+    console.log("Problem with EditorStoreContext", store);
+  }
   invariant(store, "useEditorStoreContext must be used within a EditorStoreContext");
   return store;
 };

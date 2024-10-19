@@ -7,6 +7,7 @@ import {
   type ObjectOptions,
   type Static,
 } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 // KEEP IT
 type EnumOption = {
@@ -218,6 +219,12 @@ const defaultAttributes = {
   $siteKeywords: attr.string("Page keywords"),
   $siteLastUpdated: attr.datetime("Last updated"),
 };
+
+export function resolveAttributes(attributes: ReturnType<typeof defineAttributes>) {
+  return Value.Create(attributes);
+}
+
+// export type AttributesResolved = ReturnType<typeof resolveAttributes>;
 
 export type AttributesResolved<
   S extends AttributesMap,

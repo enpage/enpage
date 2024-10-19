@@ -5,16 +5,19 @@ import presetExt from "@twind/preset-ext";
 import presetLineClamp from "@twind/preset-line-clamp";
 import presetForms from "@twind/preset-tailwind-forms";
 import presetTypo from "@twind/preset-typography";
+import presetContainerQueries from "@twind/preset-container-queries";
 
 export default defineConfig({
   presets: [
     presetAutoprefix(),
     presetTailwind(),
+    presetContainerQueries(),
     presetExt(),
     presetLineClamp(),
     presetForms(),
     presetTypo(),
   ],
+  variants: [["hasChildMenudHover", "&:has(.container-menu-wrapper:hover)"]],
   rules: [
     ["brick", {}],
     [
@@ -70,6 +73,9 @@ export default defineConfig({
   ],
   theme: {
     extend: {
+      containers: {
+        "max-sm": "640px",
+      },
       colors: {
         primary: {
           50: "#f2f4fb",

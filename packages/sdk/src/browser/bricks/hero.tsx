@@ -4,7 +4,7 @@ import { Value } from "@sinclair/typebox/value";
 import { parse } from "marked";
 import DOMPurify from "dompurify";
 import { forwardRef, useCallback } from "react";
-import { tx } from "@twind/core";
+import { tx } from "../twind";
 import { getCommonBrickProps, getTextEditableBrickProps } from "./common";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
 

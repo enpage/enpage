@@ -1,6 +1,5 @@
 import { Type } from "@sinclair/typebox";
 import { customAlphabet } from "nanoid";
-import type { Brick } from "~/shared/bricks";
 
 export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN", 7);
 

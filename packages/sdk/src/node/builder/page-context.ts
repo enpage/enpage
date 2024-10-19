@@ -1,7 +1,7 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { PageContext } from "~/shared/page-config";
+import type { GenericPageContext, PageContext } from "~/shared/page-config";
 import { samples } from "~/shared/datasources/samples";
-import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
+import { resolveAttributes, type AttributesMap, type AttributesResolved } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
 import type { ConfigEnv } from "vite";
@@ -41,24 +41,9 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
       }
     }
   }
+  const attr = resolveAttributes(cfg.attributes);
 
-  const attr: AttributesResolved<AttributesMap> = {
-    $siteDescription: "This is a site description",
-    $siteKeywords: "site, keywords",
-    $siteTitle: "Site title",
-    $siteLanguage: "en",
-    $siteLastUpdated: new Date().toISOString(),
-  };
-
-  for (const key in cfg.attributes.properties) {
-    attr[key] = cfg.attributes.properties[key].default;
-  }
-
-  return { data, attr, bricks: cfg.bricks } as PageContext<
-    typeof cfg.datasources,
-    typeof cfg.attributes,
-    typeof cfg.bricks
-  >;
+  return { ...cfg, data, attr } as GenericPageContext;
 }
 
 /**
@@ -88,11 +73,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
     },
   });
 
-  const context = (await response.json()) as PageContext<
-    typeof cfg.datasources,
-    typeof cfg.attributes | AttributesMap,
-    typeof cfg.bricks
-  >;
+  const context = (await response.json()) as GenericPageContext;
 
   return context;
 }

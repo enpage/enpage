@@ -1,20 +1,9 @@
-import { tx } from "@twind/core";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type DOMAttributes,
-} from "react";
-import { flushSync } from "react-dom";
+import { tx } from "./twind";
+import { useCallback, useEffect, useMemo, useRef, useState, type DOMAttributes } from "react";
 import { GRID_COLS, type Brick, type BricksContainer } from "~/shared/bricks";
 import Container, { ContainerList } from "./container";
 import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
-import { debounce } from "lodash-es";
 import { useOnClickOutside, useScrollLock } from "usehooks-ts";
-import ContextMenuWrapper from "./context-menu";
 import {
   arraySwap,
   SortableContext,
@@ -38,18 +27,12 @@ import {
   type Modifier,
   type DragMoveEvent,
 } from "@dnd-kit/core";
-import {
-  restrictToHorizontalAxis,
-  restrictToVerticalAxis,
-  snapCenterToCursor,
-  createSnapModifier,
-} from "@dnd-kit/modifiers";
-
+import { restrictToHorizontalAxis, restrictToVerticalAxis, createSnapModifier } from "@dnd-kit/modifiers";
 import { BrickOverlay, BrickResizeHandle } from "./brick";
 import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
 
-export default function Page(props: { bricks: BricksContainer[] }) {
+export default function Page(props: { initialContainers?: BricksContainer[]; onMount?: () => void }) {
   const editorEnabled = useEditorEnabled();
   const editor = useEditor();
   const draft = useDraft();
@@ -74,10 +57,12 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     }
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     // compute the grid col size from the pageRef width / 12
     if (pageRef.current) {
       setGridColSize(pageRef.current.clientWidth / 12);
+      props.onMount?.();
     }
   }, []);
 
@@ -99,7 +84,7 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     }),
   ];
 
-  const dragTypeRef = useRef<BricksContainer["type"] | Brick["type"]>("container");
+  const dragTypeRef = useRef<BricksContainer["type"] | Brick["type"] | "resize-handle">("container");
 
   const [activeElement, setActiveElement] = useState<{
     type: "container" | "brick" | "resize-handle";
@@ -109,8 +94,8 @@ export default function Page(props: { bricks: BricksContainer[] }) {
   } | null>(null);
 
   const containers = useMemo(() => {
-    return editorEnabled ? draft.containers : props.bricks;
-  }, [editorEnabled, props.bricks, draft.containers]);
+    return editorEnabled ? draft.containers : props.initialContainers ?? [];
+  }, [editorEnabled, props.initialContainers, draft.containers]);
 
   const snapToGrid: Modifier = useCallback(
     ({ transform }) => {
@@ -406,8 +391,8 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     return [
       ...containers.map((ct) => ct.id),
       ...containers.flatMap((ct) => ct.bricks.map((b) => b.id)),
-      // ...containers.flatMap((ct) => ct.bricks.map((b) => `resize-handle-left-${b.id}`)),
-      // ...containers.flatMap((ct) => ct.bricks.map((b) => `resize-handle-right-${b.id}`)),
+      ...containers.flatMap((ct) => ct.bricks.map((b) => `resize-handle-left-${b.id}`)),
+      ...containers.flatMap((ct) => ct.bricks.map((b) => `resize-handle-right-${b.id}`)),
     ];
   }, [containers]);
 
@@ -441,6 +426,14 @@ export default function Page(props: { bricks: BricksContainer[] }) {
     return [];
   };
 
+  const strategy = useMemo(() => {
+    return activeElement?.type === "container"
+      ? verticalListSortingStrategy
+      : activeElement?.type === "resize-handle"
+        ? horizontalListSortingStrategy
+        : rectSwappingStrategy;
+  }, [activeElement]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -451,25 +444,13 @@ export default function Page(props: { bricks: BricksContainer[] }) {
       onDragOver={handleDragOver}
       onDragMove={handleDragMove}
     >
-      <SortableContext
-        items={sortableIds}
-        strategy={
-          activeElement?.type === "container"
-            ? verticalListSortingStrategy
-            : activeElement?.type === "resize-handle"
-              ? horizontalListSortingStrategy
-              : rectSwappingStrategy
-        }
-      >
-        <div className="min-h-[100dvh] w-full ">
+      <SortableContext items={sortableIds} strategy={strategy}>
+        <div id="page-container" className={tx("min-h-[100dvh] w-full @container", "bg-white")}>
           <div
             id="page"
             ref={pageRef}
             className={tx(
               "max-sm:(flex flex-col gap-y-1) mx-auto w-full md:max-w-[90%] xl:max-w-screen-xl md:(grid grid-cols-12 grid-flow-row)",
-              {
-                // "gap-y-1": activeElement?.type === "container",
-              },
             )}
           >
             <ContainerList containers={containers} />

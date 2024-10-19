@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { renderTemplatePlugin } from "./plugin-renderer";
 import { insertBasePlugin } from "./plugin-base-url";
 import { contextPlugin } from "./plugin-context";
-import { virtualFilesPlugin, pluginVirtual } from "./plugin-virtual-files";
+import { pluginVirtual } from "./plugin-virtual-files";
 import { manifestPlugin } from "./plugin-manifest";
 import type { EnpageEnv } from "~/shared/env";
 import inspectPlugin from "vite-plugin-inspect";
@@ -95,6 +95,7 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
           const context = await getPageContext(config, viteEnv, env);
 
           if (!context) {
+            console.warn("No context found. Skipping virtual file update.");
             return;
           }
 
@@ -106,8 +107,8 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
               datasources: templateConfig.datasources,
               data: context.data,
               attr: context.attr,
-              templateManifest: templateConfig.manifest,
-              bricks: context.bricks ?? [],
+              manifest: templateConfig.manifest,
+              containers: context.containers ?? [],
               ssrManifest: {},
             } satisfies GenericPageConfig),
           );

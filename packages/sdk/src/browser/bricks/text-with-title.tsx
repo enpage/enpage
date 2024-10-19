@@ -2,7 +2,7 @@ import { Type, type Static } from "@sinclair/typebox";
 import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import DOMPurify from "dompurify";
-import { tx } from "@twind/core";
+import { tx } from "../twind";
 import { getCommonBrickProps, getTextEditableBrickProps } from "./common";
 import { forwardRef, useState } from "react";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";

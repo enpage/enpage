@@ -25,7 +25,19 @@ const external = [
   // "autoprefixer",
   // "@fullhuman/postcss-purgecss",
 
+  // "@twind/core",
+  // "@twind/with-react",
+  // "@twind/preset-autoprefix",
+  // "@twind/preset-ext",
+  // "@twind/preset-line-clamp",
+  // "@twind/preset-tailwind",
+  // "@twind/preset-tailwind-forms",
+  // "@twind/preset-typography",
+
   // "axe-core",
+  "react",
+  "react-dom",
+
   "fsevents",
   "lightningcss",
   "virtual:enpage-page-config.json",
@@ -69,7 +81,8 @@ export default defineConfig((options) => {
       clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      splitting: false,
+      // splitting: false,
+      // skipNodeModulesBundle: true,
       external,
       esbuildOptions(input) {
         input.banner = banner;

@@ -41,8 +41,8 @@ type BrickPosition = {
   rowSpan?: number;
 };
 
-export type Brick = {
-  type: string;
+export type Brick<T extends string = string> = {
+  type: T;
   id: string;
   props: Record<string, unknown>;
   wrapper: BrickWrapper;
@@ -56,7 +56,7 @@ type DefinedBrick = Omit<Brick, "id" | "wrapper" | "position"> & {
 
 type DefinedContainer = Omit<BricksContainer, "id" | "bricks"> & { bricks: DefinedBrick[] };
 
-export function defineBricks<B extends DefinedContainer[]>(containers: B): BricksContainer[] {
+export function defineContainers<B extends DefinedContainer[]>(containers: B): BricksContainer[] {
   const finalContainers = containers.map((ct) => ({
     ...ct,
     id: `container-${generateId()}`,
