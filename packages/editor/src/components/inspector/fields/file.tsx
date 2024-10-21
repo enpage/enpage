@@ -1,5 +1,6 @@
 import type { FieldProps } from "@rjsf/utils";
 import { nanoid } from "nanoid";
+import { Button } from "@enpage/style-system";
 
 const FileField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, id = nanoid(7), idSchema } = props;
@@ -20,9 +21,12 @@ const FileField: React.FC<FieldProps> = (props) => {
         </div>
       )}
       <input id={id} type="file" onChange={(e) => onChange(e.target.files)} required={required} />
-      <label className="file-label" htmlFor={id}>
-        Choose a file
-      </label>
+
+      <Button variant="soft" size="1" radius="full">
+        <label className="!leading-[inherit] !mb-0 !text-inherit cursor-[inherit]" htmlFor={id}>
+          Choose file
+        </label>
+      </Button>
     </div>
   );
 };

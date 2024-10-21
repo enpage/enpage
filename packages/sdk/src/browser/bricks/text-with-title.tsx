@@ -3,7 +3,7 @@ import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import DOMPurify from "dompurify";
 import { tx } from "../twind";
-import { getCommonBrickProps, getTextEditableBrickProps } from "./common";
+import { getCommonBrickProps, editableTextProps } from "./common";
 import { forwardRef, useState } from "react";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
 import type { Brick } from "~/shared/bricks";
@@ -22,19 +22,14 @@ export const manifest = defineBrickManifest({
       default: "Click to edit",
       title: "Content",
       description: "The text content",
-      "ep:prop-type": "content",
+      "ui:widget": "hidden",
     }),
-    content: Type.String({
-      default: "Click to edit",
-      title: "Content",
-      description: "The text content",
-      "ep:prop-type": "content",
-    }),
+
     titleClassName: Type.String({
       default: "text-lg font-bold",
       title: "Title Class Name",
       description: "The class name to apply to the title",
-      "ui:field": "hidden",
+      "ui:widget": "hidden",
     }),
     titleLevel: Type.Union(
       [
@@ -53,7 +48,8 @@ export const manifest = defineBrickManifest({
         "ui:display": "button-group",
       },
     ),
-    ...getTextEditableBrickProps(),
+    titleJustify: editableTextProps.justify,
+    ...editableTextProps,
     ...getCommonBrickProps("p-1"),
   }),
 });
@@ -63,7 +59,18 @@ export const defaults = Value.Create(manifest);
 
 const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { title, content, className, titleClassName, titleLevel, textEditable, brickId, ...attrs } = props;
+  let {
+    title,
+    content,
+    className,
+    justify,
+    titleJustify,
+    titleClassName,
+    titleLevel,
+    textEditable,
+    brickId,
+    ...attrs
+  } = props;
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
@@ -75,14 +82,14 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
     <div ref={ref} className={tx(className)} {...attrs}>
       {textEditable ? (
         <>
-          <TitleTag className={tx(titleClassName)}>
+          <TitleTag className={tx(titleClassName, titleJustify)}>
             <TextEditor
               initialContent={DOMPurify.sanitize(title)}
               onUpdate={createTextEditorUpdateHandler(brickId, "title")}
               brickId={brickId}
             />
           </TitleTag>
-          <div className={tx(className)}>
+          <div className={tx(className, justify)}>
             <TextEditor
               initialContent={DOMPurify.sanitize(content)}
               onUpdate={createTextEditorUpdateHandler(brickId)}
@@ -93,12 +100,15 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
       ) : (
         <>
           <TitleTag
-            className={tx(titleClassName)}
+            className={tx(titleClassName, titleJustify)}
             // biome-ignore lint/security/noDangerouslySetInnerHtml:  needed for html content
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(title) }}
           />
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content */}
-          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+          <div
+            className={tx(className, justify)}
+            /* biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content */
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
+          />
         </>
       )}
     </div>

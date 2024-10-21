@@ -9,7 +9,7 @@
     "strict": true /* Enable all strict type-checking options. */,
     "allowJs": true,
     "jsx": "react-jsx",
-    "allowImportingTsExtensions": true,
+    // "allowImportingTsExtensions": true,
     "noEmit": true,
     "isolatedModules": true,
     "moduleDetection": "force",

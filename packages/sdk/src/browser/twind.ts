@@ -12,7 +12,20 @@ import {
   observe as observe$,
 } from "@twind/core";
 import config from "./twind.config";
+
 export { getSheet } from "@twind/core";
+export { default as inline } from "@twind/with-react/inline";
+
+// const colors = config.theme.colors ?? {};
+
+// export const backgroundClasses = Object.entries(colors).flatMap(([color, shades]) => {
+//   return Array.isArray(shades) ? shades.map((shade: string) => `bg-${color}-${shade}`) : `bg-${color}`;
+// });
+
+export const colors = Object.keys(config.theme.colors ?? {}).filter(
+  (color) =>
+    ["inherit", "current", "transparent", "neutral", "zinc", "black", "white"].includes(color) === false,
+);
 
 function isProd() {
   if (typeof import.meta.env !== "undefined") {

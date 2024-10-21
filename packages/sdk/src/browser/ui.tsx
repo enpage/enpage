@@ -1,1 +1,1 @@
-export { Theme } from "@radix-ui/themes";
+export { Theme, Tooltip, DropdownMenu, Button } from "@radix-ui/themes";

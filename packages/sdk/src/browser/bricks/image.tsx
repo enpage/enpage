@@ -17,14 +17,14 @@ export const manifest = defineBrickManifest({
   props: Type.Object({
     src: Type.String({
       default: "https://placehold.co/400x200",
-      title: "Source",
-      description: "The image source URL",
-      "ep:prop-type": "file",
+      title: "File",
+      description: "The image file",
+      "ui:field": "file",
     }),
     alt: Type.String({
-      default: "Image description",
       title: "Alt Text",
       description: "Alternative text for the image",
+      "ui:placeholder": "Your image description",
     }),
     ...getCommonBrickProps("max-w-full h-auto align-middle border-none"),
   }),

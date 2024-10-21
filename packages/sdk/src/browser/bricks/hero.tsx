@@ -5,7 +5,7 @@ import { parse } from "marked";
 import DOMPurify from "dompurify";
 import { forwardRef, useCallback } from "react";
 import { tx } from "../twind";
-import { getCommonBrickProps, getTextEditableBrickProps } from "./common";
+import { getCommonBrickProps, editableTextProps } from "./common";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
 
 // get filename from esm import.meta
@@ -18,28 +18,7 @@ export const manifest = defineBrickManifest({
   icon: "hero",
   file: filename,
   props: Type.Object({
-    content: Type.String({
-      default: "Click to edit",
-      title: "Content",
-      description: "The text content",
-      "ep:prop-type": "content",
-    }),
-    justify: Type.Union(
-      [
-        Type.Literal("text-left", { title: "Left", description: "Left align" }),
-        Type.Literal("text-center", { title: "Center", description: "Center align" }),
-        Type.Literal("text-right", { title: "Right", description: "Right align" }),
-        Type.Literal("text-justify", { title: "Justify", description: "Justify align" }),
-      ],
-      {
-        default: "text-left",
-        title: "Justify",
-        description: "The text alignment",
-        "ui:field": "enum",
-        "ui:display": "button-group",
-      },
-    ),
-    ...getTextEditableBrickProps(),
+    ...editableTextProps,
     ...getCommonBrickProps("p-1 hero-5 font-extrabold"),
   }),
 });

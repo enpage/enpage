@@ -83,7 +83,6 @@ export const manifest = defineManifest({
 export const containers = defineContainers([
   {
     type: "container",
-    variant: "full",
     bricks: [
       {
         type: "image",
@@ -96,7 +95,6 @@ export const containers = defineContainers([
   },
   {
     type: "container",
-    variant: "full",
     bricks: [
       {
         type: "hero",
@@ -109,7 +107,6 @@ export const containers = defineContainers([
   },
   {
     type: "container",
-    variant: "full",
     bricks: [
       {
         type: "text",
@@ -125,7 +122,6 @@ export const containers = defineContainers([
   },
   {
     type: "container",
-    variant: "2-1",
     bricks: [
       {
         type: "text-with-title",
@@ -141,7 +137,6 @@ export const containers = defineContainers([
   },
   {
     type: "container",
-    variant: "1-2",
     bricks: [
       {
         type: "text",

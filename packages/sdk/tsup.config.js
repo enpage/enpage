@@ -67,6 +67,7 @@ export default defineConfig((options) => {
         input.banner = banner;
       },
       loader,
+      removeNodeProtocol: false,
     },
     // The dev-client uses Vite's import.meta.env.DEV
     // We bundle it using tsup to avoid the automatic replacement at build time
@@ -88,9 +89,15 @@ export default defineConfig((options) => {
         input.banner = banner;
       },
       loader,
+      removeNodeProtocol: false,
     },
     {
-      entry: ["src/shared", ...ignored],
+      entry: [
+        "src/shared",
+        // for now let's ignore them because it takes time to build it
+        "!src/shared/datasources/**/*",
+        ...ignored,
+      ],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
@@ -105,6 +112,7 @@ export default defineConfig((options) => {
         input.banner = banner;
       },
       loader,
+      removeNodeProtocol: false,
     },
     {
       entry: ["src/server/node/dev-server.ts"],
@@ -121,6 +129,7 @@ export default defineConfig((options) => {
       esbuildOptions(input) {
         input.banner = banner;
       },
+      removeNodeProtocol: false,
     },
     {
       entry: ["src/server/cloudflare/server.ts"],
@@ -137,6 +146,7 @@ export default defineConfig((options) => {
       esbuildOptions(input) {
         input.banner = banner;
       },
+      removeNodeProtocol: false,
     },
   ];
 });

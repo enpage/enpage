@@ -1,17 +1,15 @@
 import clsx from "clsx";
 import { useEditor } from "@enpage/sdk/browser/use-editor";
 import { HorizontalDrawer } from "../Drawer";
-import * as all from "@enpage/sdk/browser/components/blocks/all";
+import * as all from "@enpage/sdk/browser/bricks/all-manifests";
 import { Value } from "@sinclair/typebox/value";
-import { useCallback, type ComponentProps } from "react";
-import { useIsLargeDevice } from "../../hooks/use-is-device-type";
 
 export default function BlocksLibrary() {
   const editor = useEditor();
   const isTouchDevice = "ontouchstart" in window;
 
   return (
-    <div className={clsx("flex flex-col  rounded overflow-hidden")}>
+    <div className={clsx("flex flex-col overflow-hidden")}>
       <h2 className="py-1.5 px-2 text-sm capitalize bg-gray-200 dark:bg-dark-800 text-gray-600 dark:text-gray-200 flex-1 select-none">
         Library
       </h2>

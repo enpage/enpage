@@ -5,8 +5,6 @@ import type { GenericPageContext } from "~/shared/page-config";
 import { version } from "../../../package.json";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
-import { getPageSections, processPageSections } from "../../browser/page-sections";
-import { store } from "./store";
 
 /**
  * Renders the template based on the provided configuration and Vite environment.
@@ -65,17 +63,8 @@ export const renderTemplatePlugin = (
         // for all editable elements ([ep-editable]), add a ep-label attribute if not present
         // the label will describe the tag
         addMissingLabels(doc);
-        // add custom elements
-        addCustomElements(doc, head);
         // add animate script
         addAnimationScript(doc, head);
-
-        // if (isDevMode) addDevClient(doc, head);
-
-        // Hide sections when needed
-        const sections = getPageSections(doc);
-        const { slugs } = processPageSections(sections);
-        store.set("slugs", slugs);
 
         return dom.serialize();
       },
@@ -96,15 +85,6 @@ function addEntryClient(doc: Document, head: HTMLHeadElement, body: HTMLBodyElem
   entryClient.id = "enpage-sdk";
   entryClient.textContent = `import "@enpage/sdk/browser/vite-entry-client";`;
   head.appendChild(entryClient);
-}
-
-function addDevClient(doc: Document, head: HTMLHeadElement) {
-  const devClientScript = doc.createElement("script");
-  devClientScript.type = "module";
-  devClientScript.textContent = `import { initDevClient } from "@enpage/sdk/browser/dev-client";
-initDevClient();
-window.enpage.addEventListener("afternavigate", initDevClient);`;
-  head.appendChild(devClientScript);
 }
 
 /**
@@ -149,21 +129,6 @@ function addAnimationScript(doc: Document, head: HTMLHeadElement) {
   animateScript.type = "module";
   animateScript.textContent = 'import "@enpage/sdk/browser/animate";';
   head.appendChild(animateScript);
-}
-
-/**
- * Adds custom elements scripts to the document head.
- * @param {Document} doc - The document to modify.
- * @param {HTMLHeadElement} head - The head element to append the script to.
- */
-function addCustomElements(doc: Document, head: HTMLHeadElement) {
-  const customElementsScript = doc.createElement("script");
-  customElementsScript.type = "module";
-  customElementsScript.textContent = `
-          import "@enpage/sdk/browser/components/directives/all";
-          import "@enpage/sdk/browser/components/blocks/all";
-        `;
-  head.appendChild(customElementsScript);
 }
 
 /**

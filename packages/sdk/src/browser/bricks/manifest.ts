@@ -32,5 +32,5 @@ export function defineBrickManifest<
   });
 }
 
-export type BrickkManifest = ReturnType<typeof defineBrickManifest>;
-export type Brick = Static<ReturnType<typeof defineBrickManifest>>;
+export type BrickManifest = ReturnType<typeof defineBrickManifest>;
+export type ResolvedBrickManifest = Static<ReturnType<typeof defineBrickManifest>>;

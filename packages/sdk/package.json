@@ -160,8 +160,8 @@
     "tsup": "8.2.4"
   },
   "scripts": {
-    "build": "tsup --clean",
-    "dev": "tsup --watch",
+    "build": "NODE_OPTIONS='--max-old-space-size=12384' tsup --clean",
+    "dev": "NODE_OPTIONS='--max-old-space-size=12384' tsup --watch",
     "sizetest": "pnpm build && du -sh dist",
     "lint": "biome check --write . && tsc --noEmit",
     "ci:lint": "tsc --noEmit",

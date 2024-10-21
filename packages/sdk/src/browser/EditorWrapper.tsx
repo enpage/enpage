@@ -5,8 +5,8 @@ import { Theme } from "@radix-ui/themes";
 import Page from "./page";
 
 import "@enpage/style-system/default-theme.css";
-import "@enpage/style-system/tiptap.css";
-import "@radix-ui/themes/styles.css";
+import "@enpage/style-system/tiptap-text-editor.css";
+// import "@radix-ui/themes/styles.css";
 import "@enpage/style-system/radix.css";
 
 type EditorWrapperProps = {

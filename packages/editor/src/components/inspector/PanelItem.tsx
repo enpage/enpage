@@ -1,5 +1,5 @@
 import type { Brick } from "@enpage/sdk/shared/bricks";
-import type { GenericBrickManifest } from "@enpage/sdk/browser/bricks/manifests";
+import type { GenericBrickManifest } from "@enpage/sdk/browser/bricks/all-manifests";
 import type { ComponentProps } from "react";
 
 export type PanelItemProps = ComponentProps<"div"> & {

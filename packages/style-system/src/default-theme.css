@@ -1,136 +1,242 @@
 html[data-theme="default"] {
+
   /* Base Colors */
-  --color-primary: #007bff;     /* Main brand color */
-  --color-secondary: #6c757d;   /* Secondary brand color */
-  --color-tertiary: #28a745;    /* Accent color */
+  --color-primary: #007bff;
+  --color-secondary: #6c757d;
+  --color-tertiary: #28a745;
+  --color-gray: #8B8D98
 
-  /* Text Colors */
-  --color-text-light: #ffffff;  /* Light text color */
-  --color-text-dark: #000000;   /* Dark text color */
-
-  --color-text-primary: color-contrast(var(--color-bg-main) vs var(--color-text-light), var(--color-text-dark));
-  --color-text-secondary: color-contrast(var(--color-bg-secondary) vs var(--color-text-light), var(--color-text-dark));
-  --color-text-tertiary: color-contrast(var(--color-bg-tertiary) vs var(--color-text-light), var(--color-text-dark));
-
-  /* Background Colors (Derived from Base Colors) */
-  --color-bg-main: color-mix(in sRGB, var(--color-primary) 95%, white 5%);        /* Primary background */
-  --color-bg-secondary: color-mix(in sRGB, var(--color-secondary) 95%, white 5%); /* Secondary background */
-  --color-bg-tertiary: color-mix(in sRGB, var(--color-tertiary) 95%, white 5%);   /* Tertiary background */
-
-  /* Neutral Colors */
-  --color-neutral-light: #f0f0f0;
-  --color-neutral-dark: #a0a0a0;
-
-  /* UI Element Colors */
-  --color-button-primary-bg: var(--color-primary);
-  --color-button-secondary-bg: var(--color-secondary);
-  --color-button-tertiary-bg: var(--color-tertiary);
-  --color-button-text: var(--color-text-light);
-  --color-input-bg: var(--color-bg-main);
-  --color-border: var(--color-neutral-dark);
-
-  /* State Colors */
-  --color-success: var(--color-tertiary);
-  --color-error: #dc3545;
-  --color-warning: #e0a800;
-  --color-info: var(--color-primary);
-  --color-warning-bg: color-mix(in sRGB, var(--color-warning) 90%, white 10%);
-  --color-error-bg: color-mix(in sRGB, var(--color-error) 90%, white 10%);
+  /* Luminance threshold for deciding between light and dark text */
+  --luminance-threshold: 60%;
 
   /* Link Colors */
   --color-link: var(--color-primary);
-  --color-link-visited: #6610f2;
+  --color-link-visited: var(--color-primary);
   --color-link-hover: var(--color-primary-dark);
 
-  /* Card Background Colors */
-  --color-brick-bg-primary: var(--color-primary-light);
-  --color-brick-bg-secondary: var(--color-secondary-light);
-  --color-brick-bg-tertiary: var(--color-tertiary-light);
-
-  --color-brick-bg-primary-dark: var(--color-primary-dark);
-  --color-brick-bg-secondary-dark: var(--color-secondary-dark);
-  --color-brick-bg-tertiary-dark: var(--color-tertiary-dark);
-
-  --color-brick-bg-primary-light: var(--color-primary-light);
-  --color-brick-bg-secondary-light: var(--color-secondary-light);
-  --color-brick-bg-tertiary-light: var(--color-tertiary-light);
 }
 
 :root {
-  /* Derived Shades */
-  --color-primary-light: color-mix(in sRGB, var(--color-primary) 80%, white 20%); /* Lighter shade */
-  --color-primary-dark: color-mix(in sRGB, var(--color-primary) 80%, black 20%);  /* Darker shade */
+  /* Primary Color Shades */
+  --color-primary-1: color-mix(in oklch, oklch(from var(--color-primary)) 15%, white);
+  --color-primary-2: color-mix(in oklch, oklch(from var(--color-primary)) 30%, white);
+  --color-primary-3: color-mix(in oklch, oklch(from var(--color-primary)) 50%, white);
+  --color-primary-4: color-mix(in oklch, oklch(from var(--color-primary)) 70%, white);
+  --color-primary-5: var(--color-primary);
+  --color-primary-6: color-mix(in oklch, oklch(from var(--color-primary)) 85%, black);
+  --color-primary-7: color-mix(in oklch, oklch(from var(--color-primary)) 70%, black);
+  --color-primary-8: color-mix(in oklch, oklch(from var(--color-primary)) 55%, black);
+  --color-primary-9: color-mix(in oklch, oklch(from var(--color-primary)) 40%, black);
 
-  --color-secondary-light: color-mix(in sRGB, var(--color-secondary) 80%, white 20%);
-  --color-secondary-dark: color-mix(in sRGB, var(--color-secondary) 80%, black 20%);
+  /* Primary Text Colors */
+  --text-primary-1: calc((oklch(from var(--color-primary-1)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-2: calc((oklch(from var(--color-primary-2)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-3: calc((oklch(from var(--color-primary-3)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-4: calc((oklch(from var(--color-primary-4)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-5: calc((oklch(from var(--color-primary-5)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-6: calc((oklch(from var(--color-primary-6)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-7: calc((oklch(from var(--color-primary-7)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-8: calc((oklch(from var(--color-primary-8)).l - var(--luminance-threshold)) * -10000000);
+  --text-primary-9: calc((oklch(from var(--color-primary-9)).l - var(--luminance-threshold)) * -10000000);
 
-  --color-tertiary-light: color-mix(in sRGB, var(--color-tertiary) 80%, white 20%);
-  --color-tertiary-dark: color-mix(in sRGB, var(--color-tertiary) 80%, black 20%);
+  /* Secondary Color Shades */
+  --color-secondary-1: color-mix(in oklch, oklch(from var(--color-secondary)) 15%, white);
+  --color-secondary-2: color-mix(in oklch, oklch(from var(--color-secondary)) 30%, white);
+  --color-secondary-3: color-mix(in oklch, oklch(from var(--color-secondary)) 50%, white);
+  --color-secondary-4: color-mix(in oklch, oklch(from var(--color-secondary)) 70%, white);
+  --color-secondary-5: var(--color-secondary);
+  --color-secondary-6: color-mix(in oklch, oklch(from var(--color-secondary)) 85%, black);
+  --color-secondary-7: color-mix(in oklch, oklch(from var(--color-secondary)) 70%, black);
+  --color-secondary-8: color-mix(in oklch, oklch(from var(--color-secondary)) 55%, black);
+  --color-secondary-9: color-mix(in oklch, oklch(from var(--color-secondary)) 40%, black);
 
-  /* Transition Properties */
-  --transition-duration: 0.3s;
-  --transition-ease: ease-in-out;
+  /* Secondary Text Colors */
+  --text-secondary-1: calc((oklch(from var(--color-secondary-1)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-2: calc((oklch(from var(--color-secondary-2)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-3: calc((oklch(from var(--color-secondary-3)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-4: calc((oklch(from var(--color-secondary-4)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-5: calc((oklch(from var(--color-secondary-5)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-6: calc((oklch(from var(--color-secondary-6)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-7: calc((oklch(from var(--color-secondary-7)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-8: calc((oklch(from var(--color-secondary-8)).l - var(--luminance-threshold)) * -10000000);
+  --text-secondary-9: calc((oklch(from var(--color-secondary-9)).l - var(--luminance-threshold)) * -10000000);
+
+  /* Tertiary Color Shades */
+  --color-tertiary-1: color-mix(in oklch, oklch(from var(--color-tertiary)) 15%, white);
+  --color-tertiary-2: color-mix(in oklch, oklch(from var(--color-tertiary)) 30%, white);
+  --color-tertiary-3: color-mix(in oklch, oklch(from var(--color-tertiary)) 50%, white);
+  --color-tertiary-4: color-mix(in oklch, oklch(from var(--color-tertiary)) 70%, white);
+  --color-tertiary-5: var(--color-tertiary);
+  --color-tertiary-6: color-mix(in oklch, oklch(from var(--color-tertiary)) 85%, black);
+  --color-tertiary-7: color-mix(in oklch, oklch(from var(--color-tertiary)) 70%, black);
+  --color-tertiary-8: color-mix(in oklch, oklch(from var(--color-tertiary)) 55%, black);
+  --color-tertiary-9: color-mix(in oklch, oklch(from var(--color-tertiary)) 40%, black);
+
+  /* Tertiary Text Colors */
+  --text-tertiary-1: calc((oklch(from var(--color-tertiary-1)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-2: calc((oklch(from var(--color-tertiary-2)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-3: calc((oklch(from var(--color-tertiary-3)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-4: calc((oklch(from var(--color-tertiary-4)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-5: calc((oklch(from var(--color-tertiary-5)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-6: calc((oklch(from var(--color-tertiary-6)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-7: calc((oklch(from var(--color-tertiary-7)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-8: calc((oklch(from var(--color-tertiary-8)).l - var(--luminance-threshold)) * -10000000);
+  --text-tertiary-9: calc((oklch(from var(--color-tertiary-9)).l - var(--luminance-threshold)) * -10000000);
+
+  /* Gray shades */
+  --color-gray-1: color-mix(in oklch, oklch(from var(--color-gray)) 15%, white);
+  --color-gray-2: color-mix(in oklch, oklch(from var(--color-gray)) 30%, white);
+  --color-gray-3: color-mix(in oklch, oklch(from var(--color-gray)) 50%, white);
+  --color-gray-4: color-mix(in oklch, oklch(from var(--color-gray)) 70%, white);
+  --color-gray-5: var(--color-gray);
+  --color-gray-6: color-mix(in oklch, oklch(from var(--color-gray)) 85%, black);
+  --color-gray-7: color-mix(in oklch, oklch(from var(--color-gray)) 70%, black);
+  --color-gray-8: color-mix(in oklch, oklch(from var(--color-gray)) 55%, black);
+  --color-gray-9: color-mix(in oklch, oklch(from var(--color-gray)) 40%, black);
+
+  /* Gray Text Colors */
+  --text-gray-1: calc((oklch(from var(--color-gray-1)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-2: calc((oklch(from var(--color-gray-2)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-3: calc((oklch(from var(--color-gray-3)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-4: calc((oklch(from var(--color-gray-4)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-5: calc((oklch(from var(--color-gray-5)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-6: calc((oklch(from var(--color-gray-6)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-7: calc((oklch(from var(--color-gray-7)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-8: calc((oklch(from var(--color-gray-8)).l - var(--luminance-threshold)) * -10000000);
+  --text-gray-9: calc((oklch(from var(--color-gray-9)).l - var(--luminance-threshold)) * -10000000);
+
+
+  /* Background Colors (2 shades, #1 and 2) */
+  --color-bg-gray-1: var(--color-gray-1);
+  --color-bg-gray-2: var(--color-gray-2);
+
+  --color-bg-primary-1: var(--color-primary-1);
+  --color-bg-primary-2: var(--color-primary-2);
+
+  --color-bg-secondary-1: var(--color-secondary-1);
+  --color-bg-secondary-2: var(--color-secondary-2);
+
+  --color-bg-tertiary-1: var(--color-tertiary-1);
+  --color-bg-tertiary-2: var(--color-tertiary-2);
+
+  /* Interactive Element Colors (from shade #3 to #5) */
+  --color-interactive-gray-1: var(--color-gray-3);
+  --color-interactive-gray-2: var(--color-gray-4);
+  --color-interactive-gray-3: var(--color-gray-5);
+
+  --color-interactive-primary-1: var(--color-primary-3);
+  --color-interactive-primary-2: var(--color-primary-4);
+  --color-interactive-primary-3: var(--color-primary-5);
+
+  --color-interactive-secondary-1: var(--color-secondary-3);
+  --color-interactive-secondary-2: var(--color-secondary-4);
+  --color-interactive-secondary-3: var(--color-secondary-5);
+
+  --color-interactive-tertiary-1: var(--color-tertiary-3);
+  --color-interactive-tertiary-2: var(--color-tertiary-4);
+  --color-interactive-tertiary-3: var(--color-tertiary-5);
+
+
+  /** Borders and separators shades (3 shades) */
+  --color-border-gray-1: var(--color-gray-6);
+  --color-border-gray-2: var(--color-gray-7);
+  --color-border-gray-3: var(--color-gray-8);
+
+  --color-border-primary-1: var(--color-primary-6);
+  --color-border-primary-2: var(--color-primary-7);
+  --color-border-primary-3: var(--color-primary-8);
+
+  --color-border-secondary-1: var(--color-secondary-6);
+  --color-border-secondary-2: var(--color-secondary-7);
+  --color-border-secondary-3: var(--color-secondary-8);
+
+  --color-border-tertiary-1: var(--color-tertiary-6);
+  --color-border-tertiary-2: var(--color-tertiary-7);
+  --color-border-tertiary-3: var(--color-tertiary-8);
+
+  /* Solid Element Colors (from shade #9 to #10) */
+  --color-solid-gray-1: var(--color-gray-9);
+  --color-solid-gray-2: var(--color-gray-10);
+
+  --color-solid-primary-1: var(--color-primary-9);
+  --color-solid-primary-2: var(--color-primary-10);
+
+  --color-solid-secondary-1: var(--color-secondary-9);
+  --color-solid-secondary-2: var(--color-secondary-10);
+
+  --color-solid-tertiary-1: var(--color-tertiary-9);
+  --color-solid-tertiary-2: var(--color-tertiary-10);
 
 }
 
-/* Utility Classes for Transitions */
+/* Utility Classes */
+
+/* Background Color Utilities */
+.bg-gray-1 { background-color: var(--color-bg-gray-1);  }
+.bg-gray-2 { background-color: var(--color-bg-gray-2); ; }
+
+.bg-primary-1 { background-color: var(--color-bg-primary-1); }
+.bg-primary-2 { background-color: var(--color-bg-primary-2); }
+
+.bg-secondary-1 { background-color: var(--color-bg-secondary-1); }
+.bg-secondary-2 { background-color: var(--color-bg-secondary-2);}
+
+.bg-tertiary-1 { background-color: var(--color-bg-tertiary-1); }
+.bg-tertiary-2 { background-color: var(--color-bg-tertiary-2); }
+
+/* Interactive Element Color Utilities */
+.interactive-gray-1 { background-color: var(--color-interactive-gray-1); color: var(--text-gray-3); }
+.interactive-gray-2 { background-color: var(--color-interactive-gray-2); color: var(--text-gray-4); }
+.interactive-gray-3 { background-color: var(--color-interactive-gray-3); color: var(--text-gray-5); }
+
+.interactive-primary-1 { background-color: var(--color-interactive-primary-1); color: var(--text-primary-3); }
+.interactive-primary-2 { background-color: var(--color-interactive-primary-2); color: var(--text-primary-4); }
+.interactive-primary-3 { background-color: var(--color-interactive-primary-3); color: var(--text-primary-5); }
+
+.interactive-secondary-1 { background-color: var(--color-interactive-secondary-1); color: var(--text-secondary-3); }
+.interactive-secondary-2 { background-color: var(--color-interactive-secondary-2); color: var(--text-secondary-4); }
+.interactive-secondary-3 { background-color: var(--color-interactive-secondary-3); color: var(--text-secondary-5); }
+
+.interactive-tertiary-1 { background-color: var(--color-interactive-tertiary-1); color: var(--text-tertiary-3); }
+.interactive-tertiary-2 { background-color: var(--color-interactive-tertiary-2); color: var(--text-tertiary-4); }
+.interactive-tertiary-3 { background-color: var(--color-interactive-tertiary-3); color: var(--text-tertiary-5); }
+
+
+/* Solid Element Color Utilities */
+.solid-gray-1 { background-color: var(--color-solid-gray-1); color: var(--text-gray-9); }
+.solid-gray-2 { background-color: var(--color-solid-gray-2); color: var(--text-gray-10); }
+
+.solid-primary-1 { background-color: var(--color-solid-primary-1); color: var(--text-primary-9); }
+.solid-primary-2 { background-color: var(--color-solid-primary-2); color: var(--text-primary-10); }
+
+.solid-secondary-1 { background-color: var(--color-solid-secondary-1); color: var(--text-secondary-9); }
+.solid-secondary-2 { background-color: var(--color-solid-secondary-2); color: var(--text-secondary-10); }
+
+.solid-tertiary-1 { background-color: var(--color-solid-tertiary-1); color: var(--text-tertiary-9); }
+.solid-tertiary-2 { background-color: var(--color-solid-tertiary-2); color: var(--text-tertiary-10); }
+
+.border-gray-1 { border-color: var(--color-border-gray-1); }
+.border-gray-2 { border-color: var(--color-border-gray-2); }
+.border-gray-3 { border-color: var(--color-border-gray-3); }
+
+.border-primary-1 { border-color: var(--color-border-primary-1); }
+.border-primary-2 { border-color: var(--color-border-primary-2); }
+.border-primary-3 { border-color: var(--color-border-primary-3); }
+
+.border-secondary-1 { border-color: var(--color-border-secondary-1); }
+.border-secondary-2 { border-color: var(--color-border-secondary-2); }
+.border-secondary-3 { border-color: var(--color-border-secondary-3); }
+
+.border-tertiary-1 { border-color: var(--color-border-tertiary-1); }
+.border-tertiary-2 { border-color: var(--color-border-tertiary-2); }
+.border-tertiary-3 { border-color: var(--color-border-tertiary-3); }
+
+
+
+
+
 .button {
   transition: background-color var(--transition-duration) var(--transition-ease), color var(--transition-duration) var(--transition-ease);
-}
-
-/* Utility Classes for Bricks */
-.brick-primary {
-  background-color: var(--color-brick-bg-primary);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-}
-
-.brick-primary-light {
-  background-color: var(--color-brick-bg-primary-light);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-}
-
-.brick-primary-dark {
-  background-color: var(--color-brick-bg-primary-dark);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-}
-
-.brick-secondary {
-  background-color: var(--color-brick-bg-secondary);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border);
-}
-
-.brick-secondary-light {
-  background-color: var(--color-brick-bg-secondary-light);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border);
-}
-
-.brick-secondary-dark {
-  background-color: var(--color-brick-bg-secondary-dark);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border);
-}
-
-.brick-tertiary {
-  background-color: var(--color-brick-bg-tertiary);
-  color: var(--color-text-tertiary);
-  border: 1px solid var(--color-border);
-}
-
-.brick-tertiary-light {
-  background-color: var(--color-brick-bg-tertiary-light);
-  color: var(--color-text-tertiary);
-  border: 1px solid var(--color-border);
-}
-
-.brick-tertiary-dark {
-  background-color: var(--color-brick-bg-tertiary-dark);
-  color: var(--color-text-tertiary);
-  border: 1px solid var(--color-border);
 }
 
 

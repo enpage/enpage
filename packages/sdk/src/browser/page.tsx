@@ -51,7 +51,10 @@ export default function Page(props: { initialContainers?: BricksContainer[]; onM
   useOnClickOutside(pageRef, (e) => {
     const event = e as MouseEvent;
     const elementAtPoint = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
-    if (!elementAtPoint.closest("[data-radix-popper-content-wrapper]")) {
+    if (
+      !elementAtPoint.closest("[data-radix-popper-content-wrapper]") &&
+      !elementAtPoint.closest("#floating-panel")
+    ) {
       console.debug("deselecting brick because user clicked outside");
       editor.deselectBrick();
     }
@@ -445,7 +448,7 @@ export default function Page(props: { initialContainers?: BricksContainer[]; onM
       onDragMove={handleDragMove}
     >
       <SortableContext items={sortableIds} strategy={strategy}>
-        <div id="page-container" className={tx("min-h-[100dvh] w-full @container", "bg-white")}>
+        <div id="page-container" className={tx("min-h-[100dvh] w-full max-w-full @container", "bg-white")}>
           <div
             id="page"
             ref={pageRef}

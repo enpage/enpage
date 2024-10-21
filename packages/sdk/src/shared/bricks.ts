@@ -1,4 +1,6 @@
 import { generateId } from "~/browser/bricks/common";
+import { manifests } from "~/browser/bricks/all-manifests";
+import type { BrickManifest } from "~/browser/bricks/manifest";
 
 export const GRID_COLS = 12;
 
@@ -47,11 +49,13 @@ export type Brick<T extends string = string> = {
   props: Record<string, unknown>;
   wrapper: BrickWrapper;
   position: BrickPosition;
+  manifest: BrickManifest;
 };
 
-type DefinedBrick = Omit<Brick, "id" | "wrapper" | "position"> & {
+type DefinedBrick = Omit<Brick, "id" | "wrapper" | "position" | "manifest"> & {
   wrapper?: BrickWrapper;
   position?: Partial<BrickPosition>;
+  manifest?: BrickManifest;
 };
 
 type DefinedContainer = Omit<BricksContainer, "id" | "bricks"> & { bricks: DefinedBrick[] };
@@ -68,6 +72,7 @@ export function defineContainers<B extends DefinedContainer[]>(containers: B): B
       // @ts-ignore
       brick.position ??= {};
       brick.wrapper ??= {};
+      brick.manifest ??= manifests[brick.type];
 
       if (brick.position.colStart === undefined) {
         brick.position.colStart = computeColStart(
@@ -87,17 +92,6 @@ export function defineContainers<B extends DefinedContainer[]>(containers: B): B
   });
 
   return finalContainers;
-
-  // return containers.map((ct) => ({
-  //   ...ct,
-  //   id: `container-${generateId()}`,
-  //   bricks: ct.bricks.map((child) => ({
-  //     id: `brick-${generateId()}`,
-  //     wrapper: {},
-  //     position: {},
-  //     ...child,
-  //   })),
-  // }));
 }
 
 /**

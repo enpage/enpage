@@ -1,31 +1,33 @@
 import { Component, useCallback, useEffect, useState, type ComponentProps } from "react";
 import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
 import { BsArrowBarLeft } from "react-icons/bs";
-import { type BrickType, type GenericBrickManifest, manifests } from "@enpage/sdk/browser/bricks/manifests";
+import { manifests } from "@enpage/sdk/browser/bricks/all-manifests";
 import { PanelItemSiteBackground } from "./PanelItemSiteBackground";
 import { HorizontalDrawer } from "../Drawer";
 import { useIsLargeDevice } from "../../hooks/use-is-device-type";
-import { FloatingPanel } from "../FloatingPanel";
 import Form, { type IChangeEvent } from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import type { RegistryFieldsType, UiSchema, FieldProps } from "@rjsf/utils";
 import { customFields } from "./fields";
 import { TbHelp } from "react-icons/tb";
 
-import "./Inspector.css";
 import { useLocalStorage } from "usehooks-ts";
 import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { BrickManifest } from "@enpage/sdk/browser/bricks/manifest";
+
+import "./Inspector.css";
 
 export default function Inspector() {
   const editor = useEditor();
   const [showHelp, setShowHelp] = useLocalStorage("inspector.show-help", false);
 
   if (!editor.selectedBrick) {
-    return <InspectorIntro />;
+    return null;
+    // return <InspectorIntro />;
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-dark-700 border border-gray-300 dark:border-dark-700 rounded overflow-hidden">
+    <div>
       <div className="flex justify-between bg-gray-200 dark:bg-dark-800 pr-0">
         <h2 className="py-1.5 px-2 flex justify-between items-center text-sm capitalize text-gray-600 dark:text-gray-200 flex-1 select-none">
           {editor.selectedBrick.type}
@@ -42,7 +44,7 @@ export default function Inspector() {
           <BsArrowBarLeft className="w-auto" size={22} />
         </button>
       </div>
-      {editor.selectedBrick && <ElementInspector brick={editor.selectedBrick} />}
+      <ElementInspector brick={editor.selectedBrick} />
     </div>
   );
 }
@@ -56,10 +58,6 @@ function InspectorIntro() {
   );
 }
 
-const baseUiSchema: UiSchema = {
-  "ui:submitButtonOptions": { norender: true },
-};
-
 function ElementInspector({ brick }: { brick: Brick }) {
   const [state, setState] = useState(brick.props);
   const [showHelp, setShowHelp] = useLocalStorage("inspector.show-help", false);
@@ -72,22 +70,19 @@ function ElementInspector({ brick }: { brick: Brick }) {
     // @ts-ignore
     return <PanelItemSiteBackground brick={brick} manifest={manifests[brick.type]} />;
   }
-  if (brick.props.manifest) {
-    const uiSchema = Object.assign(
-      {},
-      baseUiSchema,
-      // @ts-ignore
-      buildUiSchemaFromManifest(manifests[brick.type as BrickType]),
-    );
+  if (brick.manifest) {
+    const uiSchema = buildUiSchemaFromManifest(brick.manifest.properties.props);
     uiSchema["ui:classNames"] ||= "";
     uiSchema["ui:classNames"] += showHelp ? " hide-help" : "";
+
+    console.log("uiSchema", uiSchema);
     // console.log("props", element.manifest.properties.props);
     return (
       <Form
         autoComplete="off"
         className="inspector-form"
         formData={state}
-        schema={brick.props.manifest}
+        schema={brick.manifest.properties.props}
         validator={validator}
         uiSchema={uiSchema}
         onChange={onChange}
@@ -100,15 +95,20 @@ function ElementInspector({ brick }: { brick: Brick }) {
   return <pre className="text-xs">{JSON.stringify(brick, null, 2)}</pre>;
 }
 
-function buildUiSchemaFromManifest(manifest: GenericBrickManifest): UiSchema {
-  return Object.entries(manifest).reduce((acc, [field, value]) => {
-    // console.log("key", field);
-    // console.log("value", value);
-    if (value["ui:field"]) {
-      acc[field] = {
-        "ui:field": value["ui:field"],
-      };
+const baseUiSchema: UiSchema = {
+  "ui:submitButtonOptions": { norender: true },
+};
+
+function buildUiSchemaFromManifest(propsManifest: BrickManifest["properties"]["props"]): UiSchema {
+  const uiSchema = Object.entries(propsManifest.properties).reduce((acc, [field, value]) => {
+    for (const key in value) {
+      if (key.startsWith("ui:")) {
+        acc[field] ??= {};
+        acc[field][key] = value[key];
+      }
     }
     return acc;
-  }, {} as UiSchema);
+  }, baseUiSchema as UiSchema);
+
+  return uiSchema;
 }
