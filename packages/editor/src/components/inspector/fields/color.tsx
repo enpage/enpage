@@ -13,33 +13,59 @@ const ColorField: React.FC<FieldProps> = (props) => {
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
 
   return (
-    <div className="file-field flex items-center justify-between">
-      {fieldTitle && (
-        <div>
-          <label className="file-title">
-            {fieldTitle}
-            {required ? <span className="required">*</span> : null}
-          </label>
-          {fieldDescription && <p className="field-description">{fieldDescription}</p>}
-        </div>
-      )}
-      <ColorPreviewPill bgClassName="bg-red-500" />
-    </div>
+    <ColorFieldRow
+      name={fieldTitle}
+      description={fieldDescription}
+      required={required}
+      pillClassName="bg-red-500"
+    />
   );
 };
+
+export function ColorFieldRow({
+  name,
+  description,
+  required,
+  pillClassName,
+  labelClassName,
+  descClassName,
+  onChange,
+}: {
+  name: string;
+  pillClassName: string;
+  labelClassName?: string;
+  descClassName?: string;
+  description?: string;
+  required?: boolean;
+  onChange?: (newVal: string) => void;
+}) {
+  return (
+    <div className="color-field flex items-center justify-between">
+      {name && (
+        <div className="flex-1">
+          <label className={tx("control-label", labelClassName)}>
+            {name}
+            {required ? <span className="required">*</span> : null}
+          </label>
+          {description && <p className={tx("field-description", descClassName)}>{description}</p>}
+        </div>
+      )}
+      <ColorPreviewPill bgClassName={pillClassName} />
+    </div>
+  );
+}
 
 function ColorPreviewPill({
   bgClassName,
   bgOpacityClassName,
 }: { bgClassName: string; bgOpacityClassName?: string }) {
-  console.log({ colors });
   return (
     <Popover.Root>
       <Popover.Trigger>
         <button
           type="button"
           className={tx(
-            "rounded-full w-6 h-6 ring ring-transparent hover:ring-primary-400",
+            "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400",
             bgClassName,
             bgOpacityClassName,
           )}
@@ -56,7 +82,7 @@ function ColorPreviewPill({
                     key={shade}
                     type="button"
                     className={tx(
-                      "rounded-full w-6 h-6 ring ring-transparent hover:ring-primary-400",
+                      "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400",
                       `bg-${color}-${shade}`,
                     )}
                   />

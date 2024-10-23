@@ -105,14 +105,14 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
 
           // align="end"
         >
-          <ContextMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
+          <ContextMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
             Back{" "}
             <div className="ml-auto pl-5 text-mauve11 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
               ⌘+[
             </div>
           </ContextMenu.Item>
           <ContextMenu.Item
-            className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-primary-900 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-gray-300 data-[highlighted]:text-violet1"
+            className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-upstart-900 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-gray-300 data-[highlighted]:text-violet1"
             disabled
           >
             Forward{" "}
@@ -120,14 +120,14 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
               ⌘+]
             </div>
           </ContextMenu.Item>
-          <ContextMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
+          <ContextMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
             Reload{" "}
             <div className="ml-auto pl-5 text-mauve11 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
               ⌘+R
             </div>
           </ContextMenu.Item>
           <ContextMenu.Sub>
-            <ContextMenu.SubTrigger className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[highlighted]:data-[state=open]:bg-primary-200 data-[state=open]:bg-violet4 data-[disabled]:text-mauve8 data-[highlighted]:data-[state=open]:text-violet1 data-[highlighted]:text-violet1 data-[state=open]:text-violet11">
+            <ContextMenu.SubTrigger className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[highlighted]:data-[state=open]:bg-upstart-200 data-[state=open]:bg-violet4 data-[disabled]:text-mauve8 data-[highlighted]:data-[state=open]:text-violet1 data-[highlighted]:text-violet1 data-[state=open]:text-violet11">
               More Tools
               <div className="ml-auto pl-5 text-mauve11 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
                 <LuChevronRight />
@@ -139,20 +139,20 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
                 sideOffset={2}
                 alignOffset={-5}
               >
-                <ContextMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
+                <ContextMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
                   Save Page As…{" "}
                   <div className="ml-auto pl-5 text-mauve11 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
                     ⌘+S
                   </div>
                 </ContextMenu.Item>
-                <ContextMenu.Item className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
+                <ContextMenu.Item className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
                   Create Shortcut…
                 </ContextMenu.Item>
-                <ContextMenu.Item className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
+                <ContextMenu.Item className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
                   Name Window…
                 </ContextMenu.Item>
                 <ContextMenu.Separator className="m-[5px] h-px bg-gray-200" />
-                <ContextMenu.Item className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
+                <ContextMenu.Item className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1">
                   Developer Tools
                 </ContextMenu.Item>
               </ContextMenu.SubContent>
@@ -162,7 +162,7 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
           <ContextMenu.Separator className="m-[5px] h-px bg-gray-200" />
 
           <ContextMenu.CheckboxItem
-            className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+            className="group relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
             checked={bookmarksChecked}
             onCheckedChange={setBookmarksChecked}
           >
@@ -172,7 +172,7 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
             </div>
           </ContextMenu.CheckboxItem>
           <ContextMenu.CheckboxItem
-            className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+            className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
             checked={urlsChecked}
             onCheckedChange={setUrlsChecked}
           >
@@ -186,13 +186,13 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
           </ContextMenu.Label>
           <ContextMenu.RadioGroup value={person} onValueChange={setPerson}>
             <ContextMenu.RadioItem
-              className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+              className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
               value="pedro"
             >
               Pedro Duarte
             </ContextMenu.RadioItem>
             <ContextMenu.RadioItem
-              className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+              className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[5px] text-sm leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-upstart-200 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
               value="colm"
             >
               Colm Tuite

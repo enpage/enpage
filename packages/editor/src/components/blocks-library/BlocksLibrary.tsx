@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { useEditor } from "@enpage/sdk/browser/use-editor";
-import { HorizontalDrawer } from "../Drawer";
 import * as all from "@enpage/sdk/browser/bricks/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 
@@ -28,7 +27,7 @@ export default function BlocksLibrary() {
               data-block={encodeURIComponent(JSON.stringify(block))}
               data-manifest={encodeURIComponent(JSON.stringify(blockImport.manifest))}
               type="button"
-              className="rounded border border-transparent hover:border-primary-600 bg-primary-100
+              className="rounded border border-transparent hover:border-upstart-600 bg-upstart-100
                             dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
                             pointer-events-auto"
             >
@@ -44,7 +43,7 @@ export default function BlocksLibrary() {
                 )}
               >
                 <span
-                  className="w-7 h-7 text-primary-600 dark:text-primary-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
+                  className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
                   // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                   dangerouslySetInnerHTML={{ __html: block.icon }}
                 />

@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
+        upstart: {
           50: "#f2f4fb",
           100: "#e7ecf8",
           200: "#d3daf2",

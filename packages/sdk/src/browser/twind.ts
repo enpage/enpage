@@ -36,7 +36,7 @@ function isProd() {
   return true;
 }
 
-export default install(config, isProd());
+// export default install(config, isProd());
 
 export const sheet = typeof document === "undefined" ? virtual() : cssom("style[data-library]");
 
@@ -46,6 +46,10 @@ export const tw = /* #__PURE__ */ twind(
   // support SSR and use a different selector to not get the twind default style sheet
   sheet,
 );
+
+export function setupTwindReact() {
+  install(config, isProd());
+}
 
 export const tx = /* #__PURE__ */ tx$.bind(tw);
 export const css = /* #__PURE__ */ css$.bind(tw);

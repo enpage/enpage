@@ -1,4 +1,4 @@
-import { tx } from "./twind";
+import { tx, css } from "./twind";
 import { useCallback, useEffect, useMemo, useRef, useState, type DOMAttributes } from "react";
 import { GRID_COLS, type Brick, type BricksContainer } from "~/shared/bricks";
 import Container, { ContainerList } from "./container";
@@ -31,6 +31,7 @@ import { restrictToHorizontalAxis, restrictToVerticalAxis, createSnapModifier } 
 import { BrickOverlay, BrickResizeHandle } from "./brick";
 import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
+import type { Theme } from "~/shared/theme";
 
 export default function Page(props: { initialContainers?: BricksContainer[]; onMount?: () => void }) {
   const editorEnabled = useEditorEnabled();
@@ -448,7 +449,11 @@ export default function Page(props: { initialContainers?: BricksContainer[]; onM
       onDragMove={handleDragMove}
     >
       <SortableContext items={sortableIds} strategy={strategy}>
-        <div id="page-container" className={tx("min-h-[100dvh] w-full max-w-full @container", "bg-white")}>
+        <div
+          id="page-container"
+          data-upstart-theme={draft.previewTheme ?? draft.theme}
+          className={tx("min-h-[100dvh] w-full max-w-full @container")}
+        >
           <div
             id="page"
             ref={pageRef}

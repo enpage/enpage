@@ -19,7 +19,7 @@ export const manifest = defineBrickManifest({
   file: filename,
   props: Type.Object({
     ...editableTextProps,
-    ...getCommonBrickProps("p-1 hero-5 font-extrabold"),
+    ...getCommonBrickProps("hero-5 font-extrabold"),
   }),
 });
 
@@ -28,11 +28,11 @@ export const defaults = Value.Create(manifest);
 
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { content, className, justify, brickId, textEditable, ...attrs } = props;
+  let { content, className, justify, id, textEditable, ...attrs } = props;
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
 
-  const onUpdateHandler = useCallback(createTextEditorUpdateHandler(brickId), []);
+  const onUpdateHandler = useCallback(createTextEditorUpdateHandler(id), []);
 
   return textEditable ? (
     <div className={tx("flex-1 relative", className, justify)} {...attrs}>
@@ -40,7 +40,7 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
         className={className}
         initialContent={DOMPurify.sanitize(content)}
         onUpdate={onUpdateHandler}
-        brickId={brickId}
+        brickId={id}
       />
     </div>
   ) : (

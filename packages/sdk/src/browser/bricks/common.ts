@@ -3,7 +3,7 @@ import { customAlphabet } from "nanoid";
 
 export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN", 7);
 
-export function getCommonBrickProps(defaultClassName: string) {
+export function getCommonBrickProps(defaultClassName = "") {
   return {
     className: Type.String({
       default: defaultClassName,
@@ -13,13 +13,11 @@ export function getCommonBrickProps(defaultClassName: string) {
     }),
     id: Type.String({
       title: "ID",
-      description: "The id attribute",
       "ui:widget": "hidden",
     }),
-    brickId: Type.String({
-      default: "",
-      "ui:widget": "hidden",
-    }),
+    // brickId: Type.String({
+    //   "ui:widget": "hidden",
+    // }),
     brickRounding: Type.Union(
       [
         Type.Literal("rounded-none", { title: "None" }),
@@ -27,6 +25,7 @@ export function getCommonBrickProps(defaultClassName: string) {
         Type.Literal("rounded-md", { title: "M" }),
         Type.Literal("rounded-lg", { title: "L" }),
         Type.Literal("rounded-xl", { title: "XL" }),
+        Type.Literal("rounded-full", { title: "Full" }),
       ],
       {
         default: "rounded-none",
@@ -36,6 +35,14 @@ export function getCommonBrickProps(defaultClassName: string) {
         "ui:display": "button-group",
       },
     ),
+    brickPadding: Type.Number({
+      minimum: 0,
+      maximum: 10,
+      default: 0,
+      title: "Padding",
+      description: "The brick inside space",
+      "ui:field": "slider",
+    }),
     brickBackground: Type.String({
       default: "bg-transparent",
       title: "Background color",

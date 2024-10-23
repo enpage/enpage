@@ -1,50 +1,88 @@
+/**
+ * @see https://automaticcss.com/docs/palette-setup/
+ */
 import { Type, type Static } from "@sinclair/typebox";
 
-const fontFamily = Type.Union(
-  [
-    Type.Literal("system-ui", { title: "System UI" }),
-    Type.Literal("transitional", { title: "Transitional" }),
-    Type.Literal("old-style", { title: "Old style" }),
-    Type.Literal("humanist", { title: "Humanist" }),
-    Type.Literal("geometric-humanist", { title: "Geometric humanist" }),
-    Type.Literal("classical-humanist", { title: "Classical humanist" }),
-    Type.Literal("neo-grotesque", { title: "Neo-grotesque" }),
-    Type.Literal("monospace-slab-serif", { title: "Monospace slab serif" }),
-    Type.Literal("monospace-code", { title: "Monospace code" }),
-    Type.Literal("industrial", { title: "Industrial" }),
-    Type.Literal("rounded-sans", { title: "Rounded sans" }),
-    Type.Literal("slab-serif", { title: "Slab serif" }),
-    Type.Literal("antique", { title: "Antique" }),
-    Type.Literal("didone", { title: "Didone" }),
-    Type.Literal("handwritten", { title: "Handwritten" }),
-  ],
+export const themeSchema = Type.Object(
   {
-    title: "Font Family",
-    default: "system-ui",
-    $id: "fontFamily",
-  },
-);
-
-export type FontFamily = Static<typeof fontFamily>;
-
-const theme = Type.Object(
-  {
+    id: Type.String({ title: "ID", description: "The unique identifier of the theme" }),
     name: Type.String({ title: "Name", description: "The name of the theme" }),
     description: Type.String({ title: "Description", description: "The description of the theme" }),
+    tags: Type.Optional(
+      Type.Array(Type.String({ title: "Tag" }), { title: "Tags", description: "The tags of the theme" }),
+    ),
 
     // Define the theme colors
     colors: Type.Object({
-      primary: Type.String({ title: "Primary", description: "The primary color" }),
-      secondary: Type.String({ title: "Secondary", description: "The secondary color" }),
-      tertiary: Type.String({ title: "Tertiary", description: "The tertiary color" }),
-      neutral: Type.String({ title: "Neutral", description: "The neutral color" }),
+      primary: Type.String({
+        title: "Primary color",
+        description: "The brand's primary color",
+      }),
+      secondary: Type.String({ title: "Secondary color", description: "The brand's second most used color" }),
+      tertiary: Type.Optional(
+        Type.String({ title: "Tertiary color", description: "The brand's third most used color" }),
+      ),
+      accent: Type.Optional(
+        Type.String({ title: "Accent color", description: "The brand's least used color" }),
+      ),
+      neutral: Type.String({ title: "Neutral color", description: "The base grey color" }),
     }),
 
     // Define the theme typography
     typography: Type.Object({
-      base: Type.Number({ title: "Base", description: "The base font size in pixels ", default: 16 }),
-      heading: fontFamily,
-      body: fontFamily,
+      base: Type.Number({
+        title: "Base font size",
+        description: "The base font size in pixels. It is safe to keep it as is.",
+        default: 16,
+      }),
+      heading: Type.Union(
+        [
+          Type.Literal("system-ui", { title: "System UI" }),
+          Type.Literal("transitional", { title: "Transitional" }),
+          Type.Literal("old-style", { title: "Old style" }),
+          Type.Literal("humanist", { title: "Humanist" }),
+          Type.Literal("geometric-humanist", { title: "Geometric humanist" }),
+          Type.Literal("classical-humanist", { title: "Classical humanist" }),
+          Type.Literal("neo-grotesque", { title: "Neo-grotesque" }),
+          Type.Literal("monospace-slab-serif", { title: "Monospace slab serif" }),
+          Type.Literal("monospace-code", { title: "Monospace code" }),
+          Type.Literal("industrial", { title: "Industrial" }),
+          Type.Literal("rounded-sans", { title: "Rounded sans" }),
+          Type.Literal("slab-serif", { title: "Slab serif" }),
+          Type.Literal("antique", { title: "Antique" }),
+          Type.Literal("didone", { title: "Didone" }),
+          Type.Literal("handwritten", { title: "Handwritten" }),
+        ],
+        {
+          title: "Heading font",
+          description: "Used for titles and headings",
+          default: "system-ui",
+        },
+      ),
+      body: Type.Union(
+        [
+          Type.Literal("system-ui", { title: "System UI" }),
+          Type.Literal("transitional", { title: "Transitional" }),
+          Type.Literal("old-style", { title: "Old style" }),
+          Type.Literal("humanist", { title: "Humanist" }),
+          Type.Literal("geometric-humanist", { title: "Geometric humanist" }),
+          Type.Literal("classical-humanist", { title: "Classical humanist" }),
+          Type.Literal("neo-grotesque", { title: "Neo-grotesque" }),
+          Type.Literal("monospace-slab-serif", { title: "Monospace slab serif" }),
+          Type.Literal("monospace-code", { title: "Monospace code" }),
+          Type.Literal("industrial", { title: "Industrial" }),
+          Type.Literal("rounded-sans", { title: "Rounded sans" }),
+          Type.Literal("slab-serif", { title: "Slab serif" }),
+          Type.Literal("antique", { title: "Antique" }),
+          Type.Literal("didone", { title: "Didone" }),
+          Type.Literal("handwritten", { title: "Handwritten" }),
+        ],
+        {
+          title: "Body font",
+          description: "Used for paragraphs and body text",
+          default: "system-ui",
+        },
+      ),
     }),
 
     // Custom fonts with their ref-name and url
@@ -118,11 +156,10 @@ const theme = Type.Object(
   },
   {
     $id: "Theme",
-    title: "Theme",
   },
 );
 
-export type Theme = Static<typeof theme>;
+export type Theme = Static<typeof themeSchema>;
 
 /**
  * Define one or more custom themes

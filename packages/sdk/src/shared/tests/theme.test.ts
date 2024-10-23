@@ -5,6 +5,7 @@ describe("Theme test suite", () => {
   describe("defineCustomThemes", () => {
     it("should define a custom theme", () => {
       const [theme] = defineCustomThemes({
+        id: "dark",
         name: "Dark",
         description: "A dark theme",
         colors: {

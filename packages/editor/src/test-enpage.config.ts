@@ -84,7 +84,6 @@ export const manifest = defineManifest({
 export const containers = defineContainers([
   {
     type: "container",
-    variant: "full",
     bricks: [
       {
         type: "image",
@@ -97,20 +96,19 @@ export const containers = defineContainers([
   },
   {
     type: "container",
-    variant: "full",
     bricks: [
       {
         type: "hero",
         props: {
           content: "Build your launch page",
-          justify: "text-center",
+          justify: "text-center font-humanist",
         },
+        wrapper: { baseClasses: "primary-5", customClasses: "tertiary-5" },
       },
     ],
   },
   {
     type: "container",
-    variant: "full",
     bricks: [
       {
         type: "text",
@@ -120,13 +118,12 @@ export const containers = defineContainers([
           justify: "text-center",
           format: "html",
         },
-        wrapper: { customClasses: "brick-pink" },
+        wrapper: { customClasses: "secondary-2" },
       },
     ],
   },
   {
     type: "container",
-    variant: "2-1",
     bricks: [
       {
         type: "text-with-title",
@@ -142,7 +139,6 @@ export const containers = defineContainers([
   },
   {
     type: "container",
-    variant: "1-2",
     bricks: [
       {
         type: "text",
@@ -150,26 +146,99 @@ export const containers = defineContainers([
           content: "First",
         },
         wrapper: {
-          customClasses: "brick-primary",
+          customClasses: "primary-1",
         },
         position: {
           colStart: 1,
-          colEnd: 7,
+          colEnd: 2,
         },
       },
       {
         type: "text",
         props: { content: "Second" },
         position: {
-          colStart: 7,
-          colEnd: 10,
+          colStart: 2,
+          colEnd: 3,
+        },
+        wrapper: {
+          customClasses: "primary-2",
         },
       },
       {
         type: "text",
         props: { content: "Third" },
         position: {
-          colStart: 10,
+          colStart: 3,
+          colEnd: 4,
+        },
+        wrapper: {
+          customClasses: "primary-3",
+        },
+      },
+      {
+        type: "text",
+        props: { content: "Third" },
+        position: {
+          colStart: 4,
+          colEnd: 5,
+        },
+        wrapper: {
+          customClasses: "primary-4",
+        },
+      },
+      {
+        type: "text",
+        props: { content: "4th" },
+        position: {
+          colStart: 5,
+          colEnd: 6,
+        },
+        wrapper: {
+          customClasses: "primary-5",
+        },
+      },
+      {
+        type: "text",
+        props: { content: "5th" },
+        position: {
+          colStart: 6,
+          colEnd: 7,
+        },
+        wrapper: {
+          customClasses: "primary-6",
+        },
+      },
+      {
+        type: "text",
+        props: { content: "6th" },
+        position: {
+          colStart: 7,
+          colEnd: 8,
+        },
+        wrapper: {
+          customClasses: "primary-7",
+        },
+      },
+      {
+        type: "text",
+        props: { content: "7th" },
+        position: {
+          colStart: 8,
+          colEnd: 9,
+        },
+        wrapper: {
+          customClasses: "primary-8",
+        },
+      },
+      {
+        type: "text",
+        props: { content: "8th" },
+        position: {
+          colStart: 9,
+          colEnd: 10,
+        },
+        wrapper: {
+          customClasses: "primary-9",
         },
       },
     ],

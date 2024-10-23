@@ -2,8 +2,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import type { GenericPageConfig } from "~/shared/page-config.ts";
+import { setupTwindReact } from "../twind";
 
 // import "../twind";
+setupTwindReact();
 
 export default async function main() {
   // @ts-ignore

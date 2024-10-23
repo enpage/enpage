@@ -1,6 +1,7 @@
 /* Inspired by https://gist.github.com/jarthod/8719db9fef8deb937f4f */
 .desktop {
-  @apply h-full w-full;
+  height: 100%;
+  width: 100%;
 }
 
 .handled {
@@ -11,16 +12,19 @@
   outline: 14px solid #000;
   border-radius: 24px;
   margin-block: auto;
-  @apply overflow-auto;
+  overflow: auto;
 }
 
 .tablet{
-  @apply h-[94dvh] max-h-[1024px] aspect-[1024/1366];
+  height: 94dvh;
+  max-height: 1024px;
+  aspect-ratio: 1024/1366;
 }
 
 .mobile {
-  /* max-sm:w-[86dvw] md:w-[390px]*/
-  @apply h-[70dvh] max-h-[800px] aspect-[9/19.5];
+  height: 70dvh;
+  max-height: 800px;
+  aspect-ratio: 9/19.5;
 }
 
 

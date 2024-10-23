@@ -60,14 +60,14 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
     }
   }, [editor.previewMode, editor.setPreviewMode, isDesktop]);
 
-  // bg-primary-600
-  const baseCls = `bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.15)] border-y border-t-primary-400 border-b-primary-700`;
+  // bg-upstart-600
+  const baseCls = `bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.15)] border-y border-t-upstart-400 border-b-upstart-700`;
   const commonCls = `${baseCls}
     w-full
-    disabled:hover:from-primary-600 disabled:hover:to-primary-600/80
-    hover:from-primary-700 hover:to-white/10
-    active:from-primary-800 active:to-transparent
-    disabled:text-white/40 disabled:hover:border-t-primary-400 disabled:hover:from-transparent disabled:hover:to-white/10
+    disabled:hover:from-upstart-600 disabled:hover:to-upstart-600/80
+    hover:from-upstart-700 hover:to-white/10
+    active:from-upstart-800 active:to-transparent
+    disabled:text-white/40 disabled:hover:border-t-upstart-400 disabled:hover:from-transparent disabled:hover:to-white/10
   `;
 
   const rocketBtn = `bg-gradient-to-tr from-orange-500 to-yellow-400 border-y border-t-orange-200 border-b-orange-600
@@ -77,7 +77,7 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
 
   const btnClass = `flex items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`;
 
-  const tooltipCls = `absolute py-0.5 px-2.5 bg-primary-600/60 left-[calc(100%+.5rem)]
+  const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/60 left-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-x-1.5
   group-hover:block group-hover:opacity-100 group-hover:translate-x-0 text-nowrap whitespace-nowrap pointer-events-none`;
 
@@ -87,11 +87,11 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
     <nav
       role="toolbar"
       className={tx(
-        `bg-primary-600 z-[9999]
+        `bg-upstart-600 z-[9999]
           flex flex-col w-[3.7rem] text-xl text-white
-          border-r border-primary-500`,
+          border-r border-upstart-500`,
         {
-          "shadow-[5px_0px_25px_3px_rgba(0,0,0,0.2)]": !editor.libraryVisible && !editor.selectedBrick,
+          "shadow-[5px_0px_25px_3px_rgba(0,0,0,0.2)]": !editor.panel,
         },
       )}
     >
@@ -107,12 +107,12 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
         <span className={tooltipCls}>Back to dashboard</span>
       </button>
 
-      <div className={tx("flex-1", "border-t-primary-400", baseCls)} />
+      <div className={tx("flex-1", "border-t-upstart-400", baseCls)} />
 
       <button
         type="button"
         disabled={false}
-        onClick={editor.toggleLibraryVisible}
+        onClick={() => editor.togglePanel("library")}
         className={tx(btnClass, commonCls)}
       >
         <LuPlus className="h-7 w-auto" />
@@ -148,7 +148,7 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
         <span className={tooltipCls}>Switch View</span>
       </button>
 
-      <button type="button" className={tx(btnClass, commonCls)} onClick={() => {}}>
+      <button type="button" className={tx(btnClass, commonCls)} onClick={() => editor.togglePanel("theme")}>
         <LuPalette className="h-7 w-auto" />
         <span className={tooltipCls}>Color theme</span>
       </button>
@@ -175,7 +175,7 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
         </button>
       </ToolbarMenu>
 
-      <div className={tx("flex-1", "border-t-primary-400", baseCls)} />
+      <div className={tx("flex-1", "border-t-upstart-400", baseCls)} />
     </nav>
   );
 }
@@ -210,7 +210,7 @@ function ToolbarMenu(props: PropsWithChildren<{ items: ToolbarMenuItems }>) {
                 onClick={item.onClick}
                 type="button"
                 className="group flex justify-start items-center text-nowrap rounded-[inherit]
-                py-1.5 w-fulldark:text-white/90 text-left data-[focus]:bg-primary-600 data-[focus]:text-white "
+                py-1.5 w-fulldark:text-white/90 text-left data-[focus]:bg-upstart-600 data-[focus]:text-white "
               >
                 <span className="pr-3">{item.label}</span>
                 {item.shortcut && (

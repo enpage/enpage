@@ -41,7 +41,7 @@ type Props = {
 };
 
 const toolbarBtnCls =
-  "first:rounded-l  last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-primary-100 leading-none data-[state=on]:(bg-primary-500 text-white)";
+  "first:rounded-l  last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-upstart-100 leading-none data-[state=on]:(bg-upstart-500 text-white)";
 
 const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = false }: Props) => {
   const mainEditor = useEditor();
@@ -102,7 +102,7 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
       {/* <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-          <div className="bubble-menu h-10 flex gap-3 p-1 bg-primary-300 shadow-lg rounded">
+          <div className="bubble-menu h-10 flex gap-3 p-1 bg-upstart-300 shadow-lg rounded">
             <div className="flex gap-1">
               <button
                 type="button"
@@ -141,7 +141,7 @@ const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) 
     <div
       ref={ref}
       className={tx(
-        "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-primary-400/75 to-primary-200/75 \
+        "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
         shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
         {
           "scale-90 opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
@@ -160,7 +160,7 @@ const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) 
 function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x divide-primary-300 rounded bg-primary-200 shadow-sm"
+      className="inline-flex space-x-px divide-x divide-upstart-300 rounded bg-upstart-200 shadow-sm"
       type="single"
       value={editor.isActive("textAlign") ? editor.getAttributes("textAlign").alignment : undefined}
       aria-label="Text align"
@@ -200,7 +200,7 @@ function TextAlignButtonGroup({ editor }: { editor: Editor }) {
 function TextStyleButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x divide-primary-300 rounded bg-primary-200 shadow-sm"
+      className="inline-flex space-x-px divide-x divide-upstart-300 rounded bg-upstart-200 shadow-sm"
       type="multiple"
       value={
         [

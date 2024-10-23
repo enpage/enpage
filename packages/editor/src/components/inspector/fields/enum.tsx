@@ -1,6 +1,8 @@
 import type { FieldProps } from "@rjsf/utils";
-import { SegmentedControl } from "@enpage/style-system";
+import { SegmentedControl, Slider } from "@enpage/style-system";
 import clsx from "clsx";
+import { tx } from "@enpage/sdk/browser/twind";
+import { BiMinus } from "react-icons/bi";
 
 interface EnumOption {
   const: string;
@@ -12,8 +14,6 @@ interface EnumOption {
 const EnumField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData: currentValue, onChange, required } = props;
 
-  console.log("EnumField", { schema, uiSchema, currentValue, onChange, required });
-
   // Extract options from the schema
   const options: EnumOption[] =
     (schema.anyOf ?? schema.oneOf)?.map((option: any) => ({
@@ -21,6 +21,8 @@ const EnumField: React.FC<FieldProps> = (props) => {
       title: option.title || option.const,
       description: option.description || "",
       icon: option.icon || "",
+      min: option.minimum,
+      max: option.maximum,
     })) || [];
 
   const displayAs: "select" | "radio" | "button-group" | "icon-group" =
@@ -51,7 +53,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
                     checked={currentValue === option.const}
                     onChange={onChange(option.const)}
                     required={required}
-                    className="form-radio mr-1 text-primary-600 ring-primary-600 focus:ring-transparent"
+                    className="form-radio mr-1 text-upstart-600 ring-upstart-600 focus:ring-transparent"
                   />
                   <span className="font-medium">{option.title}</span>
                 </label>
@@ -73,37 +75,20 @@ const EnumField: React.FC<FieldProps> = (props) => {
             onValueChange={onChange}
             defaultValue={currentValue}
             size="1"
-            variant="classic"
-            className="w-full"
+            className="w-full !max-w-full"
             radius="full"
           >
             {options.map((option) => (
-              <SegmentedControl.Item key={option.const} value={option.const}>
+              <SegmentedControl.Item
+                key={option.const}
+                value={option.const}
+                className={tx("[&_.rt-SegmentedControlItemLabel]:px-1")}
+              >
                 {option.title}
               </SegmentedControl.Item>
             ))}
           </SegmentedControl.Root>
         </div>
-        // <div className="enum-field">
-        //   {fieldTitle && <label className="control-label">{fieldTitle}</label>}
-        //   {fieldDescription && <p className="field-description">{fieldDescription}</p>}
-        //   <div className="flex divide-x divide-white dark:divide-dark-500">
-        //     {options.map((option) => (
-        //       <button
-        //         key={option.const}
-        //         type="button"
-        //         className={clsx(`text-sm first:rounded-l last:rounded-r py-0.5 px-1.5 flex-1`, {
-        //           "bg-primary-600 text-white": formData === option.const,
-        //           "bg-gray-200 hover:bg-gray-300 dark:bg-dark-600 dark:hover:bg-dark-500 text-gray-800 dark:text-white/50":
-        //             formData !== option.const,
-        //         })}
-        //         onClick={() => onChange(option.const)}
-        //       >
-        //         {option.title}
-        //       </button>
-        //     ))}
-        //   </div>
-        // </div>
       );
 
     case "icon-group":
@@ -119,7 +104,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
                 className={clsx(
                   `text-sm first:rounded-l last:rounded-r py-0.5 flex-1 flex items-center justify-center`,
                   {
-                    "bg-primary-600 text-white": currentValue === option.const,
+                    "bg-upstart-600 text-white": currentValue === option.const,
                     "bg-gray-200 hover:bg-gray-300 dark:bg-dark-600 dark:hover:bg-dark-500 text-gray-500 dark:text-white/50":
                       currentValue !== option.const,
                   },
@@ -137,7 +122,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
         </div>
       );
 
-    case "select":
+    default:
       return (
         <div className="enum-field">
           {fieldTitle && <label className="control-label">{fieldTitle}</label>}
@@ -157,28 +142,6 @@ const EnumField: React.FC<FieldProps> = (props) => {
         </div>
       );
   }
-
-  return (
-    <div className="enum-field">
-      {fieldTitle && <label className="control-label">{fieldTitle}</label>}
-      {fieldDescription && <p className="field-description">{fieldDescription}</p>}
-      {options.map((option) => (
-        <div key={option.const} className="radio">
-          <label>
-            <input
-              type="radio"
-              value={option.const}
-              checked={currentValue === option.const}
-              onChange={() => onChange(option.const)}
-              required={required}
-            />
-            {option.title}
-          </label>
-          {option.description && <p className="help-block">{option.description}</p>}
-        </div>
-      ))}
-    </div>
-  );
 };
 
 export default EnumField;

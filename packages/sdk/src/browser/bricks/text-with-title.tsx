@@ -50,7 +50,7 @@ export const manifest = defineBrickManifest({
     ),
     titleJustify: editableTextProps.justify,
     ...editableTextProps,
-    ...getCommonBrickProps("p-1"),
+    ...getCommonBrickProps(),
   }),
 });
 
@@ -68,7 +68,7 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
     titleClassName,
     titleLevel,
     textEditable,
-    brickId,
+    id,
     ...attrs
   } = props;
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
@@ -85,15 +85,15 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
           <TitleTag className={tx(titleClassName, titleJustify)}>
             <TextEditor
               initialContent={DOMPurify.sanitize(title)}
-              onUpdate={createTextEditorUpdateHandler(brickId, "title")}
-              brickId={brickId}
+              onUpdate={createTextEditorUpdateHandler(id, "title")}
+              brickId={id}
             />
           </TitleTag>
           <div className={tx(className, justify)}>
             <TextEditor
               initialContent={DOMPurify.sanitize(content)}
-              onUpdate={createTextEditorUpdateHandler(brickId)}
-              brickId={brickId}
+              onUpdate={createTextEditorUpdateHandler(id)}
+              brickId={id}
             />
           </div>
         </>

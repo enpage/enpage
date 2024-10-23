@@ -7,34 +7,36 @@ import { temporal } from "zundo";
 import type { ResponsiveMode } from "~/shared/responsive";
 import invariant from "~/shared/utils/invariant";
 import type { Brick, BricksContainer } from "~/shared/bricks";
+import type { Theme } from "~/shared/theme";
+import { themes } from "~/shared/themes/all-themes";
 export { type Immer } from "immer";
 
 export interface EditorStateProps {
   enabled: boolean;
   previewMode?: ResponsiveMode;
-  libraryVisible: boolean;
   editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   isEditingTextForBrickId?: string;
   isResizingForContainerId?: string;
+  panel?: "library" | "inspector" | "theme";
 }
 
 export interface EditorState extends EditorStateProps {
   setPreviewMode: (mode: ResponsiveMode) => void;
-  setLibraryVisible: (visible: boolean) => void;
-  toggleLibraryVisible: () => void;
   setSettingsVisible: (visible: boolean) => void;
-  toggleSettingsVisible: () => void;
+  toggleSettings: () => void;
   setEditingPageIndex: (index: number) => void;
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
   setIsResizing: (forContainerid: string | false) => void;
+  setPanel: (panel?: EditorStateProps["panel"]) => void;
+  togglePanel: (panel: EditorStateProps["panel"]) => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
-  const DEFAULT_PROPS: EditorStateProps = { libraryVisible: false, editingPageIndex: 0, enabled: true };
+  const DEFAULT_PROPS: EditorStateProps = { editingPageIndex: 0, enabled: true };
 
   return createStore<EditorState>()(
     temporal(
@@ -42,14 +44,6 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
         immer((set, _get) => ({
           ...DEFAULT_PROPS,
           ...initProps,
-          setLibraryVisible: (visible) =>
-            set((state) => {
-              state.libraryVisible = visible;
-            }),
-          toggleLibraryVisible: () =>
-            set((state) => {
-              state.libraryVisible = !state.libraryVisible;
-            }),
           setPreviewMode: (mode) =>
             set((state) => {
               state.previewMode = mode;
@@ -58,7 +52,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             set((state) => {
               state.settingsVisible = visible;
             }),
-          toggleSettingsVisible: () =>
+          toggleSettings: () =>
             set((state) => {
               state.settingsVisible = !state.settingsVisible;
             }),
@@ -69,6 +63,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           setSelectedBrick: (brick) =>
             set((state) => {
               state.selectedBrick = brick;
+              state.panel = brick ? "inspector" : state.panel;
             }),
           deselectBrick: (brickId) =>
             set((state) => {
@@ -84,6 +79,14 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             set((state) => {
               state.isResizingForContainerId = forContainerId || undefined;
             }),
+          setPanel: (panel) =>
+            set((state) => {
+              state.panel = panel;
+            }),
+          togglePanel: (panel) =>
+            set((state) => {
+              state.panel = state.panel === panel ? undefined : panel;
+            }),
         })),
         {
           name: "editor-state",
@@ -94,7 +97,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                 ([key]) =>
                   ![
                     "selectedBrick",
-                    "libraryVisible",
+                    "panel",
                     "previewMode",
                     "isResizingForContainerId",
                     "isEditingTextForBrickId",
@@ -111,6 +114,8 @@ type EditorStore = ReturnType<typeof createEditorStore>;
 
 export interface DraftStateProps {
   containers: BricksContainer[];
+  theme: Theme;
+  previewTheme?: Theme;
 }
 
 export interface DraftState extends DraftStateProps {
@@ -122,12 +127,16 @@ export interface DraftState extends DraftStateProps {
   toggleContainerVisibility: (id: string) => void;
   getBrick: (id: string) => Brick | undefined;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
+  updateBrickProps: (id: string, props: Record<string, unknown>) => void;
+  setPreviewTheme: (theme: Theme) => void;
+  validatePreviewTheme: () => void;
+  cancelPreviewTheme: () => void;
   save(): Promise<void>;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
 export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
-  const DEFAULT_PROPS: DraftStateProps = { containers: [] };
+  const DEFAULT_PROPS: DraftStateProps = { containers: [], theme: themes[0] };
   return createStore<DraftState>()(
     temporal(
       persist(
@@ -166,6 +175,17 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
                 b.id === id ? { ...b, ...brick } : b,
               );
             }),
+          updateBrickProps: (id, props) =>
+            set((state) => {
+              // get the container
+              const containerIndex = state.containers.findIndex((item) =>
+                item.bricks.some((b) => b.id === id),
+              );
+              state.containers[containerIndex].bricks = state.containers[containerIndex].bricks.map((b) =>
+                b.id === id ? { ...b, props: { ...b.props, ...props } } : b,
+              );
+            }),
+
           getContainers: () => {
             return _get().containers;
           },
@@ -180,6 +200,21 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
               .containers.flatMap((c) => c.bricks)
               .find((b) => b.id === id);
           },
+          setPreviewTheme: (theme) =>
+            set((state) => {
+              state.previewTheme = theme;
+            }),
+          validatePreviewTheme: () =>
+            set((state) => {
+              if (state.previewTheme) {
+                state.theme = state.previewTheme;
+              }
+              state.previewTheme = undefined;
+            }),
+          cancelPreviewTheme: () =>
+            set((state) => {
+              state.previewTheme = undefined;
+            }),
         })),
         {
           name: "draft-state",

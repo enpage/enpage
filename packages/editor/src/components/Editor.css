@@ -1,7 +1,0 @@
-/* @import "@enpage/style-system/ui.css"; */
-
-html, body {
-  overscroll-behavior: none;
-  @apply text-gray-900 dark:text-white/90 bg-gradient-to-tr from-gray-300 to-gray-200 dark:from-dark-950 dark:to-dark-900;
-
-}

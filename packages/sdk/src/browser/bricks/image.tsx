@@ -34,7 +34,7 @@ export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
 const Image = forwardRef<HTMLImageElement, Manifest["props"] & ComponentProps<"img">>((props, ref) => {
-  const { alt, className, brickId, ...attrs } = { ...Value.Create(manifest).props, ...props };
+  const { alt, className, id, ...attrs } = { ...Value.Create(manifest).props, ...props };
   return <img {...attrs} ref={ref} alt={alt} className={tx(className)} />;
 });
 

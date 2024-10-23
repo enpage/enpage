@@ -6,6 +6,7 @@ import presetLineClamp from "@twind/preset-line-clamp";
 import presetForms from "@twind/preset-tailwind-forms";
 import presetTypo from "@twind/preset-typography";
 import presetContainerQueries from "@twind/preset-container-queries";
+import { modularScale } from "polished";
 
 export default defineConfig({
   presets: [
@@ -29,6 +30,26 @@ export default defineConfig({
         gridColumn: "1 / span 12",
       },
     ],
+    [
+      // specific padding classes for bricks
+      "brick-p-",
+      ({ $$ }) => ({ padding: `${$$ === "1" ? "1px" : $$ === "0" ? "0" : `${modularScale(+$$, "1rem")}`}` }),
+    ],
+    ["bg-primary-", ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})` })],
+    ["bg-secondary-", ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})` })],
+    ["bg-tertiary-", ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})` })],
+    [
+      "primary-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})`, color: `var(--text-primary-${$$})` }),
+    ],
+    [
+      "secondary-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})`, color: `var(--text-secondary-${$$})` }),
+    ],
+    [
+      "tertiary-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})`, color: `var(--text-tertiary-${$$})` }),
+    ],
     ["brick-light-", ({ $$ }) => `bg-${$$}-300 text-${$$}-50`],
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],
@@ -37,7 +58,8 @@ export default defineConfig({
     ["hero-3", { fontSize: "clamp(2.25rem, 2vw + 1.5rem, 3.25rem)", lineHeight: "1.25" }],
     ["hero-4", { fontSize: "clamp(2.5rem, 2.25vw + 1.625rem, 3.625rem)", lineHeight: "1.25" }],
     ["hero-5", { fontSize: "clamp(2.75rem, 2.5vw + 1.75rem, 4rem)", lineHeight: "1.25" }],
-
+    ["scrollbar-thin", { scrollbarWidth: "thin" }],
+    ["scrollbar-color-", ({ $$ }) => ({ scrollbarColor: `var(--${$$}-6) var(--${$$}-surface)` })],
     [
       "button",
       {
@@ -74,7 +96,7 @@ export default defineConfig({
   theme: {
     extend: {
       colors: {
-        primary: {
+        upstart: {
           50: "#f2f4fb",
           100: "#e7ecf8",
           200: "#d3daf2",

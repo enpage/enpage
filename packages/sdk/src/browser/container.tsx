@@ -39,9 +39,9 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(
       "brick-container relative transition-all duration-100 max-sm:(flex flex-col gap-y-1)",
 
       {
-        "rounded z-[9999] ring ring-primary-200 ring-offset-4 shadow-xl bg-primary-500 bg-opacity-30":
+        "rounded z-[9999] ring ring-upstart-200 ring-offset-4 shadow-xl bg-upstart-500 bg-opacity-30":
           overlay,
-        "hasChildMenudHover:(rounded outline outline-2 outline-primary-200/70 outline-offset-4 outline-dashed z-50)":
+        "hasChildMenudHover:(rounded outline outline-2 outline-upstart-200/70 outline-offset-4 outline-dashed z-50)":
           !overlay && !placeholder && !hidden && !resizing,
 
         // "bg-black/50 rounded": placeholder,
@@ -229,8 +229,8 @@ const ContainerDragHandle = forwardRef<HTMLDivElement, ContainerDragHandleProps>
         "container-handle",
         tx(
           "text-white shadow-sm transition-opacity duration-300 \
-          -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 rounded flex items-center justify-center cursor-grab",
-          "group-hover:(opacity-70) hover:!opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
+          -left-8 h-8 w-8 bg-upstart-400 hover:bg-upstart-500 rounded flex items-center justify-center cursor-grab",
+          "group-hover:(opacity-70) hover:!opacity-100 border-2 border-upstart-400 hover:border-upstart-400 ",
           { "opacity-100": forceVisible },
         ),
       )}
@@ -285,14 +285,14 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
           "container-menu-button",
           tx(
             "text-white shadow-sm transition-opacity duration-300 \
-            -left-8 h-8 w-8 bg-primary-400 hover:bg-primary-500 rounded flex items-center justify-center",
-            "group-hover:(opacity-70) hover:!opacity-100 border-2 border-primary-400 hover:border-primary-400 ",
+            -left-8 h-8 w-8 bg-upstart-400 hover:bg-upstart-500 rounded flex items-center justify-center",
+            "group-hover:(opacity-70) hover:!opacity-100 border-2 border-upstart-400 hover:border-upstart-400 ",
             { "opacity-100": forceVisible },
           ),
         )}
       >
         {/* <IoSettingsOutline className={tx("w-5 h-5 mx-auto select-none")} /> */}
-        <BiDotsVerticalRounded className="w-5 h-5 group-hover/button:text-primary-600 select-none mx-auto" />
+        <BiDotsVerticalRounded className="w-5 h-5 group-hover/button:text-upstart-600 select-none mx-auto" />
       </MenuButton>
       <MenuItems
         anchor="bottom"
@@ -302,14 +302,14 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
       >
         <MenuItem
           as="button"
-          className={tx("px-2 py-1.5 block hover:bg-primary-100 text-left")}
+          className={tx("px-2 py-1.5 block hover:bg-upstart-100 text-left")}
           onClick={() => draft.toggleContainerVisibility(container.id)}
         >
           {container.hidden ? "Show" : "Hide"} container
         </MenuItem>
         <MenuItem
           as="button"
-          className={tx("px-2 py-1.5 block hover:bg-primary-100 text-left")}
+          className={tx("px-2 py-1.5 block hover:bg-upstart-100 text-left")}
           onClick={() => draft.deleteContainer(container.id)}
         >
           Delete row
@@ -319,7 +319,7 @@ function ContainerMenu({ forceVisible, bricksCount, container }: ContainerMenuPr
             <MenuSeparator className={tx("my-1 h-px bg-gray-200")} />
             <MenuItem
               as="button"
-              className={tx("px-2 py-1.5 block hover:bg-primary-100 text-left")}
+              className={tx("px-2 py-1.5 block hover:bg-upstart-100 text-left")}
               onClick={() => addColumn()}
             >
               Add column

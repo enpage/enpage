@@ -46,7 +46,7 @@ const BrickComponent = ({
 
   return (
     <Suspense>
-      <BrickModule {...rest} {...otherProps} brickId={brick.id} />
+      <BrickModule id={brick.id} {...rest} {...otherProps} />
     </Suspense>
   );
 };
@@ -137,7 +137,7 @@ function DragabbleBrickWrapper({
         // DO NOT put transition classes here, they will make it flickering when dragging ends
         "relative cursor-auto focus:cursor-grab group/brick text-left",
         {
-          "hover:(outline outline-primary-200 outline-dotted)": !((active?.id as string) ?? "")?.startsWith(
+          "hover:(outline outline-upstart-200 outline-dotted)": !((active?.id as string) ?? "")?.startsWith(
             "resize-handle",
           ),
         },
@@ -227,10 +227,10 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
               {
                 "!opacity-0": !open,
               },
-              "transition-all duration-300 group/button bg-primary-600 group-hover/brick:!opacity-100 active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-primary-200/75 hover:!bg-primary-300 !px-0.5",
+              "transition-all duration-300 group/button bg-upstart-600 group-hover/brick:!opacity-100 active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-upstart-200/75 hover:!bg-upstart-300 !px-0.5",
             )}
           >
-            <BiDotsVerticalRounded className="w-6 h-6 text-primary-500 group-hover/button:text-primary-600" />
+            <BiDotsVerticalRounded className="w-6 h-6 text-upstart-500 group-hover/button:text-upstart-600" />
           </IconButton>
         </div>
       </DropdownMenu.Trigger>
@@ -279,14 +279,14 @@ export const BrickResizeHandle = forwardRef<
       ref={ref}
       {...attrs}
       className={tx(
-        "group !cursor-col-resize absolute z-[9999] text-primary-400 w-2.5 rounded-sm items-center justify-center shadow-xl",
-        // "group-hover:(border border-primary-400 text-primary-400)",
-        "transition-opacity duration-200 group-hover:(bg-primary-300 opacity-70) hover:(!opacity-100)",
+        "group !cursor-col-resize absolute z-[9999] text-upstart-400 w-2.5 rounded-sm items-center justify-center shadow-xl",
+        // "group-hover:(border border-upstart-400 text-upstart-400)",
+        "transition-opacity duration-200 group-hover:(bg-upstart-300 opacity-70) hover:(!opacity-100)",
         {
           "hidden group-hover:(flex flex-col)": !overlay,
           "-right-1.5 top-[10%] bottom-[10%]": !overlay && handleType === "right",
           "-left-1.5 top-[10%] bottom-[10%]": !overlay && handleType === "left",
-          "flex flex-col bg-primary-400": overlay,
+          "flex flex-col bg-upstart-400": overlay,
         },
         className,
       )}
@@ -315,8 +315,8 @@ export function BrickOverlay({
     <div
       className={tx(
         apply(
-          "brick rounded overflow-hidden z-[9999] outline outline-primary-400 shadow-lg bg-white/40 cursor-grabbing transition-all duration-150",
-          // "brick rounded overflow-hidden z-[9999] ring ring-primary-400 ring-opacity-80 ring-offset-3 shadow-lg bg-white/40",
+          "brick rounded overflow-hidden z-[9999] outline outline-upstart-400 shadow-lg bg-white/40 cursor-grabbing transition-all duration-150",
+          // "brick rounded overflow-hidden z-[9999] ring ring-upstart-400 ring-opacity-80 ring-offset-3 shadow-lg bg-white/40",
         ),
         className,
         getBrickDefinedClass(brick),
@@ -341,5 +341,14 @@ export function getBrickWrapperClass(brick: Brick, containerIndex: number) {
 }
 
 function getBrickDefinedClass(brick: Brick) {
-  return [brick.wrapper.baseClasses, brick.wrapper.customClasses];
+  return [
+    // test of transitions - remove if flickering
+    "transition-all duration-300 ease-in-out",
+
+    // end test
+    apply(brick.wrapper.baseClasses),
+    apply(brick.wrapper.customClasses),
+    brick.props.brickRounding as string,
+    brick.props.brickPadding ? `brick-p-${brick.props.brickPadding}` : null,
+  ];
 }

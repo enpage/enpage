@@ -42,7 +42,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
               key={option}
               type="button"
               className={clsx(`text-sm first:rounded-l last:rounded-r py-0.5 flex-1 capitalize`, {
-                "bg-primary-600 text-white": preset === option,
+                "bg-upstart-600 text-white": preset === option,
                 "bg-gray-200 hover:bg-gray-300 dark:bg-dark-600 dark:hover:bg-dark-500 text-gray-800 dark:text-white/50":
                   preset !== option,
               })}
@@ -61,7 +61,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
               defaultValue={formData}
               onChange={(e) => onChange(e.target.value)}
               required={required}
-              className="form-input ring-primary-600 focus:ring-transparent pr-2"
+              className="form-input ring-upstart-600 focus:ring-transparent pr-2"
             />
             <select
               onChange={(e) => onChange(e.target.value)}
