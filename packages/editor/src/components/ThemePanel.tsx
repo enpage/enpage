@@ -27,6 +27,7 @@ export default function ThemePanel() {
 
     const promises = new Array(GEN_THEME_PARALLEL).fill(0).map(() => {
       return generateThemeWithAI(themeDescription).then((theme) => {
+        if (!theme) return;
         totalGenerated.current += 1;
         const themeWithId = { ...theme, id: nanoid(), name: `Generated #${totalGenerated.current}` };
         setGeneratedThemes((prevThemes) => [...prevThemes, themeWithId]);
@@ -208,11 +209,19 @@ function ThemePreview({ theme }: { theme: Theme }) {
   );
 }
 
-async function generateThemeWithAI(query: string, url = "https://test-matt-ai.flippable.workers.dev/") {
+async function generateThemeWithAI(
+  query: string,
+  url = "https://test-matt-ai.flippable.workers.dev/",
+): Promise<Theme | null> {
   const urlObj = new URL(url);
   urlObj.searchParams.append("q", query);
   const abortCtrl = new AbortController();
   const resp = await fetch(urlObj, { signal: abortCtrl.signal });
-  const text = await resp.json();
-  return text;
+  try {
+    const json = await resp.json();
+    return json;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
