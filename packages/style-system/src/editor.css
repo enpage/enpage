@@ -22,8 +22,8 @@ it will capture clicks events instead of its children
   user-select: none;
   transition:
     opacity 0.2s,
-    scale 0.2s;
-  scale: 0.94;
+    scale 150ms;
+  scale: 0.96;
   text-shadow: none;
 }
 
@@ -36,22 +36,23 @@ it will capture clicks events instead of its children
   justify-content: center;
   content: attr(ep-label) " ";
   min-width: 3rem;
-  height: 1.7rem;
+  height: 1.6rem;
   color: #fff;
   background-color: #8f93d8;
-  padding: 0.3rem 0.7rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 0.5rem 0.5rem 0 0;
-  font-size: 1rem;
+  font-size: .85rem;
   font-weight: 400;
   left: 2px;
   bottom: calc(100% + 3px);
   user-select: none;
   transition:
     opacity 0.2s,
-    scale 0.2s;
-  scale: 0.94;
+    scale 150ms;
+  scale: 0.96;
   text-transform: capitalize;
   text-shadow: none;
+  cursor: move;
 }
 
 [ep-block-type="site-background"]::before {
@@ -60,11 +61,12 @@ it will capture clicks events instead of its children
   transition-delay: 100ms;
   scale: 1 !important;
 }
+
 [ep-block-type="site-background"]::after {
-  bottom: calc(100% - 1.7rem - 2px);
+  bottom: 2px;
   left: unset;
   right: 2px;
-  border-radius: 0.5rem 0 0.5rem 0;
+  border-radius: 0.5rem 0 0 0 !important;
   transition-delay: 100ms;
   scale: 1 !important;
   border-radius: 0 0 0 0.5rem !important;
@@ -84,7 +86,7 @@ it will capture clicks events instead of its children
 [ep-editable]:focus::before,
 [ep-editable]:hover:not(:has(*:hover))::after,
 [ep-editable]:focus::after {
-  opacity: 1;
+  opacity: .9;
   scale: 1;
 }
 
@@ -123,8 +125,45 @@ it will capture clicks events instead of its children
   }
 }
 
-[ep-container]:hover > * {
-  outline: 2px dashed rgba(255, 255, 255, 0.2);
+[ep-container]:hover * {
+  outline: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 0.2rem;
+}
+
+
+.resize-handle {
+  position: absolute;
+  z-index: 9999;
+  overflow: visible;
+  outline: none !important;
+  opacity: 0;
+  background-color: rgba(114, 112, 198, 0.5);
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.handle-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.handle-right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+}
+
+
+.handle-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
 }
 
 /* dnd-styles.css */

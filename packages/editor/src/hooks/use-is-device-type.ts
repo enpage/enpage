@@ -1,5 +1,5 @@
 import { useMediaQuery } from "usehooks-ts";
-import { useEditor } from "./use-editor-store";
+import { useEditor } from "@enpage/sdk/browser/use-editor";
 import { useEffect } from "react";
 
 export function useIsMobileDevice() {
@@ -12,7 +12,7 @@ export function useIsTabletDevice() {
 }
 
 export function useIsLargeDevice() {
-  return useMediaQuery("(min-device-width: 1367px)");
+  return useMediaQuery("(min-device-width: 1367px)", { initializeWithValue: true });
 }
 
 export function usePreviewModeInit() {

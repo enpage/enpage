@@ -53,12 +53,12 @@ app.use("*", async (req, res) => {
 
     const html = template
       .replace(`<!--app-head-->`, rendered.head ?? "")
-      .replace(`<!--app-html-->`, rendered.html ?? "")
-      .replace(`<!--app-state-->`, rendered.state ?? "");
+      .replace(`<!--app-html-->`, rendered.html ?? "");
 
     res.status(200).set({ "Content-Type": "text/html" }).send(html);
   } catch (e) {
     vite?.ssrFixStacktrace(e);
+    console.log(e.stack);
     res.status(500).end(e.message);
   }
 });
