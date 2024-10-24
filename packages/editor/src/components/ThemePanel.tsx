@@ -10,34 +10,40 @@ import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
 import { useDraft } from "@enpage/sdk/browser/use-editor";
 import { ColorFieldRow } from "./inspector/fields/color";
 
+const GEN_THEME_PARALLEL = 5;
+
 export default function ThemePanel() {
   const draft = useDraft();
   const [themeDescription, setThemeDescription] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThemes, setGeneratedThemes] = useState<Theme[]>([]);
-  const abortRef = useRef<AbortController | undefined>();
+  const totalGenerated = useRef(0);
 
   const generateTheme = useCallback(async () => {
     if (!themeDescription) {
       return;
     }
     setIsGenerating(true);
-    abortRef.current = await generateThemeWithAI(
-      themeDescription,
-      // (theme) => {
-      //   const themeWithId = { ...theme, id: nanoid() };
-      //   const name = themeWithId.name;
-      //   if (generatedNames.current.has(name)) {
-      //     themeWithId.name = `${name} (${(generatedNames.current.get(themeWithId.name) ?? 1) + 1})`;
-      //   }
-      //   generatedNames.current.set(name, (generatedNames.current.get(themeWithId.name) ?? 0) + 1);
-      //   setGeneratedThemes((prevThemes) => [...prevThemes, themeWithId]);
-      // },
-    );
-    setIsGenerating(false);
+
+    const promises = new Array(GEN_THEME_PARALLEL).fill(0).map(() => {
+      return generateThemeWithAI(themeDescription).then((theme) => {
+        totalGenerated.current += 1;
+        const themeWithId = { ...theme, id: nanoid(), name: `Generated #${totalGenerated.current}` };
+        setGeneratedThemes((prevThemes) => [...prevThemes, themeWithId]);
+      });
+    });
+
+    Promise.allSettled(promises).then(() => setIsGenerating(false));
   }, [themeDescription]);
 
-  console.log("schema", themeSchema.properties.typography.properties.body);
+  const tabContentScrollClass = css({
+    scrollbarColor: "var(--violet-4) var(--violet-2)",
+    scrollBehavior: "smooth",
+    scrollbarWidth: "thin",
+    "&:hover": {
+      scrollbarColor: "var(--violet-6) var(--violet-3)",
+    },
+  });
 
   return (
     <Tabs.Root defaultValue="current">
@@ -52,7 +58,10 @@ export default function ThemePanel() {
           AI Assistant <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content value="ai" className="p-2">
+      <Tabs.Content
+        value="ai"
+        className={tx("p-2 h-[calc(100dvh-40px)] overflow-y-auto", tabContentScrollClass)}
+      >
         <Callout.Root size="1">
           <Callout.Icon>
             <WiStars className="w-8 h-8 mt-3" />
@@ -62,7 +71,6 @@ export default function ThemePanel() {
             personalized themes for you!
           </Callout.Text>
         </Callout.Root>
-
         <TextArea
           onInput={(e) => {
             setThemeDescription(e.currentTarget.value);
@@ -88,10 +96,18 @@ export default function ThemePanel() {
             <ThemePreview key={theme.id} theme={theme} />
           ))}
         </ThemeListWrapper>
+        <ThemeListWrapper>
+          {themes.map((theme) => (
+            <ThemePreview key={theme.id} theme={theme} />
+          ))}
+        </ThemeListWrapper>
       </Tabs.Content>
-      <Tabs.Content value="current" className="p-2">
+      <Tabs.Content value="current" className={tx("p-2", tabContentScrollClass)}>
         <Callout.Root size="1">
-          <Callout.Text>Customize your theme colors and typography to match your brand.</Callout.Text>
+          <Callout.Text>
+            Customize your theme colors and typography to match your brand. Note that the theme applies to
+            your entire site, not only the current page.
+          </Callout.Text>
         </Callout.Root>
         <div className="mt-1 flex flex-col gap-y-6">
           <fieldset>
@@ -132,7 +148,7 @@ export default function ThemePanel() {
                         <Select.Group>
                           {themeSchema.properties.typography.properties.body.anyOf.map((item) => (
                             <Select.Item key={item.const} value={item.const}>
-                              {item.title}
+                              <span className={`font-${item.const}`}>{item.title}</span>
                             </Select.Item>
                           ))}
                         </Select.Group>
@@ -147,15 +163,8 @@ export default function ThemePanel() {
       <Tabs.Content
         value="list"
         className={tx(
-          "h-[calc(100dvh-40px)] overflow-y-auto scrollbar-thin transition-colors duration-200",
-          css({
-            scrollbarColor: "var(--violet-4) var(--violet-2)",
-            scrollBehavior: "smooth",
-
-            "&:hover": {
-              scrollbarColor: "var(--violet-6) var(--violet-3)",
-            },
-          }),
+          "h-[calc(100dvh-40px)] overflow-y-auto transition-colors duration-200",
+          tabContentScrollClass,
         )}
       >
         <ThemeListWrapper>
@@ -202,12 +211,8 @@ function ThemePreview({ theme }: { theme: Theme }) {
 async function generateThemeWithAI(query: string, url = "https://test-matt-ai.flippable.workers.dev/") {
   const urlObj = new URL(url);
   urlObj.searchParams.append("q", query);
-
   const abortCtrl = new AbortController();
   const resp = await fetch(urlObj, { signal: abortCtrl.signal });
   const text = await resp.json();
-
-  console.log("text", text);
-
   return text;
 }
