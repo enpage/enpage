@@ -1,6 +1,15 @@
-import { Tabs, Button, Callout, TextArea, Spinner, TextField, Select } from "@enpage/style-system";
+import {
+  Tabs,
+  Button,
+  Callout,
+  TextArea,
+  Spinner,
+  TextField,
+  Select,
+  useAutoAnimate,
+} from "@enpage/style-system";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
-import { useCallback, useRef, useState, type ComponentProps } from "react";
+import { forwardRef, useCallback, useRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
 import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
@@ -10,14 +19,12 @@ import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
 import { useDraft } from "@enpage/sdk/browser/use-editor";
 import { ColorFieldRow } from "./inspector/fields/color";
 
-const GEN_THEME_PARALLEL = 5;
-
 export default function ThemePanel() {
   const draft = useDraft();
   const [themeDescription, setThemeDescription] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThemes, setGeneratedThemes] = useState<Theme[]>([]);
-  const totalGenerated = useRef(0);
+  const [genListRef] = useAutoAnimate(/* optional config */);
 
   const generateTheme = useCallback(async () => {
     if (!themeDescription) {
@@ -25,16 +32,22 @@ export default function ThemePanel() {
     }
     setIsGenerating(true);
 
-    const promises = new Array(GEN_THEME_PARALLEL).fill(0).map(() => {
-      return generateThemeWithAI(themeDescription).then((theme) => {
-        if (!theme) return;
-        totalGenerated.current += 1;
-        const themeWithId = { ...theme, id: nanoid(), name: `Generated #${totalGenerated.current}` };
-        setGeneratedThemes((prevThemes) => [...prevThemes, themeWithId]);
-      });
-    });
+    const newThemes = await generateThemeWithAI(themeDescription);
 
-    Promise.allSettled(promises).then(() => setIsGenerating(false));
+    if (newThemes) {
+      setGeneratedThemes((prevThemes) => {
+        const count = prevThemes.length;
+        return [
+          ...newThemes.map((theme, index) => ({
+            ...theme,
+            id: nanoid(),
+            name: `Theme #${count + index + 1}`,
+          })),
+          ...prevThemes,
+        ];
+      });
+    }
+    setIsGenerating(false);
   }, [themeDescription]);
 
   const tabContentScrollClass = css({
@@ -92,13 +105,8 @@ export default function ThemePanel() {
           </Spinner>
           {isGenerating ? "Generating themes" : "Generate themes"}
         </Button>
-        <ThemeListWrapper className="mt-2">
+        <ThemeListWrapper className="mt-2" ref={genListRef}>
           {generatedThemes.map((theme) => (
-            <ThemePreview key={theme.id} theme={theme} />
-          ))}
-        </ThemeListWrapper>
-        <ThemeListWrapper>
-          {themes.map((theme) => (
             <ThemePreview key={theme.id} theme={theme} />
           ))}
         </ThemeListWrapper>
@@ -114,16 +122,18 @@ export default function ThemePanel() {
           <fieldset>
             <div className="font-semibold text-sm my-2 bg-gray-200 py-1 -mx-2 px-2">Colors</div>
             <div className="text-sm flex flex-col gap-y-4 px-1">
-              {Object.entries(draft.theme.colors).map(([colorName, color]) => (
+              {Object.entries(draft.theme.colors).map(([colorType, color]) => (
                 <ColorFieldRow
-                  key={colorName}
+                  key={colorType}
                   /* @ts-ignore */
-                  name={themeSchema.properties.colors.properties[colorName].title}
+                  name={themeSchema.properties.colors.properties[colorType].title}
                   /* @ts-ignore */
-                  description={themeSchema.properties.colors.properties[colorName].description}
+                  description={themeSchema.properties.colors.properties[colorType].description}
+                  color={color}
                   pillClassName={tw(`bg-[${color}]`)}
                   labelClassName="font-medium"
                   descClassName="text-xs text-gray-500"
+                  colorType={colorType === "neutral" ? "neutral" : "theme-base"}
                 />
               ))}
             </div>
@@ -178,9 +188,16 @@ export default function ThemePanel() {
   );
 }
 
-function ThemeListWrapper({ children, className }: ComponentProps<"div">) {
-  return <div className={tx("flex flex-col divide-y divide-upstart-100", className)}>{children}</div>;
-}
+const ThemeListWrapper = forwardRef<HTMLDivElement, ComponentProps<"div">>(function ThemeListWrapper(
+  { children, className }: ComponentProps<"div">,
+  ref,
+) {
+  return (
+    <div ref={ref} className={tx("flex flex-col divide-y divide-upstart-100", className)}>
+      {children}
+    </div>
+  );
+});
 
 function ThemePreview({ theme }: { theme: Theme }) {
   const draft = useDraft();
@@ -212,16 +229,24 @@ function ThemePreview({ theme }: { theme: Theme }) {
 async function generateThemeWithAI(
   query: string,
   url = "https://test-matt-ai.flippable.workers.dev/",
-): Promise<Theme | null> {
+): Promise<Theme[] | null> {
   const urlObj = new URL(url);
   urlObj.searchParams.append("q", query);
   const abortCtrl = new AbortController();
   const resp = await fetch(urlObj, { signal: abortCtrl.signal });
   try {
-    const json = await resp.json();
-    return json;
+    let text = await resp.text();
+    // replace the begining of the string until it matches a "[" character
+    text = text.replace(/^[^\[]*/, "");
+    // replace potential "```" characters
+    text = text.replace(/`/g, "");
+
+    console.log("resp", text);
+    // const json = await resp.json();
+    return JSON.parse(text);
   } catch (e) {
-    console.error(e);
+    // console.log("resp", await resp.text());
+    console.error("Cannot parse JSON response", e);
     return null;
   }
 }

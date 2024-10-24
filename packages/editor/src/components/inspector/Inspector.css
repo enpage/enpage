@@ -1,5 +1,5 @@
 
-.inspector-form label:has(.required) {
+.inspector-form label {
   font-weight: 600;
   & > .required {
     display: none;

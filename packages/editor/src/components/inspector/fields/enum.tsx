@@ -43,7 +43,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
             </label>
           )}
           {fieldDescription && <p className="field-description">{fieldDescription}</p>}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 mt-1.5">
             {options.map((option) => (
               <div key={option.const} className="">
                 <label className="flex items-center gap-1">
@@ -75,7 +75,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
             onValueChange={onChange}
             defaultValue={currentValue}
             size="1"
-            className="w-full !max-w-full"
+            className="w-full !max-w-full mt-1.5"
             radius="full"
           >
             {options.map((option) => (

@@ -91,6 +91,10 @@ export const containers = defineContainers([
           src: "https://cdn.enpage.co/enpage.svg",
           className: "max-h-24",
         },
+        position: {
+          colStart: 1,
+          colEnd: 3,
+        },
       },
     ],
   },

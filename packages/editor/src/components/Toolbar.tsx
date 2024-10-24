@@ -27,7 +27,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, type MenuItemsProps } from "@hea
 import { useIsLargeDevice, useIsMobileDevice } from "../hooks/use-is-device-type";
 import { TiArrowUp } from "react-icons/ti";
 import { VscLayoutPanelOff } from "react-icons/vsc";
-import { Tooltip, DropdownMenu } from "@enpage/sdk/browser/ui";
+import { Tooltip, DropdownMenu } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
 export type ToolbarProps = {
@@ -194,7 +194,6 @@ type ToolbarMenuSeparator = {
 type ToolbarMenuItems = (ToolbarMenuItem | ToolbarMenuSeparator)[];
 
 /**
- * Uses DropdownMenu from @enpage/sdk/browser/ui (@radix-ui/themes)
  */
 function ToolbarMenu(props: PropsWithChildren<{ items: ToolbarMenuItems }>) {
   return (

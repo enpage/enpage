@@ -31,7 +31,6 @@ import { restrictToHorizontalAxis, restrictToVerticalAxis, createSnapModifier } 
 import { BrickOverlay, BrickResizeHandle } from "./brick";
 import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
-import type { Theme } from "~/shared/theme";
 
 export default function Page(props: { initialContainers?: BricksContainer[]; onMount?: () => void }) {
   const editorEnabled = useEditorEnabled();
@@ -56,7 +55,7 @@ export default function Page(props: { initialContainers?: BricksContainer[]; onM
       !elementAtPoint.closest("[data-radix-popper-content-wrapper]") &&
       !elementAtPoint.closest("#floating-panel")
     ) {
-      console.debug("deselecting brick because user clicked outside");
+      console.info("deselecting brick because user clicked outside");
       editor.deselectBrick();
     }
   });

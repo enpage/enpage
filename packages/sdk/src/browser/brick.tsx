@@ -85,6 +85,7 @@ function DragabbleBrickWrapper({
 
   const onClick = editor.enabled
     ? (e: MouseEvent<HTMLElement>) => {
+        console.log("selecting brick", brick.id);
         e.stopPropagation();
         editor.setSelectedBrick(brick);
       }
@@ -341,9 +342,10 @@ export function getBrickWrapperClass(brick: Brick, containerIndex: number) {
 }
 
 function getBrickDefinedClass(brick: Brick) {
+  const editor = useEditor();
   return [
     // test of transitions - remove if flickering
-    "transition-all duration-300 ease-in-out",
+    editor.selectedBrick && "transition-all duration-300 ease-in-out",
 
     // end test
     apply(brick.wrapper.baseClasses),

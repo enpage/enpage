@@ -20,6 +20,7 @@ const SliderField: React.FC<FieldProps> = (props) => {
         </div>
       )}
       <Slider
+        className="!mt-2.5"
         onValueChange={(value) => onChange(value)}
         size="1"
         variant="soft"

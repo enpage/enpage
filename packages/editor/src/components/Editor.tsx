@@ -11,7 +11,7 @@ import { VscVersions as AutoHideIcon } from "react-icons/vsc";
 import { LuPlus, LuUndo, LuRedo, LuInspect } from "react-icons/lu";
 import { GrDocumentConfig } from "react-icons/gr";
 import Page from "@enpage/sdk/browser/page";
-import { tx, injectGlobal } from "@enpage/sdk/browser/twind";
+import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
 import { useLocalStorage } from "usehooks-ts";
 import ThemePanel from "./ThemePanel";
 
@@ -41,14 +41,20 @@ export default function Editor({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       id="editor"
-      className={tx("h-[100dvh] max-h-[100dvh] flex relative flex-1", className)}
+      className={tx(
+        "h-[100dvh] max-h-[100dvh] flex relative flex-1 overscroll-none",
+        className,
+        css({
+          // overscrollBehavior: "none",
+        }),
+      )}
       {...props}
       ref={rootRef}
     >
       <Panel />
       <Toolbar position={toolbarPos} />
       {draft.previewTheme && <ThemePreviewConfirmButton />}
-      <div className="flex-1 flex place-content-center z-40">
+      <div className="flex-1 flex place-content-center z-40 overscroll-none">
         {editor.previewMode && (
           <DeviceFrame previewMode={editor.previewMode}>
             <Page />
@@ -69,11 +75,16 @@ type PanelProps = ComponentProps<"aside">;
  */
 function Panel({ className, ...props }: PanelProps) {
   const editor = useEditor();
+
+  useEffect(() => {
+    console.log("editor.panel", editor.panel);
+    console.log("editor.selectedBrick", editor.selectedBrick);
+  }, [editor.panel, editor.selectedBrick]);
   return (
     <aside
       id="floating-panel"
       className={tx(
-        `z-[9999] fixed top-0 bottom-0 left-[3.7rem] flex shadow-2xl lex flex-col \
+        `z-[9999] fixed top-0 bottom-0 left-[3.7rem] flex shadow-2xl flex-col \
         min-w-[300px] w-[18dvw] max-w-[18dvw] 2xl:max-w-[14dvw] transition-all duration-200 ease-in-out opacity-100
         bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-auto`,
         {
