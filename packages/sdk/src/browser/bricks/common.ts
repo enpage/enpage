@@ -51,6 +51,13 @@ export const commonBrickProps = Type.Object({
       "ui:display": "button-group",
     },
   ),
+  borderColor: Type.String({
+    default: "transparent",
+    title: "Border color",
+    description: "The brick border color",
+    "ui:field": "color",
+    "ui:color-attr": "border-color",
+  }),
   borderStyle: Type.Union(
     [
       Type.Literal("border-solid", { title: "Solid" }),
@@ -79,13 +86,6 @@ export const commonBrickProps = Type.Object({
     description: "The brick background color",
     "ui:field": "color",
     "ui:color-attr": "background-color",
-  }),
-  brickBorderColor: Type.String({
-    default: "transparent",
-    title: "Border color",
-    description: "The brick border color",
-    "ui:field": "color",
-    "ui:color-attr": "border-color",
   }),
 });
 
@@ -127,7 +127,7 @@ export function getHtmlAttributesAndRest<
     borderStyle,
     brickPadding,
     brickBackgroundColor,
-    brickBorderColor,
+    borderColor,
     justify,
     ...rest
   } = props;
@@ -136,8 +136,8 @@ export function getHtmlAttributesAndRest<
     classes: tx([
       className,
       brickBackgroundColor && `bg-${brickBackgroundColor}`,
-      brickBorderColor && `border-${brickBorderColor}`,
-      brickPadding && `brick-p-${brickPadding}`,
+      borderColor && `border-${borderColor}`,
+      // brickPadding && `brick-p-${brickPadding}`,
       brickRounding,
       borderWidth,
       borderStyle,

@@ -3,6 +3,8 @@ import { SegmentedControl, Slider } from "@enpage/style-system";
 import clsx from "clsx";
 import { tx } from "@enpage/sdk/browser/twind";
 import { BiMinus } from "react-icons/bi";
+import type { Brick } from "@enpage/sdk/shared/bricks";
+import { useDraft } from "@enpage/sdk/browser/use-editor";
 
 interface EnumOption {
   const: string;
@@ -12,7 +14,14 @@ interface EnumOption {
 }
 
 const EnumField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, formData: currentValue, onChange, required } = props;
+  const { schema, uiSchema, formData: currentValue, onChange, required, name, formContext } = props;
+  const context = formContext as { brickId: Brick["id"] };
+  const draft = useDraft();
+  const brick = draft.getBrick(context.brickId);
+
+  if (name === "borderStyle" && brick?.props.borderWidth === "border-0") {
+    return null;
+  }
 
   // Extract options from the schema
   const options: EnumOption[] =

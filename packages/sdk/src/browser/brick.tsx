@@ -350,5 +350,7 @@ function getBrickDefinedClass(brick: Brick) {
     // end test
     apply(brick.wrapper.baseClasses),
     apply(brick.wrapper.customClasses),
+
+    brick.props.brickPadding ? `brick-p-${brick.props.brickPadding}` : null,
   ];
 }

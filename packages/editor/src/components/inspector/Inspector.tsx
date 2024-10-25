@@ -1,7 +1,6 @@
 import { Component, useCallback, useEffect, useState, type ComponentProps } from "react";
 import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
 import { BsArrowBarLeft } from "react-icons/bs";
-import { manifests } from "@enpage/sdk/browser/bricks/all-manifests";
 import { HorizontalDrawer } from "../Drawer";
 import { useIsLargeDevice } from "../../hooks/use-is-device-type";
 import Form, { type IChangeEvent } from "@rjsf/core";
@@ -55,7 +54,7 @@ export const inspectorFormClass = tx`text-gray-900 dark:text-gray-50
   [&_label.label.file-label]:(mb-0)
   [&_.control-label]:(block)
   [&_fieldset]:(flex flex-col)
-  [&_.form-group]:(px-3 py-4 border-b border-gray-200 dark:border-dark-700)
+  [&_.form-group:has(*)]:(px-3 py-4 border-b border-gray-200 dark:border-dark-700)
   [&>.form-group]:(!px-0 !py-0)
   [&_.field-description]:(mt-1 mb-1.5 text-xs text-gray-600 dark:text-white/50 leading-none)
   [&.hide-help_.field-description]:(hidden)
@@ -77,9 +76,6 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
 
   if (brick.manifest) {
     const uiSchema = buildUiSchemaFromManifest(brick.manifest.properties.props);
-    // uiSchema["ui:classNames"] ||= "";
-    // uiSchema["ui:classNames"] += showHelp ? " hide-help" : "";
-
     // console.log("props", element.manifest.properties.props);
     return (
       <Form
@@ -87,6 +83,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
         className={tx("inspector-form", inspectorFormClass, showHelp && "hide-help")}
         formData={state}
         schema={brick.manifest.properties.props}
+        formContext={{ brickId: brick.id }}
         validator={validator}
         uiSchema={uiSchema}
         onChange={onChange}

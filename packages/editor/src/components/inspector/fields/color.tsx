@@ -7,18 +7,24 @@ import { useDraft } from "@enpage/sdk/browser/use-editor";
 import type { Theme } from "@enpage/sdk/shared/theme";
 import transSvg from "./trans.svg?url";
 import { useMemo } from "react";
+import type { Brick } from "@enpage/sdk/shared/bricks";
 
 const shades = ["900", "800", "700", "600", "500", "400", "300", "200", "100", "50"];
 
 const ColorField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, formData, onChange, required, name, idSchema } = props;
+  const { schema, uiSchema, formData, onChange, required, name, idSchema, formContext } = props;
+  const context = formContext as { brickId: Brick["id"] };
+  const draft = useDraft();
+  const brick = draft.getBrick(context.brickId);
+
+  if (name === "borderColor" && brick?.props.borderWidth === "border-0") {
+    return null;
+  }
 
   // Extract field-level properties
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
   const pillClassName = `bg-${formData}`;
-
-  console.log("colorfield", { uiSchema });
 
   return (
     <ColorFieldRow
