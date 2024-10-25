@@ -1,58 +1,95 @@
-import { Type } from "@sinclair/typebox";
+import { type Static, type TSchema, Type } from "@sinclair/typebox";
 import { customAlphabet } from "nanoid";
+import { tx } from "../twind";
 
 export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN", 7);
 
-export function getCommonBrickProps(defaultClassName = "") {
-  return {
-    className: Type.String({
-      default: defaultClassName,
-      title: "Class Name",
-      description: "The class name to apply to the text",
-      "ui:widget": "hidden",
-    }),
-    id: Type.String({
-      title: "ID",
-      "ui:widget": "hidden",
-    }),
-    // brickId: Type.String({
-    //   "ui:widget": "hidden",
-    // }),
-    brickRounding: Type.Union(
-      [
-        Type.Literal("rounded-none", { title: "None" }),
-        Type.Literal("rounded-sm", { title: "S" }),
-        Type.Literal("rounded-md", { title: "M" }),
-        Type.Literal("rounded-lg", { title: "L" }),
-        Type.Literal("rounded-xl", { title: "XL" }),
-        Type.Literal("rounded-full", { title: "Full" }),
-      ],
-      {
-        default: "rounded-none",
-        title: "Rounding",
-        description: "The brick corners rounding",
-        "ui:field": "enum",
-        "ui:display": "button-group",
-      },
-    ),
-    brickPadding: Type.Number({
-      minimum: 0,
-      maximum: 10,
-      default: 0,
-      title: "Padding",
-      description: "The brick inside space",
-      "ui:field": "slider",
-    }),
-    brickBackground: Type.String({
-      default: "bg-transparent",
-      title: "Background color",
-      description: "The brick background color",
-      "ui:field": "color",
-    }),
-  } as const;
-}
+export const commonBrickProps = Type.Object({
+  className: Type.String({
+    default: "",
+    title: "Class Name",
+    description: "The class name to apply to the text",
+    "ui:widget": "hidden",
+  }),
+  id: Type.String({
+    title: "ID",
+    "ui:widget": "hidden",
+  }),
+  // brickId: Type.String({
+  //   "ui:widget": "hidden",
+  // }),
+  brickRounding: Type.Union(
+    [
+      Type.Literal("rounded-none", { title: "None" }),
+      Type.Literal("rounded-sm", { title: "S" }),
+      Type.Literal("rounded-md", { title: "M" }),
+      Type.Literal("rounded-lg", { title: "L" }),
+      Type.Literal("rounded-xl", { title: "XL" }),
+      Type.Literal("rounded-full", { title: "Full" }),
+    ],
+    {
+      default: "rounded-none",
+      title: "Rounding",
+      description: "The brick corners rounding",
+      "ui:field": "enum",
+      "ui:display": "button-group",
+    },
+  ),
+  borderWidth: Type.Union(
+    [
+      Type.Literal("border-0", { title: "None" }),
+      Type.Literal("border", { title: "S" }),
+      Type.Literal("border-2", { title: "M" }),
+      Type.Literal("border-4", { title: "L" }),
+      Type.Literal("border-8", { title: "XL" }),
+    ],
+    {
+      default: "border-0",
+      title: "Border width",
+      description: "The brick border width",
+      "ui:field": "enum",
+      "ui:display": "button-group",
+    },
+  ),
+  borderStyle: Type.Union(
+    [
+      Type.Literal("border-solid", { title: "Solid" }),
+      Type.Literal("border-dashed", { title: "Dashed" }),
+      Type.Literal("border-dotted", { title: "Dotted" }),
+    ],
+    {
+      default: "border-solid",
+      title: "Border style",
+      description: "The brick border style",
+      "ui:field": "enum",
+      "ui:display": "button-group",
+    },
+  ),
+  brickPadding: Type.Number({
+    minimum: 0,
+    maximum: 10,
+    default: 0,
+    title: "Padding",
+    description: "The brick inside space",
+    "ui:field": "slider",
+  }),
+  brickBackgroundColor: Type.String({
+    default: "transparent",
+    title: "Background color",
+    description: "The brick background color",
+    "ui:field": "color",
+    "ui:color-attr": "background-color",
+  }),
+  brickBorderColor: Type.String({
+    default: "transparent",
+    title: "Border color",
+    description: "The brick border color",
+    "ui:field": "color",
+    "ui:color-attr": "border-color",
+  }),
+});
 
-export const editableTextProps = {
+export const editableTextProps = Type.Object({
   justify: Type.Union(
     [
       Type.Literal("text-left", { title: "Left", description: "Left align" }),
@@ -77,4 +114,38 @@ export const editableTextProps = {
     description: "The text content",
     "ui:widget": "hidden",
   }),
-};
+});
+
+export function getHtmlAttributesAndRest<
+  T extends Static<typeof commonBrickProps> & Static<typeof editableTextProps>,
+>(props: T) {
+  const {
+    className,
+    id,
+    brickRounding,
+    borderWidth,
+    borderStyle,
+    brickPadding,
+    brickBackgroundColor,
+    brickBorderColor,
+    justify,
+    ...rest
+  } = props;
+
+  return {
+    classes: tx([
+      className,
+      brickBackgroundColor && `bg-${brickBackgroundColor}`,
+      brickBorderColor && `border-${brickBorderColor}`,
+      brickPadding && `brick-p-${brickPadding}`,
+      brickRounding,
+      borderWidth,
+      borderStyle,
+      justify,
+    ]),
+    attributes: {
+      id,
+    },
+    rest,
+  };
+}

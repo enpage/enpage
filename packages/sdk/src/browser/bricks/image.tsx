@@ -3,7 +3,7 @@ import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
 import { tx } from "../twind";
-import { generateId, getCommonBrickProps } from "./common";
+import { generateId, commonBrickProps } from "./common";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -14,20 +14,22 @@ export const manifest = defineBrickManifest({
   description: "An image brick",
   icon: "image",
   file: filename,
-  props: Type.Object({
-    src: Type.String({
-      default: "https://placehold.co/400x200",
-      title: "File",
-      description: "The image file",
-      "ui:field": "file",
+  props: Type.Composite([
+    Type.Object({
+      src: Type.String({
+        default: "https://placehold.co/400x200",
+        title: "File",
+        description: "The image file",
+        "ui:field": "file",
+      }),
+      alt: Type.String({
+        title: "Alt Text",
+        description: "Alternative text for the image",
+        "ui:placeholder": "Your image description",
+      }),
     }),
-    alt: Type.String({
-      title: "Alt Text",
-      description: "Alternative text for the image",
-      "ui:placeholder": "Your image description",
-    }),
-    ...getCommonBrickProps("max-w-full h-auto align-middle border-none"),
-  }),
+    commonBrickProps,
+  ]),
 });
 
 export type Manifest = Static<typeof manifest>;

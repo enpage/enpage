@@ -1,3 +1,5 @@
+import type { Theme } from "@enpage/sdk/shared/theme";
+
 interface RGB {
   r: number;
   g: number;
@@ -9,6 +11,8 @@ interface HSL {
   s: number;
   l: number;
 }
+
+type ColorType = keyof Theme["colors"] | "generic";
 
 function hexToRgb(hex: string): RGB {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -91,42 +95,68 @@ function hslToRgb(hsl: HSL): RGB {
   };
 }
 
-export function generateColorHarmony(baseColor: string): string[] {
-  const rgb = hexToRgb(baseColor);
-  const hsl = rgbToHsl(rgb);
-  const results: string[] = [baseColor];
-
-  // Complementary color (opposite on the color wheel)
-  const complementary: HSL = {
-    h: (hsl.h + 180) % 360,
-    s: hsl.s,
-    l: hsl.l,
+function adjustHSL(hsl: HSL, adjustments: Partial<HSL>): HSL {
+  return {
+    h: (hsl.h + (adjustments.h || 0)) % 360,
+    s: Math.max(0, Math.min(100, hsl.s + (adjustments.s || 0))),
+    l: Math.max(0, Math.min(100, hsl.l + (adjustments.l || 0))),
   };
-  results.push(rgbToHex(hslToRgb(complementary)));
+}
 
-  // Analogous colors (adjacent on the color wheel)
-  const analogous1: HSL = {
-    h: (hsl.h + 30) % 360,
-    s: hsl.s,
-    l: hsl.l,
-  };
-  results.push(rgbToHex(hslToRgb(analogous1)));
+export function generateColorHarmony(theme: Theme["colors"], forType: ColorType): string[] {
+  // Validation
+  if (forType === "primary" && !theme.primary) {
+    throw new Error("Primary color is required as base for other colors");
+  }
 
-  // Split complementary
-  const splitComp1: HSL = {
-    h: (hsl.h + 150) % 360,
-    s: hsl.s,
-    l: hsl.l,
-  };
-  results.push(rgbToHex(hslToRgb(splitComp1)));
+  const baseHsl = rgbToHsl(hexToRgb(theme.primary!));
+  let suggestions: HSL[] = [];
 
-  // Triadic color (120° apart)
-  const triadic: HSL = {
-    h: (hsl.h + 120) % 360,
-    s: hsl.s,
-    l: hsl.l,
-  };
-  results.push(rgbToHex(hslToRgb(triadic)));
+  switch (forType) {
+    case "primary":
+      // For primary, generate variations of the existing primary
+      suggestions = [
+        baseHsl, // Original
+        adjustHSL(baseHsl, { l: -10 }), // Darker
+        adjustHSL(baseHsl, { l: 10 }), // Lighter
+        adjustHSL(baseHsl, { s: 10 }), // More saturated
+        adjustHSL(baseHsl, { h: 5 }), // Slight hue shift
+      ];
+      break;
 
-  return results;
+    case "secondary":
+      // Secondary is typically analogous or complementary to primary
+      suggestions = [
+        adjustHSL(baseHsl, { h: 30 }), // Analogous
+        adjustHSL(baseHsl, { h: 180, s: -10 }), // Complementary, less saturated
+        adjustHSL(baseHsl, { h: 210, s: -5 }), // Split-complementary
+        adjustHSL(baseHsl, { h: 150, s: -15 }), // Triadic variant
+        adjustHSL(baseHsl, { h: 45, s: -10, l: 5 }), // Custom harmony
+      ];
+      break;
+
+    case "tertiary":
+      // Tertiary usually complements both primary and secondary
+      suggestions = [
+        adjustHSL(baseHsl, { h: 120 }), // Triadic
+        adjustHSL(baseHsl, { h: 90, s: -15 }), // Custom angle
+        adjustHSL(baseHsl, { h: 150, s: -10, l: 5 }), // Custom harmony
+        adjustHSL(baseHsl, { h: 60, s: -20 }), // Split complement
+        adjustHSL(baseHsl, { h: 180, s: -25, l: 10 }), // Muted complement
+      ];
+      break;
+
+    case "accent":
+      // Accent should pop but harmonize
+      suggestions = [
+        adjustHSL(baseHsl, { h: 180, s: 10, l: 10 }), // Bright complement
+        adjustHSL(baseHsl, { h: -150, s: 15, l: 5 }), // Vibrant variant
+        adjustHSL(baseHsl, { h: 120, s: 20 }), // Triadic with boost
+        adjustHSL(baseHsl, { h: -120, s: 25, l: -5 }), // Bold contrast
+        adjustHSL(baseHsl, { h: 90, s: 15, l: 15 }), // Eye-catching variant
+      ];
+      break;
+  }
+
+  return suggestions.map((hsl) => rgbToHex(hslToRgb(hsl)));
 }

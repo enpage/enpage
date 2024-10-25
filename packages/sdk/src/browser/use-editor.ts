@@ -130,6 +130,7 @@ export interface DraftState extends DraftStateProps {
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
   setPreviewTheme: (theme: Theme) => void;
+  setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
   cancelPreviewTheme: () => void;
   save(): Promise<void>;
@@ -137,7 +138,7 @@ export interface DraftState extends DraftStateProps {
 }
 
 export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
-  const DEFAULT_PROPS: DraftStateProps = { containers: [], theme: themes[0] };
+  const DEFAULT_PROPS: DraftStateProps = { containers: [], theme: themes[1] };
   return createStore<DraftState>()(
     temporal(
       persist(
@@ -215,6 +216,10 @@ export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
           cancelPreviewTheme: () =>
             set((state) => {
               state.previewTheme = undefined;
+            }),
+          setTheme: (theme) =>
+            set((state) => {
+              state.theme = theme;
             }),
         })),
         {

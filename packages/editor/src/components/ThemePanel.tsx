@@ -134,6 +134,17 @@ export default function ThemePanel() {
                   labelClassName="font-medium"
                   descClassName="text-xs text-gray-500"
                   colorType={colorType === "neutral" ? "neutral" : "theme-base"}
+                  colorName={colorType as keyof Theme["colors"]}
+                  onChange={(newColor) => {
+                    console.log("updating theme color %s with %s", colorType, newColor);
+                    draft.setTheme({
+                      ...draft.theme,
+                      colors: {
+                        ...draft.theme.colors,
+                        [colorType]: newColor,
+                      },
+                    });
+                  }}
                 />
               ))}
             </div>
@@ -153,7 +164,20 @@ export default function ThemePanel() {
                       {/* @ts-ignore */}
                       {themeSchema.properties.typography.properties[fontType].description}
                     </p>
-                    <Select.Root defaultValue={font as string} size="2">
+                    <Select.Root
+                      defaultValue={font as string}
+                      size="2"
+                      onValueChange={(newFont) => {
+                        console.log("new font!", newFont);
+                        draft.setTheme({
+                          ...draft.theme,
+                          typography: {
+                            ...draft.theme.typography,
+                            [fontType]: newFont,
+                          },
+                        });
+                      }}
+                    >
                       <Select.Trigger className="!w-full" />
                       <Select.Content>
                         <Select.Group>

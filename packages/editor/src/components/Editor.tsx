@@ -25,15 +25,26 @@ export default function Editor({ className, ...props }: ComponentProps<"div">) {
     const themeUsed = draft.previewTheme ?? draft.theme;
     const injected = `
      @layer upstart-theme {
-      :root {
-        --color-primary: ${themeUsed.colors.primary};
-        --color-secondary: ${themeUsed.colors.secondary};
-        --color-tertiary: ${themeUsed.colors.tertiary};
-        --color-gray: ${themeUsed.colors.neutral};
-        --color-link: var(--color-primary);
-      }
+        :root {
+          --color-primary: ${themeUsed.colors.primary};
+          --color-secondary: ${themeUsed.colors.secondary};
+          --color-tertiary: ${themeUsed.colors.tertiary};
+          --color-accent: ${themeUsed.colors.accent};
+          --color-neutral: ${themeUsed.colors.neutral};
+          --color-link: var(--color-primary);
+        }
+        [data-upstart-theme] {
+          #page-container {
+            font-family: var(--font-${themeUsed.typography.body});
+            & h1, h2, h3, h4, h5, h6 {
+              font-family: var(--font-${themeUsed.typography.heading});
+            }
+          }
+
+        }
     }
     `;
+    console.log("injected", injected);
     injectGlobal(injected);
   }, [draft.previewTheme, draft.theme]);
 

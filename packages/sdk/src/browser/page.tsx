@@ -53,6 +53,7 @@ export default function Page(props: { initialContainers?: BricksContainer[]; onM
     const elementAtPoint = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
     if (
       !elementAtPoint.closest("[data-radix-popper-content-wrapper]") &&
+      !elementAtPoint.closest("[data-radix-select-viewport]") &&
       !elementAtPoint.closest("#floating-panel")
     ) {
       console.info("deselecting brick because user clicked outside");

@@ -4,9 +4,8 @@ import { Value } from "@sinclair/typebox/value";
 import DOMPurify from "dompurify";
 import { forwardRef, memo, useCallback, useState } from "react";
 import { tx } from "../twind";
-import { getCommonBrickProps, editableTextProps } from "./common";
+import { commonBrickProps, editableTextProps, getHtmlAttributesAndRest } from "./common";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
-import type { Brick } from "~/shared/bricks";
 import { isEqualWith, isEqual } from "lodash-es";
 
 // get filename from esm import.meta
@@ -18,10 +17,7 @@ export const manifest = defineBrickManifest({
   description: "A textual brick",
   icon: "text",
   file: filename,
-  props: Type.Object({
-    ...editableTextProps,
-    ...getCommonBrickProps(),
-  }),
+  props: Type.Composite([editableTextProps, commonBrickProps]),
 });
 
 export type Manifest = Static<typeof manifest>;
@@ -29,17 +25,26 @@ export const defaults = Value.Create(manifest);
 
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { content, className, justify, textEditable, id, ...attrs } = props;
+  let {
+    attributes,
+    classes,
+    rest: { textEditable, content },
+  } = getHtmlAttributesAndRest(props);
+
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
-  const onUpdateHandler = useCallback(createTextEditorUpdateHandler(id), []);
+  const onUpdateHandler = useCallback(createTextEditorUpdateHandler(attributes.id), []);
 
   return textEditable ? (
-    <div className={tx("flex-1", className)}>
-      <TextEditor initialContent={DOMPurify.sanitize(content)} onUpdate={onUpdateHandler} brickId={id} />
+    <div className={tx("flex-1", classes)}>
+      <TextEditor
+        initialContent={DOMPurify.sanitize(content)}
+        onUpdate={onUpdateHandler}
+        brickId={attributes.id}
+      />
     </div>
   ) : (
-    <div className={tx("flex-1", className)}>{DOMPurify.sanitize(content)}</div>
+    <div className={tx("flex-1", classes)}>{DOMPurify.sanitize(content)}</div>
   );
 });
 

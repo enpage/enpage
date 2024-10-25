@@ -107,7 +107,7 @@ export const containers = defineContainers([
           content: "Build your launch page",
           justify: "text-center font-humanist",
         },
-        wrapper: { baseClasses: "primary-5", customClasses: "tertiary-5" },
+        wrapper: {},
       },
     ],
   },
@@ -122,7 +122,7 @@ export const containers = defineContainers([
           justify: "text-center",
           format: "html",
         },
-        wrapper: { customClasses: "secondary-2" },
+        wrapper: {},
       },
     ],
   },
@@ -132,13 +132,13 @@ export const containers = defineContainers([
       {
         type: "text-with-title",
         props: { title: "My title", content: "Hey there!" },
-        wrapper: { customClasses: "brick-light-primary" },
+        wrapper: {},
         position: {
           colStart: 1,
           colEnd: 5,
         },
       },
-      { type: "text", props: { content: "Something" }, wrapper: { customClasses: "brick-primary" } },
+      { type: "text", props: { content: "Something" }, wrapper: {} },
     ],
   },
   {
@@ -149,9 +149,7 @@ export const containers = defineContainers([
         props: {
           content: "First",
         },
-        wrapper: {
-          customClasses: "primary-1",
-        },
+        wrapper: {},
         position: {
           colStart: 1,
           colEnd: 2,
@@ -186,9 +184,7 @@ export const containers = defineContainers([
           colStart: 4,
           colEnd: 5,
         },
-        wrapper: {
-          customClasses: "primary-4",
-        },
+        wrapper: {},
       },
       {
         type: "text",
