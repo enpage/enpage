@@ -77,7 +77,7 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
 
   const btnClass = `flex items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`;
 
-  const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/60 left-[calc(100%+.5rem)]
+  const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/80 left-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-x-1.5
   group-hover:block group-hover:opacity-100 group-hover:translate-x-0 text-nowrap whitespace-nowrap pointer-events-none`;
 
@@ -148,7 +148,13 @@ export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
         <span className={tooltipCls}>Switch View</span>
       </button>
 
-      <button type="button" className={tx(btnClass, commonCls)} onClick={() => editor.togglePanel("theme")}>
+      <button
+        type="button"
+        className={tx(btnClass, commonCls)}
+        onClick={(e) => {
+          editor.togglePanel("theme");
+        }}
+      >
         <LuPalette className="h-7 w-auto" />
         <span className={tooltipCls}>Color theme</span>
       </button>

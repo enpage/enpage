@@ -33,6 +33,7 @@ export const commonBrickProps = Type.Object({
       description: "The brick corners rounding",
       "ui:field": "enum",
       "ui:display": "button-group",
+      "ui:group": "border",
     },
   ),
   borderWidth: Type.Union(
@@ -49,6 +50,7 @@ export const commonBrickProps = Type.Object({
       description: "The brick border width",
       "ui:field": "enum",
       "ui:display": "button-group",
+      "ui:group": "border",
     },
   ),
   borderColor: Type.String({
@@ -57,6 +59,7 @@ export const commonBrickProps = Type.Object({
     description: "The brick border color",
     "ui:field": "color",
     "ui:color-attr": "border-color",
+    "ui:group": "border",
   }),
   borderStyle: Type.Union(
     [
@@ -70,6 +73,7 @@ export const commonBrickProps = Type.Object({
       description: "The brick border style",
       "ui:field": "enum",
       "ui:display": "button-group",
+      "ui:group": "border",
     },
   ),
   brickPadding: Type.Number({

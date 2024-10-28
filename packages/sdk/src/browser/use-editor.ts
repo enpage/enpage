@@ -63,13 +63,17 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           setSelectedBrick: (brick) =>
             set((state) => {
               state.selectedBrick = brick;
-              state.panel = brick ? "inspector" : state.panel;
+              if (brick) {
+                state.panel = "inspector";
+              }
             }),
           deselectBrick: (brickId) =>
             set((state) => {
               if (!brickId || _get().selectedBrick?.id === brickId) {
                 state.selectedBrick = undefined;
-                state.panel = undefined;
+                if (_get().panel === "inspector") {
+                  state.panel = undefined;
+                }
               }
             }),
           setIsEditingText: (forBrickId: string | false) =>
@@ -86,7 +90,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             }),
           togglePanel: (panel) =>
             set((state) => {
-              state.panel = state.panel === panel ? undefined : panel;
+              state.panel = _get().panel === panel ? undefined : panel;
             }),
         })),
         {

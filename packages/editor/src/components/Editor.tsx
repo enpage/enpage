@@ -87,10 +87,6 @@ type PanelProps = ComponentProps<"aside">;
 function Panel({ className, ...props }: PanelProps) {
   const editor = useEditor();
 
-  useEffect(() => {
-    console.log("editor.panel", editor.panel);
-    console.log("editor.selectedBrick", editor.selectedBrick);
-  }, [editor.panel, editor.selectedBrick]);
   return (
     <aside
       id="floating-panel"
