@@ -24,6 +24,7 @@ export default defineConfig({
   server: {
     port: +(process.env.PORT ?? 3008),
   },
+
   build: {
     copyPublicDir: false,
     sourcemap: process.env.NODE_ENV === "development" ? true : "hidden",

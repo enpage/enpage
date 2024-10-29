@@ -1,7 +1,7 @@
 import type { defineDataSources } from "./datasources";
 import type { defineAttributes } from "./attributes";
 import type { defineManifest } from "./manifest";
-import type { defineContainers } from "./bricks";
+import type { defineBricks } from "./bricks";
 
 export type EnpageTemplateConfig = {
   /**
@@ -19,5 +19,5 @@ export type EnpageTemplateConfig = {
   /**
    * The blocks declared for the template
    */
-  containers: ReturnType<typeof defineContainers>;
+  bricks: ReturnType<typeof defineBricks>;
 };

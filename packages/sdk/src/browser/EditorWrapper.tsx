@@ -7,6 +7,8 @@ import Page from "./page";
 import "@enpage/style-system/default-theme.css";
 import "@enpage/style-system/tiptap-text-editor.css";
 import "@enpage/style-system/radix.css";
+import "@enpage/style-system/react-grid-layout.css";
+import "@enpage/style-system/react-resizable.css";
 
 type EditorWrapperProps = {
   enabled?: boolean;
@@ -17,7 +19,9 @@ export function EditorWrapper({ enabled = true, config, children }: PropsWithChi
   const editorStore = useRef(createEditorStore({ enabled })).current;
   const draftStore = useRef(
     createDraftStore({
-      containers: config.containers,
+      bricks: config.bricks,
+      attr: config.attr,
+      data: config.data,
     }),
   ).current;
 

@@ -108,7 +108,7 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
               data: context.data,
               attr: context.attr,
               manifest: templateConfig.manifest,
-              containers: context.containers ?? [],
+              bricks: context.bricks ?? [],
               ssrManifest: {},
             } satisfies GenericPageConfig),
           );

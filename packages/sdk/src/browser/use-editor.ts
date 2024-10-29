@@ -6,9 +6,10 @@ import { createContext, useContext } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "~/shared/responsive";
 import invariant from "~/shared/utils/invariant";
-import type { Brick, BricksContainer } from "~/shared/bricks";
+import type { Brick } from "~/shared/bricks";
 import type { Theme } from "~/shared/theme";
 import { themes } from "~/shared/themes/all-themes";
+import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
 export { type Immer } from "immer";
 
 export interface EditorStateProps {
@@ -69,9 +70,9 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             }),
           deselectBrick: (brickId) =>
             set((state) => {
-              if (!brickId || _get().selectedBrick?.id === brickId) {
+              if (!brickId || state.selectedBrick?.id === brickId) {
                 state.selectedBrick = undefined;
-                if (_get().panel === "inspector") {
+                if (state.panel === "inspector") {
                   state.panel = undefined;
                 }
               }
@@ -90,7 +91,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             }),
           togglePanel: (panel) =>
             set((state) => {
-              state.panel = _get().panel === panel ? undefined : panel;
+              state.panel = state.panel === panel ? undefined : panel;
             }),
         })),
         {
@@ -118,19 +119,17 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
 type EditorStore = ReturnType<typeof createEditorStore>;
 
 export interface DraftStateProps {
-  containers: BricksContainer[];
+  bricks: Brick[];
+  data: Record<string, unknown>;
+  attr: AttributesResolved<AttributesMap>;
   theme: Theme;
   previewTheme?: Theme;
 }
 
 export interface DraftState extends DraftStateProps {
-  setContainers: (containers: BricksContainer[]) => void;
-  getContainers: () => BricksContainer[];
-  getContainer: (id: string) => BricksContainer | undefined;
-  updateContainer: (id: string, container: Partial<BricksContainer>) => void;
-  deleteContainer: (id: string) => void;
-  toggleContainerVisibility: (id: string) => void;
+  getBricks: () => Brick[];
   getBrick: (id: string) => Brick | undefined;
+  deletebrick: (id: string) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
   setPreviewTheme: (theme: Theme) => void;
@@ -141,70 +140,42 @@ export interface DraftState extends DraftStateProps {
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
-export const createDraftStore = (initProps: Partial<DraftStateProps>) => {
-  const DEFAULT_PROPS: DraftStateProps = { containers: [], theme: themes[1] };
+/**
+ * Create a draft store with initial props
+ *
+ * Note: `data` is optional but `attr` is always provided
+ */
+export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: DraftStateProps["attr"] }) => {
+  const DEFAULT_PROPS: Omit<DraftStateProps, "attr"> = { bricks: [], theme: themes[1], data: {} };
   return createStore<DraftState>()(
     temporal(
       persist(
         immer((set, _get) => ({
           ...DEFAULT_PROPS,
           ...initProps,
-          setContainers: (bricks) =>
+          deletebrick: (id) =>
             set((state) => {
-              state.containers = bricks;
+              state.bricks = state.bricks.filter((item) => item.id !== id);
             }),
-          toggleContainerVisibility: (id) =>
-            set((state) => {
-              state.containers = state.containers.map((item) =>
-                item.id === id ? { ...item, hidden: !item.hidden } : item,
-              );
-            }),
-          deleteContainer: (id) =>
-            set((state) => {
-              state.containers = state.containers.filter((item) => item.id !== id);
-            }),
-          updateContainer: (id, container) =>
-            set((state) => {
-              const containerIndex = state.containers.findIndex((item) => item.id === id);
-              state.containers[containerIndex] = { ...state.containers[containerIndex], ...container };
-              // state.containers = state.containers.map((item) =>
-              //   item.id === id ? { ...item, ...container } : item,
-              // );
-            }),
+
           updateBrick: (id, brick) =>
             set((state) => {
-              // get the container
-              const containerIndex = state.containers.findIndex((item) =>
-                item.bricks.some((b) => b.id === id),
-              );
-              state.containers[containerIndex].bricks = state.containers[containerIndex].bricks.map((b) =>
-                b.id === id ? { ...b, ...brick } : b,
-              );
+              const brickIndex = state.bricks.findIndex((item) => item.id === id);
+              state.bricks[brickIndex] = { ...state.bricks[brickIndex], ...brick };
             }),
           updateBrickProps: (id, props) =>
             set((state) => {
-              // get the container
-              const containerIndex = state.containers.findIndex((item) =>
-                item.bricks.some((b) => b.id === id),
-              );
-              state.containers[containerIndex].bricks = state.containers[containerIndex].bricks.map((b) =>
-                b.id === id ? { ...b, props: { ...b.props, ...props } } : b,
-              );
+              const brickIndex = _get().bricks.findIndex((item) => item.id === id);
+              state.bricks[brickIndex].props = { ...state.bricks[brickIndex].props, ...props };
             }),
 
-          getContainers: () => {
-            return _get().containers;
-          },
-          getContainer: (id) => {
-            return _get().containers.find((c) => c.id === id);
-          },
+          getBricks: () => _get().bricks,
+
           save: async () => {
             //todo: call API
           },
           getBrick: (id) => {
-            return _get()
-              .containers.flatMap((c) => c.bricks)
-              .find((b) => b.id === id);
+            return _get().bricks.find((b) => b.id === id);
           },
           setPreviewTheme: (theme) =>
             set((state) => {

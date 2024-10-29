@@ -1,22 +1,23 @@
-import { manifest as heroManifest, defaults as heroDefaults, type Manifest as HeroManifest } from "./hero";
+import { defaults as heroDefaults, type Manifest as HeroManifest, manifest as heroManifest } from "./hero";
 import {
-  manifest as imageManifest,
   defaults as imageDefaults,
   type Manifest as ImageManifest,
+  manifest as imageManifest,
 } from "./image";
 import type { BrickManifest } from "./manifest";
-import { manifest as textManifest, defaults as textDefaults, type Manifest as TextManifest } from "./text";
+import { defaults as textDefaults, type Manifest as TextManifest, manifest as textManifest } from "./text";
 import {
-  manifest as textWithTitleManifest,
   defaults as textWithTitleDefaults,
   type Manifest as TextWithTitleManifest,
+  manifest as textWithTitleManifest,
 } from "./text-with-title";
 
-// export type GenericBrickManifest = HeroManifest | ImageManifest | TextManifest | TextWithTitleManifest;
-export type { HeroManifest, ImageManifest, TextManifest, TextWithTitleManifest };
-// export type BrickType = GenericBrickManifest["type"];
+// export type { HeroManifest, ImageManifest, TextManifest, TextWithTitleManifest };
 
-export const manifests: Record<string, BrickManifest> = {
+// export type BrickManifest = HeroManifest | ImageManifest | TextManifest | TextWithTitleManifest;
+export type BrickType = (HeroManifest | ImageManifest | TextManifest | TextWithTitleManifest)["type"];
+
+export const manifests: Record<BrickType, BrickManifest> = {
   [heroDefaults.type]: heroManifest,
   [imageDefaults.type]: imageManifest,
   [textDefaults.type]: textManifest,

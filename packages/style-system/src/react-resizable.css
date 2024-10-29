@@ -1,0 +1,24 @@
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle-sw {
+  cursor: sw-resize;
+}
+.react-resizable-handle-se {
+  cursor: se-resize;
+}
+.react-resizable-handle-nw {
+  cursor: nw-resize;
+}
+.react-resizable-handle-ne {
+  cursor: ne-resize;
+}
+.react-resizable-handle-w,
+.react-resizable-handle-e {
+  cursor: ew-resize;
+}
+.react-resizable-handle-n,
+.react-resizable-handle-s {
+  cursor: ns-resize;
+}

@@ -218,6 +218,10 @@ const defaultAttributes = {
   $siteDescription: attr.string("Page description"),
   $siteKeywords: attr.string("Page keywords"),
   $siteLastUpdated: attr.datetime("Last updated"),
+  $gridGap: attr.number("Grid gap", 10, { min: 0, max: 100, description: "Grid gap in pixels" }),
+  $gridMobileCols: attr.number("Mobile columns", 2, { min: 1, max: 12 }),
+  $gridTabletCols: attr.number("Tablet columns", 4, { min: 1, max: 12 }),
+  $gridDesktopCols: attr.number("Desktop columns", 12, { min: 1, max: 12 }),
 };
 
 export function resolveAttributes(attributes: ReturnType<typeof defineAttributes>) {

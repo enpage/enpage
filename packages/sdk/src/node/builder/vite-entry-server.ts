@@ -38,9 +38,9 @@ export async function render(url: URL, options: RenderOptions) {
   }
 
   // todo: adjust the state to match the current page
-  const { attr, data, containers: bricks } = pageConfig;
+  const { attr, data, bricks } = pageConfig;
   const state: Window["__ENPAGE_STATE__"] = {
-    ctx: { attr, data, containers: bricks },
+    ctx: { attr, data, bricks: bricks },
     pageIndex: 0,
   };
 

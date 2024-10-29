@@ -38,6 +38,9 @@ const external = [
   "react",
   "react-dom",
 
+  "react-grid-layout",
+  "react-resizable",
+
   "fsevents",
   "lightningcss",
   "virtual:enpage-page-config.json",

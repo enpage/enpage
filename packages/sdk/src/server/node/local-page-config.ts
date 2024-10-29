@@ -13,7 +13,7 @@ export async function getLocalPageConfig(configFile?: string): Promise<GenericPa
   return {
     attributes,
     datasources,
-    containers,
+    bricks: containers,
     manifest: manifest,
     attr: resolveAttributes(attributes),
     data: resolveData(datasources ?? {}),

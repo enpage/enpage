@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ComponentProps } from "react";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { LuChevronRight } from "react-icons/lu";
-import type { Brick, BricksContainer } from "~/shared/bricks";
+import type { Brick } from "~/shared/bricks";
 import { useDraft, useEditor } from "./use-editor";
 
 const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
@@ -9,9 +9,7 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
   const [bookmarksChecked, setBookmarksChecked] = useState(true);
   const [urlsChecked, setUrlsChecked] = useState(false);
   const [person, setPerson] = useState("pedro");
-
   const [relatedBrick, setRelatedBrick] = useState<Brick | null>(null);
-  const [relatedContainer, setRelatedContainer] = useState<BricksContainer | null>(null);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -24,17 +22,6 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
         const brickId = brickElement.getAttribute("id");
         if (brickId) {
           setRelatedBrick(draft.getBrick(brickId) ?? null);
-        }
-      }
-
-      const isContainer = target?.matches(".bricks-container");
-      const isContainerChild = target?.closest(".bricks-container");
-      const containerElement = (isContainer ? target : isContainerChild ?? null) as HTMLElement | null;
-
-      if (containerElement) {
-        const containerId = containerElement.getAttribute("id");
-        if (containerId) {
-          setRelatedContainer(draft.getContainer(containerId) ?? null);
         }
       }
     };
@@ -69,30 +56,8 @@ const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
       });
     }
 
-    if (relatedContainer) {
-      groups.push({
-        title: "Container",
-        items: [
-          {
-            title: "Edit",
-            shortcut: "⌘+E",
-            action: () => {
-              console.log("Edit", relatedContainer);
-            },
-          },
-          {
-            title: "Delete",
-            shortcut: "⌘+⌫",
-            action: () => {
-              console.log("Delete", relatedContainer);
-            },
-          },
-        ],
-      });
-    }
-
     return groups;
-  }, [relatedBrick, relatedContainer]);
+  }, [relatedBrick]);
 
   return (
     <ContextMenu.Root>
