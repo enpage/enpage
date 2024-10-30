@@ -6,7 +6,6 @@
 
 .handled {
   display: flex;
-  background-color: #000;
   box-shadow: 0 0.5em 2em 0.2em rgba(0, 0, 0, 0.33), inset 0 0 0 0.5px #000 ;
   /* transition: all .1s linear; */
   outline: 14px solid #000;
@@ -22,7 +21,7 @@
 }
 
 .mobile {
-  height: 70dvh;
+  height: 94dvh;
   max-height: 800px;
   aspect-ratio: 9/19.5;
 }

@@ -14,7 +14,7 @@ export { type Immer } from "immer";
 
 export interface EditorStateProps {
   enabled: boolean;
-  previewMode?: ResponsiveMode;
+  previewMode: ResponsiveMode;
   editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
@@ -37,7 +37,7 @@ export interface EditorState extends EditorStateProps {
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
-  const DEFAULT_PROPS: EditorStateProps = { editingPageIndex: 0, enabled: true };
+  const DEFAULT_PROPS: EditorStateProps = { editingPageIndex: 0, enabled: true, previewMode: "tablet" };
 
   return createStore<EditorState>()(
     temporal(

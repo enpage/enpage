@@ -124,6 +124,11 @@ export default defineConfig({
           950: "#262626",
         },
       },
+      containers: {
+        mobile: "1rem",
+        tablet: "768px",
+        desktop: "1024px",
+      },
     },
   },
 });

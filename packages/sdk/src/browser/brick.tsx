@@ -123,7 +123,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         style={style}
         className={tx(
           "brick group/brick flex select-none",
-          //  hover:(outline outline-dotted outline-upstart-100)
+          "group-hover/page:(outline outline-dashed outline-upstart-100)",
           className,
           !!brick.props.brickPadding && `brick-p-${brick.props.brickPadding}`,
         )}

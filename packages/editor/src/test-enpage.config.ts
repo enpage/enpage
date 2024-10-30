@@ -2,7 +2,7 @@
 import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
-import { defineBricks } from "@enpage/sdk/bricks";
+import { defineBricks, createRow } from "@enpage/sdk/bricks";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -82,138 +82,166 @@ export const manifest = defineManifest({
 });
 
 export const bricks = defineBricks([
-  {
-    type: "image",
-    props: {
-      src: "https://cdn.enpage.co/enpage.svg",
-      // className: "max-h-24",
-    },
-    position: {
-      mobile: {
-        x: 0,
-        y: 0,
-        w: 2, // full width on mobile is 2
-        h: 3, // 3 x 20px = 60px
+  ...createRow([
+    {
+      type: "image",
+      props: {
+        src: "https://cdn.upstart.gg/internal/logo/upstart.svg",
+        // className: "max-h-24",
       },
-      tablet: {
-        x: 0,
-        y: 0,
-        w: 4, // full width on tablet is 4
-        h: 3,
-      },
-      desktop: {
-        x: 0,
-        y: 0,
-        w: 12, // full width on desktop is 12
-        h: 3,
-      },
-    },
-  },
-  {
-    type: "hero",
-    props: {
-      content: "Build your launch page",
-      justify: "text-center font-humanist",
-    },
-    // take the whole width on all devices
-    position: {
-      mobile: {
-        x: 0,
-        y: 2,
-        w: 2,
-        h: 4,
-      },
-      tablet: {
-        x: 0,
-        y: 2,
-        w: 4,
-        h: 4,
-      },
-      desktop: {
-        x: 0,
-        y: 2,
-        w: 12,
-        h: 4,
+      position: {
+        mobile: {
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 2,
+        },
+        tablet: {
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 2,
+        },
+        desktop: {
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 2,
+        },
       },
     },
-  },
-  {
-    type: "text",
-    props: {
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
-      justify: "text-center",
-      format: "html",
-    },
-    position: {
-      mobile: {
-        x: 0,
-        y: 2,
-        w: 4,
-        h: 3,
+  ]),
+  ...createRow([
+    {
+      type: "hero",
+      props: {
+        content: "Build your launch page",
+        justify: "text-center font-humanist",
       },
-      tablet: {
-        x: 0,
-        y: 2,
-        w: 4,
-        h: 3,
-      },
-      desktop: {
-        x: 0,
-        y: 2,
-        w: 12,
-        h: 3,
-      },
-    },
-  },
-  {
-    type: "text-with-title",
-    props: { title: "My title", content: "Hey there!" },
-    position: {
-      mobile: {
-        x: 0,
-        y: 2,
-        w: 2,
-        h: 3,
-      },
-      tablet: {
-        x: 0,
-        y: 2,
-        w: 2,
-        h: 3,
-      },
-      desktop: {
-        x: 0,
-        y: 3,
-        w: 4,
-        h: 3,
+      // take the whole width on all devices
+      position: {
+        mobile: {
+          x: 0,
+          w: 12,
+          h: 4,
+        },
+        tablet: {
+          x: 0,
+          y: 4,
+          w: 12,
+          h: 4,
+        },
+        desktop: {
+          x: 0,
+          y: 4,
+          w: 12,
+          h: 4,
+        },
       },
     },
-  },
-  {
-    type: "text",
-    props: { content: "Something" },
-    position: {
-      mobile: {
-        x: 4,
-        y: 4,
-        w: 4,
-        h: 3,
+  ]),
+  ...createRow([
+    {
+      type: "text",
+      props: {
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+        justify: "text-center",
+        format: "html",
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: 12,
+          h: 8,
+        },
+        tablet: {
+          x: 0,
+          w: 12,
+          h: 4,
+        },
+        desktop: {
+          x: 0,
+          w: 12,
+          h: 3,
+        },
       },
     },
-  },
-  {
-    type: "text",
-    props: { content: "Else" },
-    position: {
-      mobile: {
-        x: 8,
-        y: 4,
-        w: 4,
-        h: 3,
+  ]),
+  ...createRow([
+    {
+      type: "text-with-title",
+      props: { title: "My title", content: "Hey there!" },
+      position: {
+        mobile: {
+          x: 0,
+          y: 2,
+          w: 12,
+          h: 3,
+        },
+        tablet: {
+          x: 0,
+          y: 2,
+          w: 4,
+          h: 3,
+        },
+        desktop: {
+          x: 0,
+          y: 3,
+          w: 4,
+          h: 3,
+        },
       },
     },
-  },
+    {
+      type: "text",
+      props: { content: "Something" },
+      position: {
+        mobile: {
+          x: 4,
+          y: 4,
+          w: 12,
+          h: 3,
+        },
+        tablet: {
+          x: 4,
+          y: 4,
+          w: 4,
+          h: 3,
+        },
+        desktop: {
+          x: 4,
+          y: 4,
+          w: 4,
+          h: 3,
+        },
+      },
+    },
+    {
+      type: "text",
+      props: { content: "Else" },
+      position: {
+        mobile: {
+          x: 8,
+          y: 4,
+          w: 12,
+          h: 3,
+        },
+        tablet: {
+          x: 8,
+          y: 4,
+          w: 4,
+          h: 3,
+        },
+        desktop: {
+          x: 8,
+          y: 4,
+          w: 4,
+          h: 3,
+        },
+      },
+    },
+  ]),
 
   // {
   //   type: "container",

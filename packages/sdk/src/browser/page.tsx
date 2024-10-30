@@ -9,40 +9,17 @@ import {
   useState,
   type DOMAttributes,
 } from "react";
-import { type BrickPosition, GRID_COLS, type Brick } from "~/shared/bricks";
+import type { BrickPosition, Brick } from "~/shared/bricks";
 import BrickWrapper from "./brick";
 import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { useOnClickOutside, useScrollLock } from "usehooks-ts";
 import { type ItemCallback, Responsive, WidthProvider } from "react-grid-layout";
-
+import { LAYOUT_COLS, LAYOUT_GUTTERS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "./constants";
 // const ResponsiveGridLayout = WidthProvider(Responsive);
-
-import {
-  arraySwap,
-  SortableContext,
-  rectSwappingStrategy,
-  verticalListSortingStrategy,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  useSensor,
-  type DragStartEvent,
-  type Active,
-  type DragOverEvent,
-  type Over,
-  type DragEndEvent,
-  type CollisionDetection,
-  pointerWithin,
-  rectIntersection,
-  type Modifier,
-  type DragMoveEvent,
-} from "@dnd-kit/core";
-import { restrictToHorizontalAxis, restrictToVerticalAxis, createSnapModifier } from "@dnd-kit/modifiers";
 import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
+import invariant from "~/shared/utils/invariant";
+import { LAYOUT_BREAKPOINTS } from "./constants";
 
 export default function Page(props: { initialBricks?: Brick[]; onMount?: () => void }) {
   const editorEnabled = useEditorEnabled();
@@ -51,7 +28,8 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
   const pageRef = useRef<HTMLDivElement>(null);
   const hasBeenDragged = useRef(false);
 
-  const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), [editor.previewMode]);
 
   // const { lock, unlock } = useScrollLock({
   //   autoLock: false,
@@ -70,7 +48,7 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
       ) {
         console.info("deselecting brick because user clicked outside");
         editor.deselectBrick();
-      } else if (elementAtPoint.matches(".brick")) {
+      } else if (elementAtPoint.matches(".brick") && !hasBeenDragged.current) {
         console.info("selecting brick because user clicked on a brick");
         editor.setSelectedBrick(draft.getBrick(elementAtPoint.id));
       }
@@ -121,10 +99,18 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
   }));
 
   // check if an element is overflown
-  const isOverflown = ({ clientWidth, clientHeight, scrollWidth, scrollHeight }: HTMLElement) => {
+  const getOverflow = ({ clientWidth, clientHeight, scrollWidth, scrollHeight }: HTMLElement) => {
     console.log({ clientWidth, clientHeight, scrollWidth, scrollHeight });
-    // 4px margin of error
-    return scrollHeight > clientHeight + 4 || scrollWidth > clientWidth + 4;
+    const erroMargin = 4;
+    let overflowH: false | number = false;
+    if (scrollHeight > clientHeight + erroMargin) {
+      overflowH = scrollHeight - clientHeight + erroMargin;
+    }
+    let overflowW: false | number = false;
+    if (scrollWidth > clientWidth + erroMargin) {
+      overflowW = scrollWidth - clientWidth + erroMargin;
+    }
+    return { h: overflowH, w: overflowW };
   };
 
   const onDragStart: ItemCallback = (e) => {
@@ -154,6 +140,8 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
 
   return (
     <ResponsiveGridLayout
+      measureBeforeMount={true}
+      breakpoint={editor.previewMode}
       innerRef={pageRef}
       onDrag={onDrag}
       onDragStart={onDragStart}
@@ -163,9 +151,44 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
       }}
       onResizeStop={(layout, oldItem, newItem, placeholder, event, element) => {
         const brick = draft.getBrick(newItem.i);
+        invariant(brick, "brick not found");
+
         const brickElement = document.getElementById(newItem.i);
-        const brickIsOverflown = brickElement ? isOverflown(brickElement) : false;
-        console.log("resize stop", { brickElement, brick, brickIsOverflown });
+        invariant(brickElement, "brick element not found");
+
+        const overflow = getOverflow(brickElement);
+
+        // Update the newItem height by computing the equivalent numbers of rows missing
+        // Uses LAYOUT_ROW_HEIGHT to compute it
+        if (typeof overflow.h === "number") {
+          console.log("Updating brick height to fit content");
+          newItem.h += Math.ceil(overflow.h / LAYOUT_ROW_HEIGHT);
+        }
+
+        // For now, there is no need to update the width
+        //
+        // Update the newItem width by computing the equivalent numbers of cols missing
+        // Uses LAYOUT_COLS to compute it
+        // if (typeof overflow.w === "number") {
+        //   console.log("Updating brick width to fit content");
+        //   newItem.w += Math.ceil(overflow.w / LAYOUT_COLS.desktop);
+        // }
+
+        console.log("resize stop", {
+          brick,
+          oldItem,
+          newItem,
+          overflow,
+        });
+
+        // update brick position
+        const layoutType = editor.previewMode;
+        draft.updateBrick(brick.id, {
+          position: {
+            ...brick.position,
+            [layoutType]: newItem,
+          },
+        });
       }}
       preventCollision={false}
       // @ts-ignore wrong types in library
@@ -173,25 +196,31 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
       // all directions
       resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
       // todo: get max witdth from page attributes
-      className={tx("layout", "mx-auto max-w-7xl min-h-[100dvh]")}
+      className={tx("group/page mx-auto w-full @container", {
+        "max-w-7xl min-h-[100dvh]": editor.previewMode === "desktop",
+        // todo: use theme or attributes for bg color
+        "bg-white min-h-[100%]": editor.previewMode !== "desktop",
+      })}
       layouts={{
         mobile: layoutMobile,
         tablet: layoutTablet,
         desktop: layoutDesktop,
       }}
-      cols={{
-        mobile: 2,
-        tablet: 4,
-        desktop: 12,
-      }}
-      margin={[0, 0]}
-      breakpoints={{ desktop: 1024, tablet: 768, mobile: 0 }}
-      rowHeight={20}
+      cols={LAYOUT_COLS}
+      // Margin between grid items
+      margin={LAYOUT_GUTTERS}
+      // Padding of the main layout container
+      containerPadding={LAYOUT_PADDING}
+      breakpoints={LAYOUT_BREAKPOINTS}
+      rowHeight={LAYOUT_ROW_HEIGHT}
+      // No auto resizing, we want  to manage the whole page size
       autoSize={false}
-      // width={1200}
+      // No compacting, we want the user to be able to place the bricks wherever they want
+      compactType={"vertical"}
+      // allowOverlap={false}
     >
       {bricks.map((brick) => (
-        <BrickWrapper key={brick.id} brick={brick} />
+        <BrickWrapper key={brick.id} data-grid={brick.position[editor.previewMode]} brick={brick} />
       ))}
     </ResponsiveGridLayout>
   );
@@ -209,18 +238,18 @@ function getResizeHandle(
         "group-hover/brick:opacity-50 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
         `react-resizable-handle-${resizeHandle}`,
         {
-          "bottom-0 left-0 right-0 h-1 w-[inherit] border-b cursor-s-resize": resizeHandle === "s",
-          "top-0 left-0 bottom-0 w-1 h-[inherit] border-l cursor-w-resize": resizeHandle === "w",
-          "top-0 right-0 bottom-0 w-1 h-[inherit] border-r cursor-e-resize": resizeHandle === "e",
-          "top-0 left-0 right-0 h-1 w-[inherit] border-t cursor-n-resize": resizeHandle === "n",
+          "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": resizeHandle === "s",
+          "top-px left-px bottom-px w-1 h-[inherit] border-l cursor-w-resize": resizeHandle === "w",
+          "top-px right-px bottom-px w-1 h-[inherit] border-r cursor-e-resize": resizeHandle === "e",
+          "top-px left-px right-px h-1 w-[inherit] border-t cursor-n-resize": resizeHandle === "n",
 
           // sw and nw
-          "bottom-0 left-0 w-1 h-1 border-l border-b cursor-sw-resize": resizeHandle === "sw",
-          "top-0 left-0 w-1 h-1 border-l border-t cursor-nw-resize": resizeHandle === "nw",
+          "bottom-px left-px w-1 h-1 border-l border-b cursor-sw-resize": resizeHandle === "sw",
+          "top-px left-px w-1 h-1 border-l border-t cursor-nw-resize": resizeHandle === "nw",
 
           // se and ne
-          "bottom-0 right-0 w-1 h-1 border-r border-b cursor-se-resize": resizeHandle === "se",
-          "top-0 right-0 w-1 h-1 border-r border-t cursor-ne-resize": resizeHandle === "ne",
+          "bottom-px right-px w-1 h-1 border-r border-b cursor-se-resize": resizeHandle === "se",
+          "top-px right-px w-1 h-1 border-r border-t cursor-ne-resize": resizeHandle === "ne",
         },
       )}
     >

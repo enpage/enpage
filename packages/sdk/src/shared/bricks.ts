@@ -2,8 +2,6 @@ import { generateId } from "~/browser/bricks/common";
 import { type BrickType, manifests } from "~/browser/bricks/all-manifests";
 import type { BrickManifest } from "~/browser/bricks/manifest";
 
-export const GRID_COLS = 12;
-
 export type BrickPosition = {
   /**
    * Col start (0-based) in grid units, not pixels.
@@ -76,4 +74,86 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
     id: `brick-${generateId()}`,
     manifest: manifests[brick.type as BrickType],
   }));
+}
+
+/**
+ * This specific type is used to define a row of bricks.
+ * The `y` property of the position is automatically set to the current row.
+ */
+type DefinedRowBrick = Omit<Brick, "id" | "manifest" | "position"> & {
+  manifest?: BrickManifest;
+  position: RequireAtLeastOne<{
+    mobile: Omit<BrickPosition, "y">;
+    tablet: Omit<BrickPosition, "y">;
+    desktop: Omit<BrickPosition, "y">;
+  }>;
+};
+
+// Helpers to generate bricks coordonates
+const currentRowByBreakpoint: Record<"mobile" | "tablet" | "desktop", number> = {
+  mobile: 0,
+  tablet: 0,
+  desktop: 0,
+};
+
+/**
+ * Creates a new row of bricks, automatically setting the `y` property to the current row.
+ */
+export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[] {
+  // Get the max height of the bricks passed
+  const maxDesktopHeight = Math.max(
+    ...bricks.map((brick) =>
+      Math.max(brick.position.desktop?.h ?? 0, brick.position.tablet?.h ?? 0, brick.position.mobile?.h ?? 0),
+    ),
+  );
+  const maxTabletHeight = Math.max(
+    ...bricks.map((brick) =>
+      Math.max(brick.position.tablet?.h ?? 0, brick.position.mobile?.h ?? 0, brick.position.desktop?.h ?? 0),
+    ),
+  );
+  const maxMobileHeight = Math.max(
+    ...bricks.map((brick) =>
+      Math.max(brick.position.mobile?.h ?? 0, brick.position.tablet?.h ?? 0, brick.position.desktop?.h ?? 0),
+    ),
+  );
+
+  // create the row
+  const created = bricks.map((brick, index) => ({
+    ...brick,
+    id: `brick-${generateId()}`,
+    position: {
+      ...(brick.position.mobile
+        ? {
+            mobile: {
+              ...brick.position.mobile,
+              y: currentRowByBreakpoint.desktop,
+            },
+          }
+        : {}),
+      ...(brick.position.tablet
+        ? {
+            tablet: {
+              ...brick.position.tablet,
+              y: currentRowByBreakpoint.tablet,
+            },
+          }
+        : {}),
+      ...(brick.position.desktop
+        ? {
+            desktop: {
+              ...brick.position.desktop,
+              y: currentRowByBreakpoint.mobile,
+            },
+          }
+        : {}),
+    },
+  }));
+
+  // increment the current row
+  currentRowByBreakpoint.desktop += maxDesktopHeight;
+  currentRowByBreakpoint.tablet += maxTabletHeight;
+  currentRowByBreakpoint.mobile += maxMobileHeight;
+
+  // return teh created bricks
+  return created as DefinedBrick[];
 }
