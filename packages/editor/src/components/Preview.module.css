@@ -1,7 +1,9 @@
-/* Inspired by https://gist.github.com/jarthod/8719db9fef8deb937f4f */
 .desktop {
-  height: 100%;
-  width: 100%;
+  display: flex;
+  height: 100dvh;
+  width: calc(100dvw - 58px);
+  margin-block: auto;
+  overflow-y: auto;
 }
 
 .handled {

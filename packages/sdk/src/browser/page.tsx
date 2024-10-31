@@ -11,32 +11,40 @@ import {
 } from "react";
 import type { BrickPosition, Brick } from "~/shared/bricks";
 import BrickWrapper from "./brick";
-import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
+import { useBricks, useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { useOnClickOutside, useScrollLock } from "usehooks-ts";
-import { type ItemCallback, Responsive, WidthProvider } from "react-grid-layout";
+import { type ItemCallback, Responsive } from "react-grid-layout";
+import WidthProvider from "./responsive-layout";
 import { LAYOUT_COLS, LAYOUT_GUTTERS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "./constants";
-// const ResponsiveGridLayout = WidthProvider(Responsive);
 import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
 import invariant from "~/shared/utils/invariant";
 import { LAYOUT_BREAKPOINTS } from "./constants";
 
-export default function Page(props: { initialBricks?: Brick[]; onMount?: () => void }) {
-  const editorEnabled = useEditorEnabled();
+// @ts-ignore wrong types in library
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+export default function EditablePage(props: { initialBricks?: Brick[]; onMount?: () => void }) {
   const editor = useEditor();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
   const hasBeenDragged = useRef(false);
+  const bricks = useBricks();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), [editor.previewMode]);
+  // const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
+
+  useEffect(() => {
+    console.log("New bricks: %s", JSON.stringify(draft.bricks, null, 2).length);
+  }, [draft.bricks]);
 
   // const { lock, unlock } = useScrollLock({
   //   autoLock: false,
   // });
 
   // listen for global click events on the document
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    console.log("useEffect register click listener");
     const listener = (e: MouseEvent) => {
       const event = e as MouseEvent;
       const elementAtPoint = event.target as HTMLElement;
@@ -57,16 +65,9 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
     return () => {
       document.removeEventListener("click", listener);
     };
-  });
+  }, []);
 
-  // // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  // useEffect(() => {
-  //   // compute the grid col size from the pageRef width / 12
-  //   if (pageRef.current) {
-  //     setGridColSize(pageRef.current.clientWidth / 12);
-  //     props.onMount?.();
-  //   }
-  // }, []);
+  // // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation
 
   useHotkeys("mod+c", () => {
     // let the browser handle the copy event
@@ -76,27 +77,32 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
     }
   });
 
-  const bricks = useMemo(() => {
-    return editorEnabled ? draft.bricks : props.initialBricks ?? [];
-  }, [editorEnabled, props.initialBricks, draft.bricks]);
+  const layoutMobile = useMemo(
+    () =>
+      bricks.map((brick) => ({
+        i: brick.id,
+        ...((brick.position.mobile ?? brick.position.tablet ?? brick.position.desktop) as BrickPosition),
+      })),
+    [bricks],
+  );
 
-  const layoutMobile = bricks.map((brick) => ({
-    i: brick.id,
-    // let's consider there is at least one position set
-    ...((brick.position.mobile ?? brick.position.tablet ?? brick.position.desktop) as BrickPosition),
-  }));
+  const layoutTablet = useMemo(
+    () =>
+      bricks.map((brick) => ({
+        i: brick.id,
+        ...((brick.position.tablet ?? brick.position.mobile ?? brick.position.desktop) as BrickPosition),
+      })),
+    [bricks],
+  );
 
-  const layoutTablet = bricks.map((brick) => ({
-    i: brick.id,
-    // let's consider there is at least one position set
-    ...((brick.position.tablet ?? brick.position.mobile ?? brick.position.desktop) as BrickPosition),
-  }));
-
-  const layoutDesktop = bricks.map((brick) => ({
-    i: brick.id,
-    // let's consider there is at least one position set
-    ...((brick.position.desktop ?? brick.position.tablet ?? brick.position.mobile) as BrickPosition),
-  }));
+  const layoutDesktop = useMemo(
+    () =>
+      bricks.map((brick) => ({
+        i: brick.id,
+        ...((brick.position.desktop ?? brick.position.tablet ?? brick.position.mobile) as BrickPosition),
+      })),
+    [bricks],
+  );
 
   // check if an element is overflown
   const getOverflow = ({ clientWidth, clientHeight, scrollWidth, scrollHeight }: HTMLElement) => {
@@ -117,79 +123,72 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
     console.log("drag start", e);
   };
 
-  const onDragStop: ItemCallback = (layout, oldItem, newItemn, placeholder, event, element) => {
-    console.log("drag end", element);
+  const onDragStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
+    console.log("drag end");
 
     if (!hasBeenDragged.current) {
-      console.log("element has not been dragged", element);
+      console.log("element has not been dragged");
       // fire a click event on the brick
       const clickEvent = new MouseEvent("click", { bubbles: true });
       element.dispatchEvent(clickEvent);
     } else {
+      console.log("deselcting brick because it has been dragged");
       // deselect the brick
       editor.deselectBrick();
     }
 
-    hasBeenDragged.current = false;
+    console.log("Updating brick position", newItem, editor.previewMode);
+    const { h, w, x, y, maxH, maxW, minH, minW } = newItem;
+    // draft.updateBrickPosition(newItem.i, editor.previewMode, { h, w, x, y, maxH, maxW, minH, minW });
+
+    setTimeout(() => {
+      // for whatever reason, we have to delay the updateBrickPosition call
+      // so that the grid library does not throw weird errors
+      draft.updateBrickPosition(newItem.i, editor.previewMode, { h, w, x, y, maxH, maxW, minH, minW });
+      hasBeenDragged.current = false;
+    }, 100);
   };
 
   const onDrag: ItemCallback = (e) => {
     hasBeenDragged.current = true;
-    console.log("drag", e);
+    // console.log("drag", e);
+  };
+
+  const onResizeStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
+    console.log("resize end", element);
+    const brick = draft.getBrick(newItem.i);
+    invariant(brick, "brick not found");
+
+    const brickElement = document.getElementById(newItem.i);
+    invariant(brickElement, "brick element not found");
+
+    const overflow = getOverflow(brickElement);
+
+    // Update the newItem height by computing the equivalent numbers of rows missing
+    // Uses LAYOUT_ROW_HEIGHT to compute it
+    if (typeof overflow.h === "number") {
+      console.log("Updating brick height to fit content");
+      newItem.h += Math.ceil(overflow.h / LAYOUT_ROW_HEIGHT);
+    }
+
+    // update brick position
+    const layoutType = editor.previewMode;
+    draft.updateBrick(brick.id, {
+      position: {
+        ...brick.position,
+        [layoutType]: newItem,
+      },
+    });
   };
 
   return (
     <ResponsiveGridLayout
-      measureBeforeMount={true}
       breakpoint={editor.previewMode}
       innerRef={pageRef}
       onDrag={onDrag}
       onDragStart={onDragStart}
       onDragStop={onDragStop}
-      onLayoutChange={(layout, layouts) => {
-        console.log("layout change", layout, layouts);
-      }}
-      onResizeStop={(layout, oldItem, newItem, placeholder, event, element) => {
-        const brick = draft.getBrick(newItem.i);
-        invariant(brick, "brick not found");
-
-        const brickElement = document.getElementById(newItem.i);
-        invariant(brickElement, "brick element not found");
-
-        const overflow = getOverflow(brickElement);
-
-        // Update the newItem height by computing the equivalent numbers of rows missing
-        // Uses LAYOUT_ROW_HEIGHT to compute it
-        if (typeof overflow.h === "number") {
-          console.log("Updating brick height to fit content");
-          newItem.h += Math.ceil(overflow.h / LAYOUT_ROW_HEIGHT);
-        }
-
-        // For now, there is no need to update the width
-        //
-        // Update the newItem width by computing the equivalent numbers of cols missing
-        // Uses LAYOUT_COLS to compute it
-        // if (typeof overflow.w === "number") {
-        //   console.log("Updating brick width to fit content");
-        //   newItem.w += Math.ceil(overflow.w / LAYOUT_COLS.desktop);
-        // }
-
-        console.log("resize stop", {
-          brick,
-          oldItem,
-          newItem,
-          overflow,
-        });
-
-        // update brick position
-        const layoutType = editor.previewMode;
-        draft.updateBrick(brick.id, {
-          position: {
-            ...brick.position,
-            [layoutType]: newItem,
-          },
-        });
-      }}
+      onResizeStop={onResizeStop}
       preventCollision={false}
       // @ts-ignore wrong types in library
       resizeHandle={getResizeHandle}
@@ -197,9 +196,9 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
       resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
       // todo: get max witdth from page attributes
       className={tx("group/page mx-auto w-full @container", {
-        "max-w-7xl min-h-[100dvh]": editor.previewMode === "desktop",
+        "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
         // todo: use theme or attributes for bg color
-        "bg-white min-h-[100%]": editor.previewMode !== "desktop",
+        "bg-white min-h-[100%] max-w-full max-h-full": editor.previewMode !== "desktop",
       })}
       layouts={{
         mobile: layoutMobile,
@@ -216,11 +215,12 @@ export default function Page(props: { initialBricks?: Brick[]; onMount?: () => v
       // No auto resizing, we want  to manage the whole page size
       autoSize={false}
       // No compacting, we want the user to be able to place the bricks wherever they want
-      compactType={"vertical"}
-      // allowOverlap={false}
+      // compactType={"vertical"}
+      compactType={null}
+      allowOverlap={true}
     >
       {bricks.map((brick) => (
-        <BrickWrapper key={brick.id} data-grid={brick.position[editor.previewMode]} brick={brick} />
+        <BrickWrapper key={brick.id} brick={brick} />
       ))}
     </ResponsiveGridLayout>
   );

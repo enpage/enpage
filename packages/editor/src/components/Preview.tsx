@@ -3,47 +3,37 @@ import { type ComponentProps, memo, useEffect, useMemo, useRef, useState } from 
 import type { ResponsiveMode } from "@enpage/sdk/responsive";
 import styles from "./Preview.module.css";
 import { useDebounceCallback, useResizeObserver } from "usehooks-ts";
+import { usePreviewMode } from "@enpage/sdk/browser/use-editor";
+import { tx } from "@enpage/sdk/browser/twind";
 
-type PreviewIframeProps = {
-  previewMode: ResponsiveMode;
-};
-
-export function DeviceFrame({
-  children,
-  previewMode,
-  ...props
-}: ComponentProps<"div"> & Pick<PreviewIframeProps, "previewMode">) {
+export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
   const ref = useRef<HTMLDivElement>(null);
-  const [showContents, setShowContents] = useState(true);
-
-  useResizeObserver({
-    ref,
-    onResize: () => setShowContents(false),
-  });
+  const previewMode = usePreviewMode();
+  const [show, setShow] = useState<boolean | null>(false);
 
   useEffect(() => {
-    const itv = setInterval(() => {
-      if (!showContents) {
-        setShowContents(true);
-        clearInterval(itv);
-      }
-    }, 200);
-    return () => itv && clearInterval(itv);
-  }, [showContents]);
+    console.log("DeviceFrame previewMode", previewMode);
+    setShow(false);
+    setTimeout(() => {
+      setShow(true);
+    }, 450);
+  }, [previewMode]);
 
   return (
     <div
       ref={ref}
-      className={clsx(
-        "device-frame transition-all duration-75 mx-auto scrollbar-thin ",
+      className={tx(
+        "device-frame opacity-20 transition-all duration-200 mx-auto scrollbar-thin ",
         styles[previewMode],
         {
           [styles.handled]: previewMode === "tablet" || previewMode === "mobile",
+          "!opacity-20": !show,
+          "!opacity-100": show,
         },
       )}
       {...props}
     >
-      {showContents && children}
+      {children}
     </div>
   );
 }

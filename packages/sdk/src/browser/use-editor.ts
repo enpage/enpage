@@ -6,7 +6,7 @@ import { createContext, useContext } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "~/shared/responsive";
 import invariant from "~/shared/utils/invariant";
-import type { Brick } from "~/shared/bricks";
+import type { Brick, BrickPosition } from "~/shared/bricks";
 import type { Theme } from "~/shared/theme";
 import { themes } from "~/shared/themes/all-themes";
 import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
@@ -70,7 +70,8 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             }),
           deselectBrick: (brickId) =>
             set((state) => {
-              if (!brickId || state.selectedBrick?.id === brickId) {
+              if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
+                console.log("updated selected brick to nothing");
                 state.selectedBrick = undefined;
                 if (state.panel === "inspector") {
                   state.panel = undefined;
@@ -132,6 +133,8 @@ export interface DraftState extends DraftStateProps {
   deletebrick: (id: string) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
+  updateBrickPosition: (id: string, bp: keyof Brick["position"], position: BrickPosition) => void;
+  updateBricksPositions: (bp: keyof Brick["position"], positions: Record<string, BrickPosition>) => void;
   setPreviewTheme: (theme: Theme) => void;
   setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
@@ -196,6 +199,19 @@ export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: D
             set((state) => {
               state.theme = theme;
             }),
+          updateBricksPositions: (bp, positions) =>
+            set((state) => {
+              state.bricks.forEach((b) => {
+                if (positions[b.id]) {
+                  b.position[bp] = positions[b.id];
+                }
+              });
+            }),
+          updateBrickPosition: (id, bp, position) =>
+            set((state) => {
+              const brickIndex = state.bricks.findIndex((item) => item.id === id);
+              state.bricks[brickIndex].position[bp] = position;
+            }),
         })),
         {
           name: "draft-state",
@@ -203,10 +219,10 @@ export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: D
         },
       ),
       {
-        handleSet: (handleSet) =>
-          throttle<typeof handleSet>((state) => {
-            handleSet(state);
-          }, 200),
+        // handleSet: (handleSet) =>
+        //   throttle<typeof handleSet>((state) => {
+        //     handleSet(state);
+        //   }, 200),
       },
     ),
   );
@@ -247,7 +263,17 @@ export const useEditorEnabled = () => {
   return useStore(ctx, (state) => state.enabled);
 };
 
+export const usePreviewMode = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.previewMode);
+};
+
 export const useDraft = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx);
+};
+
+export const useBricks = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.bricks);
 };

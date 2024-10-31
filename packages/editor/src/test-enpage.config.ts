@@ -113,7 +113,7 @@ export const bricks = defineBricks([
   ]),
   ...createRow([
     {
-      type: "hero",
+      type: "text",
       props: {
         content: "Build your launch page",
         justify: "text-center font-humanist",

@@ -118,36 +118,43 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
   );
 
   // create the row
-  const created = bricks.map((brick, index) => ({
-    ...brick,
-    id: `brick-${generateId()}`,
-    position: {
-      ...(brick.position.mobile
-        ? {
-            mobile: {
-              ...brick.position.mobile,
-              y: currentRowByBreakpoint.desktop,
-            },
-          }
-        : {}),
-      ...(brick.position.tablet
-        ? {
-            tablet: {
-              ...brick.position.tablet,
-              y: currentRowByBreakpoint.tablet,
-            },
-          }
-        : {}),
-      ...(brick.position.desktop
-        ? {
-            desktop: {
-              ...brick.position.desktop,
-              y: currentRowByBreakpoint.mobile,
-            },
-          }
-        : {}),
-    },
-  }));
+  const created = bricks.map((brick, index) => {
+    const adjusted = {
+      ...brick,
+      id: `brick-${generateId()}`,
+      position: {
+        ...(brick.position.mobile
+          ? {
+              mobile: {
+                ...brick.position.mobile,
+                y: currentRowByBreakpoint.desktop,
+              },
+            }
+          : {}),
+        ...(brick.position.tablet
+          ? {
+              tablet: {
+                ...brick.position.tablet,
+                y: currentRowByBreakpoint.tablet,
+              },
+            }
+          : {}),
+        ...(brick.position.desktop
+          ? {
+              desktop: {
+                ...brick.position.desktop,
+                y: currentRowByBreakpoint.mobile,
+              },
+            }
+          : {}),
+      },
+    };
+    console.log("adjusted.position.mobile", adjusted.position.mobile);
+    if (adjusted.position.mobile?.w === 12) {
+      currentRowByBreakpoint.mobile += maxMobileHeight;
+    }
+    return adjusted;
+  });
 
   // increment the current row
   currentRowByBreakpoint.desktop += maxDesktopHeight;

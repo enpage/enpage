@@ -17,7 +17,6 @@ import ThemePanel from "./ThemePanel";
 
 export default function Editor({ className, ...props }: ComponentProps<"div">) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const editor = useEditor();
   const draft = useDraft();
   const [toolbarPos, setToolbarPos] = useLocalStorage<ToolbarProps["position"]>("toolbar-position", "left");
 
@@ -66,11 +65,9 @@ export default function Editor({ className, ...props }: ComponentProps<"div">) {
       <Toolbar position={toolbarPos} />
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div className="flex-1 flex place-content-center z-40 overscroll-none">
-        {editor.previewMode && (
-          <DeviceFrame previewMode={editor.previewMode}>
-            <Page />
-          </DeviceFrame>
-        )}
+        <DeviceFrame>
+          <Page />
+        </DeviceFrame>
       </div>
     </div>
   );
