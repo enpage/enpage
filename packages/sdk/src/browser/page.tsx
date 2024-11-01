@@ -29,6 +29,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
   const hasBeenDragged = useRef(false);
+  const hasDraggedStarted = useRef(false);
   const bricks = useBricks();
 
   // const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
@@ -42,21 +43,23 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     console.log("useEffect register click listener");
     const listener = (e: MouseEvent) => {
       const event = e as MouseEvent;
-      const elementAtPoint = event.target as HTMLElement;
+      const target = event.target as HTMLElement;
       if (
-        !elementAtPoint.closest("[data-radix-popper-content-wrapper]") &&
-        !elementAtPoint.closest("[data-radix-select-viewport]") &&
-        !elementAtPoint.closest("#floating-panel") &&
-        !elementAtPoint.matches(".brick")
+        !target.closest("[data-radix-popper-content-wrapper]") &&
+        !target.closest("[data-radix-select-viewport]") &&
+        !target.closest("#floating-panel") &&
+        !target.matches(".brick")
       ) {
         console.info("deselecting brick because user clicked outside");
         editor.deselectBrick();
-      } else if (elementAtPoint.matches(".brick") && !hasBeenDragged.current) {
-        console.info("selecting brick because user clicked on a brick");
-        editor.setSelectedBrick(draft.getBrick(elementAtPoint.id));
-      }
+      } /*else if (target.matches(".brick") && hasDraggedStarted.current) {
+        console.info("selecting brick because user clicked on a brick", event);
+        editor.setSelectedBrick(draft.getBrick(target.id));
+      } else {
+        console.info("not selecting brick", event);
+      }*/
     };
-    document.addEventListener("click", listener);
+    document.addEventListener("click", listener, false);
     return () => {
       document.removeEventListener("click", listener);
     };
@@ -69,6 +72,22 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     const sel = window.getSelection();
     if (!sel?.rangeCount) {
       console.log("mod+c pressed");
+    }
+  });
+
+  useHotkeys(["backspace", "del"], (e) => {
+    if (editor.selectedBrick && editor.selectedBrick) {
+      e.preventDefault();
+      draft.deletebrick(editor.selectedBrick.id);
+    }
+  });
+
+  // mod+d to duplicate the selected brick
+  useHotkeys("mod+d", (e) => {
+    e.preventDefault();
+    if (editor.selectedBrick) {
+      console.log("duplicating brick", editor.selectedBrick.id);
+      // draft.duplicateBrick(editor.selectedBrick.id);
     }
   });
 
@@ -116,6 +135,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
   const onDragStart: ItemCallback = (e) => {
     console.log("drag start", e);
+    hasDraggedStarted.current = true;
   };
 
   const onDragStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
@@ -139,7 +159,8 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       // so that the grid library does not throw weird errors
       draft.updateBrickPosition(newItem.i, editor.previewMode, { h, w, x, y, maxH, maxW, minH, minW });
       hasBeenDragged.current = false;
-    }, 100);
+      hasDraggedStarted.current = false;
+    }, 200);
   };
 
   const onDrag: ItemCallback = (e) => {
@@ -183,6 +204,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       onDragStop={onDragStop}
       onResizeStop={onResizeStop}
       preventCollision={false}
+      draggableCancel=".nodrag"
       // @ts-ignore wrong types in library
       resizeHandle={getResizeHandle}
       // all directions

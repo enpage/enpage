@@ -20,7 +20,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
 import { SlOptionsVertical } from "react-icons/sl";
-import { DropdownMenu, Button, IconButton } from "@radix-ui/themes";
+import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
 const BrickText = lazy(() => import("./bricks/text"));
@@ -104,18 +104,22 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, onMouseDown, onMouseUp, onTouchEnd, children, ...props }, ref) => {
     const editor = useEditor();
-    const onClick = editor.enabled
-      ? (e: MouseEvent<HTMLElement>) => {
-          const target = e.target as HTMLElement;
-          if (target.matches(".react-resizable-handle")) {
-            console.log("ignoring click on resizable handle", target);
-            return;
-          }
-          console.log("selecting brick", brick.id, e);
-          e.stopPropagation();
-          editor.setSelectedBrick(brick);
-        }
-      : undefined;
+
+    const onClick = (e: MouseEvent<HTMLElement>) => {
+      console.log("onClicktest", e);
+      const target = e.target as HTMLElement;
+      if (
+        target.matches(".react-resizable-handle") ||
+        !target.matches(".brick") ||
+        !target.closest(".brick")
+      ) {
+        console.log("ignoring click on resizable handle", target);
+        return;
+      }
+      console.log("selecting brick", brick.id, e);
+      e.stopPropagation();
+      editor.setSelectedBrick(brick);
+    };
 
     return (
       <div
@@ -128,12 +132,13 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
           !!brick.props.brickPadding && `brick-p-${brick.props.brickPadding}`,
         )}
         ref={ref}
-        // onClick={onClick}
+        onClick={onClick}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onTouchEnd={onTouchEnd}
       >
         <MemoBrickComponent brick={brick} />
+        <BrickOptionsButton brick={brick} />
         {children} {/* Make sure to include children to add resizable handle */}
       </div>
     );
@@ -195,45 +200,48 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
               {
                 "!opacity-0": !open,
               },
-              "transition-all duration-300 group/button bg-upstart-600 group-hover/brick:!opacity-100 active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-upstart-200/75 hover:!bg-upstart-300 !px-0.5",
+              "nodrag transition-all duration-300 group/button bg-upstart-600 group-hover/brick:!opacity-100 \
+              active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-upstart-200/75 \
+              hover:!bg-upstart-300 !px-0.5",
             )}
           >
             <BiDotsVerticalRounded className="w-6 h-6 text-upstart-500 group-hover/button:text-upstart-600" />
           </IconButton>
         </div>
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content>
-        <DropdownMenu.Item
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log("Edit", brick);
-          }}
-        >
-          Resize
-        </DropdownMenu.Item>
-        <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
-        <DropdownMenu.Separator />
-        <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
+      <Portal>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item
+            onClick={(e) => {
+              console.log("item clicked", e);
+            }}
+          >
+            Resize
+          </DropdownMenu.Item>
+          <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
 
-        <DropdownMenu.Sub>
-          <DropdownMenu.SubTrigger>More</DropdownMenu.SubTrigger>
-          <DropdownMenu.SubContent>
-            <DropdownMenu.Item>Move to project…</DropdownMenu.Item>
-            <DropdownMenu.Item>Move to folder…</DropdownMenu.Item>
+          <DropdownMenu.Sub>
+            <DropdownMenu.SubTrigger>Visibility</DropdownMenu.SubTrigger>
+            <DropdownMenu.SubContent>
+              <DropdownMenu.Item>Move to project…</DropdownMenu.Item>
+              <DropdownMenu.Item>Move to folder…</DropdownMenu.Item>
+              <DropdownMenu.CheckboxItem checked>Mobile</DropdownMenu.CheckboxItem>
+              <DropdownMenu.CheckboxItem checked>Tablet</DropdownMenu.CheckboxItem>
+              <DropdownMenu.CheckboxItem checked>Desktop</DropdownMenu.CheckboxItem>
 
-            <DropdownMenu.Separator />
-            <DropdownMenu.Item>Advanced options…</DropdownMenu.Item>
-          </DropdownMenu.SubContent>
-        </DropdownMenu.Sub>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>Advanced options…</DropdownMenu.Item>
+            </DropdownMenu.SubContent>
+          </DropdownMenu.Sub>
 
-        <DropdownMenu.Separator />
-        <DropdownMenu.Item>Share</DropdownMenu.Item>
-        <DropdownMenu.Item>Add to favorites</DropdownMenu.Item>
-        <DropdownMenu.Separator />
-        <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
-          Delete
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item shortcut="⌫" color="red">
+            Delete
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </Portal>
     </DropdownMenu.Root>
   );
 }
