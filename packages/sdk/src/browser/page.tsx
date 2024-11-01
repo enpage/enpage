@@ -48,9 +48,11 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         !target.closest("[data-radix-popper-content-wrapper]") &&
         !target.closest("[data-radix-select-viewport]") &&
         !target.closest("#floating-panel") &&
-        !target.matches(".brick")
+        !target.matches("html") &&
+        !target.matches(".brick") &&
+        !target.closest(".brick")
       ) {
-        console.info("deselecting brick because user clicked outside");
+        console.info("deselecting brick because user clicked outside", event);
         editor.deselectBrick();
       } /*else if (target.matches(".brick") && hasDraggedStarted.current) {
         console.info("selecting brick because user clicked on a brick", event);
