@@ -32,11 +32,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   const bricks = useBricks();
 
   // const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
-
-  useEffect(() => {
-    console.log("New bricks: %s", JSON.stringify(draft.bricks, null, 2).length);
-  }, [draft.bricks]);
-
   // const { lock, unlock } = useScrollLock({
   //   autoLock: false,
   // });
@@ -127,7 +122,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     console.log("drag end");
 
     if (!hasBeenDragged.current) {
-      console.log("element has not been dragged");
       // fire a click event on the brick
       const clickEvent = new MouseEvent("click", { bubbles: true });
       element.dispatchEvent(clickEvent);
@@ -137,7 +131,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       editor.deselectBrick();
     }
 
-    console.log("Updating brick position", newItem, editor.previewMode);
     const { h, w, x, y, maxH, maxW, minH, minW } = newItem;
     // draft.updateBrickPosition(newItem.i, editor.previewMode, { h, w, x, y, maxH, maxW, minH, minW });
 
