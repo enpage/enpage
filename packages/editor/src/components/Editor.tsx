@@ -1,5 +1,5 @@
-import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
-import Toolbar, { type ToolbarProps } from "./Toolbar";
+import { useDraft, useDraftStoreContext, useEditor } from "@enpage/sdk/browser/use-editor";
+import Toolbar from "./Toolbar";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 import Inspector from "./inspector/Inspector";
 import { DeviceFrame } from "./Preview";
@@ -15,10 +15,19 @@ import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
 import { useLocalStorage } from "usehooks-ts";
 import ThemePanel from "./ThemePanel";
 
-export default function Editor({ className, ...props }: ComponentProps<"div">) {
+type EditorProps = ComponentProps<"div"> & {
+  mode?: "local" | "live";
+};
+
+export default function Editor({ className, mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
-  const [toolbarPos, setToolbarPos] = useLocalStorage<ToolbarProps["position"]>("toolbar-position", "left");
+  const draftCtx = useDraftStoreContext();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    draftCtx.persist.rehydrate();
+  }, []);
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
@@ -43,7 +52,6 @@ export default function Editor({ className, ...props }: ComponentProps<"div">) {
         }
     }
     `;
-    console.log("injected", injected);
     injectGlobal(injected);
   }, [draft.previewTheme, draft.theme]);
 
@@ -51,18 +59,12 @@ export default function Editor({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       id="editor"
-      className={tx(
-        "h-[100dvh] max-h-[100dvh] flex relative flex-1 overscroll-none",
-        className,
-        css({
-          // overscrollBehavior: "none",
-        }),
-      )}
+      className={tx("h-[100dvh] max-h-[100dvh] flex relative flex-1 overscroll-none", className)}
       {...props}
       ref={rootRef}
     >
       <Panel />
-      <Toolbar position={toolbarPos} />
+      <Toolbar />
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div className="flex-1 flex place-content-center z-40 overscroll-none">
         <DeviceFrame>

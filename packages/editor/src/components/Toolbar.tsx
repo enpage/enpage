@@ -30,12 +30,7 @@ import { VscLayoutPanelOff } from "react-icons/vsc";
 import { Tooltip, DropdownMenu } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
-export type ToolbarProps = {
-  position: "left" | "right";
-  onPositionChange?: (position: "left" | "right") => void;
-};
-
-export default function Toolbar({ position, onPositionChange }: ToolbarProps) {
+export default function Toolbar() {
   const editor = useEditor();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const isDesktop = useIsLargeDevice();
