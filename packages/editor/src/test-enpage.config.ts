@@ -175,13 +175,13 @@ export const bricks = defineBricks([
       position: {
         mobile: {
           x: 0,
-          y: 2,
+          y: 3,
           w: 12,
           h: 3,
         },
         tablet: {
           x: 0,
-          y: 2,
+          y: 3,
           w: 4,
           h: 3,
         },
@@ -223,13 +223,12 @@ export const bricks = defineBricks([
       position: {
         mobile: {
           x: 8,
-          y: 4,
           w: 12,
           h: 3,
         },
         tablet: {
           x: 8,
-          y: 4,
+          y: 5,
           w: 4,
           h: 3,
         },

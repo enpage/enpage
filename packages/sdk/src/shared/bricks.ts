@@ -127,7 +127,7 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
           ? {
               mobile: {
                 ...brick.position.mobile,
-                y: currentRowByBreakpoint.desktop,
+                y: currentRowByBreakpoint.mobile,
               },
             }
           : {}),
@@ -143,15 +143,14 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
           ? {
               desktop: {
                 ...brick.position.desktop,
-                y: currentRowByBreakpoint.mobile,
+                y: currentRowByBreakpoint.desktop,
               },
             }
           : {}),
       },
     };
-    console.log("adjusted.position.mobile", adjusted.position.mobile);
-    if (adjusted.position.mobile?.w === 12) {
-      currentRowByBreakpoint.mobile += maxMobileHeight;
+    if (adjusted.position.mobile?.w === 12 && index !== bricks.length - 1) {
+      currentRowByBreakpoint.mobile += adjusted.position.mobile.h;
     }
     return adjusted;
   });
