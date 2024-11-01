@@ -1,21 +1,5 @@
 import { useEffect, useRef, useState, useCallback, useMemo, type ComponentType, type RefObject } from "react";
 import { debounce } from "lodash-es";
-import { keyframes, tx } from "./twind";
-
-const blurFade = keyframes`
-  0% {
-    opacity: 1;
-  }
-  20% {
-    opacity:0;
-  }
-  70% {
-    opacity:0;
-  }
-  100% {
-    opacity: 1;
-  }
-`;
 
 // More specific type for the inner ref
 interface WithInnerRef {

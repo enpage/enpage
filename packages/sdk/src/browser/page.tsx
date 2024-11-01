@@ -233,7 +233,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       autoSize={false}
       // No compacting, we want the user to be able to place the bricks wherever they want
       // compactType={"vertical"}
-      compactType={null}
+      compactType={editor.previewMode === "mobile" ? "vertical" : null}
       allowOverlap={true}
     >
       {bricks.map((brick) => (
