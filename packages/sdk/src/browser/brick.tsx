@@ -12,10 +12,8 @@ import {
   type MouseEvent,
   type PropsWithChildren,
 } from "react";
-import { CSS } from "@dnd-kit/utilities";
-import { useSortable } from "@dnd-kit/sortable";
 import { tx, style, css, apply } from "./twind";
-import { useEditor, useEditorEnabled } from "./use-editor";
+import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
@@ -42,7 +40,7 @@ const BrickComponent = ({ brick, ...otherProps }: { brick: Brick } & ComponentPr
 
   return (
     <Suspense>
-      <BrickModule id={brick.id} {...rest} {...otherProps} />
+      <BrickModule id={brick.id} {...rest} {...otherProps} textEditable={true} />
     </Suspense>
   );
 };
@@ -58,44 +56,6 @@ const MemoBrickComponent = memo(BrickComponent, (prevProps, nextProps) => {
   });
   return compared;
 });
-
-// function BrickWrapper({
-//   className,
-//   brick,
-//   brickIndex,
-//   placeholder,
-//   ...wrapperAttrs
-// }: {
-//   brick: Brick;
-//   brickIndex: number;
-//   placeholder?: boolean;
-// } & ComponentProps<"div">) {
-//   const editor = useEditor();
-
-//   const onClick = editor.enabled
-//     ? (e: MouseEvent<HTMLElement>) => {
-//         console.log("selecting brick", brick.id);
-//         e.stopPropagation();
-//         editor.setSelectedBrick(brick);
-//       }
-//     : undefined;
-
-//   return (
-//     <div
-//       id={brick.id}
-//       {...wrapperAttrs}
-//       onClick={onClick}
-//       className={tx(
-//         // DO NOT put transition classes here, they will make it flickering when dragging ends
-//         "relative cursor-auto focus:cursor-grab group/brick text-left",
-//         // used when dragging the row
-//         placeholder && "opacity-10 grayscale",
-//       )}
-//     >
-//       <MemoBrickComponent brick={brick} />
-//     </div>
-//   );
-// }
 
 type BrickWrapperProps = ComponentProps<"div"> & {
   brick: Brick;
@@ -148,42 +108,9 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
 const BrickWrapperMemo = memo(BrickWrapper);
 export default BrickWrapperMemo;
 
-// function DraggableBrickResizeHanlde({
-//   brick,
-//   brickIndex,
-//   containerIndex,
-//   handleType,
-// }: { brick: Brick; brickIndex: number; containerIndex: number; handleType: "left" | "right" }) {
-//   // Drag resize handle
-//   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-//     id: `resize-handle-${handleType}-${brick.id}`,
-//     data: { type: "resize-handle", brick, brickIndex, containerIndex },
-//   });
-
-//   const style = transform
-//     ? {
-//         transform: `translate3d(${transform.x}px, 0px, 0)`,
-//       }
-//     : undefined;
-
-//   return (
-//     <BrickResizeHandle
-//       ref={setNodeRef}
-//       id={`resize-handle-${handleType}-${brick.id}`}
-//       data-brick-id={brick.id}
-//       data-brick-index={brickIndex}
-//       data-brick-col-start={brick.position.colStart}
-//       data-brick-col-end={brick.position.colEnd}
-//       handleType={handleType}
-//       {...style}
-//       {...attributes}
-//       {...listeners}
-//     />
-//   );
-// }
-
 function BrickOptionsButton({ brick }: { brick: Brick }) {
   const [open, setOpen] = useState(false);
+  const draft = useDraft();
 
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
@@ -210,34 +137,54 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
         </div>
       </DropdownMenu.Trigger>
       <Portal>
-        <DropdownMenu.Content>
+        {/* The "nodrag" class is here to prevent the grid manager
+            from handling click event coming from the menu items.
+            We still need to stop the propagation for other listeners. */}
+        <DropdownMenu.Content className="nodrag">
           <DropdownMenu.Item
+            shortcut="⌘D"
             onClick={(e) => {
-              console.log("item clicked", e);
+              e.stopPropagation();
+              draft.duplicateBrick(brick.id);
             }}
           >
-            Resize
+            Duplicate
           </DropdownMenu.Item>
-          <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
-
           <DropdownMenu.Sub>
             <DropdownMenu.SubTrigger>Visibility</DropdownMenu.SubTrigger>
             <DropdownMenu.SubContent>
-              <DropdownMenu.Item>Move to project…</DropdownMenu.Item>
-              <DropdownMenu.Item>Move to folder…</DropdownMenu.Item>
-              <DropdownMenu.CheckboxItem checked>Mobile</DropdownMenu.CheckboxItem>
-              <DropdownMenu.CheckboxItem checked>Tablet</DropdownMenu.CheckboxItem>
-              <DropdownMenu.CheckboxItem checked>Desktop</DropdownMenu.CheckboxItem>
-
-              <DropdownMenu.Separator />
-              <DropdownMenu.Item>Advanced options…</DropdownMenu.Item>
+              <DropdownMenu.CheckboxItem
+                checked={!brick.position.mobile?.hidden}
+                onClick={(e) => e.stopPropagation()}
+                onCheckedChange={() => draft.toggleBrickVisibilityPerBreakpoint(brick.id, "mobile")}
+              >
+                Mobile
+              </DropdownMenu.CheckboxItem>
+              <DropdownMenu.CheckboxItem
+                checked={!brick.position.tablet?.hidden}
+                onClick={(e) => e.stopPropagation()}
+                onCheckedChange={() => draft.toggleBrickVisibilityPerBreakpoint(brick.id, "tablet")}
+              >
+                Tablet
+              </DropdownMenu.CheckboxItem>
+              <DropdownMenu.CheckboxItem
+                checked={!brick.position.desktop?.hidden}
+                onClick={(e) => e.stopPropagation()}
+                onCheckedChange={() => draft.toggleBrickVisibilityPerBreakpoint(brick.id, "desktop")}
+              >
+                Desktop
+              </DropdownMenu.CheckboxItem>
             </DropdownMenu.SubContent>
           </DropdownMenu.Sub>
-
           <DropdownMenu.Separator />
-          <DropdownMenu.Item shortcut="⌫" color="red">
+          <DropdownMenu.Item
+            shortcut="⌫"
+            color="red"
+            onClick={(e) => {
+              e.stopPropagation();
+              draft.deleteBrick(brick.id);
+            }}
+          >
             Delete
           </DropdownMenu.Item>
         </DropdownMenu.Content>
@@ -245,38 +192,3 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
     </DropdownMenu.Root>
   );
 }
-
-// export const BrickResizeHandle = forwardRef<
-//   HTMLDivElement,
-//   ComponentProps<"div"> & { overlay?: boolean; handleType: "left" | "right" }
-// >(({ className, overlay, handleType, ...attrs }, ref) => {
-//   return (
-//     <div
-//       ref={ref}
-//       {...attrs}
-//       className={tx(
-//         "group !cursor-col-resize absolute z-[9999] text-upstart-400 w-2.5 rounded-sm items-center justify-center shadow-xl",
-//         // "group-hover:(border border-upstart-400 text-upstart-400)",
-//         "transition-opacity duration-200 group-hover:(bg-upstart-300 opacity-70) hover:(!opacity-100)",
-//         {
-//           "hidden group-hover:(flex flex-col)": !overlay,
-//           "-right-1.5 top-[10%] bottom-[10%]": !overlay && handleType === "right",
-//           "-left-1.5 top-[10%] bottom-[10%]": !overlay && handleType === "left",
-//           "flex flex-col bg-upstart-400": overlay,
-//         },
-//         className,
-//       )}
-//     >
-//       <RxDragHandleDots2 className="w-4 h-auto group-hover:inline hidden text-white drop-shadow-sm" />
-//     </div>
-//   );
-// });
-
-// export function BrickPlaceholder({ brick, container }: { brick: Brick; container: BricksContainer }) {
-//   return (
-//     /* Put the brick component so it takes its natural place but don't show it */
-//     <div className={tx("flex-1 shrink-0 opacity-0")}>
-//       <MemoBrickComponent brick={brick} container={container} />
-//     </div>
-//   );
-// }

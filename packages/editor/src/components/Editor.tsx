@@ -44,11 +44,10 @@ export default function Editor({ className, mode = "local", ...props }: EditorPr
         [data-upstart-theme] {
           #page-container {
             font-family: var(--font-${themeUsed.typography.body});
-            & h1, h2, h3, h4, h5, h6 {
+            & :is(h1, h2, h3, h4, h5, h6) {
               font-family: var(--font-${themeUsed.typography.heading});
             }
           }
-
         }
     }
     `;

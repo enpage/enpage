@@ -16,7 +16,6 @@ import { useOnClickOutside, useScrollLock } from "usehooks-ts";
 import { type ItemCallback, Responsive } from "react-grid-layout";
 import WidthProvider from "./responsive-layout";
 import { LAYOUT_COLS, LAYOUT_GUTTERS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "./constants";
-import { createPortal } from "react-dom";
 import { useHotkeys } from "react-hotkeys-hook";
 import invariant from "~/shared/utils/invariant";
 import { LAYOUT_BREAKPOINTS } from "./constants";
@@ -48,12 +47,16 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         !target.closest("[data-radix-popper-content-wrapper]") &&
         !target.closest("[data-radix-select-viewport]") &&
         !target.closest("#floating-panel") &&
+        !target.closest('[role="toolbar"]') &&
         !target.matches("html") &&
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
         console.info("deselecting brick because user clicked outside", event);
         editor.deselectBrick();
+
+        // also deslect the library panel
+        editor.hidePanel("library");
       } /*else if (target.matches(".brick") && hasDraggedStarted.current) {
         console.info("selecting brick because user clicked on a brick", event);
         editor.setSelectedBrick(draft.getBrick(target.id));
@@ -80,7 +83,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   useHotkeys(["backspace", "del"], (e) => {
     if (editor.selectedBrick && editor.selectedBrick) {
       e.preventDefault();
-      draft.deletebrick(editor.selectedBrick.id);
+      draft.deleteBrick(editor.selectedBrick.id);
     }
   });
 
@@ -236,9 +239,11 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       compactType={editor.previewMode === "mobile" ? "vertical" : null}
       allowOverlap={true}
     >
-      {bricks.map((brick) => (
-        <BrickWrapper key={brick.id} brick={brick} />
-      ))}
+      {bricks
+        .filter((b) => !b.position[editor.previewMode]?.hidden)
+        .map((brick) => (
+          <BrickWrapper key={brick.id} brick={brick} />
+        ))}
     </ResponsiveGridLayout>
   );
 }

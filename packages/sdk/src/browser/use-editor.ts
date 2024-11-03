@@ -10,6 +10,8 @@ import type { Brick, BrickPosition } from "~/shared/bricks";
 import type { Theme } from "~/shared/theme";
 import { themes } from "~/shared/themes/all-themes";
 import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
+import { generateId } from "./bricks/common";
+import { position } from "polished";
 export { type Immer } from "immer";
 
 export interface EditorStateProps {
@@ -34,6 +36,7 @@ export interface EditorState extends EditorStateProps {
   setIsResizing: (forContainerid: string | false) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
   togglePanel: (panel: EditorStateProps["panel"]) => void;
+  hidePanel: (panel: EditorStateProps["panel"]) => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
@@ -94,6 +97,12 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             set((state) => {
               state.panel = state.panel === panel ? undefined : panel;
             }),
+          hidePanel: (panel) =>
+            set((state) => {
+              if (state.panel === panel) {
+                state.panel = undefined;
+              }
+            }),
         })),
         {
           name: "editor-state",
@@ -130,11 +139,13 @@ export interface DraftStateProps {
 export interface DraftState extends DraftStateProps {
   getBricks: () => Brick[];
   getBrick: (id: string) => Brick | undefined;
-  deletebrick: (id: string) => void;
+  deleteBrick: (id: string) => void;
+  duplicateBrick: (id: string) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
   updateBrickPosition: (id: string, bp: keyof Brick["position"], position: BrickPosition) => void;
   updateBricksPositions: (bp: keyof Brick["position"], positions: Record<string, BrickPosition>) => void;
+  toggleBrickVisibilityPerBreakpoint: (id: string, breakpoint: keyof Brick["position"]) => void;
   setPreviewTheme: (theme: Theme) => void;
   setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
@@ -156,11 +167,23 @@ export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: D
         immer((set, _get) => ({
           ...DEFAULT_PROPS,
           ...initProps,
-          deletebrick: (id) =>
+          deleteBrick: (id) =>
             set((state) => {
-              state.bricks = state.bricks.filter((item) => item.id !== id);
+              const brickIndex = state.bricks.findIndex((item) => item.id === id);
+              state.bricks.splice(brickIndex, 1);
             }),
-
+          duplicateBrick: (id) =>
+            set((state) => {
+              const brick = state.bricks.find((item) => item.id === id);
+              if (brick) {
+                const newBrick = {
+                  ...brick,
+                  id: `brick-${generateId()}`,
+                  position: getDuplicatedBrickPosition(brick),
+                };
+                state.bricks.push(newBrick);
+              }
+            }),
           updateBrick: (id, brick) =>
             set((state) => {
               const brickIndex = state.bricks.findIndex((item) => item.id === id);
@@ -211,6 +234,13 @@ export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: D
             set((state) => {
               const brickIndex = state.bricks.findIndex((item) => item.id === id);
               state.bricks[brickIndex].position[bp] = position;
+            }),
+
+          toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
+            set((state) => {
+              const brickIndex = state.bricks.findIndex((item) => item.id === id);
+              state.bricks[brickIndex].position[breakpoint]!.hidden =
+                !state.bricks[brickIndex].position[breakpoint]?.hidden;
             }),
         })),
         {
@@ -277,3 +307,15 @@ export const useBricks = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.bricks);
 };
+
+/**
+ * Return the original position of the duplicated brick translated to the new position (+1 row for each breakpoint)
+ */
+function getDuplicatedBrickPosition(brick: Brick) {
+  const { mobile, tablet, desktop } = brick.position;
+  return {
+    mobile: { ...(mobile ?? tablet ?? desktop)!, y: (mobile ?? tablet ?? desktop)!.y + 1 },
+    tablet: { ...(tablet ?? desktop ?? mobile)!, y: (tablet ?? desktop ?? mobile)!.y + 1 },
+    desktop: { ...(desktop ?? tablet ?? mobile)!, y: (desktop ?? tablet ?? mobile)!.y + 1 },
+  };
+}

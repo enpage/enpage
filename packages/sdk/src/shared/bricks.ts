@@ -42,9 +42,9 @@ export type BrickPosition = {
   maxH?: number;
 
   /**
-   * If true, the brick will not be draggable or resizable.
+   * If true, the brick won't be displayed.
    */
-  static?: boolean;
+  hidden?: boolean;
 };
 
 // Helper type to ensure at least one breakpoint is set

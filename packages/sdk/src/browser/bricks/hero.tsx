@@ -12,9 +12,18 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
   type: "hero",
-  title: "hero",
+  title: "Hero",
   description: "A hero brick",
-  icon: "hero",
+  // hero svg icon
+  icon: `
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+  <!-- Large Hero Text -->
+  <rect x="20" y="35" width="60" height="12" rx="2" fill="currentColor"/>
+  <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
+</svg>
+  `,
   file: filename,
   props: Type.Composite([editableTextProps, commonBrickProps]),
 });

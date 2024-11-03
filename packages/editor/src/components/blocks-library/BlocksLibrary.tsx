@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEditor } from "@enpage/sdk/browser/use-editor";
-import * as all from "@enpage/sdk/browser/bricks/all-manifests";
+import { manifests } from "@enpage/sdk/browser/bricks/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 
 export default function BlocksLibrary() {
@@ -13,27 +13,24 @@ export default function BlocksLibrary() {
         Library
       </h2>
       <div
-        className="grid gap-1.5 p-2"
+        className="grid gap-1 p-1.5"
         style={{
           gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
         }}
       >
-        {Object.entries(all).map(([key, blockImport]) => {
-          const block = Value.Create(blockImport.manifest);
+        {Object.values(manifests).map((blockImport) => {
+          const block = Value.Create(blockImport);
           return (
             <button
               draggable={isTouchDevice === false}
               key={block.type}
               data-block={encodeURIComponent(JSON.stringify(block))}
-              data-manifest={encodeURIComponent(JSON.stringify(blockImport.manifest))}
+              data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
               type="button"
               className="rounded border border-transparent hover:border-upstart-600 bg-upstart-100
                             dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
                             pointer-events-auto"
             >
-              {/*
-                - pointer-events-none is needed for Safari iOS to work!
-              */}
               <div
                 className={clsx(
                   "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
@@ -47,7 +44,7 @@ export default function BlocksLibrary() {
                   // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                   dangerouslySetInnerHTML={{ __html: block.icon }}
                 />
-                <span className="whitespace-nowrap text-sm">{block.title}</span>
+                <span className="whitespace-nowrap text-xs">{block.title}</span>
               </div>
             </button>
           );

@@ -14,7 +14,22 @@ export const manifest = defineBrickManifest({
   type: "text-with-title",
   title: "Title & Text",
   description: "A textual brick with a title",
-  icon: "text-title",
+  // svg icon for "text+title" block (different than text!)
+  icon: `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+  <!-- Title -->
+  <rect x="20" y="20" width="60" height="8" rx="2" fill="currentColor"/>
+  <!-- Divider -->
+  <line x1="20" y1="35" x2="80" y2="35" stroke="currentColor" stroke-width="1"/>
+  <!-- Text lines -->
+  <rect x="20" y="45" width="60" height="2" rx="2" fill="currentColor"/>
+  <rect x="20" y="55" width="50" height="2" rx="2" fill="currentColor"/>
+  <rect x="20" y="65" width="55" height="2" rx="2" fill="currentColor"/>
+  <rect x="20" y="75" width="45" height="2" rx="2" fill="currentColor"/>
+</svg>
+ `,
   file: filename,
   props: Type.Composite([
     Type.Object({

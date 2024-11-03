@@ -23,7 +23,7 @@ export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
     <div
       ref={ref}
       className={tx(
-        "device-frame opacity-20 transition-all duration-200 mx-auto scrollbar-thin ",
+        "device-frame opacity-20 transition-all duration-200 mx-auto scrollbar-thin",
         styles[previewMode],
         {
           [styles.handled]: previewMode === "tablet" || previewMode === "mobile",
