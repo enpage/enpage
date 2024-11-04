@@ -72,7 +72,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div
         className={tx(
-          "flex-1 flex place-content-center z-40 overscroll-none",
+          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto",
           css({
             gridArea: "main",
           }),

@@ -60,21 +60,21 @@ export default function TopBar() {
   }, [editor.previewMode, editor.setPreviewMode, attributes.$tabletBreakpointEnabled]);
 
   // bg-upstart-600
-  const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-2.5 min-w-[3.7rem]`;
+  const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
   const commonCls = `${baseCls}
   border-x border-l-upstart-400 border-r-upstart-700
-    disabled:hover:from-upstart-600 disabled:hover:to-upstart-600/80
+    disabled:hover:from-transparent disabled:hover:to-[rgba(255,255,255,0.15)]
     hover:from-upstart-700 hover:to-white/10
     active:from-upstart-800 active:to-transparent
-    disabled:text-white/40 disabled:hover:border-t-upstart-400 disabled:hover:from-transparent disabled:hover:to-white/10
+    disabled:text-white/40
   `;
 
-  const rocketBtn = `px-3 bg-gradient-to-tr from-orange-500 to-yellow-400 border-x border-l-orange-300 border-r-orange-600
+  const rocketBtn = `px-3 bg-gradient-to-tr from-orange-500 to-yellow-400 border-l border-l-orange-300
   hover:bg-gradient-to-tr hover:from-orange-600 hover:to-yellow-500`;
 
   const btnWithArrow = "cursor-default";
 
-  const btnClass = `flex items-center justify-center py-3 gap-x-0.5  group relative disabled:hover:cursor-default aspect-square`;
+  const btnClass = `flex items-center justify-center py-3 gap-x-0.5 px-3.5  group relative disabled:hover:cursor-default aspect-square`;
 
   const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/80 top-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-y-1.5

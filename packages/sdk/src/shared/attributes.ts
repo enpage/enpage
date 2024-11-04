@@ -232,15 +232,23 @@ const defaultAttributes = {
     ],
   }),
 
-  $pageTitle: attr.string("Page title", "Untitled"),
+  $pageTitle: attr.string("Page title", "Untitled", {
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
+  }),
   $pageDescription: attr.string("Page description", "", {
     "ui:widget": "textarea",
     "ui:options": {
       rows: 3,
       widget: "textarea",
     },
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
   }),
-  $pageKeywords: attr.string("Page keywords"),
+  $pageKeywords: attr.string("Page keywords", "", {
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
+  }),
 
   $siteLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 

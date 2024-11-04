@@ -64,7 +64,7 @@ export default function Toolbar() {
   const commonCls = `${baseCls}
     w-full
     hover:(from-upstart-600 to-upstart-500 text-white)
-    active:from-upstart-800 active:to-transparent
+    active:(from-upstart-700 to-upstart-500 text-white)
     disabled:text-gray-400/80 disabled:hover:from-transparent disabled:hover:to-transparent
   `;
 
@@ -72,7 +72,7 @@ export default function Toolbar() {
 
   const btnClass = `flex items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`;
 
-  const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/80 left-[calc(100%+.5rem)]
+  const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/90 left-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-x-1.5
   group-hover:block group-hover:opacity-100 group-hover:translate-x-0 text-nowrap whitespace-nowrap pointer-events-none`;
 
