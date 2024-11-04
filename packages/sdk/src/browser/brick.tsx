@@ -13,7 +13,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { tx, style, css, apply } from "./twind";
-import { useDraft, useEditor, useEditorEnabled } from "./use-editor";
+import { useAttributes, useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { useDraggable } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
@@ -111,6 +111,7 @@ export default BrickWrapperMemo;
 function BrickOptionsButton({ brick }: { brick: Brick }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
+  const attributes = useAttributes();
 
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
@@ -151,7 +152,7 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
             Duplicate
           </DropdownMenu.Item>
           <DropdownMenu.Sub>
-            <DropdownMenu.SubTrigger>Visibility</DropdownMenu.SubTrigger>
+            <DropdownMenu.SubTrigger>Visible on</DropdownMenu.SubTrigger>
             <DropdownMenu.SubContent>
               <DropdownMenu.CheckboxItem
                 checked={!brick.position.mobile?.hidden}
@@ -160,13 +161,15 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
               >
                 Mobile
               </DropdownMenu.CheckboxItem>
-              <DropdownMenu.CheckboxItem
-                checked={!brick.position.tablet?.hidden}
-                onClick={(e) => e.stopPropagation()}
-                onCheckedChange={() => draft.toggleBrickVisibilityPerBreakpoint(brick.id, "tablet")}
-              >
-                Tablet
-              </DropdownMenu.CheckboxItem>
+              {attributes.$tabletBreakpointEnabled && (
+                <DropdownMenu.CheckboxItem
+                  checked={!brick.position.tablet?.hidden}
+                  onClick={(e) => e.stopPropagation()}
+                  onCheckedChange={() => draft.toggleBrickVisibilityPerBreakpoint(brick.id, "tablet")}
+                >
+                  Tablet
+                </DropdownMenu.CheckboxItem>
+              )}
               <DropdownMenu.CheckboxItem
                 checked={!brick.position.desktop?.hidden}
                 onClick={(e) => e.stopPropagation()}

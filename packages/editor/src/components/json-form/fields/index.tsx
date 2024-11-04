@@ -4,6 +4,7 @@ import FileField from "./file";
 import DimensionField from "./dimension";
 import ColorField from "./color";
 import SliderField from "./slider";
+import SwitchField from "./switch";
 
 export const customFields: RegistryFieldsType = {
   enum: EnumField,
@@ -11,4 +12,5 @@ export const customFields: RegistryFieldsType = {
   dimension: DimensionField,
   color: ColorField,
   slider: SliderField,
+  switch: SwitchField,
 };

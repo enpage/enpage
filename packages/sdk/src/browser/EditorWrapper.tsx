@@ -21,6 +21,7 @@ export function EditorWrapper({ enabled = true, config, children }: PropsWithChi
     createDraftStore({
       bricks: config.bricks,
       attr: config.attr,
+      attrSchema: config.attributes,
       data: config.data,
     }),
   ).current;

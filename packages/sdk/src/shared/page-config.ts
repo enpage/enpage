@@ -1,5 +1,5 @@
 import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
-import { resolveAttributes, type AttributesMap, type AttributesResolved } from "./attributes";
+import { resolveAttributes, type AttributesResolved } from "./attributes";
 import type { Manifest } from "vite";
 import type { TemplateManifest } from "./manifest";
 import type { Brick } from "./bricks";
@@ -10,7 +10,7 @@ import type { EnpageTemplateConfig } from "./template-config";
  */
 export type PageConfig<
   D extends DatasourceManifestMap | undefined,
-  A extends AttributesMap,
+  A extends EnpageTemplateConfig["attributes"],
   B extends Brick[],
 > = {
   /**
@@ -26,11 +26,11 @@ export type PageConfig<
   /**
    * Page attributes.
    */
-  attributes: AttributesMap;
+  attributes: A;
   /**
    * Resolved attributes for the page.
    */
-  attr: AttributesResolved<A>;
+  attr: AttributesResolved;
   bricks: B;
 
   ssrManifest?: Manifest;
@@ -41,17 +41,25 @@ export type PageConfig<
   manifest: TemplateManifest;
 };
 
-export type GenericPageConfig = PageConfig<DatasourceManifestMap, AttributesMap, Brick[]>;
+export type GenericPageConfig = PageConfig<
+  DatasourceManifestMap,
+  EnpageTemplateConfig["attributes"],
+  Brick[]
+>;
 
 export type PageContext<
   D extends DatasourceManifestMap | undefined,
-  A extends AttributesMap,
+  A extends EnpageTemplateConfig["attributes"],
   B extends Brick[],
 > = Pick<PageConfig<D, A, B>, "data" | "attr" | "bricks">;
 
-export type GenericPageContext = PageContext<DatasourceManifestMap, AttributesMap, Brick[]>;
+export type GenericPageContext = PageContext<
+  DatasourceManifestMap,
+  EnpageTemplateConfig["attributes"],
+  Brick[]
+>;
 
-export function createPageConfigFromTemplateConfig(templateConfig: EnpageTemplateConfig): GenericPageConfig {
+export function createPageConfigFromTemplateConfig(templateConfig: EnpageTemplateConfig) {
   return {
     datasources: templateConfig.datasources,
     data: undefined,

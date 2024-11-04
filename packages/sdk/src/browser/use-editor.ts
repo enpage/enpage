@@ -9,9 +9,10 @@ import invariant from "~/shared/utils/invariant";
 import type { Brick, BrickPosition } from "~/shared/bricks";
 import type { Theme } from "~/shared/theme";
 import { themes } from "~/shared/themes/all-themes";
-import type { AttributesMap, AttributesResolved } from "~/shared/attributes";
+import type { AttributesResolved } from "~/shared/attributes";
 import { generateId } from "./bricks/common";
 import { position } from "polished";
+import type { TObject } from "@sinclair/typebox";
 export { type Immer } from "immer";
 
 export interface EditorStateProps {
@@ -22,7 +23,7 @@ export interface EditorStateProps {
   selectedBrick?: Brick;
   isEditingTextForBrickId?: string;
   isResizingForContainerId?: string;
-  panel?: "library" | "inspector" | "theme";
+  panel?: "library" | "inspector" | "theme" | "settings";
 }
 
 export interface EditorState extends EditorStateProps {
@@ -40,7 +41,7 @@ export interface EditorState extends EditorStateProps {
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
-  const DEFAULT_PROPS: EditorStateProps = { editingPageIndex: 0, enabled: true, previewMode: "tablet" };
+  const DEFAULT_PROPS: EditorStateProps = { editingPageIndex: 0, enabled: true, previewMode: "desktop" };
 
   return createStore<EditorState>()(
     temporal(
@@ -131,7 +132,8 @@ type EditorStore = ReturnType<typeof createEditorStore>;
 export interface DraftStateProps {
   bricks: Brick[];
   data: Record<string, unknown>;
-  attr: AttributesResolved<AttributesMap>;
+  attr: AttributesResolved;
+  attrSchema: TObject;
   theme: Theme;
   previewTheme?: Theme;
 }
@@ -159,8 +161,17 @@ export interface DraftState extends DraftStateProps {
  *
  * Note: `data` is optional but `attr` is always provided
  */
-export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: DraftStateProps["attr"] }) => {
-  const DEFAULT_PROPS: Omit<DraftStateProps, "attr"> = { bricks: [], theme: themes[1], data: {} };
+export const createDraftStore = (
+  initProps: Partial<DraftStateProps> & {
+    attr: DraftStateProps["attr"];
+    attrSchema: DraftStateProps["attrSchema"];
+  },
+) => {
+  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attrSchema"> = {
+    bricks: [],
+    theme: themes[1],
+    data: {},
+  };
   return createStore<DraftState>()(
     temporal(
       persist(
@@ -246,6 +257,10 @@ export const createDraftStore = (initProps: Partial<DraftStateProps> & { attr: D
         {
           name: "draft-state",
           skipHydration: true,
+          partialize: (state) =>
+            Object.fromEntries(
+              Object.entries(state).filter(([key]) => !["attrSchema", "attr"].includes(key)),
+            ),
         },
       ),
       {
@@ -306,6 +321,16 @@ export const useDraft = () => {
 export const useBricks = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.bricks);
+};
+
+export const useAttributes = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.attr);
+};
+
+export const useAttributesSchema = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.attrSchema);
 };
 
 /**

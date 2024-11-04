@@ -17,7 +17,16 @@ import { BsStars } from "react-icons/bs";
 import { tx, css, tw } from "@enpage/sdk/browser/twind";
 import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
 import { useDraft } from "@enpage/sdk/browser/use-editor";
-import { ColorFieldRow } from "./inspector/fields/color";
+import { ColorFieldRow } from "./json-form/fields/color";
+
+const tabContentScrollClass = css({
+  scrollbarColor: "var(--violet-4) var(--violet-2)",
+  scrollBehavior: "smooth",
+  scrollbarWidth: "thin",
+  "&:hover": {
+    scrollbarColor: "var(--violet-6) var(--violet-3)",
+  },
+});
 
 export default function ThemePanel() {
   const draft = useDraft();
@@ -50,15 +59,6 @@ export default function ThemePanel() {
     setIsGenerating(false);
   }, [themeDescription]);
 
-  const tabContentScrollClass = css({
-    scrollbarColor: "var(--violet-4) var(--violet-2)",
-    scrollBehavior: "smooth",
-    scrollbarWidth: "thin",
-    "&:hover": {
-      scrollbarColor: "var(--violet-6) var(--violet-3)",
-    },
-  });
-
   return (
     <Tabs.Root defaultValue="current">
       <Tabs.List className="sticky top-0 !bg-white z-50">
@@ -69,7 +69,7 @@ export default function ThemePanel() {
           List
         </Tabs.Trigger>
         <Tabs.Trigger value="ai" className="!flex-1">
-          AI Assistant <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
+          Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
         </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content
@@ -91,7 +91,7 @@ export default function ThemePanel() {
           }}
           className="w-full my-2 h-24"
           size="2"
-          placeholder="Describe your website or page purpose"
+          placeholder="Describe your website purpose, color preferences, etc..."
           spellCheck={false}
         />
         <Button

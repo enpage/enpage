@@ -214,8 +214,8 @@ function upsertHtmlElement(
  * Add/update meta tags to the document head.
  */
 function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPageContext | undefined) {
-  if (context?.attr.$siteLanguage) {
-    doc.documentElement.lang = context?.attr.$siteLanguage;
+  if (context?.attr.$pageLanguage) {
+    doc.documentElement.lang = context?.attr.$pageLanguage;
   }
   // ----------------------------------------------------
   // Add meta tags if they don't exist
@@ -227,21 +227,21 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
   }
 
   // title (always update)
-  if (context?.attr.$siteTitle)
-    upsertHtmlElement("title", "title", doc, head, { innerText: context.attr.$siteTitle });
+  if (context?.attr.$pageTitle)
+    upsertHtmlElement("title", "title", doc, head, { innerText: context.attr.$pageTitle });
 
   // description (always update)
-  if (context?.attr.$siteDescription)
+  if (context?.attr.$pageDescription)
     upsertHtmlElement("meta", "meta[name='description']", doc, head, {
       name: "description",
-      content: context.attr.$siteDescription,
+      content: context.attr.$pageDescription,
     });
 
   // keywords (always update)
-  if (context?.attr.$siteKeywords) {
+  if (context?.attr.$pageKeywords) {
     upsertHtmlElement("meta", "meta[name='keywords']", doc, head, {
       name: "keywords",
-      content: context.attr.$siteKeywords,
+      content: context.attr.$pageKeywords,
     });
   }
 

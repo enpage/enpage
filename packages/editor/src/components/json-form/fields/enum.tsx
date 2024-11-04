@@ -137,7 +137,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
           {fieldTitle && <label className="control-label">{fieldTitle}</label>}
           {fieldDescription && <p className="field-description">{fieldDescription}</p>}
           <select
-            className="form-select"
+            className="form-select mt-1.5"
             value={currentValue}
             onChange={(e) => onChange(e.target.value)}
             required={required}

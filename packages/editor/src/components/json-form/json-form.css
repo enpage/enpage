@@ -1,12 +1,12 @@
 
-.inspector-form label {
+.json-form label {
   font-weight: 600;
   & > .required {
     display: none;
   }
 }
 
-.inspector-form input[type="file"] {
+.json-form input[type="file"] {
 	width: 0.1px;
 	height: 0.1px;
 	opacity: 0;

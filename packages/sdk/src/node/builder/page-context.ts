@@ -1,7 +1,7 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import type { GenericPageContext, PageContext } from "~/shared/page-config";
 import { samples } from "~/shared/datasources/samples";
-import { resolveAttributes, type AttributesMap, type AttributesResolved } from "~/shared/attributes";
+import { resolveAttributes } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
 import type { ConfigEnv } from "vite";

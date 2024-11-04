@@ -60,9 +60,6 @@ export const attributes = defineAttributes({
   mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
-  sidebarPosition: attr.enum("Sidebar Position", "left", {
-    options: ["left", "right"],
-  }),
 });
 
 // // template information
