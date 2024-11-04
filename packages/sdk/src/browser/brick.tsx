@@ -5,6 +5,7 @@ import {
   memo,
   Suspense,
   useEffect,
+  useRef,
   useState,
   type ComponentProps,
   type ComponentType,
@@ -64,11 +65,14 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, onMouseDown, onMouseUp, onTouchEnd, children, ...props }, ref) => {
     const editor = useEditor();
+    const hasMouseMoved = useRef(false);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
       console.log("onClicktest", e);
+      console.log("hasmoved", hasMouseMoved.current);
       const target = e.target as HTMLElement;
       if (
+        hasMouseMoved.current ||
         target.matches(".react-resizable-handle") ||
         !target.matches(".brick") ||
         !target.closest(".brick")
@@ -79,6 +83,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
       console.log("selecting brick", brick.id, e);
       e.stopPropagation();
       editor.setSelectedBrick(brick);
+      hasMouseMoved.current = false;
     };
 
     return (
@@ -93,8 +98,19 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         )}
         ref={ref}
         onClick={onClick}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
+        onMouseDown={(e) => {
+          hasMouseMoved.current = false;
+          onMouseDown?.(e);
+        }}
+        onMouseUp={(e) => {
+          onMouseUp?.(e);
+          setTimeout(() => {
+            hasMouseMoved.current = false;
+          }, 150);
+        }}
+        onMouseMove={() => {
+          hasMouseMoved.current = true;
+        }}
         onTouchEnd={onTouchEnd}
       >
         <MemoBrickComponent brick={brick} />

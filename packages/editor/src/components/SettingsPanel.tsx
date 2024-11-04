@@ -28,7 +28,7 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
   const groupedFields = properties.reduce<GroupedFields>((acc, prop) => {
     console.log({ prop });
     const group = (prop.content.props.uiSchema?.["ui:group"] as string) || "default";
-    groupTitles[group] = prop.content.props.uiSchema?.["ui:group:title"] ?? null;
+    groupTitles[group] = prop.content.props.uiSchema?.["ui:group:title"] ?? "Other";
     if (!acc[group]) {
       acc[group] = [];
     }
@@ -42,9 +42,7 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
 
       {Object.entries(groupedFields).map(([group, fields]) => (
         <div key={group} className="form-section">
-          {group !== "default" && (
-            <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1">{groupTitles[group]}</h3>
-          )}
+          <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1">{groupTitles[group]}</h3>
           <div className="section-fields">
             {fields.map((field, index) => (
               <div key={index}>{field.content}</div>
