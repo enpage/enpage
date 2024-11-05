@@ -4,6 +4,10 @@ import type { BrickManifest } from "~/browser/bricks/manifest";
 
 export type BrickPosition = {
   /**
+   * Unique identifier for the brick for react-grid-layout.
+   */
+  i?: string;
+  /**
    * Col start (0-based) in grid units, not pixels.
    */
   x: number;
@@ -61,18 +65,19 @@ export type Brick<T extends string = string> = {
     tablet: BrickPosition;
     desktop: BrickPosition;
   }>;
-  manifest: BrickManifest;
+  // manifest: BrickManifest;
 };
 
-type DefinedBrick = Omit<Brick, "id" | "manifest"> & {
-  manifest?: BrickManifest;
-};
+// type DefinedBrick = Omit<Brick, "id" | "manifest"> & {
+//   manifest?: BrickManifest;
+// };
+type DefinedBrick = Omit<Brick, "id">;
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
   return bricks.map((brick) => ({
     ...brick,
     id: `brick-${generateId()}`,
-    manifest: manifests[brick.type as BrickType],
+    // manifest: manifests[brick.type as BrickType],
   }));
 }
 
@@ -81,7 +86,7 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
  * The `y` property of the position is automatically set to the current row.
  */
 type DefinedRowBrick = Omit<Brick, "id" | "manifest" | "position"> & {
-  manifest?: BrickManifest;
+  // manifest?: BrickManifest;
   position: RequireAtLeastOne<{
     mobile: Omit<BrickPosition, "y">;
     tablet: Omit<BrickPosition, "y">;

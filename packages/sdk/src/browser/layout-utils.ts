@@ -1,5 +1,6 @@
 import type { BrickPosition } from "~/shared/bricks";
 import type { Layout } from "react-grid-layout";
+import def from "ajv/dist/vocabularies/discriminator";
 
 const TOTAL_COLS = 12;
 
@@ -12,7 +13,7 @@ const TOTAL_COLS = 12;
 //   h: number; // height
 // }
 
-type BlockConstraints = Required<Pick<BrickPosition, "minW" | "minH">> & {
+type BlockConstraints = {
   preferredW?: number; // preferred width if space allows
   preferredH?: number; // preferred height if space allows
 };
@@ -36,6 +37,21 @@ const breakpointConfig = {
   desktop: {
     columnRatio: 1, // Each column is 1 unit (12 large columns)
     minColSpan: 3, // Minimum 3 columns on desktop (1/4 width)
+  },
+};
+
+const defaultsPreferred = {
+  mobile: {
+    width: 6,
+    height: 3,
+  },
+  tablet: {
+    width: 6,
+    height: 3,
+  },
+  desktop: {
+    width: 6,
+    height: 3,
   },
 };
 
@@ -70,7 +86,7 @@ export function findOptimalPosition(currentLayouts: BreakpointLayouts, constrain
         x: 0,
         y: 0,
         w: Math.min(constraints.preferredW || effectiveMinWidth, TOTAL_COLS),
-        h: constraints.preferredH || constraints.minH,
+        h: constraints.preferredH ?? 1,
       };
     }
 
@@ -96,12 +112,14 @@ export function findOptimalPosition(currentLayouts: BreakpointLayouts, constrain
         const y = Math.max(...relevantHeights);
 
         // Check if this position is valid
-        if (isPositionValid(layouts, x, y, width, constraints.minH)) {
+        if (
+          isPositionValid(layouts, x, y, width, constraints.preferredW ?? defaultsPreferred[breakpoint].width)
+        ) {
           return {
             x,
             y,
             w: width,
-            h: constraints.preferredH || constraints.minH,
+            h: constraints.preferredH || defaultsPreferred[breakpoint].height,
           };
         }
       }
@@ -113,15 +131,27 @@ export function findOptimalPosition(currentLayouts: BreakpointLayouts, constrain
       x: 0,
       y,
       w: Math.min(constraints.preferredW || effectiveMinWidth, TOTAL_COLS),
-      h: constraints.preferredH || constraints.minH,
+      h: constraints.preferredH || 6,
     };
   }
 
   // Calculate positions for each breakpoint
   return {
-    mobile: findFirstAvailable(currentLayouts.mobile, "mobile", constraints.minW),
-    tablet: findFirstAvailable(currentLayouts.tablet, "tablet", constraints.minW),
-    desktop: findFirstAvailable(currentLayouts.desktop, "desktop", constraints.minW),
+    mobile: findFirstAvailable(
+      currentLayouts.mobile,
+      "mobile",
+      constraints.preferredW || defaultsPreferred.mobile.width,
+    ),
+    tablet: findFirstAvailable(
+      currentLayouts.tablet,
+      "tablet",
+      constraints.preferredW || defaultsPreferred.tablet.width,
+    ),
+    desktop: findFirstAvailable(
+      currentLayouts.desktop,
+      "desktop",
+      constraints.preferredW || defaultsPreferred.desktop.width,
+    ),
   };
 }
 

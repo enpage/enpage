@@ -15,6 +15,12 @@ export const commonBrickProps = Type.Object({
     title: "ID",
     "ui:widget": "hidden",
   }),
+  z: Type.Optional(
+    Type.Number({
+      title: "Z-index",
+      "ui:widget": "hidden",
+    }),
+  ),
   // brickId: Type.String({
   //   "ui:widget": "hidden",
   // }),
@@ -94,35 +100,64 @@ export const commonBrickProps = Type.Object({
 });
 
 export const editableTextProps = Type.Object({
-  justify: Type.Union(
-    [
-      Type.Literal("text-left", { title: "Left", description: "Left align" }),
-      Type.Literal("text-center", { title: "Center", description: "Center align" }),
-      Type.Literal("text-right", { title: "Right", description: "Right align" }),
-      Type.Literal("text-justify", { title: "Justify", description: "Justify align" }),
-    ],
-    {
-      default: "text-left",
-      title: "Justify",
-      description: "The text alignment",
-      "ui:widget": "hidden",
-    },
+  justify: Type.Optional(
+    Type.Union(
+      [
+        Type.Literal("text-left", { title: "Left", description: "Left align" }),
+        Type.Literal("text-center", { title: "Center", description: "Center align" }),
+        Type.Literal("text-right", { title: "Right", description: "Right align" }),
+        Type.Literal("text-justify", { title: "Justify", description: "Justify align" }),
+      ],
+      {
+        default: "text-left",
+        title: "Justify",
+        description: "The text alignment",
+        "ui:widget": "hidden",
+      },
+    ),
   ),
-  textEditable: Type.Boolean({
-    default: true,
-    "ui:widget": "hidden",
-  }),
+  textEditable: Type.Optional(
+    Type.Boolean({
+      default: true,
+      "ui:widget": "hidden",
+    }),
+  ),
   content: Type.String({
     default: "Click to edit",
     title: "Content",
     description: "The text content",
     "ui:widget": "hidden",
   }),
+  fontWeight: Type.Union(
+    [
+      Type.Literal("font-normal", { title: "1" }),
+      Type.Literal("font-medium", { title: "2" }),
+      Type.Literal("font-semibold", { title: "3" }),
+      Type.Literal("font-bold", { title: "4" }),
+      Type.Literal("font-extrabold", { title: "5" }),
+    ],
+    {
+      default: "font-normal",
+      title: "Font weight",
+      description: "The text font weight",
+      "ui:field": "enum",
+      "ui:display": "button-group",
+    },
+  ),
 });
 
-export function getHtmlAttributesAndRest<
-  T extends Static<typeof commonBrickProps> & Static<typeof editableTextProps>,
->(props: T) {
+export function getTextEditableAttributesAndRest<T extends Static<typeof editableTextProps>>(props: T) {
+  const { content, textEditable, justify, fontWeight, ...rest } = props;
+  return {
+    classes: tx([justify, fontWeight]),
+    attributes: {
+      content,
+    },
+    rest,
+  };
+}
+
+export function getCommonHtmlAttributesAndRest<T extends Static<typeof commonBrickProps>>(props: T) {
   const {
     className,
     id,
@@ -132,7 +167,7 @@ export function getHtmlAttributesAndRest<
     brickPadding,
     brickBackgroundColor,
     borderColor,
-    justify,
+    z,
     ...rest
   } = props;
 
@@ -141,11 +176,11 @@ export function getHtmlAttributesAndRest<
       className,
       brickBackgroundColor && `bg-${brickBackgroundColor}`,
       borderColor && `border-${borderColor}`,
-      // brickPadding && `brick-p-${brickPadding}`,
+      z && `z-[${z}]`,
+      brickPadding && `brick-p-${brickPadding}`,
       brickRounding,
       borderWidth,
       borderStyle,
-      justify,
     ]),
     attributes: {
       id,

@@ -4,7 +4,7 @@ import { Value } from "@sinclair/typebox/value";
 import DOMPurify from "dompurify";
 import { forwardRef, memo, useCallback, useState } from "react";
 import { tx } from "../twind";
-import { commonBrickProps, editableTextProps, getHtmlAttributesAndRest } from "./common";
+import { commonBrickProps, editableTextProps, getCommonHtmlAttributesAndRest } from "./common";
 import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
 import { isEqualWith, isEqual } from "lodash-es";
 
@@ -36,7 +36,7 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
     attributes,
     classes,
     rest: { textEditable, content },
-  } = getHtmlAttributesAndRest(props);
+  } = getCommonHtmlAttributesAndRest(props);
 
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");

@@ -20,7 +20,13 @@ const FileField: React.FC<FieldProps> = (props) => {
           {fieldDescription && <p className="field-description">{fieldDescription}</p>}
         </div>
       )}
-      <input id={id} type="file" onChange={(e) => onChange(e.target.files)} required={required} />
+      <input
+        id={id}
+        type="file"
+        accept={uiSchema?.["ui:accept"]}
+        onChange={(e) => onChange(e.target.files)}
+        required={required}
+      />
 
       <Button variant="soft" size="1" radius="full">
         <label className="!leading-[inherit] !mb-0 !text-inherit cursor-[inherit]" htmlFor={id}>

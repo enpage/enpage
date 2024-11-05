@@ -15,6 +15,7 @@ import { createUiSchema } from "./json-form/ui-schema";
 import { jsonFormClass } from "./json-form/form-class";
 
 import "./json-form/json-form.css";
+import { type BrickType, manifests } from "@enpage/sdk/browser/bricks/all-manifests";
 
 export default function Inspector() {
   const editor = useEditor();
@@ -26,11 +27,13 @@ export default function Inspector() {
     return null;
   }
 
+  const manifest = manifests[editor.selectedBrick.type as BrickType];
+
   return (
     <div>
       <div className="flex justify-between bg-gray-200 dark:bg-dark-800 pr-0">
         <h2 className="py-1.5 px-2 flex justify-between items-center font-medium text-sm capitalize text-gray-600 dark:text-gray-200 flex-1 select-none">
-          {editor.selectedBrick.manifest.properties.title.const}
+          {manifest.properties.title.const}
           <TbHelp
             className="w-5 h-5  dark:text-white opacity-50 dark:hover:opacity-80 cursor-pointer"
             onClick={() => setShowHelp(!showHelp)}
@@ -58,15 +61,17 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
     draft.updateBrickProps(brick.id, data.formData);
   };
 
-  if (brick.manifest) {
-    const uiSchema = createUiSchema(brick.manifest.properties.props);
+  const manifest = manifests[brick.type as BrickType];
+
+  if (manifest) {
+    const uiSchema = createUiSchema(manifest.properties.props);
     // console.log("props", element.manifest.properties.props);
     return (
       <Form
         autoComplete="off"
         className={tx("json-form", jsonFormClass, showHelp && "hide-help")}
         formData={state}
-        schema={brick.manifest.properties.props}
+        schema={manifest.properties.props}
         formContext={{ brickId: brick.id }}
         validator={validator}
         uiSchema={uiSchema}

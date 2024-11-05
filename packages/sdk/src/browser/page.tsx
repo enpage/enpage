@@ -20,7 +20,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import invariant from "~/shared/utils/invariant";
 import { LAYOUT_BREAKPOINTS } from "./constants";
 import { generateId } from "./bricks/common";
-import { BrickManifest } from "./bricks/manifest";
+import { manifests } from "./bricks/all-manifests";
+import { findOptimalPosition } from "./layout-utils";
 
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -32,6 +33,10 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   const hasBeenDragged = useRef(false);
   const hasDraggedStarted = useRef(false);
   const bricks = useBricks();
+
+  useEffect(() => {
+    console.log("bricks changed", bricks);
+  }, [bricks]);
 
   // const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
   // const { lock, unlock } = useScrollLock({
@@ -72,7 +77,9 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     };
   }, []);
 
-  // // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation
+  useHotkeys("esc", () => {
+    editor.deselectBrick();
+  });
 
   useHotkeys("mod+c", () => {
     // let the browser handle the copy event
@@ -146,20 +153,16 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   };
 
   const onDragStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    console.log("drag end");
-
     if (!hasBeenDragged.current) {
-      // fire a click event on the brick
+      // simulate a click event on the brick
       const clickEvent = new MouseEvent("click", { bubbles: true });
       element.dispatchEvent(clickEvent);
     } else {
       console.log("deselcting brick because it has been dragged");
-      // deselect the brick
       editor.deselectBrick();
     }
 
     const { h, w, x, y, maxH, maxW, minH, minW } = newItem;
-    // draft.updateBrickPosition(newItem.i, editor.previewMode, { h, w, x, y, maxH, maxW, minH, minW });
 
     setTimeout(() => {
       // for whatever reason, we have to delay the updateBrickPosition call
@@ -172,11 +175,9 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
   const onDrag: ItemCallback = (e) => {
     hasBeenDragged.current = true;
-    // console.log("drag", e);
   };
 
   const onResizeStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    console.log("resize end", element);
     const brick = draft.getBrick(newItem.i);
     invariant(brick, "brick not found");
 
@@ -203,27 +204,46 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   };
 
   const onDrop = (layout: Layout[], item: Layout, event: Event) => {
-    console.log("drop", layout, item, event);
+    console.log("drop", item);
 
     if (editor.draggingBrick) {
-      // draft.addBrick({
-      //   id: `dropped-brick-${generateId()}`,
-      //   ...editor.draggingBrick.brick,
-      //   manifest: editor.draggingBrick.manifest,
-      //   position: {
-      //     mobile: item,
-      //     tablet: item,
-      //     desktop: item,
-      //   },
-      // });
+      const id = `brick-${generateId()}`;
+
+      const optimalPos = findOptimalPosition(
+        {
+          mobile: layoutMobile,
+          tablet: layoutTablet,
+          desktop: layoutDesktop,
+        },
+        editor.draggingBrick,
+      );
+
+      const desktopPosition = editor.previewMode === "desktop" ? { ...item, i: id } : optimalPos.desktop;
+      const tabletPosition = editor.previewMode === "tablet" ? { ...item, i: id } : optimalPos.tablet;
+      const mobilePosition = editor.previewMode === "mobile" ? { ...item, i: id } : optimalPos.mobile;
+
+      draft.addBrick({
+        type: editor.draggingBrick.type,
+        props: { ...editor.draggingBrick.props, z: bricks.length + 1 },
+        id,
+        // manifest: manifests[editor.draggingBrick.type],
+        position: {
+          desktop: desktopPosition,
+          tablet: tabletPosition,
+          mobile: mobilePosition,
+        },
+      });
+      // reset dragging brick
+      editor.setDraggingBrick();
     }
   };
 
   const onDropDragOver = (event: DragOverEvent): { w?: number; h?: number } | false | undefined => {
-    return editor.draggingBrick?.brick
+    console.log("onDropDragOver", event, editor.draggingBrick);
+    return editor.draggingBrick
       ? {
-          w: editor.draggingBrick?.brick.preferredW,
-          h: editor.draggingBrick?.brick.preferredH,
+          w: editor.draggingBrick.preferredW,
+          h: editor.draggingBrick.preferredH,
         }
       : undefined;
   };
@@ -246,7 +266,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       // all directions
       resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
       // todo: get max witdth from page attributes
-      className={tx("group/page mx-auto w-full @container", {
+      className={tx("group/page mx-auto w-full @container page-container", {
         "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
         // todo: use theme or attributes for bg color
         "bg-white min-h-[100%] max-w-full max-h-full": editor.previewMode !== "desktop",

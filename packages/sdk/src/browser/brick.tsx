@@ -11,14 +11,10 @@ import {
   type ComponentType,
   type LazyExoticComponent,
   type MouseEvent,
-  type PropsWithChildren,
 } from "react";
 import { tx, style, css, apply } from "./twind";
 import { useAttributes, useDraft, useEditor, useEditorEnabled } from "./use-editor";
-import { useDraggable } from "@dnd-kit/core";
-import { RxDragHandleDots2 } from "react-icons/rx";
 import { isEqualWith } from "lodash-es";
-import { SlOptionsVertical } from "react-icons/sl";
 import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
@@ -90,7 +86,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
           "brick group/brick flex select-none",
           "group-hover/page:(outline outline-dashed outline-upstart-100)",
           className,
-          !!brick.props.brickPadding && `brick-p-${brick.props.brickPadding}`,
+          // !!brick.props.brickPadding && `brick-p-${brick.props.brickPadding}`,
         )}
         ref={ref}
         onClick={onClick}

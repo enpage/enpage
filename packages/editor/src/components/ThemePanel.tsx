@@ -111,7 +111,7 @@ export default function ThemePanel() {
           ))}
         </ThemeListWrapper>
       </Tabs.Content>
-      <Tabs.Content value="current" className={tx("p-2", tabContentScrollClass)}>
+      <Tabs.Content value="current" className={tx("p-2 overflow-y-auto", tabContentScrollClass)}>
         <Callout.Root size="1">
           <Callout.Text>
             Customize your theme colors and typography to match your brand. Note that the theme applies to

@@ -45,15 +45,10 @@ export default function BlocksLibrary() {
     setIsGenerating(false);
   };
 
-  const onDragStart = (
-    brick: Static<BrickManifest>,
-    manifest: BrickManifest,
-    e: React.DragEvent<HTMLButtonElement>,
-  ) => {
+  const onDragStart = (brick: Static<BrickManifest>, e: React.DragEvent<HTMLButtonElement>) => {
     // firefox needs this to allow dragging
     e.dataTransfer.setData("text/plain", "");
-    console.log("dragging", manifest);
-    editor.setDraggingBrick({ brick, manifest });
+    editor.setDraggingBrick(brick);
   };
 
   return (
@@ -92,7 +87,7 @@ export default function BlocksLibrary() {
                 <Tooltip content={block.description} key={block.type}>
                   <button
                     draggable={true}
-                    onDragStart={onDragStart.bind(null, block, blockImport)}
+                    onDragStart={onDragStart.bind(null, block)}
                     data-block={encodeURIComponent(JSON.stringify(block))}
                     data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
                     type="button"

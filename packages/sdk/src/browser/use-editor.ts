@@ -24,7 +24,7 @@ export interface EditorStateProps {
   /**
    * The brick manifest that is being dragged from the library
    */
-  draggingBrick?: { brick: Static<BrickManifest>; manifest: Static<BrickManifest> };
+  draggingBrick?: Static<BrickManifest>;
   previewMode: ResponsiveMode;
   editingPageIndex: number;
   settingsVisible?: boolean;
@@ -274,6 +274,7 @@ export const createDraftStore = (
             }),
           addBrick: (brick) =>
             set((state) => {
+              console.log("Adding brick", brick);
               state.bricks.push(brick);
             }),
         })),

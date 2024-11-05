@@ -21,7 +21,6 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", pages, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
-
   const draftCtx = useDraftStoreContext();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -40,13 +39,15 @@ export default function Editor({ mode = "local", pages, ...props }: EditorProps)
           --color-accent: ${themeUsed.colors.accent};
           --color-neutral: ${themeUsed.colors.neutral};
           --color-link: var(--color-primary);
+          --font-size-hero-1: clamp(2rem, 9vw, 3.5rem);
+          --font-size-hero-2: clamp(3rem, 9vw, 5rem);
+          --font-size-hero-3: clamp(4rem, 9vw, 7rem);
+          --font-size-hero-4: clamp(5rem, 9vw, 9rem);
+          --font-size-hero-5: clamp(6rem, 9vw, 11rem);
         }
         [data-upstart-theme] {
-          #page-container {
+          .page-container {
             font-family: var(--font-${themeUsed.typography.body});
-            & :is(h1, h2, h3, h4, h5, h6) {
-              font-family: var(--font-${themeUsed.typography.heading});
-            }
           }
         }
     }
