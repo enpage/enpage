@@ -87,6 +87,7 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
     configResolved(config) {
       virtualFilesPlugin = config.plugins.find((plugin) => plugin.name === "vite-plugin-virtual");
     },
+
     async handleHotUpdate({ file, server }) {
       if (file.endsWith("enpage.config.js")) {
         if (virtualFilesPlugin) {
@@ -103,6 +104,8 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
             virtualFilesPlugin,
             "virtual:enpage-page-config.json",
             JSON.stringify({
+              id: "temp-page",
+              siteId: "temp-site",
               attributes: templateConfig.attributes,
               datasources: templateConfig.datasources,
               data: context.data,

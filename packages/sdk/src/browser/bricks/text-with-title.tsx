@@ -13,7 +13,9 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 export const manifest = defineBrickManifest({
   type: "text-with-title",
   title: "Title & Text",
-  description: "A textual brick with a title",
+  description: "Title + Text in one widget",
+  preferredW: 6,
+  preferredH: 6,
   // svg icon for "text+title" block (different than text!)
   icon: `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

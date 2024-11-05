@@ -11,7 +11,9 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 export const manifest = defineBrickManifest({
   type: "video",
   title: "Video",
-  description: "A video element",
+  description: "Youtube video",
+  preferredW: 7,
+  preferredH: 6,
   // svg icon for "video" block
   icon: `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

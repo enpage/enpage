@@ -91,19 +91,16 @@ export const bricks = defineBricks([
       position: {
         mobile: {
           x: 0,
-          y: 0,
           w: 12,
           h: 2,
         },
         tablet: {
           x: 0,
-          y: 0,
           w: 12,
           h: 2,
         },
         desktop: {
           x: 0,
-          y: 0,
           w: 12,
           h: 2,
         },

@@ -13,6 +13,8 @@ export type PageConfig<
   A extends EnpageTemplateConfig["attributes"],
   B extends Brick[],
 > = {
+  id: string;
+  siteId: string;
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -59,8 +61,10 @@ export type GenericPageContext = PageContext<
   Brick[]
 >;
 
-export function createPageConfigFromTemplateConfig(templateConfig: EnpageTemplateConfig) {
+export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageTemplateConfig) {
   return {
+    id: "page-1",
+    siteId: "site-1",
     datasources: templateConfig.datasources,
     data: undefined,
     attributes: templateConfig.attributes,

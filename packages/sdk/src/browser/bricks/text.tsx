@@ -14,7 +14,9 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 export const manifest = defineBrickManifest({
   type: "text",
   title: "Text",
-  description: "A textual brick",
+  description: "Text with formatting options",
+  preferredW: 6,
+  preferredH: 10,
   // svg icon for "text" block
   icon: `
    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">

@@ -13,7 +13,9 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 export const manifest = defineBrickManifest({
   type: "hero",
   title: "Hero",
-  description: "A hero brick",
+  description: "A big textual element for home pages",
+  preferredW: 12,
+  preferredH: 6,
   // hero svg icon
   icon: `
    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

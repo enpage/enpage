@@ -68,8 +68,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     const hasMouseMoved = useRef(false);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
-      console.log("onClicktest", e);
-      console.log("hasmoved", hasMouseMoved.current);
       const target = e.target as HTMLElement;
       if (
         hasMouseMoved.current ||
@@ -77,10 +75,8 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         !target.matches(".brick") ||
         !target.closest(".brick")
       ) {
-        console.log("ignoring click on resizable handle", target);
         return;
       }
-      console.log("selecting brick", brick.id, e);
       e.stopPropagation();
       editor.setSelectedBrick(brick);
       hasMouseMoved.current = false;

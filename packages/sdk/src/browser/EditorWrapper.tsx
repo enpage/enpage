@@ -15,8 +15,12 @@ type EditorWrapperProps = {
   config: GenericPageConfig;
 };
 
+/**
+ * Wrap the Editor component with the EditorStore and DraftStore contexts.
+ * If no children are provided, the default Page component will be rendered, but not within the Editor.
+ */
 export function EditorWrapper({ enabled = true, config, children }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ enabled })).current;
+  const editorStore = useRef(createEditorStore({ enabled, pageConfig: config })).current;
   const draftStore = useRef(
     createDraftStore({
       bricks: config.bricks,

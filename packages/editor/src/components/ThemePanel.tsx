@@ -35,7 +35,7 @@ export default function ThemePanel() {
   const [generatedThemes, setGeneratedThemes] = useState<Theme[]>([]);
   const [genListRef] = useAutoAnimate(/* optional config */);
 
-  const generateTheme = useCallback(async () => {
+  const generateTheme = async () => {
     if (!themeDescription) {
       return;
     }
@@ -57,7 +57,7 @@ export default function ThemePanel() {
       });
     }
     setIsGenerating(false);
-  }, [themeDescription]);
+  };
 
   return (
     <Tabs.Root defaultValue="current">

@@ -13,10 +13,18 @@ import type { AttributesResolved } from "~/shared/attributes";
 import { generateId } from "./bricks/common";
 import { position } from "polished";
 import type { TObject } from "@sinclair/typebox";
+import type { GenericPageConfig } from "~/shared/page-config";
+import type { BrickManifest } from "./bricks/manifest";
 export { type Immer } from "immer";
+import type { Static } from "@sinclair/typebox";
 
 export interface EditorStateProps {
   enabled: boolean;
+  pageConfig: GenericPageConfig;
+  /**
+   * The brick manifest that is being dragged from the library
+   */
+  draggingBrick?: { brick: Static<BrickManifest>; manifest: Static<BrickManifest> };
   previewMode: ResponsiveMode;
   editingPageIndex: number;
   settingsVisible?: boolean;
@@ -27,6 +35,7 @@ export interface EditorStateProps {
 }
 
 export interface EditorState extends EditorStateProps {
+  setDraggingBrick: (draggingBrick?: EditorStateProps["draggingBrick"]) => void;
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
@@ -40,8 +49,14 @@ export interface EditorState extends EditorStateProps {
   hidePanel: (panel: EditorStateProps["panel"]) => void;
 }
 
-export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
-  const DEFAULT_PROPS: EditorStateProps = { editingPageIndex: 0, enabled: true, previewMode: "desktop" };
+export const createEditorStore = (
+  initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig },
+) => {
+  const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig"> = {
+    editingPageIndex: 0,
+    enabled: true,
+    previewMode: "desktop",
+  };
 
   return createStore<EditorState>()(
     temporal(
@@ -104,6 +119,10 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                 state.panel = undefined;
               }
             }),
+          setDraggingBrick: (draggingBrick) =>
+            set((state) => {
+              state.draggingBrick = draggingBrick;
+            }),
         })),
         {
           name: "editor-state",
@@ -143,6 +162,7 @@ export interface DraftState extends DraftStateProps {
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
+  addBrick: (brick: Brick) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
   updateBrickPosition: (id: string, bp: keyof Brick["position"], position: BrickPosition) => void;
@@ -246,12 +266,15 @@ export const createDraftStore = (
               const brickIndex = state.bricks.findIndex((item) => item.id === id);
               state.bricks[brickIndex].position[bp] = position;
             }),
-
           toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
             set((state) => {
               const brickIndex = state.bricks.findIndex((item) => item.id === id);
               state.bricks[brickIndex].position[breakpoint]!.hidden =
                 !state.bricks[brickIndex].position[breakpoint]?.hidden;
+            }),
+          addBrick: (brick) =>
+            set((state) => {
+              state.bricks.push(brick);
             }),
         })),
         {

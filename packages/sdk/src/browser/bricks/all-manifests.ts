@@ -26,7 +26,7 @@ import {
 } from "./text-with-title";
 
 import type { BrickManifest } from "./manifest";
-// export type { HeroManifest, ImageManifest, TextManifest, TextWithTitleManifest };
+import type { Static } from "@sinclair/typebox";
 
 // export type BrickManifest = HeroManifest | ImageManifest | TextManifest | TextWithTitleManifest;
 export type BrickType = (
@@ -43,4 +43,12 @@ export const manifests: Record<BrickType, BrickManifest> = {
   [textDefaults.type]: textManifest,
   [textWithTitleDefaults.type]: textWithTitleManifest,
   [videoDefaults.type]: videoManifest,
+};
+
+export const defaults: Record<BrickType, Static<BrickManifest>> = {
+  [heroDefaults.type]: heroDefaults,
+  [imageDefaults.type]: imageDefaults,
+  [textDefaults.type]: textDefaults,
+  [textWithTitleDefaults.type]: textWithTitleDefaults,
+  [videoDefaults.type]: videoDefaults,
 };

@@ -11,6 +11,10 @@ export function defineBrickManifest<
   type,
   title,
   description,
+  preferredW,
+  preferredH,
+  minWidth,
+  minHeight,
   icon,
   file,
   props,
@@ -20,6 +24,10 @@ export function defineBrickManifest<
   icon: BIcon;
   file: BFile;
   description: BDesc;
+  minWidth?: number;
+  minHeight?: number;
+  preferredW?: number;
+  preferredH?: number;
   props: TObject<BProps>;
 }) {
   return Type.Object({
@@ -28,6 +36,10 @@ export function defineBrickManifest<
     description: Type.Literal(description),
     icon: Type.Literal(icon),
     file: Type.Literal(file),
+    preferredW: Type.Number({ default: preferredW ?? minWidth ?? 1 }),
+    preferredH: Type.Number({ default: preferredH ?? minHeight ?? 1 }),
+    minWidth: Type.Number({ default: minWidth ?? 1 }),
+    minHeight: Type.Number({ default: minHeight ?? 1 }),
     props,
   });
 }

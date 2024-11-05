@@ -1,39 +1,24 @@
-import { LuPlus, LuUndo, LuRedo, LuPalette } from "react-icons/lu";
+import { LuUndo, LuRedo } from "react-icons/lu";
 import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
 import { BsTablet } from "react-icons/bs";
-import { MdOutlineContentCopy } from "react-icons/md";
-import { PiPalette } from "react-icons/pi";
-import SettingsModal from "./SettingsPanel";
 import { BsStars } from "react-icons/bs";
-// import { clsx } from "../utils/component-utils";
-import { VscLayoutSidebarLeft, VscLayoutSidebarRight, VscCopy, VscHome, VscSettings } from "react-icons/vsc";
-import {
-  type ComponentProps,
-  Fragment,
-  type FunctionComponent,
-  type MouseEvent,
-  type PropsWithChildren,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useDraft, useDraftUndoManager, useEditor, useAttributes } from "@enpage/sdk/browser/use-editor";
+import type { PageInfo } from "./types";
+import { VscCopy } from "react-icons/vsc";
+import { type ComponentProps, type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
+import { useDraftUndoManager, useEditor, useAttributes } from "@enpage/sdk/browser/use-editor";
 import { tx, css } from "@enpage/sdk/browser/twind";
-import { IoSettingsOutline } from "react-icons/io5";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { LiaCopy } from "react-icons/lia";
-import { useIsLargeDevice, useIsMobileDevice } from "../hooks/use-is-device-type";
-import { TiArrowUp } from "react-icons/ti";
-import { VscLayoutPanelOff } from "react-icons/vsc";
-import { Tooltip, DropdownMenu, Dialog, TextField } from "@enpage/style-system";
-import { BiDotsVerticalRounded } from "react-icons/bi";
+import { DropdownMenu, TextField } from "@enpage/style-system";
+import type { GenericPageConfig } from "@enpage/sdk/shared/page-config";
 
-export default function TopBar() {
+type TopBarProps = ComponentProps<"nav"> & {
+  pages: PageInfo[];
+};
+
+export default function TopBar({ pages }: TopBarProps) {
   const editor = useEditor();
   const attributes = useAttributes();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
@@ -72,7 +57,7 @@ export default function TopBar() {
   const rocketBtn = `px-3 bg-gradient-to-tr from-orange-500 to-yellow-400 border-l border-l-orange-300
   hover:bg-gradient-to-tr hover:from-orange-600 hover:to-yellow-500`;
 
-  const btnWithArrow = "cursor-default";
+  const btnWithArrow = "cursor-default !aspect-auto";
 
   const btnClass = `flex items-center justify-center py-3 gap-x-0.5 px-3.5  group relative disabled:hover:cursor-default aspect-square`;
 
@@ -80,14 +65,14 @@ export default function TopBar() {
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-y-1.5
   group-hover:block group-hover:opacity-100 group-hover:translate-y-0 text-nowrap whitespace-nowrap pointer-events-none`;
 
-  const arrowClass = "h-4 w-4 opacity-60 -ml-1";
+  const arrowClass = "h-4 w-4 opacity-60 -ml-0.5";
 
   return (
     <nav
       role="navigation"
       className={tx(
         `bg-upstart-600 z-[9999] shadow-xl
-          flex text-xl text-white w-full justify-start
+          flex text-xl text-white w-full justify-start items-stretch
           `,
         css({
           gridArea: "topbar",
@@ -105,7 +90,7 @@ export default function TopBar() {
         <img src={logo} alt="Upstart" className="h-9 w-auto" />
       </button>
 
-      <div className={tx("py-2", baseCls, "px-5")}>
+      <div className={tx(baseCls, "px-5", css({ paddingBlock: "0.6rem" }))}>
         <TextField.Root
           placeholder="Ask AI to generate elements or modify your page"
           size="3"
@@ -139,21 +124,29 @@ export default function TopBar() {
           { label: "New page" },
           { label: "Duplicate page" },
           { type: "separator" },
-          { label: "View all pages" },
+          ...pages.map((page) => ({
+            label: page.label,
+            type: "checkbox" as const,
+            checked: editor.pageConfig.id === page.id,
+            onClick: () => {
+              window.location.href = `/sites/${editor.pageConfig.siteId}/pages/${page.id}/edit`;
+            },
+          })),
         ]}
       >
         <button type="button" className={tx(btnClass, commonCls, btnWithArrow)}>
           <VscCopy className="h-7 w-auto" />
           <span className={tooltipCls}>Pages</span>
+          <RiArrowDownSLine className={arrowClass} />
         </button>
       </TopbarMenu>
 
       <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
       <TopbarMenu items={[{ label: "Publish on web" }, { label: "Schedule publish", shortcut: "⌘⇧D" }]}>
-        <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4 !aspect-auto")}>
+        <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}>
           <RxRocket className="h-7 w-auto" />
-          <span className="text-base font-bold px-2 uppercase">Publish</span>
+          <span className="text-base font-bold px-2">Publish</span>
           <RiArrowDownSLine className={arrowClass} />
         </button>
       </TopbarMenu>
@@ -168,11 +161,19 @@ type TopbarMenuItem = {
   type?: never;
 };
 
+type TopbarMenuCheckbox = {
+  label: string;
+  checked: boolean;
+  shortcut?: string;
+  onClick?: (e: MouseEvent) => void;
+  type: "checkbox";
+};
+
 type TopbarMenuSeparator = {
   type: "separator";
 };
 
-type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator)[];
+type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuCheckbox)[];
 
 /**
  */
@@ -184,6 +185,26 @@ function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems }>) {
         {props.items.map((item, index) =>
           item.type === "separator" ? (
             <div key={index} className="my-1.5 h-px bg-black/10" />
+          ) : item.type === "checkbox" ? (
+            <DropdownMenu.CheckboxItem key={item.label} checked={item.checked}>
+              <button
+                onClick={item.onClick}
+                type="button"
+                className="group flex justify-start items-center text-nowrap rounded-[inherit]
+                py-1.5 w-fulldark:text-white/90 text-left data-[focus]:bg-upstart-600 data-[focus]:text-white "
+              >
+                <span className="pr-3">{item.label}</span>
+                {item.shortcut && (
+                  <kbd
+                    className="ml-auto font-sans text-right text-[smaller] text-black/50 dark:text-dark-300
+                    group-hover:text-white/90
+                      group-data-[focus]:text-white/70 group-data-[active]:text-white/70"
+                  >
+                    {item.shortcut}
+                  </kbd>
+                )}
+              </button>
+            </DropdownMenu.CheckboxItem>
           ) : (
             <DropdownMenu.Item key={item.label}>
               <button

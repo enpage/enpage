@@ -4,20 +4,24 @@ import Topbar from "./Topbar";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
-import BlocksLibrary from "./blocks-library/BlocksLibrary";
+import BlocksLibrary from "./bricks-library/BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import Page from "@enpage/sdk/browser/page";
 import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
+import type { PageInfo } from "./types";
+import type { GenericPageConfig } from "@enpage/sdk/shared/page-config";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
+  pages: PageInfo[];
 };
 
-export default function Editor({ mode = "local", ...props }: EditorProps) {
+export default function Editor({ mode = "local", pages, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
+
   const draftCtx = useDraftStoreContext();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -66,7 +70,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
       {...props}
       ref={rootRef}
     >
-      <Topbar />
+      <Topbar pages={pages} />
       <Panel />
       <Toolbar />
       {draft.previewTheme && <ThemePreviewConfirmButton />}

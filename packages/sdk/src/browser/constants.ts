@@ -6,6 +6,7 @@ export const LAYOUT_COLS = {
   tablet: 12,
   mobile: 12,
 };
+
 export const LAYOUT_BREAKPOINTS = {
   desktop: 1024,
   tablet: 768,

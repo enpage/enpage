@@ -3,7 +3,7 @@ import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
 import { tx, apply } from "../twind";
-import { generateId, commonBrickProps } from "./common";
+import { commonBrickProps } from "./common";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -12,6 +12,8 @@ export const manifest = defineBrickManifest({
   type: "image",
   title: "Image",
   description: "An image brick",
+  preferredW: 4,
+  preferredH: 8,
   // svg icon for "image" block
   icon: `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">

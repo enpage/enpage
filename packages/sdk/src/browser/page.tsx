@@ -13,12 +13,14 @@ import type { BrickPosition, Brick } from "~/shared/bricks";
 import BrickWrapper from "./brick";
 import { useBricks, useDraft, useEditor, useEditorEnabled } from "./use-editor";
 import { useOnClickOutside, useScrollLock } from "usehooks-ts";
-import { type ItemCallback, Responsive } from "react-grid-layout";
+import { type DragOverEvent, type ItemCallback, type Layout, Responsive } from "react-grid-layout";
 import WidthProvider from "./responsive-layout";
 import { LAYOUT_COLS, LAYOUT_GUTTERS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "./constants";
 import { useHotkeys } from "react-hotkeys-hook";
 import invariant from "~/shared/utils/invariant";
 import { LAYOUT_BREAKPOINTS } from "./constants";
+import { generateId } from "./bricks/common";
+import { BrickManifest } from "./bricks/manifest";
 
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -200,11 +202,40 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     });
   };
 
+  const onDrop = (layout: Layout[], item: Layout, event: Event) => {
+    console.log("drop", layout, item, event);
+
+    if (editor.draggingBrick) {
+      // draft.addBrick({
+      //   id: `dropped-brick-${generateId()}`,
+      //   ...editor.draggingBrick.brick,
+      //   manifest: editor.draggingBrick.manifest,
+      //   position: {
+      //     mobile: item,
+      //     tablet: item,
+      //     desktop: item,
+      //   },
+      // });
+    }
+  };
+
+  const onDropDragOver = (event: DragOverEvent): { w?: number; h?: number } | false | undefined => {
+    return editor.draggingBrick?.brick
+      ? {
+          w: editor.draggingBrick?.brick.preferredW,
+          h: editor.draggingBrick?.brick.preferredH,
+        }
+      : undefined;
+  };
+
   return (
     <ResponsiveGridLayout
       breakpoint={editor.previewMode}
       innerRef={pageRef}
+      isDroppable={true}
       onDrag={onDrag}
+      onDropDragOver={onDropDragOver}
+      onDrop={onDrop}
       onDragStart={onDragStart}
       onDragStop={onDragStop}
       onResizeStop={onResizeStop}
