@@ -63,9 +63,11 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
 
   const manifest = manifests[brick.type as BrickType];
 
+  console.log("manifest", manifest);
+
   if (manifest) {
     const uiSchema = createUiSchema(manifest.properties.props);
-    // console.log("props", element.manifest.properties.props);
+    console.log("uiSchema", uiSchema);
     return (
       <Form
         autoComplete="off"

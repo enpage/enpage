@@ -20,6 +20,7 @@ import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";
 import { useState } from "react";
 import type { BrickManifest } from "@enpage/sdk/browser/bricks/manifest";
 import type { Static } from "@sinclair/typebox";
+import { ScrollablePanelTab } from "./ScrollablePanelTab";
 
 const tabContentScrollClass = css({
   scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -61,10 +62,7 @@ export default function BlocksLibrary() {
           Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content
-        value="library"
-        className={tx("p-2 h-[calc(100dvh-99px)] overflow-y-auto", tabContentScrollClass)}
-      >
+      <Tabs.Content value="library">
         {shouldDisplayLibraryCallout && (
           <Callout.Root size="1">
             <Callout.Icon>
@@ -74,11 +72,14 @@ export default function BlocksLibrary() {
           </Callout.Root>
         )}
 
-        <div className={tx("flex flex-col")}>
+        <div
+          className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
+        >
+          <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1 sticky top-0 z-[999]">Base bricks</h3>
           <div
             className="grid gap-1 p-1.5"
             style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
             }}
           >
             {Object.values(manifests).map((blockImport) => {
@@ -113,11 +114,16 @@ export default function BlocksLibrary() {
             })}
           </div>
         </div>
+        <div
+          className={tx(
+            "flex flex-col max-h-[calc(100dvh/2-99px)] bg-red-700 overflow-y-auto",
+            tabContentScrollClass,
+          )}
+        >
+          <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1 sticky top-0 z-[999]">Widgets</h3>
+        </div>
       </Tabs.Content>
-      <Tabs.Content
-        value="ai"
-        className={tx("p-2 h-[calc(100dvh-99px)] overflow-y-auto", tabContentScrollClass)}
-      >
+      <ScrollablePanelTab tab="ai" className="p-2">
         <Callout.Root size="1">
           <Callout.Icon>
             <WiStars className="w-8 h-8 mt-3" />
@@ -144,7 +150,7 @@ export default function BlocksLibrary() {
           </Spinner>
           {isGenerating ? "Generating themes" : "Generate a brick"}
         </Button>
-      </Tabs.Content>
+      </ScrollablePanelTab>
     </Tabs.Root>
   );
 }

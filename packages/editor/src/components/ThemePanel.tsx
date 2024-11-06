@@ -18,6 +18,7 @@ import { tx, css, tw } from "@enpage/sdk/browser/twind";
 import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
 import { useDraft } from "@enpage/sdk/browser/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
+import { ScrollablePanelTab } from "./ScrollablePanelTab";
 
 const tabContentScrollClass = css({
   scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -72,10 +73,7 @@ export default function ThemePanel() {
           Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content
-        value="ai"
-        className={tx("p-2 h-[calc(100dvh-99px)] overflow-y-auto", tabContentScrollClass)}
-      >
+      <ScrollablePanelTab tab="ai" className="p-2">
         <Callout.Root size="1">
           <Callout.Icon>
             <WiStars className="w-8 h-8 mt-3" />
@@ -110,8 +108,8 @@ export default function ThemePanel() {
             <ThemePreview key={theme.id} theme={theme} />
           ))}
         </ThemeListWrapper>
-      </Tabs.Content>
-      <Tabs.Content value="current" className={tx("p-2 overflow-y-auto", tabContentScrollClass)}>
+      </ScrollablePanelTab>
+      <ScrollablePanelTab tab="current" className="p-2">
         <Callout.Root size="1">
           <Callout.Text>
             Customize your theme colors and typography to match your brand.
@@ -196,20 +194,14 @@ export default function ThemePanel() {
             </div>
           </fieldset>
         </div>
-      </Tabs.Content>
-      <Tabs.Content
-        value="list"
-        className={tx(
-          "h-[calc(100dvh-99px)] overflow-y-auto transition-colors duration-200",
-          tabContentScrollClass,
-        )}
-      >
+      </ScrollablePanelTab>
+      <ScrollablePanelTab tab="list">
         <ThemeListWrapper>
           {themes.map((theme) => (
             <ThemePreview key={theme.id} theme={theme} />
           ))}
         </ThemeListWrapper>
-      </Tabs.Content>
+      </ScrollablePanelTab>
     </Tabs.Root>
   );
 }

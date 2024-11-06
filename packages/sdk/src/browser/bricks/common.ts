@@ -122,40 +122,7 @@ export const editableTextProps = Type.Object({
       "ui:widget": "hidden",
     }),
   ),
-  content: Type.String({
-    default: "Click to edit",
-    title: "Content",
-    description: "The text content",
-    "ui:widget": "hidden",
-  }),
-  fontWeight: Type.Union(
-    [
-      Type.Literal("font-normal", { title: "1" }),
-      Type.Literal("font-medium", { title: "2" }),
-      Type.Literal("font-semibold", { title: "3" }),
-      Type.Literal("font-bold", { title: "4" }),
-      Type.Literal("font-extrabold", { title: "5" }),
-    ],
-    {
-      default: "font-normal",
-      title: "Font weight",
-      description: "The text font weight",
-      "ui:field": "enum",
-      "ui:display": "button-group",
-    },
-  ),
 });
-
-export function getTextEditableAttributesAndRest<T extends Static<typeof editableTextProps>>(props: T) {
-  const { content, textEditable, justify, fontWeight, ...rest } = props;
-  return {
-    classes: tx([justify, fontWeight]),
-    attributes: {
-      content,
-    },
-    rest,
-  };
-}
 
 export function getCommonHtmlAttributesAndRest<T extends Static<typeof commonBrickProps>>(props: T) {
   const {

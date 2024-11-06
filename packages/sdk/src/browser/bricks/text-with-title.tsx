@@ -5,7 +5,7 @@ import DOMPurify from "dompurify";
 import { tx } from "../twind";
 import { commonBrickProps, editableTextProps, getCommonHtmlAttributesAndRest } from "./common";
 import { forwardRef, useState } from "react";
-import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
+import TextEditor, { createTextEditorUpdateHandler } from "./components/text-editor";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -81,8 +81,10 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
   let {
     attributes,
     classes,
-    rest: { textEditable, content, titleJustify, titleClassName, title, titleLevel },
+    rest: { textEditable, titleJustify, titleClassName, title, titleLevel },
   } = getCommonHtmlAttributesAndRest(props);
+
+  let content = "foo";
 
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
   content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");

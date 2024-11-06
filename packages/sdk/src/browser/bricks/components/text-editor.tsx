@@ -9,7 +9,7 @@ import {
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
 import { Select } from "@radix-ui/themes";
-import { tx } from "../twind";
+import { tx } from "../../twind";
 import { useState, memo, useRef, forwardRef, useEffect } from "react";
 import {
   MdFormatBold,
@@ -21,7 +21,7 @@ import {
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
 import type { Brick } from "~/shared/bricks";
-import { useDraft, useEditor } from "../use-editor";
+import { useDraft, useEditor } from "../../use-editor";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useDndContext } from "@dnd-kit/core";
 

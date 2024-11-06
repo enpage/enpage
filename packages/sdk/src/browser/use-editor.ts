@@ -371,6 +371,10 @@ function getDuplicatedBrickPosition(brick: Brick) {
   return {
     mobile: { ...(mobile ?? tablet ?? desktop)!, y: (mobile ?? tablet ?? desktop)!.y + 1 },
     tablet: { ...(tablet ?? desktop ?? mobile)!, y: (tablet ?? desktop ?? mobile)!.y + 1 },
-    desktop: { ...(desktop ?? tablet ?? mobile)!, y: (desktop ?? tablet ?? mobile)!.y + 1 },
+    desktop: {
+      ...(desktop ?? tablet ?? mobile)!,
+      y: (desktop ?? tablet ?? mobile)!.y + 1,
+      x: (desktop ?? tablet ?? mobile)!.x + 1,
+    },
   };
 }

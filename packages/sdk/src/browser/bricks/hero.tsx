@@ -5,7 +5,10 @@ import DOMPurify from "dompurify";
 import { forwardRef, useCallback } from "react";
 import { tx, css } from "../twind";
 import { commonBrickProps, editableTextProps, getCommonHtmlAttributesAndRest } from "./common";
-import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
+import { commonProps, contentAwareProps } from "./props/common";
+import TextEditor, { createTextEditorUpdateHandler } from "./components/text-editor";
+import TextBrick from "./text";
+import { commonStyleProps } from "./props/style-props";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -28,10 +31,11 @@ export const manifest = defineBrickManifest({
   `,
   file: filename,
   props: Type.Composite([
-    editableTextProps,
-    commonBrickProps,
+    contentAwareProps,
+    commonProps,
+    commonStyleProps,
     Type.Object({
-      size: Type.Union(
+      heroFontSize: Type.Union(
         [
           Type.Literal("font-size-hero-1", { title: "1" }),
           Type.Literal("font-size-hero-2", { title: "2" }),
@@ -42,7 +46,6 @@ export const manifest = defineBrickManifest({
         {
           default: "font-size-hero-3",
           title: "Font size",
-          description: "The font size",
           "ui:field": "enum",
           "ui:display": "button-group",
           "ui:group": "border",
@@ -57,40 +60,17 @@ export const defaults = Value.Create(manifest);
 
 const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let {
-    attributes,
-    classes,
-    rest: { textEditable, content },
-  } = getCommonHtmlAttributesAndRest(props);
-  // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
-  content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
-
-  const onUpdateHandler = useCallback(createTextEditorUpdateHandler(attributes.id), []);
+  let { content, heroFontSize } = props;
 
   if (!content.startsWith("<h")) {
     content = `<h1>${content}</h1>`;
   }
 
   const sizeClass = css({
-    "font-size": `var(--${props.size})`,
+    "font-size": `var(--${heroFontSize})`,
   });
 
-  return textEditable ? (
-    <div className={tx("flex-1 relative hero", classes, sizeClass)}>
-      <TextEditor
-        initialContent={DOMPurify.sanitize(content)}
-        onUpdate={onUpdateHandler}
-        brickId={attributes.id}
-      />
-    </div>
-  ) : (
-    <div
-      ref={ref}
-      className={tx("flex-1 hero", classes, sizeClass)}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: need for html content
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
-    />
-  );
+  return <TextBrick {...props} content={content} className={sizeClass} ref={ref} />;
 });
 
 export default Hero;

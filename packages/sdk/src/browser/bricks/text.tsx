@@ -1,12 +1,12 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
-import DOMPurify from "dompurify";
-import { forwardRef, memo, useCallback, useState } from "react";
-import { tx } from "../twind";
-import { commonBrickProps, editableTextProps, getCommonHtmlAttributesAndRest } from "./common";
-import TextEditor, { createTextEditorUpdateHandler } from "./text-editor";
-import { isEqualWith, isEqual } from "lodash-es";
+import { forwardRef } from "react";
+import { commonProps, contentAwareProps } from "./props/common";
+import { memoizeWithout } from "./components/utils";
+import { useEditableText } from "./hooks/use-editable-text";
+import { useBrickStyle } from "./hooks/use-brick-style";
+import { commonStyleProps } from "./props/style-props";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -24,46 +24,38 @@ export const manifest = defineBrickManifest({
     </svg>
  `,
   file: filename,
-  props: Type.Composite([editableTextProps, commonBrickProps]),
+  props: Type.Composite([commonProps, contentAwareProps, commonStyleProps]),
 });
 
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
+/**
+ * Text brick
+ */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let {
-    attributes,
-    classes,
-    rest: { textEditable, content },
-  } = getCommonHtmlAttributesAndRest(props);
-
-  // biome-ignore lint/suspicious/noMisleadingCharacterClass: remove potential zero-width characters due to copy-paste
-  content = content.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
-  const onUpdateHandler = useCallback(createTextEditorUpdateHandler(attributes.id), []);
-
-  return textEditable ? (
-    <div className={tx("flex-1", classes)}>
-      <TextEditor
-        initialContent={DOMPurify.sanitize(content)}
-        onUpdate={onUpdateHandler}
-        brickId={attributes.id}
-      />
+  const content = useEditableText(props.id, props.content);
+  const className = useBrickStyle(props, props.className);
+  return (
+    <div ref={ref} className={className}>
+      {content}
     </div>
-  ) : (
-    <div className={tx("flex-1", classes)}>{DOMPurify.sanitize(content)}</div>
   );
 });
 
-export default memo(Text, (prevProps, nextProps) => {
-  // !WARN: keep unused args because lodash do not pass the "key" when following args are not present
-  const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {
-    if (key === "content") {
-      // If the key is in our ignore list, consider it equal
-      return true;
-    }
-    // Otherwise, use the default comparison
-    return undefined;
-  });
-  return compared;
-});
+// Memoize the component to avoid re-rendering when the text content changes
+export default memoizeWithout(Text, "content");
+
+// export default memo(Text, (prevProps, nextProps) => {
+//   // !WARN: keep unused args because lodash do not pass the "key" when following args are not present
+//   const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {
+//     if (key === "content") {
+//       // If the key is in our ignore list, consider it equal
+//       return true;
+//     }
+//     // Otherwise, use the default comparison
+//     return undefined;
+//   });
+//   return compared;
+// });

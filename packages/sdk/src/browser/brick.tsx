@@ -66,7 +66,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, onMouseDown, onMouseUp, onTouchEnd, children, translation, ...props }, ref) => {
     const editor = useEditor();
     const hasMouseMoved = useRef(false);
-    const [initialTransation, setInitialTranslation] = useState(style?.transform);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
       const target = e.target as HTMLElement;
@@ -83,38 +82,19 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
       hasMouseMoved.current = false;
     };
 
-    // override "transfrom" translate style when translation is passed. We should add the translation to the existing transform
-    // if there is any
-    if (translation && style?.transform) {
-      // parse existing transform
-      const existingTranslateValues = style.transform.match(/-?\d+/g);
-      const existingTranslateX = parseFloat(existingTranslateValues?.[0] ?? "0");
-      const existingTranslateY = parseFloat(existingTranslateValues?.[1] ?? "0");
-
-      console.log("base trasnform", style.transform);
-      console.log("existingTranslateX", existingTranslateX);
-      console.log("existingTranslateY", existingTranslateY);
-
-      // calculate new translate values
-      const newTranslateX = existingTranslateX + translation.x;
-      const newTranslateY = existingTranslateY + translation.y;
-
-      // create new transform value
-      const newTranslate = `translate(${newTranslateX}px, ${newTranslateY}px)`;
-
-      console.log("newTranslate", newTranslate);
-
-      style.transform = newTranslate;
+    // used to translate groups of bricks
+    if (translation && style) {
+      style.transform = `translate(${translation.x}px, ${translation.y}px)`;
     }
 
     return (
       <div
-        data-translation={initialTransation}
         id={brick.id}
         style={style}
         className={tx(
           "brick group/brick flex select-none",
           "group-hover/page:(outline outline-dashed outline-upstart-100)",
+          "hover:z-[9999] hover:shadow-lg",
           className,
           css({
             "&.selected": {
@@ -142,7 +122,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         <MemoBrickComponent brick={brick} />
         <BrickOptionsButton brick={brick} />
         {children} {/* Make sure to include children to add resizable handle */}
-        {translation && <span>FOOOO {JSON.stringify(translation)}</span>}
       </div>
     );
   },

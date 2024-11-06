@@ -1,5 +1,14 @@
 import { tx, css } from "./twind";
-import { Ref, useCallback, useEffect, useMemo, useRef, useState, type DOMAttributes } from "react";
+import {
+  Ref,
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DOMAttributes,
+} from "react";
 import type { BrickPosition, Brick } from "~/shared/bricks";
 import BrickWrapper from "./brick";
 import { useBricks, useDraft, useEditor, useEditorEnabled } from "./use-editor";
@@ -14,6 +23,7 @@ import { generateId } from "./bricks/common";
 import { findOptimalPosition } from "./layout-utils";
 import Selecto from "react-selecto";
 import getResizeHandle from "./resize-handle";
+import { flushSync } from "react-dom";
 
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -99,17 +109,11 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
   // mod+d to duplicate the selected brick
   useHotkeys("mod+d", (e) => {
-    console.log("mod+d pressed");
     e.preventDefault();
     if (editor.selectedBrick) {
-      console.log("duplicating brick", editor.selectedBrick.id);
       draft.duplicateBrick(editor.selectedBrick.id);
     }
   });
-
-  useEffect(() => {
-    console.log("selected group changed", editor.selectedGroup);
-  }, [editor.selectedGroup]);
 
   const layoutMobile = useMemo(
     () =>
@@ -146,11 +150,12 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     }
 
     // Store the initial mouse offset relative to the grid item
+    const rect = element.getBoundingClientRect();
     dragInfo.current = {
       isDragging: true,
       startOffset: {
-        x: event.clientX,
-        y: event.clientY,
+        x: rect.left,
+        y: rect.top,
       },
       draggedId: oldItem.i,
     };
@@ -164,42 +169,61 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
     // compute the delta between the initial drag position and the current one
     // Calculate dx and dy including margins
-    const dx = event.clientX - dragInfo.current.startOffset.x;
-    const dy = event.clientY - dragInfo.current.startOffset.y;
-
-    console.log("translate", dx, dy);
+    const rect = element.getBoundingClientRect();
+    const dx = rect.left - dragInfo.current.startOffset.x;
+    const dy = rect.top - dragInfo.current.startOffset.y;
 
     // update the dragged brick position
     setDragTranslate({ x: dx, y: dy });
   };
 
   const onDragStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    if (!hasBeenDragged.current) {
+    console.log("drag stop", { event });
+    const target = event.target as HTMLElement | null;
+    if (!hasBeenDragged.current && !target?.matches(".rt-BaseMenuItem")) {
       // simulate a click event on the brick
       const clickEvent = new MouseEvent("click", { bubbles: true });
       element.dispatchEvent(clickEvent);
-    } else {
+    } else if (hasBeenDragged.current) {
       console.log("deselcting brick because it has been dragged");
       editor.deselectBrick();
     }
 
-    // reset group selection
-    setDragTranslate({ x: 0, y: 0 });
-    dragInfo.current = {
-      isDragging: false,
-      startOffset: null,
-      draggedId: null,
-    };
+    const dx = newItem.x - oldItem.x;
+    const dy = newItem.y - oldItem.y;
 
-    const { h, w, x, y, maxH, maxW, minH, minW } = newItem;
+    // Update actual layout positions
+    if (dragInfo.current.startOffset && editor.selectedGroup?.length) {
+      // reset group selection
 
-    setTimeout(() => {
-      // for whatever reason, we have to delay the updateBrickPosition call
-      // so that the grid library does not throw weird errors
-      draft.updateBrickPosition(newItem.i, editor.previewMode, { h, w, x, y, maxH, maxW, minH, minW });
-      hasBeenDragged.current = false;
-      hasDraggedStarted.current = false;
-    }, 200);
+      editor.selectedGroup?.forEach((id) => {
+        const brick = draft.getBrick(id);
+        if (brick) {
+          const layoutType = editor.previewMode;
+          const layout = brick.position[layoutType];
+          if (layout) {
+            console.log("updating brick position", id, layoutType, layout, dx, dy);
+            draft.updateBrickPosition(id, layoutType, {
+              ...layout,
+              // make sure the value is not <0 and not > max
+              x: Math.min(Math.max(0, layout.x + dx), 12),
+              y: Math.max(0, layout.y + dy),
+            });
+          }
+        }
+      });
+      editor.setSelectedGroup([]);
+      setDragTranslate({ x: 0, y: 0 });
+
+      dragInfo.current = {
+        isDragging: false,
+        startOffset: null,
+        draggedId: null,
+      };
+    }
+
+    hasBeenDragged.current = false;
+    hasDraggedStarted.current = false;
   };
 
   const onResizeStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
@@ -286,8 +310,8 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         onDragStart={onDragStart}
         onDragStop={onDragStop}
         onResizeStop={onResizeStop}
-        preventCollision={false}
         draggableCancel=".nodrag"
+        useCSSTransforms={false}
         // @ts-ignore wrong types in library
         resizeHandle={getResizeHandle}
         // all directions
@@ -315,7 +339,11 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         // No compacting unless on mobile, as we want the user to be able to place the bricks wherever they want
         compactType={editor.previewMode === "mobile" ? "vertical" : null}
         allowOverlap={true}
+        // preventCollision={true}
         onWidthChange={onWidthChange}
+        onLayoutChange={(layout, layouts) => {
+          return false;
+        }}
       >
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
