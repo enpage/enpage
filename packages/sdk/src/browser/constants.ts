@@ -20,10 +20,15 @@ export const LAYOUT_PADDING: Record<string, [number, number]> = {
 };
 
 export const LAYOUT_GUTTERS: Record<string, [number, number]> = {
-  desktop: [20, 20],
+  desktop: [0, 0],
   tablet: [16, 16],
   mobile: [8, 8],
 };
+// export const LAYOUT_GUTTERS: Record<string, [number, number]> = {
+//   desktop: [20, 20],
+//   tablet: [16, 16],
+//   mobile: [8, 8],
+// };
 
 /**
  * This is the height of a row in the layout grid.

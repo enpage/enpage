@@ -29,6 +29,7 @@ export interface EditorStateProps {
   editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
+  selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
   isResizingForContainerId?: string;
   panel?: "library" | "inspector" | "theme" | "settings";
@@ -47,6 +48,7 @@ export interface EditorState extends EditorStateProps {
   setPanel: (panel?: EditorStateProps["panel"]) => void;
   togglePanel: (panel: EditorStateProps["panel"]) => void;
   hidePanel: (panel: EditorStateProps["panel"]) => void;
+  setSelectedGroup: (group: Brick["id"][]) => void;
 }
 
 export const createEditorStore = (
@@ -122,6 +124,10 @@ export const createEditorStore = (
           setDraggingBrick: (draggingBrick) =>
             set((state) => {
               state.draggingBrick = draggingBrick;
+            }),
+          setSelectedGroup: (group) =>
+            set((state) => {
+              state.selectedGroup = group;
             }),
         })),
         {

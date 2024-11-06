@@ -299,3 +299,8 @@
 .dark, .dark-theme, :is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
   --color-background: #111;
 }
+
+.selecto-selection {
+  background-color: var(--violet-surface) !important;
+  border-color: var(--violet-8) !important;
+}

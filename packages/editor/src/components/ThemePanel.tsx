@@ -74,7 +74,7 @@ export default function ThemePanel() {
       </Tabs.List>
       <Tabs.Content
         value="ai"
-        className={tx("p-2 h-[calc(100dvh-40px)] overflow-y-auto", tabContentScrollClass)}
+        className={tx("p-2 h-[calc(100dvh-99px)] overflow-y-auto", tabContentScrollClass)}
       >
         <Callout.Root size="1">
           <Callout.Icon>
@@ -114,8 +114,10 @@ export default function ThemePanel() {
       <Tabs.Content value="current" className={tx("p-2 overflow-y-auto", tabContentScrollClass)}>
         <Callout.Root size="1">
           <Callout.Text>
-            Customize your theme colors and typography to match your brand. Note that the theme applies to
-            your entire site, not only the current page.
+            Customize your theme colors and typography to match your brand.
+            <br />
+            <strong className="font-semibold">Note</strong>: Theme is applied to your entire site, not only
+            the current page.
           </Callout.Text>
         </Callout.Root>
         <div className="mt-1 flex flex-col gap-y-6">
@@ -198,7 +200,7 @@ export default function ThemePanel() {
       <Tabs.Content
         value="list"
         className={tx(
-          "h-[calc(100dvh-40px)] overflow-y-auto transition-colors duration-200",
+          "h-[calc(100dvh-99px)] overflow-y-auto transition-colors duration-200",
           tabContentScrollClass,
         )}
       >

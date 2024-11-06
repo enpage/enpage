@@ -16,7 +16,7 @@ import {
 } from "@enpage/style-system";
 import { BsStars } from "react-icons/bs";
 import { TbDragDrop } from "react-icons/tb";
-import { useCalloutViewCounter } from "../../hooks/use-callout-view-counter";
+import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";
 import { useState } from "react";
 import type { BrickManifest } from "@enpage/sdk/browser/bricks/manifest";
 import type { Static } from "@sinclair/typebox";
@@ -63,7 +63,7 @@ export default function BlocksLibrary() {
       </Tabs.List>
       <Tabs.Content
         value="library"
-        className={tx("p-2 h-[calc(100dvh-40px)] overflow-y-auto", tabContentScrollClass)}
+        className={tx("p-2 h-[calc(100dvh-99px)] overflow-y-auto", tabContentScrollClass)}
       >
         {shouldDisplayLibraryCallout && (
           <Callout.Root size="1">
@@ -116,7 +116,7 @@ export default function BlocksLibrary() {
       </Tabs.Content>
       <Tabs.Content
         value="ai"
-        className={tx("p-2 h-[calc(100dvh-40px)] overflow-y-auto", tabContentScrollClass)}
+        className={tx("p-2 h-[calc(100dvh-99px)] overflow-y-auto", tabContentScrollClass)}
       >
         <Callout.Root size="1">
           <Callout.Icon>

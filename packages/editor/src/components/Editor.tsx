@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
-import BlocksLibrary from "./bricks-library/BricksLibrary";
+import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import Page from "@enpage/sdk/browser/page";
 import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
@@ -24,9 +24,9 @@ export default function Editor({ mode = "local", pages, ...props }: EditorProps)
   const draftCtx = useDraftStoreContext();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    draftCtx.persist.rehydrate();
-  }, []);
+  // useEffect(() => {
+  //   draftCtx.persist.rehydrate();
+  // }, []);
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
@@ -80,6 +80,12 @@ export default function Editor({ mode = "local", pages, ...props }: EditorProps)
           "flex-1 flex place-content-center z-40 overscroll-none overflow-auto",
           css({
             gridArea: "main",
+            scrollbarColor: "var(--violet-4) var(--violet-2)",
+            scrollBehavior: "smooth",
+            scrollbarWidth: "thin",
+            "&:hover": {
+              scrollbarColor: "var(--violet-7) var(--violet-3)",
+            },
           }),
         )}
       >

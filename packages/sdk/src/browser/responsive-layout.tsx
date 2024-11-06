@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo, type ComponentType, type RefObject } from "react";
-import { debounce } from "lodash-es";
+import { useEffect, useRef, useState, type ComponentType, type RefObject } from "react";
 
 // More specific type for the inner ref
 interface WithInnerRef {
@@ -11,7 +10,7 @@ type ComposedProps<Config> = Omit<Config, keyof WithInnerRef> & {
   className?: string;
   width?: number;
   defaultWidth?: number;
-  debounceTime?: number;
+  onWidthChange?: (width: number) => void;
 };
 
 export default function WidthProvideRGL<Config>(
@@ -20,31 +19,22 @@ export default function WidthProvideRGL<Config>(
   return function WidthProvider({
     className,
     defaultWidth = 1280,
-    debounceTime = 400,
+    onWidthChange,
     ...rest
   }: ComposedProps<Config>) {
     const [width, setWidth] = useState(defaultWidth);
-    const [resizing, setResizing] = useState(false);
     const elementRef = useRef<HTMLDivElement>(null);
-
-    // set a setReszing(false) debounced function
-    const setResizingDebounced = useCallback(
-      debounce(() => setResizing(false), debounceTime),
-      [],
-    );
 
     useEffect(() => {
       // oberve the width of the element
       const observer = new ResizeObserver((entries) => {
-        setResizing(true);
-        setWidth(entries[0].contentRect.width);
-        setResizingDebounced();
+        const newWidth = entries[0].contentRect.width;
+        setWidth(newWidth);
+        onWidthChange?.(newWidth);
       });
-
       observer.observe(elementRef.current!);
-
       return () => observer.disconnect();
-    }, [setResizingDebounced]);
+    }, [onWidthChange]);
 
     const componentProps: Config & WithInnerRef & { width: number } = {
       ...(rest as Config),
