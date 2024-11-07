@@ -1,5 +1,14 @@
 # @enpage/sdk
 
+## 0.0.45
+
+### Patch Changes
+
+- [#192](https://github.com/enpage/enpage/pull/192) [`8efb1f6`](https://github.com/enpage/enpage/commit/8efb1f6a06a38d0113360625f9205b14013eec72) Thanks [@mattallty](https://github.com/mattallty)! - React editor
+
+- Updated dependencies [[`8efb1f6`](https://github.com/enpage/enpage/commit/8efb1f6a06a38d0113360625f9205b14013eec72)]:
+  - @enpage/style-system@0.0.20
+
 ## 0.0.44
 
 ### Patch Changes

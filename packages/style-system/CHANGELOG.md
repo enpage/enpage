@@ -1,5 +1,11 @@
 # @enpage/style-system
 
+## 0.0.20
+
+### Patch Changes
+
+- [#192](https://github.com/enpage/enpage/pull/192) [`8efb1f6`](https://github.com/enpage/enpage/commit/8efb1f6a06a38d0113360625f9205b14013eec72) Thanks [@mattallty](https://github.com/mattallty)! - React editor
+
 ## 0.0.19
 
 ### Patch Changes
