@@ -43,7 +43,7 @@ export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Conf
   }
   const attr = resolveAttributes(cfg.attributes);
 
-  return { ...cfg, data, attr } as GenericPageContext;
+  return { ...cfg, data, attr };
 }
 
 /**
