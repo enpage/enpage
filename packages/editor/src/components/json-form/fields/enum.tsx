@@ -25,6 +25,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
 
   // Extract options from the schema
   const options: EnumOption[] =
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     (schema.anyOf ?? schema.oneOf)?.map((option: any) => ({
       const: option.const,
       title: option.title || option.const,

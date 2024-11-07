@@ -72,7 +72,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   const draft = useDraft();
   const [state, setState] = useState(brick.props);
 
-  const onChange = (data: IChangeEvent<any, any, any>, id?: string) => {
+  const onChange = (data: IChangeEvent, id?: string) => {
     // console.log("changed", data, id);
     draft.updateBrickProps(brick.id, data.formData);
   };

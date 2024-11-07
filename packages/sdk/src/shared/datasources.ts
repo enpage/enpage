@@ -104,14 +104,14 @@ export type DatasourceResolved<D extends DatasourceManifestMap> = {
   [K in keyof D]: IsProvider<D[K]> extends never
     ? D[K] extends DatasourceGenericManifest<infer S>
       ? DatasourceGenericManifest<S> & { data: Static<S> }
-      : never
+      : unknown
     : D[K] extends DatasourceProviderManifest<infer P, infer O, infer S>
       ? P extends DatasourceProvider
         ? DatasourceProviderManifest<P, O, S> & {
             data: P extends "json" ? Static<S> : Static<(typeof providersSchemaMap)[P]>;
           }
-        : never
-      : never;
+        : unknown
+      : unknown;
 };
 export function defineDataSources<T extends DatasourceManifestMap>(datasources: T) {
   return datasources as EnsureDatasourceManifestMap<T>;

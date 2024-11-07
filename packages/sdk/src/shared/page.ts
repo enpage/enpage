@@ -16,7 +16,7 @@ export type PageBasicInfo = {
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
 export type PageConfig<
-  D extends DatasourceManifestMap | undefined,
+  D extends DatasourceManifestMap,
   A extends EnpageTemplateConfig["attributes"],
   B extends Brick[],
 > = {
@@ -57,7 +57,7 @@ export type GenericPageConfig = PageConfig<
 >;
 
 export type PageContext<
-  D extends DatasourceManifestMap | undefined,
+  D extends DatasourceManifestMap,
   A extends EnpageTemplateConfig["attributes"],
   B extends Brick[],
 > = Pick<PageConfig<D, A, B>, "data" | "attr" | "bricks">;
@@ -82,7 +82,7 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageT
     bricks,
     ssrManifest: {},
     manifest: templateConfig.manifest,
-  };
+  } satisfies GenericPageConfig;
 }
 
 export type TemplatePage = {
@@ -91,6 +91,6 @@ export type TemplatePage = {
   bricks: Brick[];
 };
 
-export function definePages(pages: TemplatePage[]): TemplatePage[] {
+export function definePages(pages: TemplatePage[]) {
   return pages;
 }

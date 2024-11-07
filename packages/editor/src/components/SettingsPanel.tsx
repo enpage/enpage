@@ -69,7 +69,7 @@ export default function SettingsForm() {
   const attrSchema = useAttributesSchema();
   const filteredAttrSchema = sortJsonSchemaProperties(attrSchema);
 
-  const onChange = (data: IChangeEvent<any, any, any>, id?: string) => {
+  const onChange = (data: IChangeEvent, id?: string) => {
     console.log("changed attr", data, id);
     // draft.updateBrickProps(brick.id, data.formData);
   };

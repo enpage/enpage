@@ -30,6 +30,8 @@ export async function pluginVirtual(
   return virtual({
     "virtual:vite-entry-server": `export { render } from "@enpage/sdk/builder/vite-entry-server";`,
     "virtual:enpage-page-config.json": JSON.stringify({
+      id: "temp-page",
+      siteId: "temp-site",
       attributes: templateConfig.attributes,
       datasources: templateConfig.datasources,
       data: context?.data,

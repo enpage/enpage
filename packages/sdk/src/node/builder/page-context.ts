@@ -5,6 +5,7 @@ import { resolveAttributes } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
 import type { ConfigEnv } from "vite";
+import type { DatasourceManifestMap, DatasourceResolved } from "~/shared/datasources";
 
 export async function getPageContext<Config extends EnpageTemplateConfig>(
   cfg: Config,
@@ -27,23 +28,29 @@ export async function getPageContext<Config extends EnpageTemplateConfig>(
   return null;
 }
 
-export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
-  let data: Record<string, unknown> | undefined;
+export function createFakeContext<Config extends EnpageTemplateConfig>(
+  cfg: Config,
+  path = "/",
+): GenericPageContext {
+  return {
+    ...cfg,
+    data: cfg.datasources ? resolveDatasource(cfg.datasources) : undefined,
+    attr: resolveAttributes(cfg.attributes),
+    bricks: cfg.pages.find((p) => p.path === path)?.bricks ?? [],
+  };
+}
 
-  if (cfg.datasources) {
-    data = {} as Record<string, unknown>;
-    for (const key in cfg.datasources) {
-      const provider = cfg.datasources[key].provider;
-      if (provider && provider !== "json") {
-        data[key] = samples[provider];
-      } else if ("sampleData" in cfg.datasources[key] && cfg.datasources[key].sampleData) {
-        data[key] = cfg.datasources[key].sampleData;
-      }
+function resolveDatasource<D extends DatasourceManifestMap>(datasources: D) {
+  const data = {} as DatasourceResolved<DatasourceManifestMap>;
+  for (const key in datasources) {
+    const provider = datasources[key].provider;
+    if (provider && provider !== "json") {
+      data[key] = samples[provider];
+    } else if ("sampleData" in datasources[key] && datasources[key].sampleData) {
+      data[key] = datasources[key].sampleData;
     }
   }
-  const attr = resolveAttributes(cfg.attributes);
-
-  return { ...cfg, data, attr };
+  return data;
 }
 
 /**

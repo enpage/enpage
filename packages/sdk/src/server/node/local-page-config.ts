@@ -1,19 +1,19 @@
 import { join } from "node:path";
-import { resolveAttributes, type AttributesMap, type AttributesResolved } from "~/shared/attributes";
+import { resolveAttributes } from "~/shared/attributes";
 import type { DatasourceManifestMap, DatasourceResolved } from "~/shared/datasources";
 import type { GenericPageConfig } from "~/shared/page";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 
-export async function getLocalPageConfig(configFile?: string): Promise<GenericPageConfig> {
+export async function getLocalPageConfig(configFile?: string, path = "/"): Promise<GenericPageConfig> {
   const configFilePath = configFile ?? join(process.cwd(), "enpage.config.js");
-  const { attributes, datasources, manifest, containers } = (await import(
-    configFilePath
-  )) as EnpageTemplateConfig;
+  const { attributes, datasources, manifest, pages } = (await import(configFilePath)) as EnpageTemplateConfig;
 
   return {
+    id: "temp-page",
+    siteId: "temp-site",
     attributes,
     datasources,
-    bricks: containers,
+    bricks: pages.find((p) => p.path === path)?.bricks ?? [],
     manifest: manifest,
     attr: resolveAttributes(attributes),
     data: resolveData(datasources ?? {}),
