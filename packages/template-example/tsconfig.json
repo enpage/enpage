@@ -15,10 +15,12 @@
     "checkJs": true,
     "noEmit": true,
 
+    "jsx": "react-jsx",
+
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["@enpage/sdk/custom-attrs.d.ts"]
+    "types": ["@enpage/sdk/custom-attrs.d.ts", "vite/client"]
   },
-  "include": ["src"]
+  "include": ["enpage.config.js"]
 }

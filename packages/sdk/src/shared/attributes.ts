@@ -1,4 +1,3 @@
-import type { ResponsiveMode } from "./responsive";
 import {
   Type,
   type TSchema,
@@ -7,38 +6,34 @@ import {
   type SchemaOptions,
   type ObjectOptions,
   type Static,
+  type TObject,
+  type TAny,
+  type TProperties,
 } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 // KEEP IT
 type EnumOption = {
-  name: string;
+  // name: string;
+  title?: string;
   value: string;
   icon?: string;
 };
 
-type Responsive<T> =
-  | T
-  | {
-      [key in ResponsiveMode]?: T;
-    };
-
 type AttributeOptions<T extends Record<string, unknown>> = {
-  group?: string;
+  "ui:group"?: string;
+  "ui:group:title"?: string;
   advanced?: boolean;
-  hideInInspector?: boolean | "if-empty";
+  "ui:hidden"?: boolean | "if-empty";
 } & T;
 
 type GeoPoint = { lat: number; lng: number; name?: string };
 
-export type AttributesMap = {
-  [key: string]: TSchema;
+type AttributesMap = {
+  [key: string]: TAny;
 };
 
-export type AttributesResolved<S extends AttributesMap> = {
-  [key in keyof S]: Responsive<Static<S[key]>>;
-};
-
-export function defineAttributes(attrs: AttributesMap) {
+export function defineAttributes(attrs: TProperties) {
   // Attributes starting with "$" are reserved for internal use
   for (const key in attrs) {
     if (key.startsWith("$")) {
@@ -51,8 +46,6 @@ export function defineAttributes(attrs: AttributesMap) {
     { ...defaultAttributes, ...attrs },
     {
       id: "attributes",
-      title: "Attributes",
-      description: "Define the attributes of the page",
     },
   );
 }
@@ -78,7 +71,10 @@ export const attr = {
     defaultValue = false,
     opts?: AttributeOptions<Omit<SchemaOptions, "title" | "default">>,
   ) {
-    return Type.Boolean({ title: name, default: defaultValue, ...opts });
+    const defaultOpts = {
+      "ui:field": "switch",
+    };
+    return Type.Boolean({ title: name, default: defaultValue, ...defaultOpts, ...opts });
   },
   /**
    * Define an enum
@@ -93,14 +89,21 @@ export const attr = {
       }
     >,
   ) {
+    const defaultOpts = {
+      "ui:field": "enum",
+    };
     const { options, ...commonOpts } = opts;
     return Type.Union(
-      options.map((opt) => Type.Literal(typeof opt === "string" ? opt : opt.value)),
+      options.map((opt) =>
+        Type.Literal(typeof opt === "string" ? opt : opt.value, {
+          title: typeof opt === "string" ? opt : opt.title,
+          "ui:icon": typeof opt === "string" ? undefined : opt.icon,
+        }),
+      ),
       {
         title: name,
         default: defaultValue,
-        optionsIcons: options.map((opt) => (typeof opt === "string" ? null : opt.icon)).filter(Boolean),
-        optionsNames: options.map((opt) => (typeof opt === "string" ? opt : opt.name)),
+        ...defaultOpts,
         ...commonOpts,
       },
     );
@@ -209,23 +212,95 @@ export const attr = {
 };
 
 // Default attributes
-const defaultAttributes: AttributesMap = {
-  $siteLanguage: attr.enum("Page language", "en", {
+const defaultAttributes = {
+  $pageLanguage: attr.enum("Page language", "en", {
     options: [
-      { value: "en", name: "English" },
-      { value: "es", name: "Spanish" },
-      { value: "fr", name: "French" },
-      { value: "de", name: "German" },
-      { value: "it", name: "Italian" },
-      { value: "ja", name: "Japanese" },
-      { value: "ko", name: "Korean" },
-      { value: "pt", name: "Portuguese" },
-      { value: "ru", name: "Russian" },
-      { value: "zh", name: "Chinese" },
+      { value: "ar", title: "Arabic" },
+      { value: "zh", title: "Chinese" },
+      { value: "cs", title: "Czech" },
+      { value: "nl", title: "Dutch" },
+      { value: "en", title: "English" },
+      { value: "fr", title: "French" },
+      { value: "de", title: "German" },
+      { value: "he", title: "Hebrew" },
+      { value: "hi", title: "Hindi" },
+      { value: "it", title: "Italian" },
+      { value: "ja", title: "Japanese" },
+      { value: "ko", title: "Korean" },
+      { value: "fa", title: "Persian" },
+      { value: "pl", title: "Polish" },
+      { value: "pt", title: "Portuguese" },
+      { value: "ru", title: "Russian" },
+      { value: "es", title: "Spanish" },
+      { value: "tr", title: "Turkish" },
+      { value: "vi", title: "Vietnamese" },
     ],
   }),
-  $siteTitle: attr.string("Page title", "Untitled"),
-  $siteDescription: attr.string("Page description"),
-  $siteKeywords: attr.string("Page keywords"),
-  $siteLastUpdated: attr.datetime("Last updated"),
+
+  $pageTitle: attr.string("Page title", "Untitled", {
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
+  }),
+  $pageDescription: attr.string("Page description", "", {
+    "ui:widget": "textarea",
+    "ui:options": {
+      rows: 3,
+      widget: "textarea",
+    },
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
+  }),
+  $pageKeywords: attr.string("Page keywords", "", {
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
+  }),
+
+  $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
+
+  // --- layout attributes ---
+  $tabletBreakpointEnabled: attr.boolean("Enable tablet layout", false, {
+    description: "Enable a different layout for tablets",
+    "ui:group": "layout",
+    "ui:group:title": "Layout",
+  }),
+
+  $gridGap: attr.number("Grid gap", 10, {
+    min: 0,
+    max: 100,
+    description: "Grid gap in pixels",
+    "ui:group": "layout",
+    "ui:group:title": "Layout",
+  }),
+
+  // $gridMobileCols: attr.number("Mobile columns", 2, {
+  //   min: 1,
+  //   max: 12,
+  //   "ui:group": "layout",
+  //   "ui:hidden": true,
+  // }),
+  // $gridTabletCols: attr.number("Tablet columns", 4, {
+  //   min: 1,
+  //   max: 12,
+  //   "ui:group": "layout",
+  //   "ui:hidden": true,
+  // }),
+  // $gridDesktopCols: attr.number("Desktop columns", 12, {
+  //   min: 1,
+  //   max: 12,
+  //   "ui:group": "layout",
+  //   "ui:hidden": true,
+  // }),
 };
+
+export function resolveAttributes(attributes: ReturnType<typeof defineAttributes>) {
+  return Value.Create(attributes);
+}
+
+export type AttributesResolved = ReturnType<typeof resolveAttributes>;
+
+// export type AttributesResolved<
+//   S extends TObject = TObject,
+//   B extends S & typeof defaultAttributes = S & typeof defaultAttributes,
+// > = {
+//   [key in keyof B]: Static<B[key]>;
+// };

@@ -1,6 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 import z from "zod";
-import type { GenericPageConfig } from "../page-config";
+import type { GenericPageConfig } from "../page";
 
 export const providerOptions = Type.Object({
   nextRefreshDelay: Type.Optional(Type.Number()),

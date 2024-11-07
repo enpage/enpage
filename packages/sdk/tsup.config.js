@@ -17,7 +17,7 @@ const external = [
   // "jsdom",
   "vite",
   "vite-plugin-inspect",
-  // "@vitejs/plugin-react",
+  "@vitejs/plugin-react",
   // "vite-tsconfig-paths",
   // "postcss",
   // "postcss-preset-env",
@@ -25,22 +25,39 @@ const external = [
   // "autoprefixer",
   // "@fullhuman/postcss-purgecss",
 
+  // "@twind/core",
+  // "@twind/with-react",
+  // "@twind/preset-autoprefix",
+  // "@twind/preset-ext",
+  // "@twind/preset-line-clamp",
+  // "@twind/preset-tailwind",
+  // "@twind/preset-tailwind-forms",
+  // "@twind/preset-typography",
+
   // "axe-core",
+  "react",
+  "react-dom",
+
+  "react-grid-layout",
+  "react-resizable",
+
   "fsevents",
   "lightningcss",
-  "virtual:enpage-template:index.html",
   "virtual:enpage-page-config.json",
   "__STATIC_CONTENT_MANIFEST",
 ];
 
+const ignored = ["!**/*.md", "!**/tests/**/*"];
+
 export default defineConfig((options) => {
   return [
     {
-      entry: ["src/node", "!src/node/**/*.md", "!src/node/**/__tests__/**/*", "!src/node/**/__mocks__/**/*"],
+      entry: ["src/node", ...ignored],
       outDir: "dist/node",
       target: "node20.10",
       format: ["esm"],
       dts: false,
+      clean: !options.watch,
       minify: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
@@ -53,80 +70,86 @@ export default defineConfig((options) => {
         input.banner = banner;
       },
       loader,
+      removeNodeProtocol: false,
     },
     // The dev-client uses Vite's import.meta.env.DEV
     // We bundle it using tsup to avoid the automatic replacement at build time
     {
-      entry: [
-        "src/browser",
-        "!src/browser/**/*.md",
-        "!src/browser/**/__tests__/**/*",
-        "!src/browser/**/__mocks__/**/*",
-      ],
+      entry: ["src/browser", ...ignored],
       outDir: "dist/browser",
       target: "es2020",
       format: ["esm"],
-      dts: true,
+      dts: !options.watch,
+      verbose: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
+      // splitting: false,
+      // skipNodeModulesBundle: true,
       external,
       esbuildOptions(input) {
         input.banner = banner;
       },
       loader,
+      removeNodeProtocol: false,
     },
     {
       entry: [
         "src/shared",
-        "!src/shared/**/*.md",
-        "!src/shared/**/__tests__/**/*",
-        "!src/shared/**/__mocks__/**/*",
+        // for now let's ignore them because it takes time to build it
+        "!src/shared/datasources/**/*",
+        ...ignored,
       ],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
-      dts: true,
+      dts: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
+      splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;
       },
       loader,
+      removeNodeProtocol: false,
     },
     {
       entry: ["src/server/node/dev-server.ts"],
       outDir: "dist/server/node",
       target: "node18",
       format: ["esm"],
-      dts: false,
+      dts: !options.watch,
+      clean: !options.watch,
       minify: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
       splitting: false,
       external,
-      clean: true,
       esbuildOptions(input) {
         input.banner = banner;
       },
+      removeNodeProtocol: false,
     },
     {
       entry: ["src/server/cloudflare/server.ts"],
       outDir: "dist/server/cloudflare",
       target: "es2020",
       format: ["esm"],
-      dts: false,
-      clean: true,
+      dts: !options.watch,
       splitting: false,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
       external,
       esbuildOptions(input) {
         input.banner = banner;
       },
+      removeNodeProtocol: false,
     },
   ];
 });

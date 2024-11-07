@@ -1,7 +1,6 @@
 import forms from "@tailwindcss/forms";
 import scrollbars from "tailwind-scrollbar";
 import typography from "@tailwindcss/typography";
-import transform3d from "tailwindcss-3d";
 import plugin from "tailwindcss/plugin";
 import easing from "@whiterussianstudio/tailwind-easing";
 
@@ -10,7 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        enpage: {
+        upstart: {
           50: "#f2f4fb",
           100: "#e7ecf8",
           200: "#d3daf2",
@@ -22,6 +21,19 @@ export default {
           800: "#4b498a",
           900: "#40406f",
           950: "#262541",
+        },
+        dark: {
+          50: "#f6f6f6",
+          100: "#e7e7e7",
+          200: "#d1d1d1",
+          300: "#b0b0b0",
+          400: "#888888",
+          500: "#6d6d6d",
+          600: "#5d5d5d",
+          700: "#4f4f4f",
+          800: "#454545",
+          900: "#333333",
+          950: "#262626",
         },
       },
       textShadow: {
@@ -37,7 +49,6 @@ export default {
     forms,
     typography,
     scrollbars,
-    transform3d,
     easing,
     plugin(function ({ matchUtilities, theme }) {
       matchUtilities(

@@ -1,12 +1,10 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { GenericPageContext } from "~/shared/page-config";
+import type { GenericPageContext } from "~/shared/page";
 import { version } from "../../../package.json";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
-import { getPageSections, processPageSections } from "../../browser/page-sections";
-import { store } from "./store";
 
 /**
  * Renders the template based on the provided configuration and Vite environment.
@@ -41,7 +39,6 @@ export const renderTemplatePlugin = (
     transformIndexHtml: {
       order: "pre",
       handler: async (html: string, ctx) => {
-        console.log("transformIndexHtml called");
         const context = enpageCtx;
         const { head, doc, body, dom } = createJSDOM(html);
 
@@ -66,17 +63,8 @@ export const renderTemplatePlugin = (
         // for all editable elements ([ep-editable]), add a ep-label attribute if not present
         // the label will describe the tag
         addMissingLabels(doc);
-        // add custom elements
-        addCustomElements(doc, head);
         // add animate script
         addAnimationScript(doc, head);
-
-        if (isDevMode) addDevClient(doc, head);
-
-        // Hide sections when needed
-        const sections = getPageSections(doc);
-        const { slugs } = processPageSections(sections);
-        store.set("slugs", slugs);
 
         return dom.serialize();
       },
@@ -99,15 +87,6 @@ function addEntryClient(doc: Document, head: HTMLHeadElement, body: HTMLBodyElem
   head.appendChild(entryClient);
 }
 
-function addDevClient(doc: Document, head: HTMLHeadElement) {
-  const devClientScript = doc.createElement("script");
-  devClientScript.type = "module";
-  devClientScript.textContent = `import { initDevClient } from "@enpage/sdk/browser/dev-client";
-initDevClient();
-window.enpage.addEventListener("afternavigate", initDevClient);`;
-  head.appendChild(devClientScript);
-}
-
 /**
  * Creates a JSDOM instance from the provided HTML.
  * @param {string} html - The HTML string to create the JSDOM from.
@@ -122,7 +101,7 @@ function createJSDOM(html: string) {
 
   const dom = new JSDOM(html, { virtualConsole });
   const doc = dom.window.document;
-  const head = doc.querySelector("head");
+  const head = doc.querySelector("head") as HTMLHeadElement;
   const body = doc.querySelector("body") as HTMLBodyElement;
   return { head, doc, body, dom };
 }
@@ -150,21 +129,6 @@ function addAnimationScript(doc: Document, head: HTMLHeadElement) {
   animateScript.type = "module";
   animateScript.textContent = 'import "@enpage/sdk/browser/animate";';
   head.appendChild(animateScript);
-}
-
-/**
- * Adds custom elements scripts to the document head.
- * @param {Document} doc - The document to modify.
- * @param {HTMLHeadElement} head - The head element to append the script to.
- */
-function addCustomElements(doc: Document, head: HTMLHeadElement) {
-  const customElementsScript = doc.createElement("script");
-  customElementsScript.type = "module";
-  customElementsScript.textContent = `
-          import "@enpage/sdk/browser/components/directives/all";
-          import "@enpage/sdk/browser/components/blocks/all";
-        `;
-  head.appendChild(customElementsScript);
 }
 
 /**
@@ -250,8 +214,8 @@ function upsertHtmlElement(
  * Add/update meta tags to the document head.
  */
 function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPageContext | undefined) {
-  if (context?.attr.$siteLanguage) {
-    doc.documentElement.lang = context?.attr.$siteLanguage;
+  if (context?.attr.$pageLanguage) {
+    doc.documentElement.lang = context?.attr.$pageLanguage;
   }
   // ----------------------------------------------------
   // Add meta tags if they don't exist
@@ -263,21 +227,21 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
   }
 
   // title (always update)
-  if (context?.attr.$siteTitle)
-    upsertHtmlElement("title", "title", doc, head, { innerText: context.attr.$siteTitle });
+  if (context?.attr.$pageTitle)
+    upsertHtmlElement("title", "title", doc, head, { innerText: context.attr.$pageTitle });
 
   // description (always update)
-  if (context?.attr.$siteDescription)
+  if (context?.attr.$pageDescription)
     upsertHtmlElement("meta", "meta[name='description']", doc, head, {
       name: "description",
-      content: context.attr.$siteDescription,
+      content: context.attr.$pageDescription,
     });
 
   // keywords (always update)
-  if (context?.attr.$siteKeywords) {
+  if (context?.attr.$pageKeywords) {
     upsertHtmlElement("meta", "meta[name='keywords']", doc, head, {
       name: "keywords",
-      content: context.attr.$siteKeywords,
+      content: context.attr.$pageKeywords,
     });
   }
 
@@ -306,12 +270,17 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
  * Adds stylesheets to the document head.
  */
 function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document, head: HTMLHeadElement) {
-  const styles = ["tailwind", "client", "anim"];
-  for (const style of styles) {
-    if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
-    const link = doc.createElement("link");
-    link.rel = "stylesheet";
-    link.href = `/@enpage/style-system/${style}.css`;
-    head.appendChild(link);
-  }
+  // const styles = ["tailwind", "client", "anim"];
+  // for (const style of styles) {
+  //   if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
+  //   const link = doc.createElement("link");
+  //   link.rel = "stylesheet";
+  //   link.href = `/@enpage/style-system/${style}.css`;
+  //   head.appendChild(link);
+  // }
+
+  const link = doc.createElement("link");
+  link.rel = "stylesheet";
+  link.textContent = '@import "open-props/postcss/style";';
+  head.appendChild(link);
 }

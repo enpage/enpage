@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<!--
+This is an example of a Enpage template.
+Important:
+- A template MUST a least have one <section> element under the <body> tag.
+- Multiple <section> elements allow to simulate a multi-pages website.
+- When using multiple <section> elements, the first one is considered the home page.
+-->
+
+<head>
+  <!--
+    Note: Common meta tags will be auto generated!
+    This includes the title, description, keyword, charset, and other meta tags.
+    See the documentation for more details.
+  -->
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+
+
+  <!--
+    Local scripts should be loaded as modules (type="module").
+    Modules being deferrered by default, the DOM can be immediately accessed.
+   -->
+  <script type="module" src="./src/index.js"></script>
+
+  <!--
+    External scripts can be loaded as regular scripts like this: (or as modules if needed)
+  -->
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+</head>
+
+<body class="min-h-dvh place-content-center text-white">
+  <section ep-type="page" ep-animate-appear="zoomIn" ep-animate-disappear="zoomOut" ep-container class="mx-auto flex max-sm:h-dvh w-full md:max-w-[90%] xl:max-w-screen-lg items-center justify-center
+   gap-10 md:rounded-3xl bg-gradient-to-tl from-gray-700 to-gray-800
+   p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img draggable="true" id="profile-pic" src="./assets/img/enpage.svg" ep-editable style="float: inherit"
+         class="shrink-0 aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
+         label="Profile picture" alt="My picture" />
+
+    <ep-grid cols="3" rows="1" gap="2">
+      <div>Foo</div>
+      <div>Bar</div>
+      <div>Joe</div>
+    </ep-grid>
+    <div class="flex-1" ep-container>
+      <h1 ep-label="Title" ep-editable ep-text-editable="plain"
+          class="text-4xl font-extrabold md:text-5xl text-shadow-md shadow-black/40">
+        Samantha Smith
+      </h1>
+      <p id="subtitle" ep-label="Subtitle" class="text-base font-medium" ep-editable ep-text-editable="plain">
+        General Manager @ Acme Corp
+      </p>
+
+      <ul class="mt-8 flex w-full flex-col gap-2">
+        <li ep-for="link in data.links" class="flex items-center
+        font-semibold
+        gap-3 rounded-md bg-white/10 text-white hover:bg-white/20 group-hover/editor:bg-white/10">
+          <a class="flex-1 p-2.5" href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+        </li>
+      </ul>
+
+      <ul class="mt-8 flex w-full flex-col gap-2" ep-label="Links">
+        <ep-for datasource="links">
+          <li class="flex items-center
+          font-semibold
+          gap-3 rounded-md bg-white/10 text-white hover:bg-white/20 group-hover/editor:bg-white/10">
+            <a class="flex-1 p-2.5" ep-bind-attr="href:url, title:title" ep-bind="title">Will be replaced</a>
+          </li>
+        </ep-for>
+      </ul>
+
+      <p class="bg-red-700 p-6">
+        hahaha <ep-text content="sssZZZZ">aaaaddd</ep-text>
+      </p>
+
+      <p ep-if="attributes.testBoolTrue == true">Test bool is true using ep-if</p>
+      <p ep-if="{{ attributes.testBoolTrue == false }}">Test bool is false using ep-if</p>
+
+      <!-- ep-bind
+      <p ep-bind>ep-bind should be true: {{ attributes.testBoolTrue }}</p>
+      -->
+
+      <p class="mt-10 flex justify-end" ep-container>
+        <button onclick="enpage.nextPage()" ep-editable ep-text-editable="plain"
+                class="rounded-md font-bold bg-white/30 text-white px-6 py-3">Next
+          page</button>
+      </p>
+    </div>
+  </section>
+  <section ep-type="page" ep-animate-appear="zoomIn" ep-animate-appear-mode="parallel" ep-slug="second-page"
+           class="mx-auto flex max-w-sm md:max-w-[90%] xl:max-w-screen-lg items-center justify-center gap-10 rounded-3xl bg-gradient-to-tl from-gray-800 to-gray-950 p-10 shadow-2xl max-sm:flex-col md:gap-16 md:p-20">
+    <img id="profile-pic" src="./assets/img/profile.webp"
+         class="aspect-square mx-auto max-h-64 w-auto self-start rounded-xl border-8 border-white/20 ring-1 ring-white/50"
+         label="Profile picture" alt="My picture" />
+    <div class="flex-1">
+      <p id="section-2" ep-label="Title" ep-text-editable="plain" class="text-4xl font-extrabold md:text-5xl">
+        John Smith
+      </p>
+      <p id="subtitle" ep-label="Subtitle" class="text-base font-thin" ep-text-editable="plain">
+        General Manager @ Acme Corp
+      </p>
+      <p class="pt-4">
+        <button onclick="enpage.previousPage()" class="bg-blue-700 text-white px-6">Previous page</button>
+      </p>
+    </div>
+  </section>
+</body>
+
+</html>

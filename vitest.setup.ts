@@ -15,8 +15,11 @@ dotenv.config({
 });
 
 beforeAll(() => {
-  for (const key in process.env) {
-    // @ts-ignore
-    vi.stubEnv(key, process.env[key]);
+  if (process?.env) {
+    for (const key in process.env) {
+      if (typeof process.env[key] === "string") {
+        vi.stubEnv(key, process.env[key]);
+      }
+    }
   }
 });

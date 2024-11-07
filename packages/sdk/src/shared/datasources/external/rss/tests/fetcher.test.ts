@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import fetchRss from "../fetcher";
-import type { GenericPageConfig } from "../../../../page-config";
+import type { GenericPageConfig } from "../../../../page";
 
 describe("rssFetcher", () => {
   const feeds = [

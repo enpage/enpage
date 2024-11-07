@@ -1,33 +1,56 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { PageContext } from "~/shared/page-config";
+import type { GenericPageContext, PageContext } from "~/shared/page";
 import { samples } from "~/shared/datasources/samples";
-import type { AttributesResolved } from "~/shared/attributes";
+import { resolveAttributes } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";
+import type { ConfigEnv } from "vite";
+import type { DatasourceManifestMap, DatasourceResolved } from "~/shared/datasources";
 
-export function createFakeContext<Config extends EnpageTemplateConfig>(cfg: Config) {
-  let data: Record<string, unknown> | undefined;
+export async function getPageContext<Config extends EnpageTemplateConfig>(
+  cfg: Config,
+  viteEnv: ConfigEnv,
+  env: EnpageEnv,
+) {
+  const isBuildMode = viteEnv.command === "build";
+  const isSsrBuild = viteEnv.isSsrBuild;
+  const fullEnv: EnpageEnv = { ...process.env, ...env };
 
-  if (cfg.datasources) {
-    data = {} as Record<string, unknown>;
-    for (const key in cfg.datasources) {
-      const provider = cfg.datasources[key].provider;
-      if (provider && provider !== "json") {
-        data[key] = samples[provider];
-      } else if ("sampleData" in cfg.datasources[key] && cfg.datasources[key].sampleData) {
-        data[key] = cfg.datasources[key].sampleData;
-      }
+  // If in dev mode, use fake context
+  if (!isBuildMode) {
+    console.warn("Using fake context.");
+    return createFakeContext(cfg);
+    // If in build mode, fetch context from API if not SSR build
+  } else if (!isSsrBuild) {
+    return (await fetchContext(cfg, fullEnv)) || createFakeContext(cfg);
+  }
+
+  return null;
+}
+
+export function createFakeContext<Config extends EnpageTemplateConfig>(
+  cfg: Config,
+  path = "/",
+): GenericPageContext {
+  return {
+    ...cfg,
+    data: cfg.datasources ? resolveDatasource(cfg.datasources) : undefined,
+    attr: resolveAttributes(cfg.attributes),
+    bricks: cfg.pages.find((p) => p.path === path)?.bricks ?? [],
+  };
+}
+
+function resolveDatasource<D extends DatasourceManifestMap>(datasources: D) {
+  const data = {} as DatasourceResolved<DatasourceManifestMap>;
+  for (const key in datasources) {
+    const provider = datasources[key].provider;
+    if (provider && provider !== "json") {
+      data[key] = samples[provider];
+    } else if ("sampleData" in datasources[key] && datasources[key].sampleData) {
+      data[key] = datasources[key].sampleData;
     }
   }
-
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const attributes: AttributesResolved<any> = {};
-
-  for (const key in cfg.attributes.properties) {
-    attributes[key] = cfg.attributes.properties[key].default;
-  }
-
-  return { data, attr: attributes } as PageContext<typeof cfg.datasources, typeof cfg.attributes>;
+  return data;
 }
 
 /**
@@ -57,8 +80,7 @@ export async function fetchContext<Config extends EnpageTemplateConfig>(cfg: Con
     },
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const context = (await response.json()) as PageContext<typeof cfg.datasources, typeof cfg.attributes | any>;
+  const context = (await response.json()) as GenericPageContext;
 
   return context;
 }

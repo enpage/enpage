@@ -1,18 +1,25 @@
-import type { DatasourceManifestMap } from "./datasources";
-import type { AttributesMap } from "./attributes";
-import type { TemplateManifest } from "./manifest";
+import type { defineDataSources } from "./datasources";
+import type { defineAttributes } from "./attributes";
+import type { defineManifest } from "./manifest";
+import type { defineBricks } from "./bricks";
+import type { definePages } from "./page";
 
 export type EnpageTemplateConfig = {
   /**
    * The template manifest and settings
    */
-  manifest: TemplateManifest;
+  manifest: ReturnType<typeof defineManifest>;
   /**
    * The attributes declared for the template
    */
-  attributes: AttributesMap;
+  attributes: ReturnType<typeof defineAttributes>;
   /**
    * The datasources declared for the template
    */
-  datasources?: DatasourceManifestMap;
+  datasources?: ReturnType<typeof defineDataSources>;
+  /**
+   * The blocks declared for the template
+   */
+  // bricks: ReturnType<typeof defineBricks>;
+  pages: ReturnType<typeof definePages>;
 };

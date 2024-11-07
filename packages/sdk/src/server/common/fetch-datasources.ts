@@ -1,6 +1,6 @@
 import type { TSchema, DatasourceProviderManifest } from "~/shared/datasources";
 import { MAX_LIVE_DATASOURCES } from "./constants";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig } from "~/shared/page";
 import fetchHttpJSON from "~/shared/datasources/external/json/fetcher";
 import type { EnpageEnv } from "~/shared/env";
 import type { HttpJsonOptions } from "~/shared/datasources/external/json/options";

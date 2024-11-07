@@ -1,16 +1,29 @@
-import { EditorWrapper } from "./components/EditorWrapper";
-import { useEffect, useState } from "react";
+import { createPageConfigSampleFromTemplateConfig } from "@enpage/sdk/shared/page";
+import * as testEnpageConfig from "./test-enpage.config";
+import type { EnpageTemplateConfig } from "@enpage/sdk/shared/template-config";
+import { EditorWrapper } from "@enpage/sdk/browser/EditorWrapper";
+import { ClientOnly } from "./utils/client-only";
+import Editor from "./components/Editor";
 
-export default function App({ html, templateUrl }: { html?: string; templateUrl?: string }) {
-  const [client, setClient] = useState(false);
-  useEffect(() => {
-    setClient(true);
-  }, []);
-  if (!client) return null;
-
+export default function App() {
+  const pageConfig = createPageConfigSampleFromTemplateConfig(testEnpageConfig as EnpageTemplateConfig);
+  const testPages = [
+    {
+      label: "Page 1",
+      id: "page-1",
+      siteId: "site-1",
+    },
+    {
+      label: "Page 2",
+      id: "page-2",
+      siteId: "site-1",
+    },
+  ];
   return (
-    <div className="h-dvh flex">
-      <EditorWrapper html={html} templateUrl={templateUrl} />
-    </div>
+    <ClientOnly>
+      <EditorWrapper pageConfig={pageConfig} pages={testPages}>
+        <Editor />
+      </EditorWrapper>
+    </ClientOnly>
   );
 }

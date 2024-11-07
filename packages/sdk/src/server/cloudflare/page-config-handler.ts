@@ -1,11 +1,8 @@
-import type { PageConfig } from "../../shared/page-config";
+import type { GenericPageConfig } from "../../shared/page";
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import type { RequestContext } from "@hattip/compose";
 import { kv } from "./cache";
 import { getPageConfig } from "../common/get-page-config";
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type GenericPageConfig = PageConfig<any, any>;
 
 /**
  * Not usable in dev for now

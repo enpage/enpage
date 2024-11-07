@@ -1,3 +1,4 @@
+// TODO move to bricks
 export const socialIcons = [
   {
     label: "YouTube",

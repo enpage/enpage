@@ -1,5 +1,5 @@
 import invariant from "~/shared/utils/invariant";
-import type { GenericPageConfig } from "../../shared/page-config";
+import type { GenericPageConfig } from "../../shared/page";
 import type { RequestContext } from "@hattip/compose";
 
 export async function getPageConfig(ctx: RequestContext) {

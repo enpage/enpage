@@ -1,7 +1,7 @@
 import type { CloudflareWorkersPlatformInfo } from "@hattip/adapter-cloudflare-workers";
 import type { NodePlatformInfo } from "@hattip/adapter-node";
 import type { RequestContext } from "@hattip/compose";
-import type { GenericPageConfig, GenericPageContext } from "~/shared/page-config";
+import type { GenericPageConfig, GenericPageContext } from "~/shared/page";
 import type { ViteDevServer } from "vite";
 import { createS3Client, createLocalS3Client, type S3Client } from "./node-s3-client";
 import type { R2Bucket } from "@cloudflare/workers-types";
@@ -50,7 +50,7 @@ export default async function renderHandler(ctx: RequestContext<PlatformInfo>) {
   const policies = [
     "default-src 'self'",
     "frame-ancestors 'self' http://localhost:* https://enpage.co",
-    "img-src 'self' data: https://cdn.enpage.co",
+    "img-src 'self' data: https://cdn.enpage.co https://placehold.co",
     "font-src 'self' https://*",
     "connect-src 'self' https://* ws://localhost:*",
     "frame-src 'self' https://*",
