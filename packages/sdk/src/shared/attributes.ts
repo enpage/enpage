@@ -42,7 +42,12 @@ export function defineAttributes(attrs: TProperties) {
       );
     }
   }
-  return Type.Object({ ...defaultAttributes, ...attrs });
+  return Type.Object(
+    { ...defaultAttributes, ...attrs },
+    {
+      id: "attributes",
+    },
+  );
 }
 
 export const attr = {
@@ -250,7 +255,7 @@ const defaultAttributes = {
     "ui:group:title": "Meta tags / SEO",
   }),
 
-  $siteLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
+  $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
   $tabletBreakpointEnabled: attr.boolean("Enable tablet layout", false, {

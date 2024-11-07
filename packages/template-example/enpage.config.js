@@ -2,6 +2,7 @@ import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
 import { createRow, defineBricks } from "@enpage/sdk/bricks";
+import { definePages } from "@enpage/sdk/page";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -80,7 +81,7 @@ export const manifest = defineManifest({
   homepage: "https://enpage.co",
 });
 
-export const bricks = defineBricks([
+const homePageBricks = defineBricks([
   ...createRow([
     {
       type: "image",
@@ -237,28 +238,12 @@ export const bricks = defineBricks([
       },
     },
   ]),
+]);
 
-  // {
-  //   type: "container",
-  //   variant: "1-1-1",
-  //   bricks: [
-  //     {
-  //       type: "text",
-  //       props: { content: "Sample here" },
-  //       wrapper: { customClasses: "brick-light-red" },
-  //     },
-  //     { type: "text", props: { content: "Hello World" }, wrapper: { customClasses: "brick-normal-red" } },
-  //     { type: "text", props: { content: "Blabla" }, wrapper: { customClasses: "brick-dark-red" } },
-  //   ],
-  // },
-  // {
-  //   type: "container",
-  //   variant: "1-1-1-1",
-  //   bricks: [
-  //     { type: "text", props: { content: "Sample here" } },
-  //     { type: "text", props: { content: "Hello World" } },
-  //     { type: "text", props: { content: "Blabla" } },
-  //     { type: "text", props: { content: "Blabla 2" } },
-  //   ],
-  // },
+export const pages = definePages([
+  {
+    label: "Home",
+    path: "/",
+    bricks: homePageBricks,
+  },
 ]);

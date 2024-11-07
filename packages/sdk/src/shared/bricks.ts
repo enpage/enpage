@@ -71,7 +71,7 @@ export type Brick<T extends string = string> = {
 // type DefinedBrick = Omit<Brick, "id" | "manifest"> & {
 //   manifest?: BrickManifest;
 // };
-type DefinedBrick = Omit<Brick, "id">;
+export type DefinedBrick = Omit<Brick, "id">;
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
   return bricks.map((brick) => ({

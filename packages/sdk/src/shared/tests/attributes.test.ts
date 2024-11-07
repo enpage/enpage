@@ -13,11 +13,11 @@ describe("Attributes test suite", () => {
       expect(attributes.id).toBe("attributes");
       expect(attributes.type).toBe("object");
       expect(attributes.properties).toBeTypeOf("object");
-      expect(attributes.properties).toHaveProperty("$siteLanguage");
-      expect(attributes.properties).toHaveProperty("$siteTitle");
-      expect(attributes.properties).toHaveProperty("$siteDescription");
-      expect(attributes.properties).toHaveProperty("$siteKeywords");
-      expect(attributes.properties).toHaveProperty("$siteLastUpdated");
+      expect(attributes.properties).toHaveProperty("$pageLanguage");
+      expect(attributes.properties).toHaveProperty("$pageTitle");
+      expect(attributes.properties).toHaveProperty("$pageDescription");
+      expect(attributes.properties).toHaveProperty("$pageKeywords");
+      expect(attributes.properties).toHaveProperty("$pageLastUpdated");
       expect(attributes.properties).toHaveProperty("name");
       expect(attributes.properties).toHaveProperty("age");
       expect(attributes.properties).toHaveProperty("isStudent");

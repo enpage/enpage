@@ -3,6 +3,7 @@ import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
 import { defineBricks, createRow } from "@enpage/sdk/bricks";
+import { definePages } from "@enpage/sdk/page";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -80,7 +81,7 @@ export const manifest = defineManifest({
   homepage: "https://enpage.co",
 });
 
-export const bricks = defineBricks([
+const homePageBricks = defineBricks([
   ...createRow([
     {
       type: "image",
@@ -261,4 +262,12 @@ export const bricks = defineBricks([
   //     { type: "text", props: { content: "Blabla 2" } },
   //   ],
   // },
+]);
+
+export const pages = definePages([
+  {
+    label: "Home",
+    path: "/",
+    bricks: homePageBricks,
+  },
 ]);

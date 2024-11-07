@@ -2,8 +2,9 @@ import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
 import { resolveAttributes, type AttributesResolved } from "./attributes";
 import type { Manifest } from "vite";
 import type { TemplateManifest } from "./manifest";
-import type { Brick } from "./bricks";
+import { defineBricks, type Brick, type DefinedBrick } from "./bricks";
 import type { EnpageTemplateConfig } from "./template-config";
+import invariant from "./utils/invariant";
 
 export type PageBasicInfo = {
   id: string;
@@ -67,7 +68,10 @@ export type GenericPageContext = PageContext<
   Brick[]
 >;
 
-export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageTemplateConfig) {
+export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageTemplateConfig, path = "/") {
+  const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
+  invariant(bricks, `createPageConfigSampleFromTemplateConfig: No bricks found for path ${path}`);
+
   return {
     id: "page-1",
     siteId: "site-1",
@@ -75,8 +79,18 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageT
     data: undefined,
     attributes: templateConfig.attributes,
     attr: resolveAttributes(templateConfig.attributes),
-    bricks: templateConfig.bricks,
+    bricks,
     ssrManifest: {},
     manifest: templateConfig.manifest,
   };
+}
+
+export type TemplatePage = {
+  label: string;
+  path: string;
+  bricks: Brick[];
+};
+
+export function definePages(pages: TemplatePage[]): TemplatePage[] {
+  return pages;
 }
