@@ -23,6 +23,7 @@ type EnumOption = {
 type AttributeOptions<T extends Record<string, unknown>> = {
   "ui:group"?: string;
   "ui:group:title"?: string;
+  "ui:group:order"?: number;
   advanced?: boolean;
   "ui:hidden"?: boolean | "if-empty";
 } & T;
@@ -45,7 +46,7 @@ export function defineAttributes(attrs: TProperties) {
   return Type.Object(
     { ...defaultAttributes, ...attrs },
     {
-      id: "attributes",
+      $id: "attributes",
     },
   );
 }
@@ -235,6 +236,14 @@ const defaultAttributes = {
       { value: "tr", title: "Turkish" },
       { value: "vi", title: "Vietnamese" },
     ],
+  }),
+
+  $pagePath: attr.string("Page path", "/", {
+    description: "The URL path of the page",
+    "ui:group": "location",
+    "ui:group:title": "Location",
+    "ui:group:order": 1,
+    "ui:field": "path",
   }),
 
   $pageTitle: attr.string("Page title", "Untitled", {

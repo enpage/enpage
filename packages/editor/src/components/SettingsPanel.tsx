@@ -34,6 +34,15 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     return acc;
   }, {});
 
+  // Sort groups by their order taken from "ui:group:order"
+  const groups = Object.keys(groupedFields).sort((a, b) => {
+    const orderA = (groupedFields[a][0].content.props.uiSchema?.["ui:group:order"] as number) ?? 999;
+    const orderB = (groupedFields[b][0].content.props.uiSchema?.["ui:group:order"] as number) ?? 999;
+    return orderA - orderB;
+  });
+
+  console.log({ groups });
+
   return (
     <div className="rjsf-sections">
       {title && <h2 className="text-sm bg-upstart-200 px-2">{title}</h2>}
