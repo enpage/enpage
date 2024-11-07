@@ -279,7 +279,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   };
 
   const onDropDragOver = (event: DragOverEvent): { w?: number; h?: number } | false | undefined => {
-    console.log("onDropDragOver", event, editor.draggingBrick);
+    // console.log("onDropDragOver", event, editor.draggingBrick);
     return editor.draggingBrick
       ? {
           w: editor.draggingBrick.preferredW,

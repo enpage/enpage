@@ -1,8 +1,8 @@
 import { createStore, useStore } from "zustand";
-import { throttle } from "lodash-es";
-import { persist } from "zustand/middleware";
+import { throttle, debounce } from "lodash-es";
+import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "~/shared/responsive";
 import invariant from "~/shared/utils/invariant";
@@ -11,7 +11,6 @@ import type { Theme } from "~/shared/theme";
 import { themes } from "~/shared/themes/all-themes";
 import type { AttributesResolved } from "~/shared/attributes";
 import { generateId } from "./bricks/common";
-import { position } from "polished";
 import type { TObject } from "@sinclair/typebox";
 import type { GenericPageConfig, PageBasicInfo } from "~/shared/page";
 import type { BrickManifest } from "./bricks/manifest";
@@ -62,92 +61,96 @@ export const createEditorStore = (
   };
 
   return createStore<EditorState>()(
-    temporal(
-      persist(
-        immer((set, _get) => ({
-          ...DEFAULT_PROPS,
-          ...initProps,
-          setPreviewMode: (mode) =>
-            set((state) => {
-              state.previewMode = mode;
-            }),
-          setSettingsVisible: (visible) =>
-            set((state) => {
-              state.settingsVisible = visible;
-            }),
-          toggleSettings: () =>
-            set((state) => {
-              state.settingsVisible = !state.settingsVisible;
-            }),
-          setEditingPageIndex: (index) =>
-            set((state) => {
-              state.editingPageIndex = index;
-            }),
-          setSelectedBrick: (brick) =>
-            set((state) => {
-              state.selectedBrick = brick;
-              if (brick) {
-                state.panel = "inspector";
-              }
-            }),
-          deselectBrick: (brickId) =>
-            set((state) => {
-              if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
-                console.log("updated selected brick to nothing");
-                state.selectedBrick = undefined;
-                if (state.panel === "inspector") {
+    subscribeWithSelector(
+      temporal(
+        persist(
+          immer((set, _get) => ({
+            ...DEFAULT_PROPS,
+            ...initProps,
+            setPreviewMode: (mode) =>
+              set((state) => {
+                state.previewMode = mode;
+              }),
+            setSettingsVisible: (visible) =>
+              set((state) => {
+                state.settingsVisible = visible;
+              }),
+            toggleSettings: () =>
+              set((state) => {
+                state.settingsVisible = !state.settingsVisible;
+              }),
+            setEditingPageIndex: (index) =>
+              set((state) => {
+                state.editingPageIndex = index;
+              }),
+            setSelectedBrick: (brick) =>
+              set((state) => {
+                state.selectedBrick = brick;
+                if (brick) {
+                  state.panel = "inspector";
+                }
+              }),
+            deselectBrick: (brickId) =>
+              set((state) => {
+                if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
+                  console.log("updated selected brick to nothing");
+                  state.selectedBrick = undefined;
+                  if (state.panel === "inspector") {
+                    state.panel = undefined;
+                  }
+                }
+              }),
+            setIsEditingText: (forBrickId: string | false) =>
+              set((state) => {
+                state.isEditingTextForBrickId = forBrickId || undefined;
+              }),
+            setIsResizing: (forContainerId: string | false) =>
+              set((state) => {
+                state.isResizingForContainerId = forContainerId || undefined;
+              }),
+            setPanel: (panel) =>
+              set((state) => {
+                state.panel = panel;
+              }),
+            togglePanel: (panel) =>
+              set((state) => {
+                state.panel = state.panel === panel ? undefined : panel;
+              }),
+            hidePanel: (panel) =>
+              set((state) => {
+                if (state.panel === panel) {
                   state.panel = undefined;
                 }
-              }
-            }),
-          setIsEditingText: (forBrickId: string | false) =>
-            set((state) => {
-              state.isEditingTextForBrickId = forBrickId || undefined;
-            }),
-          setIsResizing: (forContainerId: string | false) =>
-            set((state) => {
-              state.isResizingForContainerId = forContainerId || undefined;
-            }),
-          setPanel: (panel) =>
-            set((state) => {
-              state.panel = panel;
-            }),
-          togglePanel: (panel) =>
-            set((state) => {
-              state.panel = state.panel === panel ? undefined : panel;
-            }),
-          hidePanel: (panel) =>
-            set((state) => {
-              if (state.panel === panel) {
-                state.panel = undefined;
-              }
-            }),
-          setDraggingBrick: (draggingBrick) =>
-            set((state) => {
-              state.draggingBrick = draggingBrick;
-            }),
-          setSelectedGroup: (group) =>
-            set((state) => {
-              state.selectedGroup = group;
-            }),
-        })),
-        {
-          name: "editor-state",
-          skipHydration: true,
-          partialize: (state) =>
-            Object.fromEntries(
-              Object.entries(state).filter(
-                ([key]) =>
-                  ![
-                    "selectedBrick",
-                    "panel",
-                    "previewMode",
-                    "isResizingForContainerId",
-                    "isEditingTextForBrickId",
-                  ].includes(key),
+              }),
+            setDraggingBrick: (draggingBrick) =>
+              set((state) => {
+                state.draggingBrick = draggingBrick;
+              }),
+            setSelectedGroup: (group) =>
+              set((state) => {
+                state.selectedGroup = group;
+              }),
+          })),
+          {
+            name: "editor-state",
+            skipHydration: true,
+            partialize: (state) =>
+              Object.fromEntries(
+                Object.entries(state).filter(
+                  ([key]) =>
+                    ![
+                      "selectedBrick",
+                      "panel",
+                      "previewMode",
+                      "isResizingForContainerId",
+                      "isEditingTextForBrickId",
+                    ].includes(key),
+                ),
               ),
-            ),
-        },
+          },
+        ),
+        // limit undo history to 100
+        { limit: 100 },
       ),
     ),
   );
@@ -179,6 +182,7 @@ export interface DraftState extends DraftStateProps {
   setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
   cancelPreviewTheme: () => void;
+  updateAttributes: (attr: AttributesResolved) => void;
   save(): Promise<void>;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
@@ -200,106 +204,114 @@ export const createDraftStore = (
     data: {},
   };
   return createStore<DraftState>()(
-    temporal(
-      persist(
-        immer((set, _get) => ({
-          ...DEFAULT_PROPS,
-          ...initProps,
-          deleteBrick: (id) =>
-            set((state) => {
-              const brickIndex = state.bricks.findIndex((item) => item.id === id);
-              state.bricks.splice(brickIndex, 1);
-            }),
-          duplicateBrick: (id) =>
-            set((state) => {
-              const brick = state.bricks.find((item) => item.id === id);
-              if (brick) {
-                const newBrick = {
-                  ...brick,
-                  id: `brick-${generateId()}`,
-                  position: getDuplicatedBrickPosition(brick),
-                };
-                state.bricks.push(newBrick);
-              }
-            }),
-          updateBrick: (id, brick) =>
-            set((state) => {
-              const brickIndex = state.bricks.findIndex((item) => item.id === id);
-              state.bricks[brickIndex] = { ...state.bricks[brickIndex], ...brick };
-            }),
-          updateBrickProps: (id, props) =>
-            set((state) => {
-              const brickIndex = _get().bricks.findIndex((item) => item.id === id);
-              state.bricks[brickIndex].props = { ...state.bricks[brickIndex].props, ...props };
-            }),
-
-          getBricks: () => _get().bricks,
-
-          save: async () => {
-            //todo: call API
-          },
-          getBrick: (id) => {
-            return _get().bricks.find((b) => b.id === id);
-          },
-          setPreviewTheme: (theme) =>
-            set((state) => {
-              state.previewTheme = theme;
-            }),
-          validatePreviewTheme: () =>
-            set((state) => {
-              if (state.previewTheme) {
-                state.theme = state.previewTheme;
-              }
-              state.previewTheme = undefined;
-            }),
-          cancelPreviewTheme: () =>
-            set((state) => {
-              state.previewTheme = undefined;
-            }),
-          setTheme: (theme) =>
-            set((state) => {
-              state.theme = theme;
-            }),
-          updateBricksPositions: (bp, positions) =>
-            set((state) => {
-              state.bricks.forEach((b) => {
-                if (positions[b.id]) {
-                  b.position[bp] = positions[b.id];
+    subscribeWithSelector(
+      temporal(
+        persist(
+          immer((set, _get) => ({
+            ...DEFAULT_PROPS,
+            ...initProps,
+            deleteBrick: (id) =>
+              set((state) => {
+                const brickIndex = state.bricks.findIndex((item) => item.id === id);
+                state.bricks.splice(brickIndex, 1);
+              }),
+            duplicateBrick: (id) =>
+              set((state) => {
+                const brick = state.bricks.find((item) => item.id === id);
+                if (brick) {
+                  const newBrick = {
+                    ...brick,
+                    id: `brick-${generateId()}`,
+                    position: getDuplicatedBrickPosition(brick),
+                  };
+                  state.bricks.push(newBrick);
                 }
-              });
-            }),
-          updateBrickPosition: (id, bp, position) =>
-            set((state) => {
-              const brickIndex = state.bricks.findIndex((item) => item.id === id);
-              state.bricks[brickIndex].position[bp] = position;
-            }),
-          toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
-            set((state) => {
-              const brickIndex = state.bricks.findIndex((item) => item.id === id);
-              state.bricks[brickIndex].position[breakpoint]!.hidden =
-                !state.bricks[brickIndex].position[breakpoint]?.hidden;
-            }),
-          addBrick: (brick) =>
-            set((state) => {
-              console.log("Adding brick", brick);
-              state.bricks.push(brick);
-            }),
-        })),
+              }),
+            updateBrick: (id, brick) =>
+              set((state) => {
+                const brickIndex = state.bricks.findIndex((item) => item.id === id);
+                state.bricks[brickIndex] = { ...state.bricks[brickIndex], ...brick };
+              }),
+            updateBrickProps: (id, props) =>
+              set((state) => {
+                const brickIndex = _get().bricks.findIndex((item) => item.id === id);
+                state.bricks[brickIndex].props = { ...state.bricks[brickIndex].props, ...props };
+              }),
+
+            getBricks: () => _get().bricks,
+
+            save: async () => {
+              //todo: call API
+            },
+            getBrick: (id) => {
+              return _get().bricks.find((b) => b.id === id);
+            },
+            setPreviewTheme: (theme) =>
+              set((state) => {
+                state.previewTheme = theme;
+              }),
+            validatePreviewTheme: () =>
+              set((state) => {
+                if (state.previewTheme) {
+                  state.theme = state.previewTheme;
+                }
+                state.previewTheme = undefined;
+              }),
+            cancelPreviewTheme: () =>
+              set((state) => {
+                state.previewTheme = undefined;
+              }),
+            setTheme: (theme) =>
+              set((state) => {
+                state.theme = theme;
+              }),
+            updateBricksPositions: (bp, positions) =>
+              set((state) => {
+                state.bricks.forEach((b) => {
+                  if (positions[b.id]) {
+                    b.position[bp] = positions[b.id];
+                  }
+                });
+              }),
+            updateBrickPosition: (id, bp, position) =>
+              set((state) => {
+                const brickIndex = state.bricks.findIndex((item) => item.id === id);
+                state.bricks[brickIndex].position[bp] = position;
+              }),
+            toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
+              set((state) => {
+                const brickIndex = state.bricks.findIndex((item) => item.id === id);
+                state.bricks[brickIndex].position[breakpoint]!.hidden =
+                  !state.bricks[brickIndex].position[breakpoint]?.hidden;
+              }),
+            addBrick: (brick) =>
+              set((state) => {
+                console.log("Adding brick", brick);
+                state.bricks.push(brick);
+              }),
+            updateAttributes: (attr) =>
+              set((state) => {
+                state.attr = attr;
+              }),
+          })),
+          {
+            name: "draft-state",
+            skipHydration: true,
+            partialize: (state) =>
+              Object.fromEntries(
+                Object.entries(state).filter(([key]) => !["attrSchema", "attr"].includes(key)),
+              ),
+          },
+        ),
         {
-          name: "draft-state",
-          skipHydration: true,
-          partialize: (state) =>
-            Object.fromEntries(
-              Object.entries(state).filter(([key]) => !["attrSchema", "attr"].includes(key)),
-            ),
+          // limit undo history to 100
+          limit: 100,
+          // handleSet: (handleSet) =>
+          //   throttle<typeof handleSet>((state) => {
+          //     handleSet(state);
+          //   }, 200),
         },
       ),
-      {
-        // handleSet: (handleSet) =>
-        //   throttle<typeof handleSet>((state) => {
-        //     handleSet(state);
-        //   }, 200),
-      },
     ),
   );
 };
@@ -367,6 +379,43 @@ export const useAttributes = () => {
 export const useAttributesSchema = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.attrSchema);
+};
+
+export const usePageConfig = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.pageConfig);
+};
+
+export const useBricksSubscribe = (callback: (bricks: DraftState["bricks"]) => void) => {
+  const ctx = useDraftStoreContext();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    return ctx.subscribe((state) => state.bricks, debounce(callback, 200));
+  }, []);
+};
+
+export const useAttributesSubscribe = (callback: (attr: DraftState["attr"]) => void) => {
+  const ctx = useDraftStoreContext();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    return ctx.subscribe((state) => state.attr, callback);
+  }, []);
+};
+
+export const useThemeSubscribe = (callback: (theme: DraftState["theme"]) => void) => {
+  const ctx = useDraftStoreContext();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    return ctx.subscribe((state) => state.theme, callback);
+  }, []);
+};
+
+export const usePagePathSubscribe = (callback: (path: EditorState["pageConfig"]["path"]) => void) => {
+  const ctx = useEditorStoreContext();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    return ctx.subscribe((state) => state.pageConfig.path, callback);
+  }, []);
 };
 
 /**

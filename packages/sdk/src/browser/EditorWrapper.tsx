@@ -2,7 +2,7 @@ import { EditorStoreContext, DraftStoreContext, createDraftStore, createEditorSt
 import { useRef, type PropsWithChildren } from "react";
 import type { GenericPageConfig, PageBasicInfo } from "~/shared/page";
 import { Theme } from "@radix-ui/themes";
-import Page from "./page";
+import EditablePage from "./page";
 
 import "@enpage/style-system/default-theme.css";
 import "@enpage/style-system/tiptap-text-editor.css";
@@ -39,7 +39,7 @@ export function EditorWrapper({
   return (
     <EditorStoreContext.Provider value={editorStore} key="EditorStoreContext">
       <DraftStoreContext.Provider value={draftStore} key="DraftStoreContext">
-        <Theme accentColor="violet">{children ?? <Page />}</Theme>
+        <Theme accentColor="violet">{children ?? <EditablePage />}</Theme>
       </DraftStoreContext.Provider>
     </EditorStoreContext.Provider>
   );

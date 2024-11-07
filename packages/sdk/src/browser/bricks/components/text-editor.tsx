@@ -74,7 +74,6 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
 
     editor?.on("focus", onFocus);
     editor?.on("blur", (e) => {
-      console.log(e);
       if ((e.event.target as HTMLElement)?.matches(".tiptap")) return;
       onBlur();
     });

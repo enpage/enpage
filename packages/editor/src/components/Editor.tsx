@@ -1,4 +1,12 @@
-import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
+import {
+  useDraft,
+  useEditor,
+  useBricksSubscribe,
+  useAttributesSubscribe,
+  usePagePathSubscribe,
+  useThemeSubscribe,
+  usePageConfig,
+} from "@enpage/sdk/browser/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { useEffect, useRef, type ComponentProps } from "react";
@@ -10,6 +18,7 @@ import Page from "@enpage/sdk/browser/page";
 import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
+import { patch } from "@enpage/sdk/browser/api";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -18,6 +27,53 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
+  const pageConfig = usePageConfig();
+
+  /**
+   *    method: "PATCH",
+      path: `/sites/:siteId/pages/:pageId/versions/latest`,
+      responses: {
+        200: getVersionSuccess,
+        500: errorSchema,
+      },
+      summary: "Patch latest version pf page {{pageId}} for site {{siteId}}",
+      body: z.object({
+        attributes: z.record(z.unknown()).optional(),
+        elements: z.record(z.unknown()).optional(),
+        label: z.string().optional(),
+        path: z.string().optional(),
+        theme: z.record(z.unknown()).optional(),
+      }),
+   */
+
+  function updatePage(payload: Record<string, unknown>) {
+    return patch(`/sites/${pageConfig.siteId}/pages/${pageConfig.id}/versions/latest`, payload)
+      .then((res) => {
+        console.log("Page version saved");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error("Error while updating page version");
+        console.log(err);
+      });
+  }
+
+  useBricksSubscribe(async (bricks) => {
+    console.log("bricks have changed");
+    updatePage({ elements: bricks });
+  });
+  useAttributesSubscribe((attributes) => {
+    console.log("attributes have changed");
+    updatePage({ attributes });
+  });
+  usePagePathSubscribe((path) => {
+    console.log("pagePath has changed");
+    updatePage({ path });
+  });
+  useThemeSubscribe((theme) => {
+    console.log("theme has changed");
+    updatePage({ theme });
+  });
 
   //const draftCtx = useDraftStoreContext();
   // useEffect(() => {

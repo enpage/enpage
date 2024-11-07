@@ -11,6 +11,7 @@ export async function getLocalPageConfig(configFile?: string, path = "/"): Promi
   return {
     id: "temp-page",
     siteId: "temp-site",
+    path,
     attributes,
     datasources,
     bricks: pages.find((p) => p.path === path)?.bricks ?? [],

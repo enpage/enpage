@@ -106,6 +106,7 @@ const enpagePlugin = (config: EnpageTemplateConfig, viteEnv: ConfigEnv, env: Enp
             JSON.stringify({
               id: "temp-page",
               siteId: "temp-site",
+              path: "/",
               attributes: templateConfig.attributes,
               datasources: templateConfig.datasources,
               data: context.data,

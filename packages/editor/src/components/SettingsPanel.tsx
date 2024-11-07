@@ -1,4 +1,4 @@
-import { useAttributes, useAttributesSchema } from "@enpage/sdk/browser/use-editor";
+import { useAttributes, useAttributesSchema, useDraft } from "@enpage/sdk/browser/use-editor";
 import { sortJsonSchemaProperties } from "../utils/sort-json-schema-props";
 import Form, { type IChangeEvent } from "@rjsf/core";
 import { css, tx } from "@enpage/sdk/browser/twind";
@@ -25,7 +25,6 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
 
   // Group fields by their ui:group
   const groupedFields = properties.reduce<GroupedFields>((acc, prop) => {
-    console.log({ prop });
     const group = (prop.content.props.uiSchema?.["ui:group"] as string) || "default";
     groupTitles[group] = prop.content.props.uiSchema?.["ui:group:title"] ?? "Other";
     if (!acc[group]) {
@@ -65,13 +64,14 @@ const tabContentScrollClass = css({
 });
 
 export default function SettingsForm() {
+  const draft = useDraft();
   const attributes = useAttributes();
   const attrSchema = useAttributesSchema();
   const filteredAttrSchema = sortJsonSchemaProperties(attrSchema);
 
   const onChange = (data: IChangeEvent, id?: string) => {
     console.log("changed attr", data, id);
-    // draft.updateBrickProps(brick.id, data.formData);
+    draft.updateAttributes(data.formData);
   };
 
   const uiSchema = createUiSchema(filteredAttrSchema);
