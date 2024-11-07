@@ -1,7 +1,7 @@
 import { defineDataSources, ds } from "@enpage/sdk/datasources";
 import { defineAttributes, attr } from "@enpage/sdk/attributes";
 import { defineManifest } from "@enpage/sdk/manifest";
-import { defineContainers } from "@enpage/sdk/bricks";
+import { createRow, defineBricks } from "@enpage/sdk/bricks";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -80,168 +80,164 @@ export const manifest = defineManifest({
   homepage: "https://enpage.co",
 });
 
-export const containers = defineContainers([
-  {
-    type: "container",
-    bricks: [
-      {
-        type: "image",
-        props: {
-          src: "https://cdn.enpage.co/enpage.svg",
-          className: "max-h-24",
+export const bricks = defineBricks([
+  ...createRow([
+    {
+      type: "image",
+      props: {
+        src: "https://cdn.upstart.gg/internal/logo/upstart.svg",
+        // className: "max-h-24",
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: 12,
+          h: 2,
+        },
+        tablet: {
+          x: 0,
+          w: 12,
+          h: 2,
+        },
+        desktop: {
+          x: 0,
+          w: 12,
+          h: 2,
         },
       },
-    ],
-  },
-  {
-    type: "container",
-    bricks: [
-      {
-        type: "hero",
-        props: {
-          content: "Build your launch page",
-          justify: "text-center font-humanist",
-        },
-        wrapper: { customClasses: "tertiary-5" },
+    },
+  ]),
+  ...createRow([
+    {
+      type: "text",
+      props: {
+        content: "Build your launch page",
+        justify: "text-center font-humanist",
       },
-    ],
-  },
-  {
-    type: "container",
-    bricks: [
-      {
-        type: "text",
-        props: {
-          content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
-          justify: "text-center",
-          format: "html",
+      // take the whole width on all devices
+      position: {
+        mobile: {
+          x: 0,
+          w: 12,
+          h: 4,
         },
-        wrapper: { customClasses: "secondary-2" },
-      },
-    ],
-  },
-  {
-    type: "container",
-    bricks: [
-      {
-        type: "text-with-title",
-        props: { title: "My title", content: "Hey there!" },
-        wrapper: { customClasses: "brick-light-primary" },
-        position: {
-          colStart: 1,
-          colEnd: 5,
+        tablet: {
+          x: 0,
+          y: 4,
+          w: 12,
+          h: 4,
+        },
+        desktop: {
+          x: 0,
+          y: 4,
+          w: 12,
+          h: 4,
         },
       },
-      { type: "text", props: { content: "Something" }, wrapper: { customClasses: "brick-primary" } },
-    ],
-  },
-  {
-    type: "container",
-    bricks: [
-      {
-        type: "text",
-        props: {
-          content: "First",
+    },
+  ]),
+  ...createRow([
+    {
+      type: "text",
+      props: {
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+        justify: "text-center",
+        format: "html",
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: 12,
+          h: 8,
         },
-        wrapper: {
-          customClasses: "primary-1",
+        tablet: {
+          x: 0,
+          w: 12,
+          h: 4,
         },
-        position: {
-          colStart: 1,
-          colEnd: 2,
+        desktop: {
+          x: 0,
+          w: 12,
+          h: 3,
         },
       },
-      {
-        type: "text",
-        props: { content: "Second" },
-        position: {
-          colStart: 2,
-          colEnd: 3,
+    },
+  ]),
+  ...createRow([
+    {
+      type: "text-with-title",
+      props: { title: "My title", content: "Hey there!" },
+      position: {
+        mobile: {
+          x: 0,
+          y: 3,
+          w: 12,
+          h: 3,
         },
-        wrapper: {
-          customClasses: "primary-2",
+        tablet: {
+          x: 0,
+          y: 3,
+          w: 4,
+          h: 3,
         },
-      },
-      {
-        type: "text",
-        props: { content: "Third" },
-        position: {
-          colStart: 3,
-          colEnd: 4,
-        },
-        wrapper: {
-          customClasses: "primary-3",
-        },
-      },
-      {
-        type: "text",
-        props: { content: "Third" },
-        position: {
-          colStart: 4,
-          colEnd: 5,
-        },
-        wrapper: {
-          customClasses: "primary-4",
+        desktop: {
+          x: 0,
+          y: 3,
+          w: 4,
+          h: 3,
         },
       },
-      {
-        type: "text",
-        props: { content: "4th" },
-        position: {
-          colStart: 5,
-          colEnd: 6,
+    },
+    {
+      type: "text",
+      props: { content: "Something" },
+      position: {
+        mobile: {
+          x: 4,
+          y: 4,
+          w: 12,
+          h: 3,
         },
-        wrapper: {
-          customClasses: "primary-5",
+        tablet: {
+          x: 4,
+          y: 4,
+          w: 4,
+          h: 3,
         },
-      },
-      {
-        type: "text",
-        props: { content: "5th" },
-        position: {
-          colStart: 6,
-          colEnd: 7,
-        },
-        wrapper: {
-          customClasses: "primary-6",
-        },
-      },
-      {
-        type: "text",
-        props: { content: "6th" },
-        position: {
-          colStart: 7,
-          colEnd: 8,
-        },
-        wrapper: {
-          customClasses: "primary-7",
+        desktop: {
+          x: 4,
+          y: 4,
+          w: 4,
+          h: 3,
         },
       },
-      {
-        type: "text",
-        props: { content: "7th" },
-        position: {
-          colStart: 8,
-          colEnd: 9,
+    },
+    {
+      type: "text",
+      props: { content: "Else" },
+      position: {
+        mobile: {
+          x: 8,
+          w: 12,
+          h: 3,
         },
-        wrapper: {
-          customClasses: "primary-8",
+        tablet: {
+          x: 8,
+          y: 5,
+          w: 4,
+          h: 3,
+        },
+        desktop: {
+          x: 8,
+          y: 4,
+          w: 4,
+          h: 3,
         },
       },
-      {
-        type: "text",
-        props: { content: "8th" },
-        position: {
-          colStart: 9,
-          colEnd: 10,
-        },
-        wrapper: {
-          customClasses: "primary-9",
-        },
-      },
-    ],
-  },
+    },
+  ]),
+
   // {
   //   type: "container",
   //   variant: "1-1-1",
