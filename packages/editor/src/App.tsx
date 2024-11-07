@@ -1,4 +1,4 @@
-import { createPageConfigSampleFromTemplateConfig } from "@enpage/sdk/shared/page-config";
+import { createPageConfigSampleFromTemplateConfig } from "@enpage/sdk/shared/page";
 import * as testEnpageConfig from "./test-enpage.config";
 import type { EnpageTemplateConfig } from "@enpage/sdk/shared/template-config";
 import { EditorWrapper } from "@enpage/sdk/browser/EditorWrapper";
@@ -11,16 +11,18 @@ export default function App() {
     {
       label: "Page 1",
       id: "page-1",
+      siteId: "site-1",
     },
     {
       label: "Page 2",
       id: "page-2",
+      siteId: "site-1",
     },
   ];
   return (
     <ClientOnly>
-      <EditorWrapper config={pageConfig}>
-        <Editor pages={testPages} />
+      <EditorWrapper pageConfig={pageConfig} pages={testPages}>
+        <Editor />
       </EditorWrapper>
     </ClientOnly>
   );

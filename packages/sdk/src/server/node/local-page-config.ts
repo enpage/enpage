@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { resolveAttributes, type AttributesMap, type AttributesResolved } from "~/shared/attributes";
 import type { DatasourceManifestMap, DatasourceResolved } from "~/shared/datasources";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig } from "~/shared/page";
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 
 export async function getLocalPageConfig(configFile?: string): Promise<GenericPageConfig> {

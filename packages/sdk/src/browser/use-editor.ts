@@ -13,7 +13,7 @@ import type { AttributesResolved } from "~/shared/attributes";
 import { generateId } from "./bricks/common";
 import { position } from "polished";
 import type { TObject } from "@sinclair/typebox";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig, PageBasicInfo } from "~/shared/page";
 import type { BrickManifest } from "./bricks/manifest";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
@@ -21,6 +21,7 @@ import type { Static } from "@sinclair/typebox";
 export interface EditorStateProps {
   enabled: boolean;
   pageConfig: GenericPageConfig;
+  pages: PageBasicInfo[];
   /**
    * The brick manifest that is being dragged from the library
    */
@@ -52,9 +53,9 @@ export interface EditorState extends EditorStateProps {
 }
 
 export const createEditorStore = (
-  initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig },
+  initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig; pages: PageBasicInfo[] },
 ) => {
-  const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig"> = {
+  const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
     editingPageIndex: 0,
     enabled: true,
     previewMode: "desktop",
@@ -336,6 +337,11 @@ export const useEditor = () => {
 export const useEditorEnabled = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.enabled);
+};
+
+export const usePagesInfo = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.pages);
 };
 
 export const usePreviewMode = () => {

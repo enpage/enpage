@@ -265,25 +265,6 @@
   /* Utility Classes */
 
   /* Background Color Utilities */
-  .bg-neutral-0 { background-color: var(--color-bg-neutral-0);  }
-  .bg-neutral-1 { background-color: var(--color-bg-neutral-1);  }
-  .bg-neutral-2 { background-color: var(--color-bg-neutral-2);  }
-
-  .bg-primary-0 { background-color: var(--color-bg-primary-0); }
-  .bg-primary-1 { background-color: var(--color-bg-primary-1); }
-  .bg-primary-2 { background-color: var(--color-bg-primary-2); }
-
-  .bg-secondary-0 { background-color: var(--color-bg-secondary-0); }
-  .bg-secondary-1 { background-color: var(--color-bg-secondary-1); }
-  .bg-secondary-2 { background-color: var(--color-bg-secondary-2);}
-
-  .bg-tertiary-0 { background-color: var(--color-bg-tertiary-0); }
-  .bg-tertiary-1 { background-color: var(--color-bg-tertiary-1); }
-  .bg-tertiary-2 { background-color: var(--color-bg-tertiary-2); }
-
-  .bg-accent-0 { background-color: var(--color-bg-accent-0); }
-  .bg-accent-1 { background-color: var(--color-bg-accent-1); }
-  .bg-accent-2 { background-color: var(--color-bg-accent-2); }
 
   /* Interactive Element Color Utilities */
   .interactive-primary-1 { background-color: var(--color-interactive-primary-1); color: var(--text-primary-3); }

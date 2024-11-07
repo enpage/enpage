@@ -24,7 +24,11 @@ export default defineConfig({
   server: {
     port: +(process.env.PORT ?? 3008),
   },
-
+  resolve: {
+    alias: {
+      lodash: "lodash-es",
+    },
+  },
   build: {
     copyPublicDir: false,
     sourcemap: process.env.NODE_ENV === "development" ? true : "hidden",
@@ -42,6 +46,7 @@ export default defineConfig({
         "happy-dom-without-node",
         "ajv",
         "@sinclair/typebox",
+        "@enpage/style-system",
       ],
       output: {
         globals: {

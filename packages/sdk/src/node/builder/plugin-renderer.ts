@@ -1,7 +1,7 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { JSDOM, VirtualConsole } from "jsdom";
 import type { ConfigEnv, Logger, Plugin } from "vite";
-import type { GenericPageContext } from "~/shared/page-config";
+import type { GenericPageContext } from "~/shared/page";
 import { version } from "../../../package.json";
 import invariant from "~/shared/utils/invariant";
 import type { EnpageEnv } from "~/shared/env";

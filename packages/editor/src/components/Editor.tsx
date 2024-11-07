@@ -1,7 +1,7 @@
-import { useDraft, useDraftStoreContext, useEditor } from "@enpage/sdk/browser/use-editor";
+import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
-import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
+import { useEffect, useRef, type ComponentProps } from "react";
 import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
@@ -10,20 +10,16 @@ import Page from "@enpage/sdk/browser/page";
 import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
-import type { PageInfo } from "./types";
-import type { GenericPageConfig } from "@enpage/sdk/shared/page-config";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
-  pages: PageInfo[];
 };
 
-export default function Editor({ mode = "local", pages, ...props }: EditorProps) {
+export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
-  const draftCtx = useDraftStoreContext();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  //const draftCtx = useDraftStoreContext();
   // useEffect(() => {
   //   draftCtx.persist.rehydrate();
   // }, []);
@@ -71,7 +67,7 @@ export default function Editor({ mode = "local", pages, ...props }: EditorProps)
       {...props}
       ref={rootRef}
     >
-      <Topbar pages={pages} />
+      <Topbar />
       <Panel />
       <Toolbar />
       {draft.previewTheme && <ThemePreviewConfirmButton />}

@@ -11,12 +11,17 @@ import type { Brick } from "@enpage/sdk/shared/bricks";
 
 const shades = ["900", "800", "700", "600", "500", "400", "300", "200", "100", "50"];
 
+const colorsMap = {
+  "border-color": [],
+};
+
 const ColorField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, idSchema, formContext } = props;
   const context = formContext as { brickId: Brick["id"] };
   const draft = useDraft();
   const brick = draft.getBrick(context.brickId);
 
+  // don't render border color field if border is set to 0
   if (name === "borderColor" && brick?.props.borderWidth === "border-0") {
     return null;
   }
@@ -26,6 +31,9 @@ const ColorField: React.FC<FieldProps> = (props) => {
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
   const pillClassName = `bg-${formData}`;
 
+  const colorType =
+    uiSchema?.["ui:color-attr"] === "border-color" ? "theme-border-colors" : "theme-bg-colors-with-shades";
+
   return (
     <ColorFieldRow
       name={fieldTitle}
@@ -34,7 +42,7 @@ const ColorField: React.FC<FieldProps> = (props) => {
       required={required}
       onChange={onChange}
       pillClassName={pillClassName}
-      colorType="theme-bg-colors-with-shades"
+      colorType={colorType}
       colorName="generic"
     />
   );
@@ -89,7 +97,13 @@ type ColorPreviewPillProps = {
   color: string;
   bgClassName: string;
   bgOpacityClassName?: string;
-  colorType?: "all" | "theme-colors" | "theme-bg-colors-with-shades" | "neutral" | "theme-base";
+  colorType?:
+    | "all"
+    | "theme-colors"
+    | "theme-border-colors"
+    | "theme-bg-colors-with-shades"
+    | "neutral"
+    | "theme-base";
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   colorName: keyof Theme["colors"] | "generic";
@@ -163,6 +177,16 @@ function ColorPopover({
     case "theme-colors":
       width = "120px";
       break;
+
+    case "theme-border-colors":
+      width = "220px";
+      filteredColors = ["neutral", "primary", "secondary", "tertiary"];
+      filteredShades = ["4", "5", "6", "7"];
+      direction = "flex-col";
+      side = "right";
+      align = "start";
+      break;
+
     case "theme-bg-colors-with-shades":
       width = "106px";
       direction = "flex-col";
@@ -181,7 +205,7 @@ function ColorPopover({
       break;
     case "theme-base":
       width = "590px";
-      filteredShades = ["600", "500", "400", "300"];
+      filteredShades = ["500", "400", "300"];
       direction = "flex-col";
       side = "right";
       align = "start";
@@ -193,6 +217,7 @@ function ColorPopover({
 
   return (
     <Popover.Content width={width} side={side} align={align} maxWidth={width}>
+      {colorType}
       <div className="w-full flex gap-1 justify-center items-center mx-auto">
         {filteredColors.map((color) => (
           <div key={color} className={tx("flex gap-1 justify-center items-center", direction)}>

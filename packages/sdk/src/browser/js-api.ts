@@ -1,4 +1,4 @@
-import type { GenericPageContext } from "../shared/page-config";
+import type { GenericPageContext } from "../shared/page";
 import type { NavigateEvent } from "./events";
 
 export type State = {

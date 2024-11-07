@@ -1,7 +1,7 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { GenericPageConfig, PageContext } from "~/shared/page-config";
+import type { GenericPageConfig, PageContext } from "~/shared/page";
 import type { ConfigEnv, Plugin } from "vite";
-import type { GenericPageContext } from "~/shared/page-config";
+import type { GenericPageContext } from "~/shared/page";
 import type { EnpageEnv } from "~/shared/env";
 import virtual from "vite-plugin-virtual";
 import { createFakeContext, fetchContext, getPageContext } from "./page-context";

@@ -1,13 +1,12 @@
-import { useAttributes, useAttributesSchema, useDraft } from "@enpage/sdk/browser/use-editor";
+import { useAttributes, useAttributesSchema } from "@enpage/sdk/browser/use-editor";
 import { sortJsonSchemaProperties } from "../utils/sort-json-schema-props";
-import type { Brick } from "@enpage/sdk/shared/bricks";
 import Form, { type IChangeEvent } from "@rjsf/core";
-import { css, tw, tx } from "@enpage/sdk/browser/twind";
+import { css, tx } from "@enpage/sdk/browser/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import validator from "@rjsf/validator-ajv8";
 import { customFields } from "./json-form/fields";
 import { jsonFormClass } from "./json-form/form-class";
-import { type ObjectFieldTemplateProps, RJSFSchema, type UiSchema, ValidatorType } from "@rjsf/utils";
+import type { ObjectFieldTemplateProps, UiSchema } from "@rjsf/utils";
 
 import "./json-form/json-form.css";
 

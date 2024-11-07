@@ -1,33 +1,15 @@
-import {
-  Tabs,
-  Button,
-  Callout,
-  TextArea,
-  Spinner,
-  TextField,
-  Select,
-  useAutoAnimate,
-} from "@enpage/style-system";
+import { Tabs, Button, Callout, TextArea, Spinner, Select, useAutoAnimate } from "@enpage/style-system";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
-import { forwardRef, useCallback, useRef, useState, type ComponentProps } from "react";
+import { forwardRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
 import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
-import { tx, css, tw } from "@enpage/sdk/browser/twind";
+import { tx, tw } from "@enpage/sdk/browser/twind";
 import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
 import { useDraft } from "@enpage/sdk/browser/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
-
-const tabContentScrollClass = css({
-  scrollbarColor: "var(--violet-4) var(--violet-2)",
-  scrollBehavior: "smooth",
-  scrollbarWidth: "thin",
-  "&:hover": {
-    scrollbarColor: "var(--violet-6) var(--violet-3)",
-  },
-});
 
 export default function ThemePanel() {
   const draft = useDraft();

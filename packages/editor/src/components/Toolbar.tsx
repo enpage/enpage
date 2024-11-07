@@ -1,37 +1,10 @@
-import { LuPlus, LuUndo, LuRedo, LuPalette } from "react-icons/lu";
-import { RxMobile } from "react-icons/rx";
-import { RxDesktop } from "react-icons/rx";
-import { BsTablet } from "react-icons/bs";
-import { MdOutlineContentCopy } from "react-icons/md";
+import { LuPlus } from "react-icons/lu";
 import { PiPalette } from "react-icons/pi";
-import SettingsModal from "./SettingsPanel";
-
-// import { clsx } from "../utils/component-utils";
-import { VscLayoutSidebarLeft, VscLayoutSidebarRight, VscCopy, VscHome, VscSettings } from "react-icons/vsc";
-import {
-  type ComponentProps,
-  Fragment,
-  type FunctionComponent,
-  type MouseEvent,
-  type PropsWithChildren,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useDraft, useDraftUndoManager, useEditor, useAttributes } from "@enpage/sdk/browser/use-editor";
+import { VscSettings } from "react-icons/vsc";
+import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
+import { useDraftUndoManager, useEditor, useAttributes } from "@enpage/sdk/browser/use-editor";
 import { tx, css } from "@enpage/sdk/browser/twind";
-import { IoSettingsOutline } from "react-icons/io5";
-import { RxRocket } from "react-icons/rx";
-import logo from "../../../../creatives/upstart-dark.svg";
-import { RiArrowDownSLine } from "react-icons/ri";
-import { LiaCopy } from "react-icons/lia";
-import { useIsLargeDevice, useIsMobileDevice } from "../hooks/use-is-device-type";
-import { TiArrowUp } from "react-icons/ti";
-import { VscLayoutPanelOff } from "react-icons/vsc";
-import { Tooltip, DropdownMenu, Dialog } from "@enpage/style-system";
-import { BiDotsVerticalRounded } from "react-icons/bi";
+import { DropdownMenu } from "@enpage/style-system";
 
 export default function Toolbar() {
   const editor = useEditor();

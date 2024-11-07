@@ -1,6 +1,6 @@
 import { EditorStoreContext, DraftStoreContext, createDraftStore, createEditorStore } from "./use-editor";
 import { useRef, type PropsWithChildren } from "react";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig, PageBasicInfo } from "~/shared/page";
 import { Theme } from "@radix-ui/themes";
 import Page from "./page";
 
@@ -10,23 +10,29 @@ import "@enpage/style-system/radix.css";
 import "@enpage/style-system/react-grid-layout.css";
 import "@enpage/style-system/react-resizable.css";
 
-type EditorWrapperProps = {
+export type EditorWrapperProps = {
   enabled?: boolean;
-  config: GenericPageConfig;
+  pageConfig: GenericPageConfig;
+  pages: PageBasicInfo[];
 };
 
 /**
  * Wrap the Editor component with the EditorStore and DraftStore contexts.
  * If no children are provided, the default Page component will be rendered, but not within the Editor.
  */
-export function EditorWrapper({ enabled = true, config, children }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ enabled, pageConfig: config })).current;
+export function EditorWrapper({
+  enabled = true,
+  pageConfig,
+  pages,
+  children,
+}: PropsWithChildren<EditorWrapperProps>) {
+  const editorStore = useRef(createEditorStore({ enabled, pageConfig, pages })).current;
   const draftStore = useRef(
     createDraftStore({
-      bricks: config.bricks,
-      attr: config.attr,
-      attrSchema: config.attributes,
-      data: config.data,
+      bricks: pageConfig.bricks,
+      attr: pageConfig.attr,
+      attrSchema: pageConfig.attributes,
+      data: pageConfig.data,
     }),
   ).current;
 

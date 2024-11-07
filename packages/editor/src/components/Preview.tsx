@@ -1,8 +1,5 @@
-import { clsx } from "../utils/component-utils";
-import { type ComponentProps, memo, useEffect, useMemo, useRef, useState } from "react";
-import type { ResponsiveMode } from "@enpage/sdk/responsive";
+import { type ComponentProps, useEffect, useRef, useState } from "react";
 import styles from "./Preview.module.css";
-import { useDebounceCallback, useResizeObserver } from "usehooks-ts";
 import { usePreviewMode } from "@enpage/sdk/browser/use-editor";
 import { tx } from "@enpage/sdk/browser/twind";
 

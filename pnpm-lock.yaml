@@ -109,9 +109,6 @@ importers:
 
   packages/editor:
     dependencies:
-      '@atlaskit/pragmatic-drag-and-drop':
-        specifier: 1.3.1
-        version: 1.3.1
       '@enpage/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -136,45 +133,12 @@ importers:
       '@sinclair/typebox':
         specifier: 0.33.7
         version: 0.33.7
-      '@twind/core':
-        specifier: 1.1.3
-        version: 1.1.3(typescript@5.5.3)
-      '@twind/preset-autoprefix':
-        specifier: 1.0.7
-        version: 1.0.7(@twind/core@1.1.3)(typescript@5.5.3)
-      '@twind/preset-ext':
-        specifier: 1.0.7
-        version: 1.0.7(@twind/core@1.1.3)(typescript@5.5.3)
-      '@twind/preset-line-clamp':
-        specifier: 1.0.7
-        version: 1.0.7(@twind/core@1.1.3)(typescript@5.5.3)
-      '@twind/preset-tailwind':
-        specifier: 1.1.4
-        version: 1.1.4(@twind/core@1.1.3)(typescript@5.5.3)
-      '@twind/preset-tailwind-forms':
-        specifier: 1.1.2
-        version: 1.1.2(@twind/core@1.1.3)(@twind/preset-tailwind@1.1.4)(typescript@5.5.3)
-      '@twind/preset-typography':
-        specifier: 1.0.7
-        version: 1.0.7(@twind/core@1.1.3)(typescript@5.5.3)
-      '@twind/with-react':
-        specifier: 1.1.3
-        version: 1.1.3(@twind/core@1.1.3)(react-dom@18.3.1)(react@18.3.1)(typescript@5.5.3)
-      '@uiw/react-iframe':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@18.3.1)(react@18.3.1)
       '@vitejs/plugin-react':
         specifier: ^4.3.1
         version: 4.3.1(vite@5.4.6)
-      class-variance-authority:
-        specifier: 0.7.0
-        version: 0.7.0
       clsx:
         specifier: 2.1.1
         version: 2.1.1
-      diff:
-        specifier: 7.0.0
-        version: 7.0.0
       immer:
         specifier: 10.1.1
         version: 10.1.1
@@ -203,9 +167,6 @@ importers:
       '@types/debug':
         specifier: 4.1.12
         version: 4.1.12
-      '@types/diff':
-        specifier: 5.2.2
-        version: 5.2.2
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -660,9 +621,6 @@ importers:
       tailwindcss:
         specifier: 3.4.10
         version: 3.4.10
-      tailwindcss-3d:
-        specifier: ^1.0.6
-        version: 1.0.7(tailwindcss@3.4.10)
       tailwindcss-animate:
         specifier: 1.0.7
         version: 1.0.7(tailwindcss@3.4.10)
@@ -899,14 +857,6 @@ packages:
 
   /@antfu/utils@0.7.10:
     resolution: {integrity: sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==}
-
-  /@atlaskit/pragmatic-drag-and-drop@1.3.1:
-    resolution: {integrity: sha512-MptcLppK78B2eplL5fHk93kfCbZ6uCpt33YauBPrOwI5zcHYJhZGeaGEaAXoVAHnSJOdQUhy6kGVVC9qggz2Fg==}
-    dependencies:
-      '@babel/runtime': 7.25.6
-      bind-event-listener: 3.0.0
-      raf-schd: 4.0.3
-    dev: false
 
   /@babel/code-frame@7.24.7:
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -5987,10 +5937,6 @@ packages:
     resolution: {integrity: sha512-y0M7sqzsnHB6cvAeTCBPrCQNQiZe8U4qdzf8uBVmOWYap5MMTN/gB2iEqrIqFiYcsyvP74GnGD5tgsHttielFw==}
     dev: true
 
-  /@types/diff@5.2.2:
-    resolution: {integrity: sha512-qVqLpd49rmJA2nZzLVsmfS/aiiBpfVE95dHhPVwG0NmSBAt+riPxnj53wq2oBq5m4Q2RF1IWFEUpnZTgrQZfEQ==}
-    dev: true
-
   /@types/dompurify@3.0.5:
     resolution: {integrity: sha512-1Wg0g3BtQF7sSb27fJQAKck1HECM6zV1EB66j8JH9i3LCjYabJa0FSdiSgsD5K/RbrsR0SiraKacLB+T8ZVYAg==}
     dependencies:
@@ -6175,16 +6121,6 @@ packages:
     resolution: {integrity: sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==}
     dev: false
 
-  /@uiw/react-iframe@1.0.3(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-lWBYRnAkP59rdMg+m5mQBc2Rlu7309xev/zr9P7MBtNOAgE3RTedn8MGGxThOS8DQdZTXE/1qgHV2Op2BwHOIg==}
-    peerDependencies:
-      react: 18.3.1
-      react-dom: 18.3.1
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    dev: false
-
   /@vitejs/plugin-react@4.3.1(vite@5.4.6):
     resolution: {integrity: sha512-m/V2syj5CuVnaxcUJOQRel/Wr31FFXRFlnOoq1TVtkCxsY5veGMTEmpWHndrhB2U8ScHtCQB1e+4hWYExQc6Lg==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -6196,7 +6132,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.24.1(@babel/core@7.24.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.6(@types/node@20.14.10)
+      vite: 5.4.6(@types/node@20.14.15)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -6777,10 +6713,6 @@ packages:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
 
-  /bind-event-listener@3.0.0:
-    resolution: {integrity: sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q==}
-    dev: false
-
   /birpc@0.2.17:
     resolution: {integrity: sha512-+hkTxhot+dWsLpp3gia5AkVHIsKlZybNT5gIYiDlNzJrmYPcTM9k5/w2uaj3IPpd7LlEYpmCj4Jj1nC41VhDFg==}
     dev: true
@@ -6982,12 +6914,6 @@ packages:
       consola: 3.2.3
     dev: false
 
-  /class-variance-authority@0.7.0:
-    resolution: {integrity: sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==}
-    dependencies:
-      clsx: 2.0.0
-    dev: false
-
   /classnames@2.3.2:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
     dev: false
@@ -7046,11 +6972,6 @@ packages:
 
   /clsx@1.2.1:
     resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
-    engines: {node: '>=6'}
-    dev: false
-
-  /clsx@2.0.0:
-    resolution: {integrity: sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==}
     engines: {node: '>=6'}
     dev: false
 
@@ -7571,11 +7492,6 @@ packages:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dev: true
-
-  /diff@7.0.0:
-    resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
-    engines: {node: '>=0.3.1'}
-    dev: false
 
   /dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -10581,10 +10497,6 @@ packages:
     resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
     dev: false
 
-  /raf-schd@4.0.3:
-    resolution: {integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==}
-    dev: false
-
   /range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
@@ -11456,16 +11368,6 @@ packages:
       tailwindcss: 3.4.10
     dev: false
 
-  /tailwindcss-3d@1.0.7(tailwindcss@3.4.10):
-    resolution: {integrity: sha512-WRW0HTwtBSlbFt4dztoDlCZyPHWM1wu/hn52kVqdVYrTFfgTcSCU5lNAIU+seL5eoaH7EIyQC5N4ok252ktSeQ==}
-    peerDependencies:
-      tailwindcss: '>=3.2.0'
-    dependencies:
-      '@swc/helpers': 0.5.12
-      lodash: 4.17.21
-      tailwindcss: 3.4.10
-    dev: false
-
   /tailwindcss-animate@1.0.7(tailwindcss@3.4.10):
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
     peerDependencies:
@@ -12249,7 +12151,6 @@ packages:
       rollup: 4.21.3
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /vite@5.4.6(@types/node@22.5.1):
     resolution: {integrity: sha512-IeL5f8OO5nylsgzd9tq4qD2QqI0k2CQLGrWD0rCN0EQJZpBK5vJAx0I+GDkMOXxQX/OfFHMuLIx6ddAxGX/k+Q==}

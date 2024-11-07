@@ -1,4 +1,4 @@
-import type { GenericPageConfig, GenericPageContext } from "~/shared/page-config";
+import type { GenericPageConfig, GenericPageContext } from "~/shared/page";
 import invariant from "~/shared/utils/invariant";
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { ViteDevServer } from "vite";

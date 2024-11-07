@@ -1,4 +1,4 @@
-import type { GenericPageConfig, PageConfig } from "../../shared/page-config";
+import type { GenericPageConfig, PageConfig } from "../../shared/page";
 import type { RequestContext } from "@hattip/compose";
 import { fsCache, memoryCache } from "./cache";
 import { getPageConfig } from "../common/get-page-config";

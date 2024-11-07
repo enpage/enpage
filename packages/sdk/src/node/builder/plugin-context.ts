@@ -1,5 +1,5 @@
 import type { Plugin } from "vite";
-import type { GenericPageContext } from "~/shared/page-config";
+import type { GenericPageContext } from "~/shared/page";
 
 /**
  * Set the page context for other plugins to use

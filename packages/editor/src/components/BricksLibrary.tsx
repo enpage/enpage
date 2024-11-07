@@ -3,17 +3,7 @@ import { useEditor } from "@enpage/sdk/browser/use-editor";
 import { manifests } from "@enpage/sdk/browser/bricks/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
-import {
-  Tabs,
-  Button,
-  Callout,
-  TextArea,
-  Spinner,
-  TextField,
-  Select,
-  useAutoAnimate,
-  Tooltip,
-} from "@enpage/style-system";
+import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@enpage/style-system";
 import { BsStars } from "react-icons/bs";
 import { TbDragDrop } from "react-icons/tb";
 import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";

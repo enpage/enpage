@@ -5,6 +5,12 @@ import type { TemplateManifest } from "./manifest";
 import type { Brick } from "./bricks";
 import type { EnpageTemplateConfig } from "./template-config";
 
+export type PageBasicInfo = {
+  id: string;
+  siteId: string;
+  label: string;
+};
+
 /**
  * The Page config represents the page configuration (datasources, attributes, etc)
  */

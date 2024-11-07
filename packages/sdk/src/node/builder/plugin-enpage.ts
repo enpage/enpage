@@ -17,7 +17,7 @@ import { loadConfigFromJsFile } from "../shared/config";
 import react from "@vitejs/plugin-react";
 import { getPageContext } from "./page-context";
 import { updateVirtualModule } from "vite-plugin-virtual";
-import type { GenericPageConfig } from "~/shared/page-config";
+import type { GenericPageConfig } from "~/shared/page";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

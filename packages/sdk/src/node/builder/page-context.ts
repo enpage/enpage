@@ -1,5 +1,5 @@
 import type { EnpageTemplateConfig } from "~/shared/template-config";
-import type { GenericPageContext, PageContext } from "~/shared/page-config";
+import type { GenericPageContext, PageContext } from "~/shared/page";
 import { samples } from "~/shared/datasources/samples";
 import { resolveAttributes } from "~/shared/attributes";
 import invariant from "~/shared/utils/invariant";

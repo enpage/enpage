@@ -3,24 +3,19 @@ import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
 import { BsTablet } from "react-icons/bs";
 import { BsStars } from "react-icons/bs";
-import type { PageInfo } from "./types";
 import { VscCopy } from "react-icons/vsc";
-import { type ComponentProps, type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
-import { useDraftUndoManager, useEditor, useAttributes } from "@enpage/sdk/browser/use-editor";
+import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
+import { useDraftUndoManager, useEditor, useAttributes, usePagesInfo } from "@enpage/sdk/browser/use-editor";
 import { tx, css } from "@enpage/sdk/browser/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { DropdownMenu, TextField } from "@enpage/style-system";
-import type { GenericPageConfig } from "@enpage/sdk/shared/page-config";
 
-type TopBarProps = ComponentProps<"nav"> & {
-  pages: PageInfo[];
-};
-
-export default function TopBar({ pages }: TopBarProps) {
+export default function TopBar() {
   const editor = useEditor();
   const attributes = useAttributes();
+  const pages = usePagesInfo();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
 
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);

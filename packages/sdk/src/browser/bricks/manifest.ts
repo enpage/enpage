@@ -18,6 +18,8 @@ export function defineBrickManifest<
   icon,
   file,
   props,
+  datasource,
+  datarecord,
 }: {
   type: BType;
   title: BTitle;
@@ -29,6 +31,8 @@ export function defineBrickManifest<
   preferredW?: number;
   preferredH?: number;
   props: TObject<BProps>;
+  datasource?: TObject;
+  datarecord?: TObject;
 }) {
   return Type.Object({
     type: Type.Literal(type),
@@ -40,6 +44,8 @@ export function defineBrickManifest<
     preferredH: Type.Number({ default: preferredH ?? minHeight ?? 1 }),
     minWidth: Type.Number({ default: minWidth ?? 1 }),
     minHeight: Type.Number({ default: minHeight ?? 1 }),
+    ...(datasource && { datasource }),
+    ...(datarecord && { datarecord }),
     props,
   });
 }

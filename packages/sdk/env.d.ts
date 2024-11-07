@@ -12,7 +12,7 @@ declare global {
 
 declare module "@hattip/compose" {
   interface Locals {
-    pageConfig: import("./src/shared/page-config").GenericPageConfig;
+    pageConfig: import("./src/shared/page").GenericPageConfig;
     vite: import("vite").ViteDevServer;
   }
 }

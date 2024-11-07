@@ -36,6 +36,8 @@ export default defineConfig({
       ({ $$ }) => ({ padding: `${$$ === "1" ? "1px" : $$ === "0" ? "0" : `${modularScale(+$$, "1rem")}`}` }),
     ],
     // ["family-", ({ $$ }) => ({ fontFamily: `var(--font-${$$})` })],
+    ["bg-neutral-", ({ $$ }) => ({ backgroundColor: `var(--color-neutral-${$$})` })],
+    ["bg-accent-", ({ $$ }) => ({ backgroundColor: `var(--color-accent-${$$})` })],
     ["bg-primary-", ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})` })],
     ["bg-secondary-", ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})` })],
     ["bg-tertiary-", ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})` })],
