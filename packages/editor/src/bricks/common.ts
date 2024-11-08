@@ -1,8 +1,5 @@
-import { type Static, type TSchema, Type } from "@sinclair/typebox";
-import { customAlphabet } from "nanoid";
-import { tx } from "../twind";
-
-export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN", 7);
+import { type Static, Type } from "@sinclair/typebox";
+import { tx } from "@enpage/style-system/twind";
 
 export const commonBrickProps = Type.Object({
   className: Type.String({

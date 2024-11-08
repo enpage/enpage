@@ -3,12 +3,14 @@ import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import Inspect from "vite-plugin-inspect";
 import bundlesize from "vite-plugin-bundlesize";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   envPrefix: ["PUBLIC_"],
   base: "./",
   plugins: [
+    tsconfigPaths() as PluginOption,
     Inspect(),
     react() as PluginOption,
     dts({

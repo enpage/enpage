@@ -16,19 +16,15 @@ import config from "./twind.config";
 export { getSheet } from "@twind/core";
 export { default as inline } from "@twind/with-react/inline";
 
-// const colors = config.theme.colors ?? {};
-
-// export const backgroundClasses = Object.entries(colors).flatMap(([color, shades]) => {
-//   return Array.isArray(shades) ? shades.map((shade: string) => `bg-${color}-${shade}`) : `bg-${color}`;
-// });
-
 export const colors = Object.keys(config.theme.colors ?? {}).filter(
   (color) =>
     ["inherit", "current", "transparent", "neutral", "zinc", "black", "white"].includes(color) === false,
 );
 
 function isProd() {
+  //@ts-ignore
   if (typeof import.meta.env !== "undefined") {
+    //@ts-ignore
     return import.meta.env.PROD ?? false;
   } else if (typeof process !== "undefined" && typeof process.env !== "undefined") {
     return process.env.NODE_ENV === "production";
@@ -47,12 +43,12 @@ export const tw = /* #__PURE__ */ twind(
   sheet,
 );
 
-export function setupTwindReact() {
-  install(config, isProd());
+export function setupTwindReact(prod = isProd()) {
+  install(config, prod);
 
   addEventListener("warning", (event) => {
     // @ts-ignore
-    const warning = event.detail as { message: string; code: string; detail: string };
+    const warning = event.detail;
     if (warning.code === "TWIND_INVALID_CLASS") {
       event.preventDefault();
     }

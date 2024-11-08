@@ -1,11 +1,11 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
 import DOMPurify from "dompurify";
-import { tx } from "../twind";
+import { tx } from "@enpage/style-system/twind";
 import { commonBrickProps, editableTextProps, getCommonHtmlAttributesAndRest } from "./common";
-import { forwardRef, useState } from "react";
-import TextEditor, { createTextEditorUpdateHandler } from "./components/text-editor";
+import { forwardRef } from "react";
+import { useEditableText } from "./hooks/use-editable-text";
+import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -93,24 +93,15 @@ const TextWithTitle = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref)
 
   const TitleTag = titleLevel as keyof JSX.IntrinsicElements;
 
+  const titleContent = useEditableText(attributes.id, content, textEditable);
+  const textContent = useEditableText(attributes.id, content, textEditable);
+
   return (
     <div ref={ref} className={tx(classes, titleClassName)}>
       {textEditable ? (
         <>
-          <TitleTag className={tx(titleClassName, titleJustify)}>
-            <TextEditor
-              initialContent={DOMPurify.sanitize(title)}
-              onUpdate={createTextEditorUpdateHandler(attributes.id, "title")}
-              brickId={attributes.id}
-            />
-          </TitleTag>
-          <div className={tx(classes)}>
-            <TextEditor
-              initialContent={DOMPurify.sanitize(content)}
-              onUpdate={createTextEditorUpdateHandler(attributes.id)}
-              brickId={attributes.id}
-            />
-          </div>
+          <TitleTag className={tx(titleClassName, titleJustify)}>{titleContent}</TitleTag>
+          <div className={tx(classes)}>{textContent}</div>
         </>
       ) : (
         <>

@@ -1,5 +1,5 @@
 import { useMediaQuery } from "usehooks-ts";
-import { useEditor } from "@enpage/sdk/browser/use-editor";
+import { useEditor } from "~/hooks/use-editor";
 import { useEffect } from "react";
 
 export function useIsMobileDevice() {

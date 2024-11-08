@@ -1,12 +1,17 @@
-import { EditorStoreContext, DraftStoreContext, createDraftStore, createEditorStore } from "./use-editor";
+import {
+  EditorStoreContext,
+  DraftStoreContext,
+  createDraftStore,
+  createEditorStore,
+} from "../hooks/use-editor";
 import { useRef, type PropsWithChildren } from "react";
-import type { GenericPageConfig, PageBasicInfo } from "~/shared/page";
+import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 import { Theme } from "@enpage/style-system";
-import EditablePage from "./page";
 
+import "@radix-ui/themes/styles.css";
+import "@enpage/style-system/radix.css";
 import "@enpage/style-system/default-theme.css";
 import "@enpage/style-system/tiptap-text-editor.css";
-import "@enpage/style-system/radix.css";
 import "@enpage/style-system/react-grid-layout.css";
 import "@enpage/style-system/react-resizable.css";
 
@@ -39,7 +44,9 @@ export function EditorWrapper({
   return (
     <EditorStoreContext.Provider value={editorStore} key="EditorStoreContext">
       <DraftStoreContext.Provider value={draftStore} key="DraftStoreContext">
-        <Theme accentColor="violet">{children ?? <EditablePage />}</Theme>
+        <Theme accentColor="violet" className="w-dvw">
+          {children}
+        </Theme>
       </DraftStoreContext.Provider>
     </EditorStoreContext.Provider>
   );

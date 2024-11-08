@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
+import { useDraft, useEditor } from "../hooks/use-editor";
 import { BsArrowBarLeft } from "react-icons/bs";
 import Form, { type IChangeEvent } from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -7,11 +7,11 @@ import { customFields } from "./json-form/fields";
 import { TbHelp } from "react-icons/tb";
 import { useLocalStorage } from "usehooks-ts";
 import type { Brick } from "@enpage/sdk/shared/bricks";
-import { tx } from "@enpage/sdk/browser/twind";
+import { tx } from "@enpage/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import { jsonFormClass } from "./json-form/form-class";
 import { Tabs } from "@enpage/style-system";
-import { type BrickType, manifests } from "@enpage/sdk/browser/bricks/all-manifests";
+import { manifests } from "../bricks/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 
 import "./json-form/json-form.css";
@@ -26,7 +26,7 @@ export default function Inspector() {
     return null;
   }
 
-  const manifest = manifests[editor.selectedBrick.type as BrickType];
+  const manifest = manifests[editor.selectedBrick.type];
 
   return (
     <Tabs.Root defaultValue="style">
@@ -77,7 +77,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
     draft.updateBrickProps(brick.id, data.formData);
   };
 
-  const manifest = manifests[brick.type as BrickType];
+  const manifest = manifests[brick.type];
 
   if (manifest) {
     const uiSchema = createUiSchema(manifest.properties.props);

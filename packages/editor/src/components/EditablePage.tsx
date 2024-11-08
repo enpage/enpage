@@ -1,28 +1,21 @@
-import { tx, css } from "./twind";
-import {
-  Ref,
-  startTransition,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type DOMAttributes,
-} from "react";
-import type { BrickPosition, Brick } from "~/shared/bricks";
-import BrickWrapper from "./brick";
-import { useBricks, useDraft, useEditor, useEditorEnabled } from "./use-editor";
-import { useOnClickOutside, useScrollLock } from "usehooks-ts";
+import { tx } from "@enpage/style-system/twind";
+import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { type BrickPosition, type Brick, generateId } from "@enpage/sdk/shared/bricks";
+import BrickWrapper from "./Brick";
+import { useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { type DragOverEvent, type ItemCallback, type Layout, Responsive } from "react-grid-layout";
-import WidthProvider from "./responsive-layout";
-import { LAYOUT_COLS, LAYOUT_GUTTERS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "./constants";
+import WidthProvider from "./WidthProvideRGL";
 import { useHotkeys } from "react-hotkeys-hook";
-import invariant from "~/shared/utils/invariant";
-import { LAYOUT_BREAKPOINTS } from "./constants";
-import { generateId } from "./bricks/common";
-import { findOptimalPosition } from "./layout-utils";
+import invariant from "@enpage/sdk/shared/utils/invariant";
+import {
+  LAYOUT_BREAKPOINTS,
+  LAYOUT_COLS,
+  LAYOUT_GUTTERS,
+  LAYOUT_PADDING,
+  LAYOUT_ROW_HEIGHT,
+} from "../config/layout-constants";
+import { findOptimalPosition } from "../utils/layout-utils";
 import Selecto from "react-selecto";
-import getResizeHandle from "./resize-handle";
 
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -379,5 +372,52 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         }}
       />
     </>
+  );
+}
+
+function getResizeHandle(
+  resizeHandle: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne",
+  ref: RefObject<HTMLDivElement>,
+) {
+  return (
+    <div
+      ref={ref}
+      className={tx(
+        "react-resizable-handle absolute z-10 transition-opacity duration-200 opacity-0",
+        "group-hover/brick:opacity-50 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
+        `react-resizable-handle-${resizeHandle}`,
+        {
+          "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": resizeHandle === "s",
+          "top-px left-px bottom-px w-1 h-[inherit] border-l cursor-w-resize": resizeHandle === "w",
+          "top-px right-px bottom-px w-1 h-[inherit] border-r cursor-e-resize": resizeHandle === "e",
+          "top-px left-px right-px h-1 w-[inherit] border-t cursor-n-resize": resizeHandle === "n",
+
+          // sw and nw
+          "bottom-px left-px w-1 h-1 border-l border-b cursor-sw-resize": resizeHandle === "sw",
+          "top-px left-px w-1 h-1 border-l border-t cursor-nw-resize": resizeHandle === "nw",
+
+          // se and ne
+          "bottom-px right-px w-1 h-1 border-r border-b cursor-se-resize": resizeHandle === "se",
+          "top-px right-px w-1 h-1 border-r border-t cursor-ne-resize": resizeHandle === "ne",
+        },
+      )}
+    >
+      <div
+        className={tx("absolute w-[7px] h-[7px] bg-orange-400 z-10 shadow-sm", {
+          "top-1/2 -translate-y-1/2 -left-[4px]": resizeHandle === "w",
+          "top-1/2 -translate-y-1/2 -right-[4px]": resizeHandle === "e",
+          "left-1/2 -translate-x-1/2 -top-[4px]": resizeHandle === "n",
+          "left-1/2 -translate-x-1/2 -bottom-[4px]": resizeHandle === "s",
+
+          // sw and nw
+          "-bottom-[4px] -left-[4px]": resizeHandle === "sw",
+          "-top-[4px] -left-[4px]": resizeHandle === "nw",
+
+          // se and ne
+          "-bottom-[4px] -right-[4px]": resizeHandle === "se",
+          "-top-[4px] -right-[4px]": resizeHandle === "ne",
+        })}
+      />
+    </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type ComponentProps } from "react";
-import * as ContextMenu from "@radix-ui/react-context-menu";
+import { ContextMenu } from "@enpage/style-system";
 import { LuChevronRight } from "react-icons/lu";
-import type { Brick } from "~/shared/bricks";
-import { useDraft, useEditor } from "./use-editor";
+import type { Brick } from "@enpage/sdk/shared/bricks";
+import { useDraft } from "../hooks/use-editor";
 
 const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {
   const draft = useDraft();

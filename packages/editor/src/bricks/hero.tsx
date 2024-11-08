@@ -1,14 +1,11 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { defineBrickManifest } from "./manifest";
 import { Value } from "@sinclair/typebox/value";
-import DOMPurify from "dompurify";
-import { forwardRef, useCallback } from "react";
-import { tx, css } from "../twind";
-import { commonBrickProps, editableTextProps, getCommonHtmlAttributesAndRest } from "./common";
+import { forwardRef } from "react";
+import { tx, css } from "@enpage/style-system/twind";
 import { commonProps, contentAwareProps } from "./props/common";
-import TextEditor, { createTextEditorUpdateHandler } from "./components/text-editor";
 import TextBrick from "./text";
 import { commonStyleProps } from "./props/style-props";
+import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -70,7 +67,7 @@ const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
     "font-size": `var(--${heroFontSize})`,
   });
 
-  return <TextBrick {...props} content={content} className={sizeClass} ref={ref} />;
+  return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
 });
 
 export default Hero;

@@ -1,4 +1,4 @@
-import { tx } from "@enpage/sdk/browser/twind";
+import { tx } from "@enpage/style-system/twind";
 
 export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
   [&_label]:(text-sm leading-tight)

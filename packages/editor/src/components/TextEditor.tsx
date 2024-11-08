@@ -1,15 +1,8 @@
-import {
-  useEditor as useTextEditor,
-  EditorContent,
-  FloatingMenu,
-  BubbleMenu,
-  type EditorEvents,
-  type Editor,
-} from "@tiptap/react";
+import { useEditor as useTextEditor, EditorContent, type EditorEvents, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Select } from "@radix-ui/themes";
-import { tx } from "../../twind";
+import { Select, ToggleGroup } from "@enpage/style-system";
+import { tx } from "@enpage/style-system/twind";
 import { useState, memo, useRef, forwardRef, useEffect } from "react";
 import {
   MdFormatBold,
@@ -20,10 +13,8 @@ import {
 } from "react-icons/md";
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
-import type { Brick } from "~/shared/bricks";
-import { useDraft, useEditor } from "../../use-editor";
-import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import { useDndContext } from "@dnd-kit/core";
+import type { Brick } from "@enpage/sdk/shared/bricks";
+import { useEditor } from "../hooks/use-editor";
 
 const extensions = [
   StarterKit,
@@ -45,7 +36,6 @@ const toolbarBtnCls =
 
 const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = false }: Props) => {
   const mainEditor = useEditor();
-  const dndCtx = useDndContext();
   const [editable, setEditable] = useState(enabled);
   const editor = useTextEditor({
     extensions,
@@ -97,7 +87,7 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
         editor={editor}
         className="outline-none"
       />
-      {editor && editable && dndCtx.active === null && <MenuBar brickId={brickId} editor={editor} />}
+      {editor && editable && <MenuBar brickId={brickId} editor={editor} />}
       {/* <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
@@ -283,23 +273,6 @@ function TextSizeSelect({ editor }: TextSizeSelectProps) {
       </Select.Content>
     </Select.Root>
   );
-}
-
-export function createTextEditorUpdateHandler(brickId: Brick["id"], prop = "content") {
-  const draft = useDraft();
-  return (e: EditorEvents["update"]) => {
-    const brick = draft.getBrick(brickId);
-    if (!brick) {
-      console.warn("No brick for update found for id", brickId);
-      return;
-    }
-    draft.updateBrick(brickId, {
-      props: {
-        ...(brick?.props ?? {}),
-        [prop]: e.editor.getHTML(),
-      },
-    });
-  };
 }
 
 export default TextEditor;

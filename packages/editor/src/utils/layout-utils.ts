@@ -1,6 +1,4 @@
-import type { BrickPosition } from "~/shared/bricks";
 import type { Layout } from "react-grid-layout";
-import def from "ajv/dist/vocabularies/discriminator";
 
 const TOTAL_COLS = 12;
 

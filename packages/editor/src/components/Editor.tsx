@@ -6,7 +6,7 @@ import {
   usePagePathSubscribe,
   useThemeSubscribe,
   usePageConfig,
-} from "@enpage/sdk/browser/use-editor";
+} from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { useEffect, useRef, type ComponentProps } from "react";
@@ -14,11 +14,11 @@ import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
-import Page from "@enpage/sdk/browser/page";
-import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
+import Page from "./EditablePage";
+import { tx, injectGlobal, css } from "@enpage/style-system/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
-import { patch } from "@enpage/sdk/browser/api";
+import { patch } from "../utils/api";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";

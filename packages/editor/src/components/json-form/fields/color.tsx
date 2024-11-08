@@ -1,9 +1,9 @@
 import type { FieldProps } from "@rjsf/utils";
 import { nanoid } from "nanoid";
 import { Button, Popover, TextField } from "@enpage/style-system";
-import { tx, colors, css } from "@enpage/sdk/browser/twind";
+import { tx, colors, css } from "@enpage/style-system/twind";
 import { generateColorHarmony } from "../../color-helpers";
-import { useDraft } from "@enpage/sdk/browser/use-editor";
+import { useDraft } from "~/hooks/use-editor";
 import type { Theme } from "@enpage/sdk/shared/theme";
 import transSvg from "./trans.svg?url";
 import { useMemo } from "react";

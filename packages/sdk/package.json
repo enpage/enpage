@@ -13,10 +13,6 @@
       "import": "./dist/shared/index.js",
       "types": "./dist/shared/index.d.ts"
     },
-    "./browser/*": {
-      "types": "./dist/browser/*.d.ts",
-      "import": "./dist/browser/*.js"
-    },
     "./shared/*": {
       "types": "./dist/shared/*.d.ts",
       "import": "./dist/shared/*.js"
@@ -65,15 +61,7 @@
     "@tiptap/pm": "2.8.0",
     "@tiptap/react": "2.8.0",
     "@tiptap/starter-kit": "2.8.0",
-    "@twind/core": "1.1.3",
-    "@twind/preset-autoprefix": "1.0.7",
-    "@twind/preset-container-queries": "1.0.7",
-    "@twind/preset-ext": "1.0.7",
-    "@twind/preset-line-clamp": "1.0.7",
-    "@twind/preset-tailwind": "1.1.4",
-    "@twind/preset-tailwind-forms": "1.1.2",
-    "@twind/preset-typography": "1.0.7",
-    "@twind/with-react": "1.1.3",
+
     "@vitejs/plugin-react": "^4.3.1",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",

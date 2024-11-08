@@ -1,4 +1,4 @@
-import type { Brick } from "~/shared/bricks";
+import type { Brick } from "@enpage/sdk/shared/bricks";
 import {
   forwardRef,
   lazy,
@@ -12,16 +12,16 @@ import {
   type LazyExoticComponent,
   type MouseEvent,
 } from "react";
-import { tx, style, css, apply } from "./twind";
-import { useAttributes, useDraft, useEditor, useEditorEnabled } from "./use-editor";
+import { tx, style, css, apply } from "@enpage/style-system/twind";
+import { useAttributes, useDraft, useEditor, useEditorEnabled } from "../hooks/use-editor";
 import { isEqualWith } from "lodash-es";
 import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
-const BrickText = lazy(() => import("./bricks/text"));
-const BrickTextWithTitle = lazy(() => import("./bricks/text-with-title"));
-const BrickHero = lazy(() => import("./bricks/hero"));
-const BrickImage = lazy(() => import("./bricks/image"));
+const BrickText = lazy(() => import("../bricks/text"));
+const BrickTextWithTitle = lazy(() => import("../bricks/text-with-title"));
+const BrickHero = lazy(() => import("../bricks/hero"));
+const BrickImage = lazy(() => import("../bricks/image"));
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const bricksMap: Record<string, LazyExoticComponent<ComponentType<any>>> = {

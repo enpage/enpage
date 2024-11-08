@@ -2,8 +2,8 @@ import { LuPlus } from "react-icons/lu";
 import { PiPalette } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
 import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
-import { useDraftUndoManager, useEditor, useAttributes } from "@enpage/sdk/browser/use-editor";
-import { tx, css } from "@enpage/sdk/browser/twind";
+import { useDraftUndoManager, useEditor, useAttributes } from "../hooks/use-editor";
+import { tx, css } from "@enpage/style-system/twind";
 import { DropdownMenu } from "@enpage/style-system";
 
 export default function Toolbar() {

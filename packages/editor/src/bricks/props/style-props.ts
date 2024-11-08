@@ -1,4 +1,4 @@
-import { type Static, type TSchema, Type } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 
 const borderWidth = Type.Union(
   [

@@ -1,4 +1,4 @@
-import { tx, apply } from "../../twind";
+import { tx, apply } from "@enpage/style-system/twind";
 /**
  * The classNames for the brick
  * @param manifest `

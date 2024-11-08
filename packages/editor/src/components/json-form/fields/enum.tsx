@@ -1,10 +1,9 @@
 import type { FieldProps } from "@rjsf/utils";
-import { SegmentedControl, Slider } from "@enpage/style-system";
+import { SegmentedControl } from "@enpage/style-system";
 import clsx from "clsx";
-import { tx } from "@enpage/sdk/browser/twind";
-import { BiMinus } from "react-icons/bi";
+import { tx } from "@enpage/style-system/twind";
 import type { Brick } from "@enpage/sdk/shared/bricks";
-import { useDraft } from "@enpage/sdk/browser/use-editor";
+import { useDraft } from "~/hooks/use-editor";
 
 interface EnumOption {
   const: string;
