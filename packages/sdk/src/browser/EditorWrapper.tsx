@@ -1,7 +1,7 @@
 import { EditorStoreContext, DraftStoreContext, createDraftStore, createEditorStore } from "./use-editor";
 import { useRef, type PropsWithChildren } from "react";
 import type { GenericPageConfig, PageBasicInfo } from "~/shared/page";
-import { Theme } from "@radix-ui/themes";
+import { Theme } from "@enpage/style-system";
 import EditablePage from "./page";
 
 import "@enpage/style-system/default-theme.css";

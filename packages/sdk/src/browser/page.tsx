@@ -23,7 +23,6 @@ import { generateId } from "./bricks/common";
 import { findOptimalPosition } from "./layout-utils";
 import Selecto from "react-selecto";
 import getResizeHandle from "./resize-handle";
-import { flushSync } from "react-dom";
 
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);

@@ -25,6 +25,7 @@ export default defineConfig({
     port: +(process.env.PORT ?? 3008),
   },
   resolve: {
+    // preserveSymlinks: true,
     alias: {
       lodash: "lodash-es",
     },
@@ -42,18 +43,17 @@ export default defineConfig({
         "react",
         "react-dom",
         "react/jsx-runtime",
-        "happy-dom",
-        "happy-dom-without-node",
-        "ajv",
+        // "ajv",
+        // "ajv-formats",
         "@sinclair/typebox",
         "@enpage/style-system",
       ],
       output: {
-        globals: {
-          react: "react",
-          "react-dom": "ReactDOM",
-          "react/jsx-runtime": "react/jsx-runtime",
-        },
+        // globals: {
+        //   react: "react",
+        //   "react-dom": "ReactDOM",
+        //   "react/jsx-runtime": "react/jsx-runtime",
+        // },
         // Put chunk files at <output>/chunks
         chunkFileNames: "chunks/[name].[hash].js",
         // Put chunk styles at <output>/assets
