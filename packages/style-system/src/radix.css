@@ -185,7 +185,8 @@
 
   --violet-contrast: #fff;
   --violet-surface: #1b1b3780;
-  --violet-indicator: #5b57ab;
+  --violet-indicator: var(--accent-11);
+  /* --violet-indicator: #5b57ab; */
   --violet-track: #5b57ab;
 }
 
@@ -257,6 +258,10 @@
   --gray-surface: rgba(0, 0, 0, 0.05);
   --gray-indicator: #6c6e79;
   --gray-track: #6c6e79;
+
+  .rt-SliderRoot:where(.rt-variant-soft) :where(.rt-SliderRange) {
+    background-color: var(--violet-a1);
+  }
 }
 
 @supports (color: color(display-p3 1 1 1)) {

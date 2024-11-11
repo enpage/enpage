@@ -32,7 +32,7 @@ type Props = {
 };
 
 const toolbarBtnCls =
-  "first:rounded-l  last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-upstart-100 leading-none data-[state=on]:(bg-upstart-500 text-white)";
+  "first:rounded-l last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-upstart-100 leading-none data-[state=on]:(bg-upstart-500 text-white)";
 
 const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = false }: Props) => {
   const mainEditor = useEditor();
@@ -121,6 +121,13 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
     </>
   );
 };
+
+const menuBarClass = tx(
+  "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-700/75 to-upstart-400/75 \
+  shadow-lg rounded-b fixed top-[59px] left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
+  // "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
+  // shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
+);
 
 const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) => {
   const ref = useRef<HTMLDivElement>(null);

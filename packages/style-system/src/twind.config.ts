@@ -9,9 +9,10 @@ import presetContainerQueries from "@twind/preset-container-queries";
 import { modularScale } from "polished";
 
 export default defineConfig({
+  darkMode: "media",
   presets: [
     presetAutoprefix(),
-    presetTailwind(),
+    presetTailwind({ disablePreflight: false }),
     presetContainerQueries(),
     presetExt(),
     presetLineClamp(),
@@ -20,7 +21,6 @@ export default defineConfig({
   ],
   variants: [["hasChildMenudHover", "&:has(.container-menu-wrapper:hover)"]],
   rules: [
-    ["brick", {}],
     [
       "brick-container",
       {

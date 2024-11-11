@@ -34,6 +34,7 @@ function createTextEditorUpdateHandler(brickId: Brick["id"], prop = "content") {
       console.warn("No brick for update found for id", brickId);
       return;
     }
+    console.log("text editor update for brick %s", brickId);
     draft.updateBrick(brickId, {
       props: {
         ...(brick?.props ?? {}),

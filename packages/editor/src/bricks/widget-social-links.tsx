@@ -3,7 +3,6 @@ import { Value } from "@sinclair/typebox/value";
 import { forwardRef } from "react";
 import { tx, css } from "@enpage/style-system/twind";
 import { commonProps, contentAwareProps } from "./props/common";
-import TextBrick from "./text";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 
@@ -11,19 +10,31 @@ import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
-  type: "hero",
-  title: "Hero",
-  kind: "brick",
-  description: "A big textual element for home pages",
+  type: "social-links",
+  kind: "widget",
+  title: "Social links",
+  description: "A list of social media links",
   preferredW: 12,
   preferredH: 6,
-  icon: `
-   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
-  <rect x="20" y="35" width="60" height="12" rx="2" fill="currentColor"/>
-  <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
+  icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main container -->
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+
+    <!-- Dots and social info -->
+    <circle cx="8" cy="8" r="1" fill="currentColor"></circle>
+    <line x1="11" y1="7" x2="16" y2="7"></line>
+    <line x1="11" y1="9" x2="13" y2="9" stroke-width="0.5"></line>
+
+    <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
+    <line x1="11" y1="11" x2="16" y2="11"></line>
+    <line x1="11" y1="13" x2="13.5" y2="13" stroke-width="0.5"></line>
+
+    <circle cx="8" cy="16" r="1" fill="currentColor"></circle>
+    <line x1="11" y1="15" x2="16" y2="15"></line>
+    <line x1="11" y1="17" x2="13" y2="17" stroke-width="0.5"></line>
 </svg>
   `,
+
   file: filename,
   props: Type.Composite([
     contentAwareProps,
@@ -53,7 +64,7 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const SocialLinks = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   let { content, heroFontSize } = props;
 
@@ -65,7 +76,7 @@ const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
     "font-size": `var(--${heroFontSize})`,
   });
 
-  return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
+  return <div>Im a card</div>;
 });
 
-export default Hero;
+export default SocialLinks;

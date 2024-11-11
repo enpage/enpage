@@ -1,13 +1,31 @@
 // hero
-import { defaults as heroDefaults, type Manifest as HeroManifest, manifest as heroManifest } from "./hero";
+import { defaults as heroDefaults, manifest as heroManifest } from "./hero";
 // image
 import { defaults as imageDefaults, manifest as imageManifest } from "./image";
 // video
 import { defaults as videoDefaults, manifest as videoManifest } from "./video";
 // text
 import { defaults as textDefaults, manifest as textManifest } from "./text";
-// text-with-title
-import { defaults as textWithTitleDefaults, manifest as textWithTitleManifest } from "./text-with-title";
+// widget card
+import { defaults as cardDefaults, manifest as cardManifest } from "./widget-card";
+// widget map
+import { defaults as mapDefaults, manifest as mapManifest } from "./widget-map";
+// widget form
+import { defaults as formDefaults, manifest as formManifest } from "./widget-form";
+// widget images-wall
+import { defaults as imagesWallDefaults, manifest as imagesWallManifest } from "./widget-images-wall";
+// widget carousel
+import { defaults as carouselDefaults, manifest as carouselManifest } from "./widget-carousel";
+// widget header
+import { defaults as headerDefaults, manifest as headerManifest } from "./widget-header";
+// widget footer
+import { defaults as footerDefaults, manifest as footerManifest } from "./widget-footer";
+// button
+import { defaults as buttonDefaults, manifest as buttonManifest } from "./button";
+// icon
+import { defaults as iconDefaults, manifest as iconManifest } from "./icon";
+// widget "social-links"
+import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from "./widget-social-links";
 
 import type { BrickManifest } from "@enpage/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";
@@ -16,14 +34,32 @@ export const manifests: Record<string, BrickManifest> = {
   [heroDefaults.type]: heroManifest,
   [imageDefaults.type]: imageManifest,
   [textDefaults.type]: textManifest,
-  [textWithTitleDefaults.type]: textWithTitleManifest,
   [videoDefaults.type]: videoManifest,
+  [cardDefaults.type]: cardManifest,
+  [mapDefaults.type]: mapManifest,
+  [formDefaults.type]: formManifest,
+  [imagesWallDefaults.type]: imagesWallManifest,
+  [carouselDefaults.type]: carouselManifest,
+  [headerDefaults.type]: headerManifest,
+  [footerDefaults.type]: footerManifest,
+  [buttonDefaults.type]: buttonManifest,
+  [iconDefaults.type]: iconManifest,
+  [socialLinksDefaults.type]: socialLinksManifest,
 };
 
 export const defaults: Record<string, Static<BrickManifest>> = {
   [heroDefaults.type]: heroDefaults,
   [imageDefaults.type]: imageDefaults,
   [textDefaults.type]: textDefaults,
-  [textWithTitleDefaults.type]: textWithTitleDefaults,
   [videoDefaults.type]: videoDefaults,
+  [cardDefaults.type]: cardDefaults,
+  [mapDefaults.type]: mapDefaults,
+  [formDefaults.type]: formDefaults,
+  [imagesWallDefaults.type]: imagesWallDefaults,
+  [carouselDefaults.type]: carouselDefaults,
+  [headerDefaults.type]: headerDefaults,
+  [footerDefaults.type]: footerDefaults,
+  [buttonDefaults.type]: buttonDefaults,
+  [iconDefaults.type]: iconDefaults,
+  [socialLinksDefaults.type]: socialLinksDefaults,
 };

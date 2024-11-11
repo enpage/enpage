@@ -17,6 +17,10 @@ export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
 
 export interface EditorStateProps {
+  /**
+   * When local, the editor does not fetch data from the server or save data to the server
+   */
+  mode: "local" | "remote";
   enabled: boolean;
   pageConfig: GenericPageConfig;
   pages: PageBasicInfo[];
@@ -57,6 +61,7 @@ export const createEditorStore = (
     editingPageIndex: 0,
     enabled: true,
     previewMode: "desktop",
+    mode: "local",
   };
 
   return createStore<EditorState>()(
@@ -131,7 +136,7 @@ export const createEditorStore = (
               }),
           })),
           {
-            name: "editor-state",
+            name: `editor-state-${initProps.pageConfig.id}`,
             skipHydration: true,
             partialize: (state) =>
               Object.fromEntries(
@@ -164,6 +169,7 @@ export interface DraftStateProps {
   attrSchema: TObject;
   theme: Theme;
   previewTheme?: Theme;
+  version?: string;
 }
 
 export interface DraftState extends DraftStateProps {
@@ -183,6 +189,7 @@ export interface DraftState extends DraftStateProps {
   cancelPreviewTheme: () => void;
   updateAttributes: (attr: AttributesResolved) => void;
   save(): Promise<void>;
+  setVersion(version: string): void;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
@@ -292,6 +299,11 @@ export const createDraftStore = (
               set((state) => {
                 state.attr = attr;
               }),
+
+            setVersion: (version) =>
+              set((state) => {
+                state.version = version;
+              }),
           })),
           {
             name: "draft-state",
@@ -360,6 +372,11 @@ export const usePreviewMode = () => {
   return useStore(ctx, (state) => state.previewMode);
 };
 
+export const useEditorMode = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.mode);
+};
+
 export const useDraft = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx);
@@ -369,6 +386,11 @@ export const useBricks = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.bricks);
 };
+
+export function useDraftVersion() {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.version);
+}
 
 export const useAttributes = () => {
   const ctx = useDraftStoreContext();

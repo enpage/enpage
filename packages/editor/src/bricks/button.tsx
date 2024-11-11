@@ -11,17 +11,21 @@ import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
-  type: "hero",
-  title: "Hero",
+  type: "button",
+  title: "Button",
   kind: "brick",
-  description: "A big textual element for home pages",
-  preferredW: 12,
-  preferredH: 6,
+  description: "A button with text and optional icon",
+  preferredW: 3,
+  preferredH: 2,
   icon: `
-   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
-  <rect x="20" y="35" width="60" height="12" rx="2" fill="currentColor"/>
-  <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main container -->
+
+    <!-- Button container -->
+    <rect x="4" y="11" width="16" height="6" rx="2"></rect>
+
+    <!-- Text line inside button -->
+    <line x1="9" y1="14" x2="15" y2="14"></line>
 </svg>
   `,
   file: filename,
@@ -53,7 +57,7 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const Button = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   let { content, heroFontSize } = props;
 
@@ -68,4 +72,4 @@ const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
 });
 
-export default Hero;
+export default Button;

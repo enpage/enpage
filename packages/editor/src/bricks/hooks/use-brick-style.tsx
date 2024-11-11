@@ -1,28 +1,32 @@
 import { tx, apply } from "@enpage/style-system/twind";
+import type { commonStyleProps, textStyleProps } from "../props/style-props";
+import type { commonProps } from "../props/common";
+import type { Static } from "@sinclair/typebox";
+
 /**
  * The classNames for the brick
  * @param manifest `
  */
-export function useBrickStyle<M extends Record<string, unknown>>(props: M, baseClassName = "") {
-  const {
-    brickRounding,
-    borderWidth,
-    borderStyle,
-    brickPadding,
-    brickBackgroundColor,
-    borderColor,
-    z,
-    ...rest
-  } = props;
-
+export function useBrickStyle(
+  props: Partial<Static<typeof commonStyleProps>> &
+    Partial<Static<typeof textStyleProps>> &
+    Partial<Static<typeof commonProps>>,
+) {
   return tx([
-    apply("flex-1", baseClassName),
-    // brickBackgroundColor && `bg-${brickBackgroundColor}`,
-    // borderColor && `border-${borderColor}`,
-    // z && `z-[${z}]`,
-    // brickPadding && `brick-p-${brickPadding}`,
-    // brickRounding,
-    // borderWidth,
-    // borderStyle,
+    apply("flex-1", props.className),
+    props.backgroundColor && `bg-${props.backgroundColor}`,
+    props.z && `z-[${props.z}]`,
+
+    props.padding,
+
+    props.borderColor,
+    props.borderRadius,
+    props.borderStyle,
+    props.borderWidth,
+
+    props.color && `text-${props.color}`,
+    props.fontSize && `text-${props.fontSize}`,
+    props.fontWeight && `font-${props.fontWeight}`,
+    props.textAlign && `text-${props.textAlign}`,
   ]);
 }

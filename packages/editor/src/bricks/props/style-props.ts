@@ -1,4 +1,5 @@
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
+import { tx } from "@enpage/style-system/twind";
 
 const borderWidth = Type.Union(
   [
@@ -60,14 +61,23 @@ const borderRadius = Type.Union(
   },
 );
 
-const padding = Type.Number({
-  minimum: 0,
-  maximum: 10,
-  default: 0,
-  title: "Padding",
-  description: "Space between the content and the border",
-  "ui:field": "slider",
-});
+const padding = Type.Union(
+  [
+    Type.Literal("p-0", { title: "None" }),
+    Type.Literal("p-2", { title: "S" }),
+    Type.Literal("p-4", { title: "M" }),
+    Type.Literal("p-8", { title: "L" }),
+    Type.Literal("p-16", { title: "XL" }),
+  ],
+  {
+    default: "p-2",
+    title: "Padding",
+    description: "Space between the content and the border",
+    "ui:field": "enum",
+    "ui:display": "button-group",
+    "ui:group": "spacing",
+  },
+);
 
 const margin = Type.Union(
   [
@@ -127,19 +137,21 @@ const shadow = Type.Union(
   },
 );
 
+/**
+ * No margin in common style props as bricks are usually placed in a grid
+ */
 export const commonStyleProps = Type.Object({
   borderRadius,
   borderWidth,
   borderColor,
   borderStyle,
   padding,
-  margin,
   backgroundColor,
   opacity,
   shadow,
 });
 
-const justify = Type.Optional(
+const textAlign = Type.Optional(
   Type.Union(
     [
       Type.Literal("text-left", { title: "Left", description: "Left align" }),
@@ -149,7 +161,7 @@ const justify = Type.Optional(
     ],
     {
       default: "text-left",
-      title: "Justify",
+      title: "Text alignment",
       description: "The text alignment",
       "ui:field": "enum",
       "ui:group": "text",
@@ -208,7 +220,7 @@ const color = Type.String({
 
 export const textStyleProps = Type.Object({
   color,
-  justify,
+  textAlign,
   fontSize,
   fontWeight,
 });

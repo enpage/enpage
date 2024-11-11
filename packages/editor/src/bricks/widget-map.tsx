@@ -3,7 +3,6 @@ import { Value } from "@sinclair/typebox/value";
 import { forwardRef } from "react";
 import { tx, css } from "@enpage/style-system/twind";
 import { commonProps, contentAwareProps } from "./props/common";
-import TextBrick from "./text";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 
@@ -11,19 +10,28 @@ import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
-  type: "hero",
-  title: "Hero",
-  kind: "brick",
-  description: "A big textual element for home pages",
+  type: "map",
+  kind: "widget",
+  title: "Map",
+  description: "A map element with a location",
   preferredW: 12,
   preferredH: 6,
-  icon: `
-   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
-  <rect x="20" y="35" width="60" height="12" rx="2" fill="currentColor"/>
-  <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
+  // svg icon for the "card" brick
+  icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main container -->
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+
+    <!-- Map fold lines (even thinner) -->
+    <path d="M3 9 L21 9" stroke-width="0.3"></path>
+    <path d="M9 3 L9 21" stroke-width="0.3"></path>
+    <path d="M15 3 L15 21" stroke-width="0.3"></path>
+    <path d="M3 15 L21 15" stroke-width="0.3"></path>
+
+    <!-- Location pin (teardrop shape) -->
+    <path d="M12 5 C10.3431 5 9 6.34315 9 8 C9 9.3124 9.84285 10.4274 11 10.8229 L12 13 L13 10.8229 C14.1571 10.4274 15 9.3124 15 8 C15 6.34315 13.6569 5 12 5Z"></path>
 </svg>
   `,
+
   file: filename,
   props: Type.Composite([
     contentAwareProps,
@@ -53,7 +61,7 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const WidgetMap = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   let { content, heroFontSize } = props;
 
@@ -65,7 +73,7 @@ const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
     "font-size": `var(--${heroFontSize})`,
   });
 
-  return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
+  return <div>Im a card</div>;
 });
 
-export default Hero;
+export default WidgetMap;

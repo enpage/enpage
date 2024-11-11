@@ -10,6 +10,7 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
   type: "image",
+  kind: "brick",
   title: "Image",
   description: "An image brick",
   preferredW: 4,
@@ -28,9 +29,9 @@ export const manifest = defineBrickManifest({
       src: Type.String({
         default: "https://placehold.co/400x200",
         title: "File",
-        description: "The image file",
         "ui:field": "file",
         "ui:accept": "image/*",
+        "ui:show-img-search": true,
       }),
       alt: Type.String({
         title: "Alternate Text",

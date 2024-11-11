@@ -6,6 +6,7 @@ import {
   usePagePathSubscribe,
   useThemeSubscribe,
   usePageConfig,
+  useEditorMode,
 } from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
@@ -27,6 +28,7 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
+  const editorMode = useEditorMode();
   const pageConfig = usePageConfig();
 
   /**
@@ -47,6 +49,9 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
    */
 
   function updatePage(payload: Record<string, unknown>) {
+    if (editorMode === "local") {
+      return;
+    }
     return patch(`/sites/${pageConfig.siteId}/pages/${pageConfig.id}/versions/latest`, payload)
       .then((res) => {
         console.log("Page version saved");

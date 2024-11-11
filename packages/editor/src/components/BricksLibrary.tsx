@@ -42,9 +42,11 @@ export default function BlocksLibrary() {
     editor.setDraggingBrick(brick);
   };
 
+  console.log({ manifests });
+
   return (
     <Tabs.Root defaultValue="library">
-      <Tabs.List className="sticky top-0 !bg-white z-50">
+      <Tabs.List className="sticky top-0 z-50">
         <Tabs.Trigger value="library" className="!flex-1">
           Library
         </Tabs.Trigger>
@@ -65,52 +67,94 @@ export default function BlocksLibrary() {
         <div
           className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
         >
-          <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1 sticky top-0 z-[999]">Base bricks</h3>
+          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
+            Base bricks
+          </h3>
           <div
             className="grid gap-1 p-1.5"
             style={{
               gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
             }}
           >
-            {Object.values(manifests).map((blockImport) => {
-              const block = Value.Create(blockImport);
-              return (
-                <Tooltip content={block.description} key={block.type}>
-                  <button
-                    draggable={true}
-                    onDragStart={onDragStart.bind(null, block)}
-                    data-block={encodeURIComponent(JSON.stringify(block))}
-                    data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
-                    type="button"
-                    className="rounded border border-transparent hover:border-upstart-600 bg-upstart-100
+            {Object.values(manifests)
+              .filter((m) => m.properties.kind.const === "brick")
+              .map((blockImport) => {
+                const block = Value.Create(blockImport);
+                return (
+                  <Tooltip content={block.description} key={block.type}>
+                    <button
+                      draggable={true}
+                      onDragStart={onDragStart.bind(null, block)}
+                      // data-block={encodeURIComponent(JSON.stringify(block))}
+                      // data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
+                      type="button"
+                      className="rounded border border-transparent hover:border-upstart-600
                             dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
-                            pointer-events-auto"
-                  >
-                    <div
-                      className={tx(
-                        "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
-                      )}
+                            pointer-events-auto transition"
                     >
-                      <span
-                        className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                        dangerouslySetInnerHTML={{ __html: block.icon }}
-                      />
-                      <span className="whitespace-nowrap text-xs">{block.title}</span>
-                    </div>
-                  </button>
-                </Tooltip>
-              );
-            })}
+                      <div
+                        className={tx(
+                          "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
+                        )}
+                      >
+                        <span
+                          className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                          dangerouslySetInnerHTML={{ __html: block.icon }}
+                        />
+                        <span className="whitespace-nowrap text-xs">{block.title}</span>
+                      </div>
+                    </button>
+                  </Tooltip>
+                );
+              })}
           </div>
         </div>
         <div
-          className={tx(
-            "flex flex-col max-h-[calc(100dvh/2-99px)] bg-red-700 overflow-y-auto",
-            tabContentScrollClass,
-          )}
+          className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
         >
-          <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1 sticky top-0 z-[999]">Widgets</h3>
+          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
+            Widgets
+          </h3>
+          <div
+            className="grid gap-1 p-1.5"
+            style={{
+              gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
+            }}
+          >
+            {Object.values(manifests)
+              .filter((m) => m.properties.kind.const === "widget")
+              .map((blockImport) => {
+                const block = Value.Create(blockImport);
+                return (
+                  <Tooltip content={block.description} key={block.type}>
+                    <button
+                      draggable={true}
+                      onDragStart={onDragStart.bind(null, block)}
+                      // data-block={encodeURIComponent(JSON.stringify(block))}
+                      // data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
+                      type="button"
+                      className="rounded border border-transparent hover:border-upstart-600
+                            dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
+                            pointer-events-auto transition"
+                    >
+                      <div
+                        className={tx(
+                          "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
+                        )}
+                      >
+                        <span
+                          className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                          dangerouslySetInnerHTML={{ __html: block.icon }}
+                        />
+                        <span className="whitespace-nowrap text-xs">{block.title}</span>
+                      </div>
+                    </button>
+                  </Tooltip>
+                );
+              })}
+          </div>
         </div>
       </Tabs.Content>
       <ScrollablePanelTab tab="ai" className="p-2">

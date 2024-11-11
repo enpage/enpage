@@ -153,20 +153,25 @@ export function findOptimalPosition(currentLayouts: BreakpointLayouts, constrain
   };
 }
 
+type PartialLayout = Omit<Layout, "i">;
+
 /**
  * Given a desktop layout, convert it to the optimal mobile layout.
  * The main difference between desktop and mobile layouts is the minimum span of elements.
  * Usually, elements are wider on desktop and narrower on mobile.
  * Both layouts are based on a 12-column grid system. But on mobile, the minimum column span should be 4.
  */
-export function convertDesktopLayoutToMobile(desktopLayout: Layout[], layoutCols = 12): Layout[] {
+export function convertDesktopLayoutToMobile(
+  desktopLayout: PartialLayout[],
+  layoutCols = 12,
+): PartialLayout[] {
   // Sort items by their vertical position first, then horizontal
   const sortedItems = [...desktopLayout].sort((a, b) => {
     if (a.y === b.y) return a.x - b.x;
     return a.y - b.y;
   });
 
-  const mobileLayout: Layout[] = [];
+  const mobileLayout: PartialLayout[] = [];
   let currentY = 0;
 
   for (const item of sortedItems) {
@@ -197,9 +202,9 @@ export function convertDesktopLayoutToMobile(desktopLayout: Layout[], layoutCols
 
     // Special cases for height adjustment:
     // 1. Don't adjust height for full-width elements that were already near full-width
-    if (item.w >= layoutCols * 0.7 && mobileW === layoutCols) {
-      mobileH = item.h;
-    }
+    // if (item.w >= layoutCols * 0.7 && mobileW === layoutCols) {
+    //   mobileH = item.h;
+    // }
 
     // 2. Minimum height for elements that become significantly wider
     if (mobileW > item.w * 1.5) {
@@ -207,7 +212,7 @@ export function convertDesktopLayoutToMobile(desktopLayout: Layout[], layoutCols
     }
 
     // 3. Maximum height for very tall elements
-    const maxHeight = 6; // Arbitrary maximum height
+    const maxHeight = 10; // Arbitrary maximum height
     mobileH = Math.min(mobileH, maxHeight);
 
     mobileLayout.push({
@@ -224,3 +229,5 @@ export function convertDesktopLayoutToMobile(desktopLayout: Layout[], layoutCols
 
   return mobileLayout;
 }
+
+export function useAdjustOverflow() {}

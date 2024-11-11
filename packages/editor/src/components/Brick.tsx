@@ -19,20 +19,23 @@ import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 
 const BrickText = lazy(() => import("../bricks/text"));
-const BrickTextWithTitle = lazy(() => import("../bricks/text-with-title"));
 const BrickHero = lazy(() => import("../bricks/hero"));
 const BrickImage = lazy(() => import("../bricks/image"));
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const bricksMap: Record<string, LazyExoticComponent<ComponentType<any>>> = {
   text: BrickText,
-  "text-with-title": BrickTextWithTitle,
   hero: BrickHero,
   image: BrickImage,
 };
 
 const BrickComponent = ({ brick, ...otherProps }: { brick: Brick } & ComponentProps<"div">) => {
   const BrickModule = bricksMap[brick.type];
+
+  if (!BrickModule) {
+    return null;
+  }
+
   const { wrapper, ...rest } = brick.props;
 
   return (
@@ -66,6 +69,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, onMouseDown, onMouseUp, onTouchEnd, children, translation, ...props }, ref) => {
     const editor = useEditor();
     const hasMouseMoved = useRef(false);
+    const [originalTranslation] = useState(style?.transform);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
       const target = e.target as HTMLElement;
@@ -83,9 +87,12 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     };
 
     // used to translate groups of bricks
-    if (translation && style) {
-      style.transform = `translate(${translation.x}px, ${translation.y}px)`;
-    }
+    // if (translation && style) {
+    //   style.transform = mergeTranslations(
+    //     originalTranslation,
+    //     `translate(${translation.x}px, ${translation.y}px)`,
+    //   );
+    // }
 
     return (
       <div

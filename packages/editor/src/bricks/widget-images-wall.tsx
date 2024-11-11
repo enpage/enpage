@@ -3,7 +3,6 @@ import { Value } from "@sinclair/typebox/value";
 import { forwardRef } from "react";
 import { tx, css } from "@enpage/style-system/twind";
 import { commonProps, contentAwareProps } from "./props/common";
-import TextBrick from "./text";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 
@@ -11,19 +10,24 @@ import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
-  type: "hero",
-  title: "Hero",
-  kind: "brick",
-  description: "A big textual element for home pages",
+  type: "image-wall",
+  kind: "widget",
+  title: "Images wall",
+  description: "An image collection",
   preferredW: 12,
   preferredH: 6,
-  icon: `
-   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
-  <rect x="20" y="35" width="60" height="12" rx="2" fill="currentColor"/>
-  <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
+  icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main container -->
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+
+    <!-- Image rectangles in masonry layout -->
+    <rect x="5" y="5" width="6" height="5" rx="1"></rect>
+    <rect x="13" y="5" width="6" height="7" rx="1"></rect>
+    <rect x="5" y="12" width="6" height="7" rx="1"></rect>
+    <rect x="13" y="14" width="6" height="5" rx="1"></rect>
 </svg>
   `,
+
   file: filename,
   props: Type.Composite([
     contentAwareProps,
@@ -53,7 +57,7 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const Wall = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   let { content, heroFontSize } = props;
 
@@ -65,7 +69,7 @@ const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
     "font-size": `var(--${heroFontSize})`,
   });
 
-  return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
+  return <div>Im a card</div>;
 });
 
-export default Hero;
+export default Wall;

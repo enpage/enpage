@@ -1,5 +1,6 @@
 import { Type, type Static, type TObject, type TProperties } from "@sinclair/typebox";
 import { customAlphabet } from "nanoid";
+import { convertDesktopLayoutToMobile } from "./utils/layout-utils";
 
 /**
  * Generates a unique identifier for bricks.
@@ -55,22 +56,19 @@ export type BrickPosition = {
   hidden?: boolean;
 };
 
-// Helper type to ensure at least one breakpoint is set
-type RequireAtLeastOne<T> = {
-  [K in keyof T]: { [P in K]: T[P] } & { [P in Exclude<keyof T, K>]?: T[P] };
-}[keyof T];
-
 export type Brick<T extends string = string> = {
   type: T;
   id: string;
   props: Record<string, unknown>;
-  position: RequireAtLeastOne<{
+  position: {
     mobile: BrickPosition;
-    tablet: BrickPosition;
+    tablet?: BrickPosition;
     desktop: BrickPosition;
-  }>;
+  };
   // manifest: BrickManifest;
 };
+
+export type BricksLayout = Brick[];
 
 // type DefinedBrick = Omit<Brick, "id" | "manifest"> & {
 //   manifest?: BrickManifest;
@@ -78,6 +76,17 @@ export type Brick<T extends string = string> = {
 export type DefinedBrick = Omit<Brick, "id">;
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
+  const desktopLayout = bricks.map((brick) => brick.position.desktop);
+  const mobileLayout = convertDesktopLayoutToMobile(desktopLayout);
+
+  console.log({ mobileLayout });
+
+  bricks.forEach((brick, index) => {
+    if (!brick.position.mobile) {
+      brick.position.mobile = mobileLayout[index];
+    }
+  });
+
   return bricks.map((brick) => ({
     ...brick,
     id: `brick-${generateId()}`,
@@ -91,11 +100,11 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
  */
 type DefinedRowBrick = Omit<Brick, "id" | "manifest" | "position"> & {
   // manifest?: BrickManifest;
-  position: RequireAtLeastOne<{
-    mobile: Omit<BrickPosition, "y">;
-    tablet: Omit<BrickPosition, "y">;
+  position: {
+    mobile?: Omit<BrickPosition, "y">;
+    tablet?: Omit<BrickPosition, "y">;
     desktop: Omit<BrickPosition, "y">;
-  }>;
+  };
 };
 
 // Helpers to generate bricks coordonates
@@ -132,6 +141,10 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
       ...brick,
       id: `brick-${generateId()}`,
       position: {
+        desktop: {
+          ...brick.position.desktop,
+          y: currentRowByBreakpoint.desktop,
+        },
         ...(brick.position.mobile
           ? {
               mobile: {
@@ -139,20 +152,12 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
                 y: currentRowByBreakpoint.mobile,
               },
             }
-          : {}),
+          : null),
         ...(brick.position.tablet
           ? {
               tablet: {
                 ...brick.position.tablet,
                 y: currentRowByBreakpoint.tablet,
-              },
-            }
-          : {}),
-        ...(brick.position.desktop
-          ? {
-              desktop: {
-                ...brick.position.desktop,
-                y: currentRowByBreakpoint.desktop,
               },
             }
           : {}),
@@ -169,7 +174,7 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
   currentRowByBreakpoint.tablet += maxTabletHeight;
   currentRowByBreakpoint.mobile += maxMobileHeight;
 
-  // return teh created bricks
+  // return the created bricks
   return created as DefinedBrick[];
 }
 
@@ -182,6 +187,7 @@ export function defineBrickManifest<
   BProps extends TProperties,
 >({
   type,
+  kind,
   title,
   description,
   preferredW,
@@ -195,6 +201,7 @@ export function defineBrickManifest<
   datarecord,
 }: {
   type: BType;
+  kind: string;
   title: BTitle;
   icon: BIcon;
   file: BFile;
@@ -209,6 +216,7 @@ export function defineBrickManifest<
 }) {
   return Type.Object({
     type: Type.Literal(type),
+    kind: Type.Literal(kind),
     title: Type.Literal(title),
     description: Type.Literal(description),
     icon: Type.Literal(icon),

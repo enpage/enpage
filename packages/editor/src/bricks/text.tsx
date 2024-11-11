@@ -13,6 +13,7 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
   type: "text",
+  kind: "brick",
   title: "Text",
   description: "Text with formatting options",
   preferredW: 6,
@@ -36,7 +37,7 @@ export const defaults = Value.Create(manifest);
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   const content = useEditableText(props.id, props.content);
-  const className = useBrickStyle(props, props.className);
+  const className = useBrickStyle(props);
   return (
     <div ref={ref} className={className}>
       {content}

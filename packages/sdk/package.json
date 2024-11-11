@@ -155,7 +155,7 @@
     "sizetest": "pnpm build && du -sh dist",
     "lint": "biome check --write . && tsc --noEmit",
     "ci:lint": "tsc --noEmit",
-    "test": "echo \"Error: please run tests from the mono repository root\" && exit 1",
+    "test": "vitest",
     "prepare": "node ./scripts/prepare.cjs"
   },
   "author": "Matthias Etienne",

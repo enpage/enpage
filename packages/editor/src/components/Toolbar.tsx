@@ -8,35 +8,13 @@ import { DropdownMenu } from "@enpage/style-system";
 
 export default function Toolbar() {
   const editor = useEditor();
-  const attributes = useAttributes();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
 
-  const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
-  const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
-
-  const switchPreviewMode = useCallback(() => {
-    switch (editor.previewMode) {
-      case "desktop":
-        if (attributes.$tabletBreakpointEnabled) {
-          editor.setPreviewMode("tablet");
-        } else {
-          editor.setPreviewMode("mobile");
-        }
-        break;
-      case "tablet":
-        editor.setPreviewMode("mobile");
-        break;
-      case "mobile":
-        editor.setPreviewMode("desktop");
-        break;
-    }
-  }, [editor.previewMode, editor.setPreviewMode, attributes.$tabletBreakpointEnabled]);
-
   // bg-upstart-600
-  const baseCls = `bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.15)] border-y border-t-gray-200 border-b-gray-300`;
+  const baseCls = `bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.15)] dark:to-[rgba(255,255,255,0.05)] border-y border-t-gray-200 border-b-gray-300 dark:(border-t-dark-500 border-b-dark-600)`;
   const commonCls = `${baseCls}
     w-full
-    hover:(from-upstart-600 to-upstart-500 text-white)
+    hover:(from-upstart-600 to-upstart-500 text-white) dark:hover:(from-upstart-700 to-upstart-600 text-white)
     active:(from-upstart-700 to-upstart-500 text-white)
     disabled:text-gray-400/80 disabled:hover:from-transparent disabled:hover:to-transparent
   `;
@@ -55,9 +33,9 @@ export default function Toolbar() {
     <nav
       role="toolbar"
       className={tx(
-        `bg-gray-200 z-[9999]
-          flex flex-col w-[3.7rem] text-xl text-gray-600
-          border-r border-gray-300`,
+        `bg-gray-200 dark:bg-dark-700 z-[9999]
+          flex flex-col w-[3.7rem] text-xl text-gray-600 dark:text-gray-300
+          border-r border-gray-300 dark:border-dark-500`,
         {
           "shadow-[0px_0px_10px_0px_rgba(0,0,0,0.08)]": !editor.panel,
         },
@@ -72,40 +50,11 @@ export default function Toolbar() {
         type="button"
         disabled={false}
         onClick={() => editor.togglePanel("library")}
-        className={tx(btnClass, commonCls)}
+        className={tx(btnClass, commonCls, editor.panel === "library" && "active")}
       >
         <LuPlus className="h-7 w-auto" />
         <span className={tooltipCls}>Add elements</span>
       </button>
-
-      {/* <ToolbarMenu
-        items={[
-          { label: "Create new page" },
-          { label: "View all pages" },
-          { type: "separator" },
-          { label: "Schedule publish", shortcut: "⌘⇧D" },
-        ]}
-      >
-        <button type="button" className={clsx(btnClass, commonCls, btnWithArrow)}>
-          <LiaCopy className="h-7 w-auto" />
-          <RiArrowDownSLine className={arrowClass} />
-          <span className={tooltipCls}>Pages</span>
-        </button>
-      </ToolbarMenu> */}
-      {/* <button disabled={!canUndo} onClick={() => undo()} type="button" className={tx(btnClass, commonCls)}>
-        <LuUndo className="h-7 w-auto" />
-        <span className={tooltipCls}>Undo</span>
-      </button>
-      <button disabled={!canRedo} onClick={() => redo()} type="button" className={tx(btnClass, commonCls)}>
-        <LuRedo className="h-7 w-auto" />
-        <span className={tooltipCls}>Redo</span>
-      </button> */}
-      {/* <button type="button" className={tx(btnClass, commonCls)} onClick={switchPreviewMode}>
-        {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
-        {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
-        {editor.previewMode === "tablet" && <BsTablet className="h-7 w-auto" />}
-        <span className={tooltipCls}>Switch View</span>
-      </button> */}
 
       <button
         type="button"
@@ -136,7 +85,7 @@ export default function Toolbar() {
         </button>
       </ToolbarMenu> */}
 
-      <div className={tx("flex-1", "border-t-gray-200")} />
+      <div className={tx("flex-1", "border-t-gray-200 dark:border-t-dark-500")} />
     </nav>
   );
 }

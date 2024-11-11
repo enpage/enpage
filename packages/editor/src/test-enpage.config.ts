@@ -95,11 +95,6 @@ const homePageBricks = defineBricks([
           w: 12,
           h: 2,
         },
-        tablet: {
-          x: 0,
-          w: 12,
-          h: 2,
-        },
         desktop: {
           x: 0,
           w: 12,
@@ -119,12 +114,6 @@ const homePageBricks = defineBricks([
       position: {
         mobile: {
           x: 0,
-          w: 12,
-          h: 4,
-        },
-        tablet: {
-          x: 0,
-          y: 4,
           w: 12,
           h: 4,
         },
@@ -152,11 +141,6 @@ const homePageBricks = defineBricks([
           w: 12,
           h: 8,
         },
-        tablet: {
-          x: 0,
-          w: 12,
-          h: 4,
-        },
         desktop: {
           x: 0,
           w: 12,
@@ -174,12 +158,6 @@ const homePageBricks = defineBricks([
           x: 0,
           y: 3,
           w: 12,
-          h: 3,
-        },
-        tablet: {
-          x: 0,
-          y: 3,
-          w: 4,
           h: 3,
         },
         desktop: {
@@ -200,12 +178,6 @@ const homePageBricks = defineBricks([
           w: 12,
           h: 3,
         },
-        tablet: {
-          x: 4,
-          y: 4,
-          w: 4,
-          h: 3,
-        },
         desktop: {
           x: 4,
           y: 4,
@@ -221,12 +193,6 @@ const homePageBricks = defineBricks([
         mobile: {
           x: 8,
           w: 12,
-          h: 3,
-        },
-        tablet: {
-          x: 8,
-          y: 5,
-          w: 4,
           h: 3,
         },
         desktop: {

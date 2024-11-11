@@ -5,7 +5,6 @@ import type { EnpageTemplateConfig } from "~/shared/template-config";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderTemplatePlugin } from "./plugin-renderer";
-import { insertBasePlugin } from "./plugin-base-url";
 import { contextPlugin } from "./plugin-context";
 import { pluginVirtual } from "./plugin-virtual-files";
 import { manifestPlugin } from "./plugin-manifest";
@@ -146,8 +145,7 @@ export default async function enpageMetaPlugin(viteEnv: ConfigEnv) {
     pluginVirtual(config, viteEnv, env),
     enpagePlugin(config, viteEnv, env),
     contextPlugin(pageContext),
-    renderTemplatePlugin(config, viteEnv, env),
-    insertBasePlugin(config, viteEnv, env),
+    // renderTemplatePlugin(config, viteEnv, env),
     manifestPlugin(config, viteEnv, env),
     // optimize images only in client build
     viteEnv.command === "build" &&

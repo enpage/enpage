@@ -8,8 +8,8 @@ export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
   const previewMode = usePreviewMode();
   const [show, setShow] = useState<boolean | null>(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    console.log("DeviceFrame previewMode", previewMode);
     setShow(false);
     setTimeout(() => {
       setShow(true);

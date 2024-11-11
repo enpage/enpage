@@ -10,6 +10,7 @@ const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
   type: "video",
+  kind: "brick",
   title: "Video",
   description: "Youtube video",
   preferredW: 7,
@@ -18,8 +19,8 @@ export const manifest = defineBrickManifest({
   icon: `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <rect
-    x="5" y="5"
-    width="90" height="90"
+    x="5" y="15"
+    width="90" height="70"
     rx="20" ry="20"
     fill="transparent"
     stroke="currentColor"

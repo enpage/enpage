@@ -1,9 +1,9 @@
 import { EditorWrapper, type EditorWrapperProps } from "./components/EditorWrapper";
 import Editor from "./components/Editor";
 
-export default function EditorComponent({ pageConfig, pages }: EditorWrapperProps) {
+export default function EditorComponent(props: EditorWrapperProps) {
   return (
-    <EditorWrapper pageConfig={pageConfig} pages={pages}>
+    <EditorWrapper {...props}>
       <Editor />
     </EditorWrapper>
   );

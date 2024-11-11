@@ -21,7 +21,7 @@ export default function App() {
   ];
   return (
     <ClientOnly>
-      <EditorWrapper pageConfig={pageConfig} pages={testPages}>
+      <EditorWrapper pageConfig={pageConfig} pages={testPages} mode="local">
         <Editor />
       </EditorWrapper>
     </ClientOnly>

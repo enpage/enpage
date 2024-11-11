@@ -55,7 +55,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    console.log("useEffect register click listener");
     const listener = (e: MouseEvent) => {
       const event = e as MouseEvent;
       const target = event.target as HTMLElement;
@@ -64,11 +63,11 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         !target.closest("[data-radix-select-viewport]") &&
         !target.closest("#floating-panel") &&
         !target.closest('[role="toolbar"]') &&
+        !target.closest('[role="navigation"]') &&
         !target.matches("html") &&
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
-        console.info("deselecting brick because user clicked outside", event);
         editor.deselectBrick();
         // also deslect the library panel
         editor.hidePanel("library");
@@ -156,8 +155,14 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   };
 
   const onDrag: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    hasBeenDragged.current = true;
     if (!dragInfo.current.isDragging) return;
+
+    // ignore if the brick has not been dragged
+    if (oldItem.x === newItem.x && oldItem.y === newItem.y) {
+      return;
+    }
+
+    hasBeenDragged.current = true;
 
     // compute the delta between the initial drag position and the current one
     // Calculate dx and dy including margins
@@ -177,7 +182,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       const clickEvent = new MouseEvent("click", { bubbles: true });
       element.dispatchEvent(clickEvent);
     } else if (hasBeenDragged.current) {
-      console.log("deselcting brick because it has been dragged");
+      // deselect the brick if it has been dragged
       editor.deselectBrick();
     }
 
@@ -185,16 +190,14 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     const dy = newItem.y - oldItem.y;
 
     // Update actual layout positions
-    if (dragInfo.current.startOffset && editor.selectedGroup?.length) {
-      // reset group selection
-
+    if (hasBeenDragged.current && dragInfo.current.startOffset && editor.selectedGroup?.length) {
       editor.selectedGroup?.forEach((id) => {
         const brick = draft.getBrick(id);
         if (brick) {
           const layoutType = editor.previewMode;
           const layout = brick.position[layoutType];
           if (layout) {
-            console.log("updating brick position", id, layoutType, layout, dx, dy);
+            console.log("updating brick position for %s", id);
             draft.updateBrickPosition(id, layoutType, {
               ...layout,
               // make sure the value is not <0 and not > max
@@ -219,7 +222,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   };
 
   const onResizeStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    console.log("resize stop", newItem);
     const brick = draft.getBrick(newItem.i);
     invariant(brick, "brick not found");
 
@@ -228,6 +230,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
     // update brick position
     const layoutType = editor.previewMode;
+    console.log("updating brick position", newItem);
     draft.updateBrick(brick.id, {
       position: {
         ...brick.position,
@@ -303,7 +306,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         onDragStop={onDragStop}
         onResizeStop={onResizeStop}
         draggableCancel=".nodrag"
-        useCSSTransforms={false}
+        // useCSSTransforms={false}
         // @ts-ignore wrong types in library
         resizeHandle={getResizeHandle}
         // all directions

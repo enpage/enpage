@@ -1,6 +1,6 @@
 import type { FieldProps } from "@rjsf/utils";
 import { nanoid } from "nanoid";
-import { Button, Popover, TextField } from "@enpage/style-system";
+import { Button, Popover, TextField, Text } from "@enpage/style-system";
 import { tx, colors, css } from "@enpage/style-system/twind";
 import { generateColorHarmony } from "../../color-helpers";
 import { useDraft } from "~/hooks/use-editor";
@@ -79,7 +79,11 @@ export function ColorFieldRow({
             {name}
             {required ? <span className="required">*</span> : null}
           </label>
-          {description && <p className={tx("field-description", descClassName)}>{description}</p>}
+          {description && (
+            <Text as="p" color="gray" className={tx("field-description")}>
+              {description}
+            </Text>
+          )}
         </div>
       )}
       <ColorPreviewPill

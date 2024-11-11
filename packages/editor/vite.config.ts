@@ -14,7 +14,7 @@ export default defineConfig({
     Inspect(),
     react() as PluginOption,
     dts({
-      exclude: ["src/entry-client.tsx", "src/entry-server.tsx", "src/main.tsx", "src/App.tsx"],
+      include: ["src/library.tsx"],
     }),
     bundlesize({
       limits: [{ name: "**/*", limit: "800 kB" }],
@@ -45,10 +45,11 @@ export default defineConfig({
         "react",
         "react-dom",
         "react/jsx-runtime",
-        // "ajv",
-        // "ajv-formats",
         "@sinclair/typebox",
         "@enpage/style-system",
+        "@enpage/sdk",
+        "lodash-es",
+        "lodash",
       ],
       output: {
         // globals: {
