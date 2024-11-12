@@ -6,7 +6,6 @@ import { temporal } from "zundo";
 import type { ResponsiveMode } from "@enpage/sdk/shared/responsive";
 import type { Brick, BrickPosition, BricksLayout } from "@enpage/sdk/shared/bricks";
 import type { AttributesResolved } from "@enpage/sdk/shared/attributes";
-import { generateId, type BrickManifest } from "@enpage/sdk/shared/bricks";
 import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
@@ -15,11 +14,11 @@ export interface GridStateProps {
   /**
    * When local, the editor does not fetch data from the server or save data to the server
    */
-  layout: BricksLayout;
+  layout: Brick[];
 }
 
 export interface GridState extends GridStateProps {
-  setLayout: (layout: BricksLayout) => void;
+  setLayout: (layout: Brick[]) => void;
 }
 
 export const createGridStore = (
