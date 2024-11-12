@@ -13,16 +13,18 @@ export function useBrickStyle(
     Partial<Static<typeof commonProps>>,
 ) {
   return tx([
-    apply("flex-1", props.className),
+    apply(props.className),
+    // apply("flex-1", props.className),
     props.backgroundColor && `bg-${props.backgroundColor}`,
+    props.borderColor && `border-${props.borderColor}`,
     props.z && `z-[${props.z}]`,
 
     props.padding,
 
-    props.borderColor,
     props.borderRadius,
     props.borderStyle,
     props.borderWidth,
+    props.shadow,
 
     props.color && `text-${props.color}`,
     props.fontSize && `text-${props.fontSize}`,

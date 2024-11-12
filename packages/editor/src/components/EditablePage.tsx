@@ -14,7 +14,7 @@ import {
   LAYOUT_PADDING,
   LAYOUT_ROW_HEIGHT,
 } from "../config/layout-constants";
-import { findOptimalPosition } from "../utils/layout-utils";
+import { adjustLayoutHeight, findOptimalPosition } from "../utils/layout-utils";
 import Selecto from "react-selecto";
 
 // @ts-ignore wrong types in library
@@ -110,16 +110,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     () =>
       bricks.map((brick) => ({
         i: brick.id,
-        ...((brick.position.mobile ?? brick.position.tablet ?? brick.position.desktop) as BrickPosition),
-      })),
-    [bricks],
-  );
-
-  const layoutTablet = useMemo(
-    () =>
-      bricks.map((brick) => ({
-        i: brick.id,
-        ...((brick.position.tablet ?? brick.position.mobile ?? brick.position.desktop) as BrickPosition),
+        ...((brick.position.mobile ?? brick.position.desktop) as BrickPosition),
       })),
     [bricks],
   );
@@ -128,7 +119,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     () =>
       bricks.map((brick) => ({
         i: brick.id,
-        ...((brick.position.desktop ?? brick.position.tablet ?? brick.position.mobile) as BrickPosition),
+        ...((brick.position.desktop ?? brick.position.mobile) as BrickPosition),
       })),
     [bricks],
   );
@@ -248,14 +239,12 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       const optimalPos = findOptimalPosition(
         {
           mobile: layoutMobile,
-          tablet: layoutTablet,
           desktop: layoutDesktop,
         },
         editor.draggingBrick,
       );
 
       const desktopPosition = editor.previewMode === "desktop" ? { ...item, i: id } : optimalPos.desktop;
-      const tabletPosition = editor.previewMode === "tablet" ? { ...item, i: id } : optimalPos.tablet;
       const mobilePosition = editor.previewMode === "mobile" ? { ...item, i: id } : optimalPos.mobile;
 
       draft.addBrick({
@@ -264,7 +253,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         id,
         position: {
           desktop: desktopPosition,
-          tablet: tabletPosition,
           mobile: mobilePosition,
         },
       });
@@ -319,7 +307,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         })}
         layouts={{
           mobile: layoutMobile,
-          tablet: layoutTablet,
           desktop: layoutDesktop,
         }}
         cols={LAYOUT_COLS}
@@ -337,6 +324,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         // preventCollision={true}
         onWidthChange={onWidthChange}
         onLayoutChange={(layout, layouts) => {
+          console.log("layout change", layout, layouts);
           return false;
         }}
       >

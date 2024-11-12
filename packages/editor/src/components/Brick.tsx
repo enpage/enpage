@@ -190,15 +190,7 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
               >
                 Mobile
               </DropdownMenu.CheckboxItem>
-              {attributes.$tabletBreakpointEnabled && (
-                <DropdownMenu.CheckboxItem
-                  checked={!brick.position.tablet?.hidden}
-                  onClick={(e) => e.stopPropagation()}
-                  onCheckedChange={() => draft.toggleBrickVisibilityPerBreakpoint(brick.id, "tablet")}
-                >
-                  Tablet
-                </DropdownMenu.CheckboxItem>
-              )}
+
               <DropdownMenu.CheckboxItem
                 checked={!brick.position.desktop?.hidden}
                 onClick={(e) => e.stopPropagation()}

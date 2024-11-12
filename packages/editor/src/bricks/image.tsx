@@ -2,8 +2,10 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
 import { tx, apply } from "@enpage/style-system/twind";
-import { commonBrickProps, getCommonHtmlAttributesAndRest } from "./common";
+import { commonProps } from "./props/common";
+import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
+import { useBrickStyle } from "./hooks/use-brick-style";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -39,7 +41,8 @@ export const manifest = defineBrickManifest({
         "ui:placeholder": "Your image description",
       }),
     }),
-    commonBrickProps,
+    commonProps,
+    commonStyleProps,
   ]),
 });
 
@@ -48,21 +51,12 @@ export const defaults = Value.Create(manifest);
 
 const Image = forwardRef<HTMLImageElement, Manifest["props"] & ComponentProps<"img">>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  const {
-    attributes,
-    classes,
-    rest: { alt, src },
-  } = getCommonHtmlAttributesAndRest(props);
+  const className = useBrickStyle(props);
+  const { src, alt } = props;
 
   return (
-    <div className={tx(apply("flex items-center justify-center h-full w-full"), classes)}>
-      <img
-        {...attributes}
-        src={src}
-        ref={ref}
-        alt={alt}
-        className={tx(apply("max-h-full min-w-1 min-h-1"))}
-      />
+    <div className={tx(apply("flex items-center justify-center h-full w-full"), className)}>
+      <img src={src} ref={ref} alt={alt} className={tx(apply("max-h-full min-w-1 min-h-1 brick-content"))} />
     </div>
   );
 });

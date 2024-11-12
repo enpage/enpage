@@ -16,6 +16,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (preset === "auto") {
       onChange("auto");
@@ -24,7 +25,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
     } else {
       onChange("100%");
     }
-  }, [preset, onChange]);
+  }, [preset]);
 
   return (
     <div className="dimension-field">

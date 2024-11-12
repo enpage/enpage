@@ -22,22 +22,8 @@ export default function TopBar() {
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
 
   const switchPreviewMode = useCallback(() => {
-    switch (editor.previewMode) {
-      case "desktop":
-        if (attributes.$tabletBreakpointEnabled) {
-          editor.setPreviewMode("tablet");
-        } else {
-          editor.setPreviewMode("mobile");
-        }
-        break;
-      case "tablet":
-        editor.setPreviewMode("mobile");
-        break;
-      case "mobile":
-        editor.setPreviewMode("desktop");
-        break;
-    }
-  }, [editor.previewMode, editor.setPreviewMode, attributes.$tabletBreakpointEnabled]);
+    editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
+  }, [editor.previewMode, editor.setPreviewMode]);
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
@@ -80,22 +66,19 @@ export default function TopBar() {
         onClick={() => {
           window.location.href = "/dashboard";
         }}
-        className={tx(baseCls)}
+        className={tx(baseCls, "flex-shrink-0")}
       >
         <img src={logo} alt="Upstart" className={tx("h-[56%] w-auto")} />
       </button>
 
-      <div className={tx(baseCls, "px-5", css({ paddingBlock: "0.6rem" }))}>
+      <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
         <Popover.Root>
           <Popover.Trigger>
-            <button type="button">
+            <button type="button" className="w-full">
               <TextField.Root
-                placeholder="Ask AI to generate elements or modify your page"
+                placeholder="Ask AI to modify your page"
                 size="3"
-                className={tx(
-                  "focus:!outline-white/40 focus-within:!outline-white/40",
-                  css({ width: "30rem" }),
-                )}
+                className={tx("focus:!outline-white/40 focus-within:!outline-white/40 flex-1 w-full")}
               >
                 <TextField.Slot>
                   <BsStars className="w-5 h-5 text-upstart-400" />
@@ -129,9 +112,14 @@ export default function TopBar() {
         </Popover.Root>
       </div>
 
-      <div className={tx("border-r border-r-upstart-700", baseCls)} />
+      {/* <div className={tx("border-r border-r-upstart-700", baseCls)} /> */}
 
-      <button disabled={!canUndo} onClick={() => undo()} type="button" className={tx(btnClass, commonCls)}>
+      <button
+        disabled={!canUndo}
+        onClick={() => undo()}
+        type="button"
+        className={tx(btnClass, commonCls, "ml-auto")}
+      >
         <LuUndo className="h-7 w-auto" />
         <span className={tx(tooltipCls)}>Undo</span>
       </button>
@@ -142,7 +130,6 @@ export default function TopBar() {
       <button type="button" className={tx(btnClass, commonCls)} onClick={switchPreviewMode}>
         {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
         {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
-        {editor.previewMode === "tablet" && <BsTablet className="h-7 w-auto" />}
         <span className={tx(tooltipCls)}>Switch View</span>
       </button>
 

@@ -11,7 +11,7 @@ import { tx } from "@enpage/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import { jsonFormClass } from "./json-form/form-class";
 import { Tabs } from "@enpage/style-system";
-import { manifests } from "../bricks/all-manifests";
+import { manifests, defaults } from "../bricks/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 
 import "./json-form/json-form.css";
@@ -83,14 +83,18 @@ export default function Inspector() {
 
 function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean }) {
   const draft = useDraft();
-  const [state, setState] = useState(brick.props);
+  const brickDefaults = defaults[brick.type];
+  const [state, setState] = useState({ ...brickDefaults.props, ...brick.props });
+
+  console.log("el state", state);
 
   const onChange = (data: IChangeEvent, id?: string) => {
     if (!id) {
       // ignore changes that don't have an id
       return;
     }
-    console.log("changed", data, id);
+    setState(data.formData);
+    console.log("changed", data.formData, id);
     draft.updateBrickProps(brick.id, data.formData);
   };
 
@@ -102,11 +106,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
       <Form
         key={`inspector-${brick.id}`}
         autoComplete="off"
-        className={tx(
-          "json-form transition transition-all duration-150",
-          jsonFormClass,
-          showHelp && "hide-help",
-        )}
+        className={tx("json-form", jsonFormClass, showHelp && "hide-help")}
         formData={state}
         schema={manifest.properties.props}
         formContext={{ brickId: brick.id }}

@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "@enpage/sdk/shared/responsive";
 import invariant from "@enpage/sdk/shared/utils/invariant";
-import type { Brick, BrickPosition } from "@enpage/sdk/shared/bricks";
+import type { Breakpoint, Brick, BrickPosition } from "@enpage/sdk/shared/bricks";
 import type { Theme } from "@enpage/sdk/shared/theme";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
 import type { AttributesResolved } from "@enpage/sdk/shared/attributes";
@@ -15,6 +15,7 @@ import type { TObject } from "@sinclair/typebox";
 import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
+import type { Layout } from "react-grid-layout";
 
 export interface EditorStateProps {
   /**
@@ -174,6 +175,7 @@ export interface DraftStateProps {
 
 export interface DraftState extends DraftStateProps {
   getBricks: () => Brick[];
+  updateLayout: (positions: Layout[], bp: Breakpoint) => void;
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
@@ -303,6 +305,16 @@ export const createDraftStore = (
             setVersion: (version) =>
               set((state) => {
                 state.version = version;
+              }),
+
+            updateLayout: (positions, bp) =>
+              set((state) => {
+                state.bricks.forEach((b) => {
+                  const index = positions.findIndex((l) => l.i === b.id);
+                  if (index > -1) {
+                    b.position[bp] = { ...b.position[bp], ...positions[index] };
+                  }
+                });
               }),
           })),
           {
@@ -443,14 +455,13 @@ export const usePagePathSubscribe = (callback: (path: EditorState["pageConfig"][
  * Return the original position of the duplicated brick translated to the new position (+1 row for each breakpoint)
  */
 function getDuplicatedBrickPosition(brick: Brick) {
-  const { mobile, tablet, desktop } = brick.position;
+  const { mobile, desktop } = brick.position;
   return {
-    mobile: { ...(mobile ?? tablet ?? desktop)!, y: (mobile ?? tablet ?? desktop)!.y + 1 },
-    tablet: { ...(tablet ?? desktop ?? mobile)!, y: (tablet ?? desktop ?? mobile)!.y + 1 },
+    mobile: { ...(mobile ?? desktop)!, y: (mobile ?? desktop)!.y + 1 },
     desktop: {
-      ...(desktop ?? tablet ?? mobile)!,
-      y: (desktop ?? tablet ?? mobile)!.y + 1,
-      x: (desktop ?? tablet ?? mobile)!.x + 1,
+      ...(desktop ?? mobile)!,
+      y: (desktop ?? mobile)!.y + 1,
+      x: (desktop ?? mobile)!.x + 1,
     },
   };
 }

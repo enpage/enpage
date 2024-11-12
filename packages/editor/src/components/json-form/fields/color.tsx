@@ -169,6 +169,8 @@ function ColorPopover({
   let width = "308px";
   let filteredColors = colors;
   let filteredShades = shades;
+
+  const defaultColors = colors.flatMap((color) => shades.map((shade) => `${color}-${shade}`));
   let direction: "flex-row" | "flex-col" = "flex-row";
 
   const showSuggestions = useMemo(() => colorName !== "generic" && colorName !== "primary", [colorName]);
@@ -184,7 +186,7 @@ function ColorPopover({
 
     case "theme-border-colors":
       width = "220px";
-      filteredColors = ["neutral", "primary", "secondary", "tertiary"];
+      filteredColors = ["neutral", "primary", "secondary", "tertiary", "accent"];
       filteredShades = ["4", "5", "6", "7"];
       direction = "flex-col";
       side = "right";
@@ -194,7 +196,7 @@ function ColorPopover({
     case "theme-bg-colors-with-shades":
       width = "106px";
       direction = "flex-col";
-      filteredColors = ["primary", "secondary", "tertiary"];
+      filteredColors = ["neutral", "primary", "secondary", "tertiary"];
       filteredShades = ["0", "1", "2"];
       side = "right";
       align = "start";
@@ -209,7 +211,7 @@ function ColorPopover({
       break;
     case "theme-base":
       width = "590px";
-      filteredShades = ["500", "400", "300"];
+      filteredShades = ["900", "700", "500", "300"];
       direction = "flex-col";
       side = "right";
       align = "start";

@@ -41,6 +41,13 @@ export default defineConfig({
     ["bg-primary-", ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})` })],
     ["bg-secondary-", ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})` })],
     ["bg-tertiary-", ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})` })],
+
+    ["border-neutral-", ({ $$ }) => ({ borderColor: `var(--color-neutral-${$$})` })],
+    ["border-accent-", ({ $$ }) => ({ borderColor: `var(--color-accent-${$$})` })],
+    ["border-primary-", ({ $$ }) => ({ borderColor: `var(--color-primary-${$$})` })],
+    ["border-secondary-", ({ $$ }) => ({ borderColor: `var(--color-secondary-${$$})` })],
+    ["border-tertiary-", ({ $$ }) => ({ borderColor: `var(--color-tertiary-${$$})` })],
+
     [
       "primary-",
       ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})`, color: `var(--text-primary-${$$})` }),
@@ -56,6 +63,7 @@ export default defineConfig({
     ["brick-light-", ({ $$ }) => `bg-${$$}-300 text-${$$}-50`],
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],
+
     ["hero-1", { fontSize: "clamp(1.75rem, 1.5vw + 1.25rem, 2.5rem)", lineHeight: "1.25" }],
     ["hero-2", { fontSize: "clamp(2rem, 1.75vw + 1.375rem, 2.875rem)", lineHeight: "1.25" }],
     ["hero-3", { fontSize: "clamp(2.25rem, 2vw + 1.5rem, 3.25rem)", lineHeight: "1.25" }],

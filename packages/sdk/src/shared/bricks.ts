@@ -62,13 +62,14 @@ export type Brick<T extends string = string> = {
   props: Record<string, unknown>;
   position: {
     mobile: BrickPosition;
-    tablet?: BrickPosition;
     desktop: BrickPosition;
   };
   // manifest: BrickManifest;
 };
 
 export type BricksLayout = Brick[];
+export type ResponsivePosition = Brick["position"];
+export type Breakpoint = keyof Brick["position"];
 
 // type DefinedBrick = Omit<Brick, "id" | "manifest"> & {
 //   manifest?: BrickManifest;

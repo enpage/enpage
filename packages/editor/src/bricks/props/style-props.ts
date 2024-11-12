@@ -1,5 +1,4 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { tx } from "@enpage/style-system/twind";
 
 const borderWidth = Type.Union(
   [

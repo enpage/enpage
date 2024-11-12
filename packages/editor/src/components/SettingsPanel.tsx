@@ -1,4 +1,4 @@
-import { useAttributes, useAttributesSchema, useDraft } from "../hooks/use-editor";
+import { useAttributes, useAttributesSchema, useDraft, usePreviewMode } from "../hooks/use-editor";
 import { sortJsonSchemaProperties } from "../utils/sort-json-schema-props";
 import Form, { type IChangeEvent } from "@rjsf/core";
 import { css, tx } from "@enpage/style-system/twind";
@@ -9,6 +9,7 @@ import { jsonFormClass } from "./json-form/form-class";
 import type { ObjectFieldTemplateProps, UiSchema } from "@rjsf/utils";
 
 import "./json-form/json-form.css";
+import { adjustLayoutHeight } from "~/utils/layout-utils";
 
 interface GroupedField {
   content: React.ReactElement;
@@ -33,13 +34,6 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     acc[group].push(prop);
     return acc;
   }, {});
-
-  // Sort groups by their order taken from "ui:group:order"
-  const groups = Object.keys(groupedFields).sort((a, b) => {
-    const orderA = (groupedFields[a][0].content.props.uiSchema?.["ui:group:order"] as number) ?? 999;
-    const orderB = (groupedFields[b][0].content.props.uiSchema?.["ui:group:order"] as number) ?? 999;
-    return orderA - orderB;
-  });
 
   return (
     <div className="rjsf-sections">

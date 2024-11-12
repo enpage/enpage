@@ -61,7 +61,6 @@ export const attributes = defineAttributes({
   mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
-  backgroundColor: attr.color("Background Color", "#ffffff"),
   testUrl: attr.url("Test URL", "https://enpage.co"),
 });
 

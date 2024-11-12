@@ -36,8 +36,8 @@ export const defaults = Value.Create(manifest);
  */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  const content = useEditableText(props.id, props.content);
   const className = useBrickStyle(props);
+  const content = useEditableText(props.id, props.content);
   return (
     <div ref={ref} className={className}>
       {content}
@@ -47,16 +47,3 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
 
 // Memoize the component to avoid re-rendering when the text content changes
 export default memoizeWithout(Text, "content");
-
-// export default memo(Text, (prevProps, nextProps) => {
-//   // !WARN: keep unused args because lodash do not pass the "key" when following args are not present
-//   const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {
-//     if (key === "content") {
-//       // If the key is in our ignore list, consider it equal
-//       return true;
-//     }
-//     // Otherwise, use the default comparison
-//     return undefined;
-//   });
-//   return compared;
-// });

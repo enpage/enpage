@@ -6,12 +6,13 @@ interface WithInnerRef {
 }
 
 // Generic type for composed props with better constraints
-type ComposedProps<Config> = Omit<Config, keyof WithInnerRef> & {
-  className?: string;
-  width?: number;
-  defaultWidth?: number;
-  onWidthChange?: (width: number) => void;
-};
+type ComposedProps<Config> = Config &
+  WithInnerRef & {
+    className?: string;
+    width?: number;
+    defaultWidth?: number;
+    onWidthChange?: (width: number) => void;
+  };
 
 export default function WidthProvideRGL<Config>(
   ComposedComponent: ComponentType<Config & WithInnerRef>,
@@ -19,11 +20,11 @@ export default function WidthProvideRGL<Config>(
   return function WidthProvider({
     className,
     defaultWidth = 1280,
+    innerRef,
     onWidthChange,
     ...rest
   }: ComposedProps<Config>) {
     const [width, setWidth] = useState(defaultWidth);
-    const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       // oberve the width of the element
@@ -32,15 +33,15 @@ export default function WidthProvideRGL<Config>(
         setWidth(newWidth);
         onWidthChange?.(newWidth);
       });
-      observer.observe(elementRef.current!);
+      observer.observe(innerRef.current!);
       return () => observer.disconnect();
-    }, [onWidthChange]);
+    }, [onWidthChange, innerRef.current]);
 
     const componentProps: Config & WithInnerRef & { width: number } = {
       ...(rest as Config),
       className,
       width,
-      innerRef: elementRef,
+      innerRef,
     };
 
     return <ComposedComponent {...componentProps} />;

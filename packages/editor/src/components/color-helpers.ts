@@ -158,5 +158,11 @@ export function generateColorHarmony(theme: Theme["colors"], forType: ColorType)
       break;
   }
 
-  return suggestions.map((hsl) => rgbToHex(hslToRgb(hsl)));
+  const dedup = Array.from(new Set(suggestions.map((hsl) => rgbToHex(hslToRgb(hsl)))));
+
+  if (dedup.length > 2) {
+    return dedup;
+  }
+
+  return [];
 }
