@@ -130,10 +130,10 @@ export const useEditableBrick = (
               interact.snappers.grid({
                 x: gridConfig.colWidth,
                 y: gridConfig.rowHeight,
-                offset: {
-                  x: gridConfig.containerHorizontalPadding,
-                  y: gridConfig.containerVerticalPadding,
-                },
+                // offset: {
+                //   x: gridConfig.containerHorizontalPadding,
+                //   y: gridConfig.containerVerticalPadding,
+                // },
               }),
             ],
             relativePoints: [{ x: 0, y: 0 }],
