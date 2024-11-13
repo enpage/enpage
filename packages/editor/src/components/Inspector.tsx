@@ -27,6 +27,12 @@ export default function Inspector() {
   }
 
   const manifest = manifests[editor.selectedBrick.type];
+  if (!manifest) {
+    console.warn(`No manifest found for brick: ${JSON.stringify(editor.selectedBrick)}`);
+    editor.deselectBrick();
+    return null;
+  }
+
   const tabsCount = [
     1,
     manifest.properties.datasource,

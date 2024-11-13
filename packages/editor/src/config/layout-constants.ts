@@ -13,6 +13,9 @@ export const LAYOUT_BREAKPOINTS = {
   mobile: 1,
 };
 
+/**
+ * Important: keep the same pdding for x and y.
+ */
 export const LAYOUT_PADDING: Record<string, [number, number]> = {
   desktop: [20, 20],
   tablet: [16, 16],

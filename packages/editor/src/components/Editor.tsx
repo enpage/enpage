@@ -15,7 +15,7 @@ import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
-import Page from "./EditablePage";
+import Page from "./EditablePage2";
 import { tx, injectGlobal, css } from "@enpage/style-system/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";

@@ -1,4 +1,4 @@
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Breakpoint, Brick } from "@enpage/sdk/shared/bricks";
 import {
   forwardRef,
   lazy,
@@ -67,38 +67,29 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     const hasMouseMoved = useRef(false);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
-      const target = e.target as HTMLElement;
-      if (
-        hasMouseMoved.current ||
-        target.matches(".react-resizable-handle") ||
-        !target.matches(".brick") ||
-        !target.closest(".brick")
-      ) {
+      const target = e.currentTarget as HTMLElement;
+      if (hasMouseMoved.current || target.matches(".react-resizable-handle") || !target.matches(".brick")) {
         return;
       }
       e.stopPropagation();
+      console.log("brick click", brick);
       editor.setSelectedBrick(brick);
+
       hasMouseMoved.current = false;
     };
-
-    // used to translate groups of bricks
-    // if (translation && style) {
-    //   style.transform = mergeTranslations(
-    //     originalTranslation,
-    //     `translate(${translation.x}px, ${translation.y}px)`,
-    //   );
-    // }
 
     return (
       <div
         id={brick.id}
         style={style}
         className={tx(
-          "brick group/brick flex select-none",
+          "brick group/brick flex select-none overflow-clip",
           "group-hover/page:(outline outline-dashed outline-upstart-100)",
           "hover:z-[9999] hover:shadow-lg",
           className,
           css({
+            gridColumn: `${brick.position[editor.previewMode].x + 1} / span ${brick.position[editor.previewMode].w}`,
+            gridRow: `${brick.position[editor.previewMode].y + 1} / span ${brick.position[editor.previewMode].h}`,
             "&.selected": {
               outline: "2px dotted var(--violet-8) !important",
             },
@@ -108,18 +99,18 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         onClick={onClick}
         onMouseDown={(e) => {
           hasMouseMoved.current = false;
-          onMouseDown?.(e);
         }}
         onMouseUp={(e) => {
-          onMouseUp?.(e);
+          e.preventDefault();
+          e.stopPropagation();
           setTimeout(() => {
             hasMouseMoved.current = false;
-          }, 150);
+          }, 0);
         }}
         onMouseMove={() => {
           hasMouseMoved.current = true;
         }}
-        onTouchEnd={onTouchEnd}
+        // onTouchEnd={onTouchEnd}
       >
         <MemoBrickComponent brick={brick} />
         <BrickOptionsButton brick={brick} />

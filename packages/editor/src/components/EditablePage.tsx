@@ -331,17 +331,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
           .map((brick) => (
-            <BrickWrapper
-              key={brick.id}
-              brick={brick}
-              translation={
-                dragInfo.current.isDragging &&
-                dragInfo.current.draggedId !== brick.id &&
-                editor.selectedGroup?.includes(brick.id)
-                  ? dragTranslate
-                  : undefined
-              }
-            />
+            <BrickWrapper key={brick.id} brick={brick} />
           ))}
       </ResponsiveGridLayout>
       <Selecto

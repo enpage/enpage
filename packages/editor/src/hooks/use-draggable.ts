@@ -30,6 +30,7 @@ interface UseInteractOptions {
   dragRestrict?: Partial<RestrictOptions>;
   dragCallbacks?: DragCallbacks;
   resizeCallbacks?: ResizeCallbacks;
+  gridConfig: GridConfig;
 }
 
 interface InteractMethods {
@@ -39,9 +40,19 @@ interface InteractMethods {
   updateResizeOptions: (options: Parameters<Interact.Interactable["resizable"]>[0]) => void;
 }
 
+type QuerySelector = string | RefObject<HTMLElement>;
+
+interface GridConfig {
+  colWidth: number;
+  rowHeight: number;
+  containerHorizontalPadding: number;
+  containerVerticalPadding: number;
+}
+
 export const useEditableBrick = (
-  ref: RefObject<HTMLElement>,
+  ref: QuerySelector,
   {
+    gridConfig,
     dragEnabled = true,
     resizeEnabled = false,
     dragOptions = {},
@@ -51,13 +62,13 @@ export const useEditableBrick = (
     resizeOptions = {},
     dragCallbacks = {},
     resizeCallbacks = {},
-  }: UseInteractOptions = {},
+  }: UseInteractOptions,
 ): InteractMethods => {
   // Helper to get position from event
   const getPosition = useCallback((event: Interact.InteractEvent) => {
     const target = event.target as HTMLElement;
-    const x = parseFloat(target.getAttribute("data-x") || "0") + (event.dx || 0);
-    const y = parseFloat(target.getAttribute("data-y") || "0") + (event.dy || 0);
+    const x = parseFloat(target.dataset.x || "0") + (event.dx || 0);
+    const y = parseFloat(target.dataset.y || "0") + (event.dy || 0);
     return { x, y };
   }, []);
 
@@ -65,8 +76,8 @@ export const useEditableBrick = (
   const getSize = useCallback((event: Interact.InteractEvent) => {
     const target = event.target as HTMLElement;
     const rect = event.rect || { width: 0, height: 0 };
-    const x = parseFloat(target.getAttribute("data-x") || "0") + (event.delta?.x || 0);
-    const y = parseFloat(target.getAttribute("data-y") || "0") + (event.delta?.y || 0);
+    const x = parseFloat(target.dataset.x || "0") + (event.delta?.x || 0);
+    const y = parseFloat(target.dataset.t || "0") + (event.delta?.y || 0);
     return {
       width: rect.width,
       height: rect.height,
@@ -78,8 +89,10 @@ export const useEditableBrick = (
   // Update element transform
   const updateElementTransform = useCallback((target: HTMLElement, x: number, y: number) => {
     target.style.transform = `translate(${x}px, ${y}px)`;
-    target.setAttribute("data-x", x.toString());
-    target.setAttribute("data-y", y.toString());
+    target.dataset.x = x.toString();
+    target.dataset.y = y.toString();
+    // target.setAttribute("data-x", x.toString());
+    // target.setAttribute("data-y", y.toString());
   }, []);
 
   // Update element size
@@ -91,8 +104,8 @@ export const useEditableBrick = (
       target.style.width = `${width}px`;
       target.style.height = `${height}px`;
       updateElementTransform(target, x, y);
-      target.setAttribute("data-width", width.toString());
-      target.setAttribute("data-height", height.toString());
+      target.dataset.width = width.toString();
+      target.dataset.height = height.toString();
     },
     [updateElementTransform],
   );
@@ -100,16 +113,43 @@ export const useEditableBrick = (
   const interactable = useRef<Interact.Interactable | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (typeof ref !== "string" && !ref.current) return;
 
-    interactable.current = interact(ref.current);
+    interactable.current = interact(typeof ref === "string" ? ref : (ref.current as HTMLElement));
+
+    console.log({ gridConfig });
 
     if (dragEnabled) {
       interactable.current.draggable({
-        hold: 100,
+        hold: 20,
         inertia: true,
         autoScroll: true,
-        modifiers: [interact.modifiers.restrictRect(dragRestrict)],
+        modifiers: [
+          interact.modifiers.snap({
+            targets: [
+              interact.snappers.grid({
+                x: gridConfig.colWidth,
+                y: gridConfig.rowHeight,
+                // offset: {
+                // x: gridConfig.containerHorizontalPadding,
+                // y: gridConfig.containerVerticalPadding,
+                // },
+              }),
+            ],
+            relativePoints: [{ x: 0, y: 0 }],
+            endOnly: true,
+          }),
+          interact.modifiers.restrict({
+            restriction: "parent",
+            elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+            offset: {
+              left: gridConfig.containerHorizontalPadding,
+              top: gridConfig.containerVerticalPadding,
+              bottom: gridConfig.containerVerticalPadding,
+              right: gridConfig.containerHorizontalPadding,
+            },
+          }),
+        ],
         listeners: {
           start: (event) => {
             dragCallbacks.onDragStart?.(event);
@@ -120,24 +160,13 @@ export const useEditableBrick = (
             dragCallbacks.onDragMove?.(event, position);
           },
           end: (event) => {
+            event.preventDefault();
             const position = getPosition(event);
             dragCallbacks.onDragEnd?.(event, position);
+            event.stopPropagation();
           },
         },
         ...dragOptions,
-        // listeners: {
-        //   move: (event: Interact.InteractEvent) => {
-        //     const target = event.target as HTMLElement;
-        //     const x = parseFloat(target.getAttribute("data-x") || "0") + event.dx;
-        //     const y = parseFloat(target.getAttribute("data-y") || "0") + event.dy;
-        //     target.style.transform = `translate(${x}px, ${y}px)`;
-        //     // todo: check if setting attribute is necessary
-        //     target.dataset.x = x.toString();
-        //     target.dataset.y = y.toString();
-        //     target.setAttribute("data-x", x.toString());
-        //     target.setAttribute("data-y", y.toString());
-        //   },
-        // },
       });
     }
 
@@ -185,12 +214,12 @@ export const useEditableBrick = (
     dragEnabled,
     dragOptions,
     resizeOptions,
-    dragRestrict,
     getPosition,
     getSize,
     resizeEnabled,
     updateElementTransform,
     updateElementSize,
+    gridConfig,
   ]);
 
   // Methods to control the interaction
