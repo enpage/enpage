@@ -19,6 +19,8 @@ import Selecto from "react-selecto";
 import { useEditableBrick } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 
+import "./EditablePage.css";
+
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -48,6 +50,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     draggedId: null,
   });
   const [colWidth, setColWidth] = useState(0);
+  const [draggingOrResizing, setDraggingOrResizing] = useState(false);
 
   useEditableBrick(".brick", {
     gridConfig: {
@@ -55,6 +58,21 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       rowHeight: LAYOUT_ROW_HEIGHT,
       containerHorizontalPadding: LAYOUT_PADDING[editor.previewMode][0],
       containerVerticalPadding: LAYOUT_PADDING[editor.previewMode][1],
+    },
+    dragCallbacks: {
+      onDragStart: () => {
+        setDraggingOrResizing(true);
+      },
+      onDragEnd: (brickId, pos, gridPos) => {
+        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
+        console.log("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
+        draft.updateBrickPosition(brickId, editor.previewMode, {
+          ...draft.getBrick(brickId)!.position[editor.previewMode],
+          x: gridPos.col,
+          y: gridPos.row,
+        });
+        setDraggingOrResizing(false);
+      },
     },
   });
 
@@ -70,7 +88,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         const containerWidth = pageRef.current.offsetWidth;
         const totalGapWidth = LAYOUT_PADDING[editor.previewMode][0] * 2;
         const availableWidth = containerWidth - totalGapWidth;
-        setColWidth(Math.ceil(availableWidth / LAYOUT_COLS[editor.previewMode]));
+        setColWidth(availableWidth / LAYOUT_COLS[editor.previewMode]);
       }
     }, 250);
 
@@ -138,11 +156,12 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       <div
         ref={pageRef}
         className={tx(
-          "grid group/page mx-auto w-full @container page-container",
+          "grid group/page mx-auto w-full @container page-container relative",
           {
             "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
             // todo: use theme or attributes for bg color
             "bg-white min-h-[100%] max-w-full": editor.previewMode !== "desktop",
+            // "dragging-or-resizing": draggingOrResizing,
           },
           css({
             gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,
@@ -154,7 +173,12 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
           .map((brick) => (
-            <BrickWrapper key={brick.id} brick={brick} />
+            <BrickWrapper key={brick.id} brick={brick}>
+              <ResizeHandle direction="s" />
+              <ResizeHandle direction="n" />
+              <ResizeHandle direction="w" />
+              <ResizeHandle direction="e" />
+            </BrickWrapper>
           ))}
       </div>
       <Selecto
@@ -179,47 +203,47 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   );
 }
 
-function getResizeHandle(
-  resizeHandle: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne",
-  ref: RefObject<HTMLDivElement>,
-) {
+function ResizeHandle({
+  direction,
+}: {
+  direction: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne";
+}) {
   return (
     <div
-      ref={ref}
       className={tx(
         "react-resizable-handle absolute z-10 transition-opacity duration-200 opacity-0",
         "group-hover/brick:opacity-50 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
-        `react-resizable-handle-${resizeHandle}`,
+        `react-resizable-handle-${direction}`,
         {
-          "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": resizeHandle === "s",
-          "top-px left-px bottom-px w-1 h-[inherit] border-l cursor-w-resize": resizeHandle === "w",
-          "top-px right-px bottom-px w-1 h-[inherit] border-r cursor-e-resize": resizeHandle === "e",
-          "top-px left-px right-px h-1 w-[inherit] border-t cursor-n-resize": resizeHandle === "n",
+          "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": direction === "s",
+          "top-px left-px bottom-px w-1 h-[inherit] border-l cursor-w-resize": direction === "w",
+          "top-px right-px bottom-px w-1 h-[inherit] border-r cursor-e-resize": direction === "e",
+          "top-px left-px right-px h-1 w-[inherit] border-t cursor-n-resize": direction === "n",
 
           // sw and nw
-          "bottom-px left-px w-1 h-1 border-l border-b cursor-sw-resize": resizeHandle === "sw",
-          "top-px left-px w-1 h-1 border-l border-t cursor-nw-resize": resizeHandle === "nw",
+          "bottom-px left-px w-1 h-1 border-l border-b cursor-sw-resize": direction === "sw",
+          "top-px left-px w-1 h-1 border-l border-t cursor-nw-resize": direction === "nw",
 
           // se and ne
-          "bottom-px right-px w-1 h-1 border-r border-b cursor-se-resize": resizeHandle === "se",
-          "top-px right-px w-1 h-1 border-r border-t cursor-ne-resize": resizeHandle === "ne",
+          "bottom-px right-px w-1 h-1 border-r border-b cursor-se-resize": direction === "se",
+          "top-px right-px w-1 h-1 border-r border-t cursor-ne-resize": direction === "ne",
         },
       )}
     >
       <div
         className={tx("absolute w-[7px] h-[7px] bg-orange-400 z-10 shadow-sm", {
-          "top-1/2 -translate-y-1/2 -left-[4px]": resizeHandle === "w",
-          "top-1/2 -translate-y-1/2 -right-[4px]": resizeHandle === "e",
-          "left-1/2 -translate-x-1/2 -top-[4px]": resizeHandle === "n",
-          "left-1/2 -translate-x-1/2 -bottom-[4px]": resizeHandle === "s",
+          "top-1/2 -translate-y-1/2 -left-[4px]": direction === "w",
+          "top-1/2 -translate-y-1/2 -right-[4px]": direction === "e",
+          "left-1/2 -translate-x-1/2 -top-[4px]": direction === "n",
+          "left-1/2 -translate-x-1/2 -bottom-[4px]": direction === "s",
 
           // sw and nw
-          "-bottom-[4px] -left-[4px]": resizeHandle === "sw",
-          "-top-[4px] -left-[4px]": resizeHandle === "nw",
+          "-bottom-[4px] -left-[4px]": direction === "sw",
+          "-top-[4px] -left-[4px]": direction === "nw",
 
           // se and ne
-          "-bottom-[4px] -right-[4px]": resizeHandle === "se",
-          "-top-[4px] -right-[4px]": resizeHandle === "ne",
+          "-bottom-[4px] -right-[4px]": direction === "se",
+          "-top-[4px] -right-[4px]": direction === "ne",
         })}
       />
     </div>

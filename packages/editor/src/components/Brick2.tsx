@@ -72,7 +72,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         return;
       }
       e.stopPropagation();
-      console.log("brick click", brick);
       editor.setSelectedBrick(brick);
 
       hasMouseMoved.current = false;
@@ -83,7 +82,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         id={brick.id}
         style={style}
         className={tx(
-          "brick group/brick flex select-none overflow-clip",
+          "brick group/brick flex select-none overflow-clip relative",
           "group-hover/page:(outline outline-dashed outline-upstart-100)",
           "hover:z-[9999] hover:shadow-lg",
           className,
