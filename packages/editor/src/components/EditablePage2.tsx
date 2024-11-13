@@ -72,7 +72,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         const availableWidth = containerWidth - totalGapWidth;
         setColWidth(Math.ceil(availableWidth / LAYOUT_COLS[editor.previewMode]));
       }
-    }, 150);
+    }, 250);
 
     updateCellWidth();
     window.addEventListener("resize", updateCellWidth);
