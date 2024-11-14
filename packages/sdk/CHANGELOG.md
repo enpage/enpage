@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.47
+
+### Patch Changes
+
+- [#208](https://github.com/enpage/enpage/pull/208) [`7d5fa39`](https://github.com/enpage/enpage/commit/7d5fa391597f8510012a2b7322901419d57cedf1) Thanks [@mattallty](https://github.com/mattallty)! - Re-enable datasources build
+
 ## 0.0.46
 
 ### Patch Changes
