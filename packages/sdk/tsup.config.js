@@ -73,12 +73,7 @@ export default defineConfig((options) => {
       removeNodeProtocol: false,
     },
     {
-      entry: [
-        "src/shared",
-        // for now let's ignore them because it takes time to build it
-        "!src/shared/datasources/**/*",
-        ...ignored,
-      ],
+      entry: ["src/shared", ...ignored],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
