@@ -145,11 +145,21 @@ export const useEditableBrick = (
   useEffect(() => {
     if (typeof ref !== "string" && !ref.current) return;
 
-    interactable.current = interact(typeof ref === "string" ? ref : (ref.current as HTMLElement));
+    interactable.current = interact(typeof ref === "string" ? ref : (ref.current as HTMLElement), {
+      styleCursor: false,
+    });
+
+    interactable.current
+      .on("dragstart", (event) => {
+        event.target.style.cursor = "move";
+      })
+      .on("dragend", (event) => {
+        event.target.style.cursor = "";
+      });
 
     if (dragEnabled) {
       interactable.current.draggable({
-        // hold: 20,
+        hold: 50,
         inertia: true,
         autoScroll: true,
         modifiers: [
@@ -180,8 +190,11 @@ export const useEditableBrick = (
         listeners: {
           move: (event: Interact.InteractEvent) => {
             const target = event.target as HTMLElement;
-            const elements = selectedGroup ? selectedGroup.map(getBrickRef) : [target];
             target.classList.add("moving");
+
+            const elements = selectedGroup ? selectedGroup.map(getBrickRef) : [target];
+            console.log("drag move", elements);
+
             elements.forEach((element) => {
               if (!element) return;
               const position = getPosition(element, event);
@@ -286,7 +299,6 @@ export const useEditableBrick = (
     }
 
     return () => {
-      console.log("cleanup use-draggable");
       interactable.current?.unset();
       interactable.current = null;
     };

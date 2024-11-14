@@ -67,7 +67,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     const hasMouseMoved = useRef(false);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
-      console.log("brick onclick");
       const target = e.currentTarget as HTMLElement;
       if (hasMouseMoved.current || target.matches(".react-resizable-handle") || !target.matches(".brick")) {
         return;
@@ -84,7 +83,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         data-y="0"
         style={style}
         className={tx(
-          "brick group/brick flex select-none overflow-clip relative",
+          "brick group/brick flex select-none relative",
           "group-hover/page:(outline outline-dashed outline-upstart-100)",
           "hover:z-[9999] hover:shadow-lg",
           className,

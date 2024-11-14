@@ -11,22 +11,32 @@ import {
   useAttributes,
   usePagesInfo,
   useEditorMode,
+  usePageVersion,
 } from "~/hooks/use-editor";
 import { tx, css } from "@enpage/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { DropdownMenu, TextField, Popover } from "@enpage/style-system";
+import { post } from "~/utils/api";
+import { IoIosSave } from "react-icons/io";
 
 export default function TopBar() {
   const editor = useEditor();
   const attributes = useAttributes();
   const editorMode = useEditorMode();
+  const pageVersion = usePageVersion();
   const pages = usePagesInfo();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
-
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
+
+  const publish = useCallback(() => {
+    post(
+      `/sites/${editor.pageConfig.siteId}/pages/${editor.pageConfig.id}/versions/${pageVersion}/publish`,
+      {},
+    );
+  }, [editor.pageConfig, pageVersion]);
 
   const switchPreviewMode = useCallback(() => {
     editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
@@ -165,9 +175,14 @@ export default function TopBar() {
       <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
       {editorMode === "remote" ? (
-        <TopbarMenu items={[{ label: "Publish on web" }, { label: "Schedule publish", shortcut: "⌘⇧D" }]}>
+        <TopbarMenu
+          items={[
+            { label: "Publish on web", onClick: publish },
+            { label: "Schedule publish", shortcut: "⌘⇧D" },
+          ]}
+        >
           <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}>
-            <RxRocket className={tx("h-7 w-auto")} />
+            <RxRocket className={tx("h-6 w-auto")} />
             <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Publish</span>
             <RiArrowDownSLine className={arrowClass} />
           </button>
@@ -180,8 +195,8 @@ export default function TopBar() {
             window.location.href = "/sign-up/?from=editor";
           }}
         >
-          <RxRocket className={tx("h-7 w-auto")} />
-          <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Publish</span>
+          <IoIosSave className={tx("h-5 w-auto")} />
+          <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Save</span>
         </button>
       )}
     </nav>

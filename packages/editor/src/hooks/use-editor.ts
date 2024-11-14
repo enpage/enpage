@@ -411,7 +411,7 @@ export const useGetBrick = () => {
   return useStore(ctx, (state) => state.getBrick);
 };
 
-export function useDraftVersion() {
+export function usePageVersion() {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.version);
 }

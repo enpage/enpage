@@ -8,3 +8,5 @@ export default function EditorComponent(props: EditorWrapperProps) {
     </EditorWrapper>
   );
 }
+
+export * as testConfig from "./test-enpage.config";

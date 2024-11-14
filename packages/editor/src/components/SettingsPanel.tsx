@@ -9,7 +9,6 @@ import { jsonFormClass } from "./json-form/form-class";
 import type { ObjectFieldTemplateProps, UiSchema } from "@rjsf/utils";
 
 import "./json-form/json-form.css";
-import { adjustLayoutHeight } from "~/utils/layout-utils";
 
 interface GroupedField {
   content: React.ReactElement;

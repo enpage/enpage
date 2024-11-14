@@ -64,26 +64,21 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
   }
 
   useBricksSubscribe(async (bricks) => {
-    console.log("bricks have changed");
+    console.debug("Bricks have changed, updating page version");
     updatePage({ elements: bricks });
   });
   useAttributesSubscribe((attributes) => {
-    console.log("attributes have changed");
+    console.debug("Attributes have changed, updating page version");
     updatePage({ attributes });
   });
   usePagePathSubscribe((path) => {
-    console.log("pagePath has changed");
+    console.debug("pagePath has changed, updating page version");
     updatePage({ path });
   });
   useThemeSubscribe((theme) => {
-    console.log("theme has changed");
+    console.debug("theme has changed, updating page version");
     updatePage({ theme });
   });
-
-  //const draftCtx = useDraftStoreContext();
-  // useEffect(() => {
-  //   draftCtx.persist.rehydrate();
-  // }, []);
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;

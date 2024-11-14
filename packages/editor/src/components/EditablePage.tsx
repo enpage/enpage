@@ -1,56 +1,22 @@
 import { css, tx } from "@enpage/style-system/twind";
-import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { type BrickPosition, type Brick, generateId } from "@enpage/sdk/shared/bricks";
+import { useEffect, useRef, useState } from "react";
+import type { Brick } from "@enpage/sdk/shared/bricks";
 import BrickWrapper from "./Brick";
 import { useBricks, useDraft, useEditor } from "../hooks/use-editor";
-import { type DragOverEvent, type ItemCallback, type Layout, Responsive } from "react-grid-layout";
-import WidthProvider from "./WidthProvideRGL";
 import { useHotkeys } from "react-hotkeys-hook";
-import invariant from "@enpage/sdk/shared/utils/invariant";
-import {
-  LAYOUT_BREAKPOINTS,
-  LAYOUT_COLS,
-  // LAYOUT_GUTTERS,
-  LAYOUT_PADDING,
-  LAYOUT_ROW_HEIGHT,
-} from "@enpage/sdk/shared/layout-constants";
-import { adjustLayoutHeight, findOptimalPosition } from "../utils/layout-utils";
+import { LAYOUT_COLS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
 import Selecto from "react-selecto";
 import { useEditableBrick } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 
 import "./EditablePage.css";
 
-// @ts-ignore wrong types in library
-const ResponsiveGridLayout = WidthProvider(Responsive);
-
-type DragInfo =
-  | {
-      isDragging: true;
-      startOffset: { x: number; y: number };
-      draggedId: string;
-    }
-  | {
-      isDragging: false;
-      startOffset: null;
-      draggedId: null;
-    };
-
 export default function EditablePage(props: { initialBricks?: Brick[]; onMount?: () => void }) {
   const editor = useEditor();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
-  const hasBeenDragged = useRef(false);
-  const hasDraggedStarted = useRef(false);
   const bricks = useBricks();
-  const [dragTranslate, setDragTranslate] = useState({ x: 0, y: 0 });
-  const dragInfo = useRef<DragInfo>({
-    isDragging: false,
-    startOffset: null,
-    draggedId: null,
-  });
   const [colWidth, setColWidth] = useState(0);
-  const [draggingOrResizing, setDraggingOrResizing] = useState(false);
 
   useEditableBrick(".brick", {
     gridConfig: {
@@ -62,34 +28,27 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     dragCallbacks: {
       onDragEnd: (brickId, pos, gridPos) => {
         const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
-        console.log("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
+        console.debug("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
           x: gridPos.col,
           y: gridPos.row,
         });
-        setDraggingOrResizing(false);
         editor.setSelectedGroup();
       },
     },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
         const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
-        console.log("brick id %s resized from %o to %o", brickId, currentPos, gridPos);
+        console.debug("brick id %s resized from %o to %o", brickId, currentPos, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
           w: gridPos.width,
           h: gridPos.height,
         });
-        setDraggingOrResizing(false);
       },
     },
   });
-
-  // const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
-  // const { lock, unlock } = useScrollLock({
-  //   autoLock: false,
-  // });
 
   useEffect(() => {
     // Calculate cell width on mount and window resize
@@ -197,7 +156,9 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         hitRate={1}
         selectByClick={false}
         onSelect={(e) => {
-          editor.setSelectedGroup(e.selected.map((el) => el.id));
+          if (e.selected.length) {
+            editor.setSelectedGroup(e.selected.map((el) => el.id));
+          }
           e.added.forEach((el) => {
             el.classList.add("selected");
           });
