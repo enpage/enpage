@@ -1,15 +1,13 @@
 /**
- * The grid is always 12 columns wide.
+ * The grid on mobile is 18 columns wide, on desktop it's 36 columns wide.
  */
 export const LAYOUT_COLS = {
-  desktop: 12,
-  tablet: 12,
-  mobile: 12,
+  desktop: 36,
+  mobile: 18,
 };
 
 export const LAYOUT_BREAKPOINTS = {
   desktop: 1024,
-  tablet: 768,
   mobile: 1,
 };
 
@@ -18,13 +16,6 @@ export const LAYOUT_BREAKPOINTS = {
  */
 export const LAYOUT_PADDING: Record<string, [number, number]> = {
   desktop: [20, 20],
-  tablet: [16, 16],
-  mobile: [8, 8],
-};
-
-export const LAYOUT_GUTTERS: Record<string, [number, number]> = {
-  desktop: [20, 20],
-  tablet: [16, 16],
   mobile: [8, 8],
 };
 

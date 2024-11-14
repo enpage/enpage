@@ -51,7 +51,7 @@ export interface EditorState extends EditorStateProps {
   setPanel: (panel?: EditorStateProps["panel"]) => void;
   togglePanel: (panel: EditorStateProps["panel"]) => void;
   hidePanel: (panel: EditorStateProps["panel"]) => void;
-  setSelectedGroup: (group: Brick["id"][]) => void;
+  setSelectedGroup: (group?: Brick["id"][]) => void;
   setShouldShowGrid: (show: boolean) => void;
 }
 
@@ -383,6 +383,11 @@ export const usePagesInfo = () => {
 export const usePreviewMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.previewMode);
+};
+
+export const useSelectedGroup = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.selectedGroup);
 };
 
 export const useEditorMode = () => {

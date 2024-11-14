@@ -1,4 +1,4 @@
-.page-container.dragging-or-resizing {
+.page-container:has(.moving) {
   /* Your existing grid setup */
   &::before {
     content: "";
@@ -12,7 +12,7 @@
 
     /* Grid visualization */
     background-size:
-      calc(100%/12) 100%,  /* column width */
+      calc(100%/36) 100%,  /* column width */
       100% 20px;   /* row height */
 
     background-image:

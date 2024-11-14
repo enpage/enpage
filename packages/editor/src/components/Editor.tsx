@@ -15,7 +15,7 @@ import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
-import Page from "./EditablePage2";
+import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css } from "@enpage/style-system/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
@@ -147,7 +147,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
         )}
       >
         <DeviceFrame>
-          <Page />
+          <EditablePage />
         </DeviceFrame>
       </div>
     </div>

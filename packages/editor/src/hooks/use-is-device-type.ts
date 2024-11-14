@@ -17,14 +17,13 @@ export function useIsLargeDevice() {
 
 export function usePreviewModeInit() {
   const editor = useEditor();
-  const isTablet = useIsTabletDevice();
   const isLargeDevice = useIsLargeDevice();
   const isMobile = useIsMobileDevice();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!editor.previewMode && (isLargeDevice || isTablet || isMobile)) {
-      const mode = isLargeDevice ? "desktop" : isTablet ? "tablet" : "mobile";
+    if (!editor.previewMode && (isLargeDevice || isMobile)) {
+      const mode = isLargeDevice ? "desktop" : "mobile";
       console.debug("Initiliazing preview mode to %s", mode);
       editor.setPreviewMode(mode);
     }

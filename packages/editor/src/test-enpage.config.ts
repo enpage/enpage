@@ -91,13 +91,13 @@ const homePageBricks = defineBricks([
       position: {
         mobile: {
           x: 0,
-          w: 12,
-          h: 2,
+          w: "full",
+          h: 3,
         },
         desktop: {
           x: 0,
-          w: 12,
-          h: 2,
+          w: "full",
+          h: 3,
         },
       },
     },
@@ -113,13 +113,13 @@ const homePageBricks = defineBricks([
       position: {
         mobile: {
           x: 0,
-          w: 12,
+          w: "full",
           h: 4,
         },
         desktop: {
           x: 0,
           y: 4,
-          w: 12,
+          w: "full",
           h: 4,
         },
       },
@@ -137,12 +137,12 @@ const homePageBricks = defineBricks([
       position: {
         mobile: {
           x: 0,
-          w: 12,
+          w: "full",
           h: 8,
         },
         desktop: {
           x: 0,
-          w: 12,
+          w: "full",
           h: 3,
           minW: 7,
         },
@@ -157,13 +157,13 @@ const homePageBricks = defineBricks([
         mobile: {
           x: 0,
           y: 3,
-          w: 12,
+          w: "full",
           h: 3,
         },
         desktop: {
           x: 0,
           y: 3,
-          w: 4,
+          w: "third",
           h: 3,
         },
       },
@@ -173,15 +173,15 @@ const homePageBricks = defineBricks([
       props: { content: "Something" },
       position: {
         mobile: {
-          x: 4,
+          x: "third",
           y: 4,
-          w: 12,
+          w: "full",
           h: 3,
         },
         desktop: {
-          x: 4,
+          x: "third",
           y: 4,
-          w: 4,
+          w: "third",
           h: 3,
         },
       },
@@ -191,43 +191,19 @@ const homePageBricks = defineBricks([
       props: { content: "Else" },
       position: {
         mobile: {
-          x: 8,
-          w: 12,
+          x: "twoThird",
+          w: "full",
           h: 3,
         },
         desktop: {
-          x: 8,
+          x: "twoThird",
           y: 4,
-          w: 4,
+          w: "third",
           h: 3,
         },
       },
     },
   ]),
-
-  // {
-  //   type: "container",
-  //   variant: "1-1-1",
-  //   bricks: [
-  //     {
-  //       type: "text",
-  //       props: { content: "Sample here" },
-  //       wrapper: { customClasses: "brick-light-red" },
-  //     },
-  //     { type: "text", props: { content: "Hello World" }, wrapper: { customClasses: "brick-normal-red" } },
-  //     { type: "text", props: { content: "Blabla" }, wrapper: { customClasses: "brick-dark-red" } },
-  //   ],
-  // },
-  // {
-  //   type: "container",
-  //   variant: "1-1-1-1",
-  //   bricks: [
-  //     { type: "text", props: { content: "Sample here" } },
-  //     { type: "text", props: { content: "Hello World" } },
-  //     { type: "text", props: { content: "Blabla" } },
-  //     { type: "text", props: { content: "Blabla 2" } },
-  //   ],
-  // },
 ]);
 
 export const pages = definePages([

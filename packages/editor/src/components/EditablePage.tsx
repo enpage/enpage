@@ -1,4 +1,4 @@
-import { tx } from "@enpage/style-system/twind";
+import { css, tx } from "@enpage/style-system/twind";
 import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { type BrickPosition, type Brick, generateId } from "@enpage/sdk/shared/bricks";
 import BrickWrapper from "./Brick";
@@ -10,12 +10,16 @@ import invariant from "@enpage/sdk/shared/utils/invariant";
 import {
   LAYOUT_BREAKPOINTS,
   LAYOUT_COLS,
-  LAYOUT_GUTTERS,
+  // LAYOUT_GUTTERS,
   LAYOUT_PADDING,
   LAYOUT_ROW_HEIGHT,
-} from "../config/layout-constants";
+} from "@enpage/sdk/shared/layout-constants";
 import { adjustLayoutHeight, findOptimalPosition } from "../utils/layout-utils";
 import Selecto from "react-selecto";
+import { useEditableBrick } from "~/hooks/use-draggable";
+import { debounce } from "lodash-es";
+
+import "./EditablePage.css";
 
 // @ts-ignore wrong types in library
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -46,11 +50,62 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     draggedId: null,
   });
   const [colWidth, setColWidth] = useState(0);
+  const [draggingOrResizing, setDraggingOrResizing] = useState(false);
+
+  useEditableBrick(".brick", {
+    gridConfig: {
+      colWidth,
+      rowHeight: LAYOUT_ROW_HEIGHT,
+      containerHorizontalPadding: LAYOUT_PADDING[editor.previewMode][0],
+      containerVerticalPadding: LAYOUT_PADDING[editor.previewMode][1],
+    },
+    dragCallbacks: {
+      onDragEnd: (brickId, pos, gridPos) => {
+        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
+        console.log("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
+        draft.updateBrickPosition(brickId, editor.previewMode, {
+          ...draft.getBrick(brickId)!.position[editor.previewMode],
+          x: gridPos.col,
+          y: gridPos.row,
+        });
+        setDraggingOrResizing(false);
+        editor.setSelectedGroup();
+      },
+    },
+    resizeCallbacks: {
+      onResizeEnd: (brickId, pos, gridPos) => {
+        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
+        console.log("brick id %s resized from %o to %o", brickId, currentPos, gridPos);
+        draft.updateBrickPosition(brickId, editor.previewMode, {
+          ...draft.getBrick(brickId)!.position[editor.previewMode],
+          w: gridPos.width,
+          h: gridPos.height,
+        });
+        setDraggingOrResizing(false);
+      },
+    },
+  });
 
   // const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
   // const { lock, unlock } = useScrollLock({
   //   autoLock: false,
   // });
+
+  useEffect(() => {
+    // Calculate cell width on mount and window resize
+    const updateCellWidth = debounce(() => {
+      if (pageRef.current) {
+        const containerWidth = pageRef.current.offsetWidth;
+        const totalGapWidth = LAYOUT_PADDING[editor.previewMode][0] * 2;
+        const availableWidth = containerWidth - totalGapWidth;
+        setColWidth(availableWidth / LAYOUT_COLS[editor.previewMode]);
+      }
+    }, 250);
+
+    updateCellWidth();
+    window.addEventListener("resize", updateCellWidth);
+    return () => window.removeEventListener("resize", updateCellWidth);
+  }, [editor.previewMode]);
 
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -106,234 +161,35 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     }
   });
 
-  const layoutMobile = useMemo(
-    () =>
-      bricks.map((brick) => ({
-        i: brick.id,
-        ...((brick.position.mobile ?? brick.position.desktop) as BrickPosition),
-      })),
-    [bricks],
-  );
-
-  const layoutDesktop = useMemo(
-    () =>
-      bricks.map((brick) => ({
-        i: brick.id,
-        ...((brick.position.desktop ?? brick.position.mobile) as BrickPosition),
-      })),
-    [bricks],
-  );
-
-  const onDragStart: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    hasDraggedStarted.current = true;
-
-    if (!editor.selectedGroup?.includes(oldItem.i)) {
-      editor.setSelectedGroup([oldItem.i]);
-    }
-
-    // Store the initial mouse offset relative to the grid item
-    const rect = element.getBoundingClientRect();
-    dragInfo.current = {
-      isDragging: true,
-      startOffset: {
-        x: rect.left,
-        y: rect.top,
-      },
-      draggedId: oldItem.i,
-    };
-
-    setDragTranslate({ x: 0, y: 0 });
-  };
-
-  const onDrag: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    if (!dragInfo.current.isDragging) return;
-
-    // ignore if the brick has not been dragged
-    if (oldItem.x === newItem.x && oldItem.y === newItem.y) {
-      return;
-    }
-
-    hasBeenDragged.current = true;
-
-    // compute the delta between the initial drag position and the current one
-    // Calculate dx and dy including margins
-    const rect = element.getBoundingClientRect();
-    const dx = rect.left - dragInfo.current.startOffset.x;
-    const dy = rect.top - dragInfo.current.startOffset.y;
-
-    // update the dragged brick position
-    setDragTranslate({ x: dx, y: dy });
-  };
-
-  const onDragStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    console.log("drag stop", { event });
-    const target = event.target as HTMLElement | null;
-    if (!hasBeenDragged.current && !target?.matches(".rt-BaseMenuItem")) {
-      // simulate a click event on the brick
-      const clickEvent = new MouseEvent("click", { bubbles: true });
-      element.dispatchEvent(clickEvent);
-    } else if (hasBeenDragged.current) {
-      // deselect the brick if it has been dragged
-      editor.deselectBrick();
-    }
-
-    const dx = newItem.x - oldItem.x;
-    const dy = newItem.y - oldItem.y;
-
-    // Update actual layout positions
-    if (hasBeenDragged.current && dragInfo.current.startOffset && editor.selectedGroup?.length) {
-      editor.selectedGroup?.forEach((id) => {
-        const brick = draft.getBrick(id);
-        if (brick) {
-          const layoutType = editor.previewMode;
-          const layout = brick.position[layoutType];
-          if (layout) {
-            console.log("updating brick position for %s", id);
-            draft.updateBrickPosition(id, layoutType, {
-              ...layout,
-              // make sure the value is not <0 and not > max
-              x: Math.min(Math.max(0, layout.x + dx), 12),
-              y: Math.max(0, layout.y + dy),
-            });
-          }
-        }
-      });
-      editor.setSelectedGroup([]);
-      setDragTranslate({ x: 0, y: 0 });
-
-      dragInfo.current = {
-        isDragging: false,
-        startOffset: null,
-        draggedId: null,
-      };
-    }
-
-    hasBeenDragged.current = false;
-    hasDraggedStarted.current = false;
-  };
-
-  const onResizeStop: ItemCallback = (layout, oldItem, newItem, placeholder, event, element) => {
-    const brick = draft.getBrick(newItem.i);
-    invariant(brick, "brick not found");
-
-    const brickElement = document.getElementById(newItem.i);
-    invariant(brickElement, "brick element not found");
-
-    // update brick position
-    const layoutType = editor.previewMode;
-    console.log("updating brick position", newItem);
-    draft.updateBrick(brick.id, {
-      position: {
-        ...brick.position,
-        [layoutType]: newItem,
-      },
-    });
-  };
-
-  const onDrop = (layout: Layout[], item: Layout, event: Event) => {
-    console.log("drop", item);
-
-    if (editor.draggingBrick) {
-      const id = `brick-${generateId()}`;
-
-      const optimalPos = findOptimalPosition(
-        {
-          mobile: layoutMobile,
-          desktop: layoutDesktop,
-        },
-        editor.draggingBrick,
-      );
-
-      const desktopPosition = editor.previewMode === "desktop" ? { ...item, i: id } : optimalPos.desktop;
-      const mobilePosition = editor.previewMode === "mobile" ? { ...item, i: id } : optimalPos.mobile;
-
-      draft.addBrick({
-        type: editor.draggingBrick.type,
-        props: { ...editor.draggingBrick.props, z: bricks.length + 1 },
-        id,
-        position: {
-          desktop: desktopPosition,
-          mobile: mobilePosition,
-        },
-      });
-      // reset dragging brick
-      editor.setDraggingBrick();
-    }
-  };
-
-  const onDropDragOver = (event: DragOverEvent): { w?: number; h?: number } | false | undefined => {
-    // console.log("onDropDragOver", event, editor.draggingBrick);
-    return editor.draggingBrick
-      ? {
-          w: editor.draggingBrick.preferredW,
-          h: editor.draggingBrick.preferredH,
-        }
-      : undefined;
-  };
-
-  const onWidthChange = (width: number) => {
-    const margin = LAYOUT_GUTTERS[editor.previewMode];
-    const cols = LAYOUT_COLS[editor.previewMode];
-    const containerPadding = margin[0];
-    const totalMargin = (cols - 1) * margin[0];
-    const usableWidth = width - totalMargin - containerPadding * 2;
-    const calculatedColWidth = usableWidth / cols;
-    setColWidth(calculatedColWidth);
-  };
-
   return (
     <>
-      <ResponsiveGridLayout
-        breakpoint={editor.previewMode}
-        innerRef={pageRef}
-        isDroppable={true}
-        onDrag={onDrag}
-        onDropDragOver={onDropDragOver}
-        onDrop={onDrop}
-        onDragStart={onDragStart}
-        onDragStop={onDragStop}
-        onResizeStop={onResizeStop}
-        draggableCancel=".nodrag"
-        // useCSSTransforms={false}
-        // @ts-ignore wrong types in library
-        resizeHandle={getResizeHandle}
-        // all directions
-        resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
-        // todo: get max witdth from page attributes
-        className={tx("group/page mx-auto w-full @container page-container", {
-          "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
-          // todo: use theme or attributes for bg color
-          "bg-white min-h-[100%] max-w-full max-h-full": editor.previewMode !== "desktop",
-        })}
-        layouts={{
-          mobile: layoutMobile,
-          desktop: layoutDesktop,
-        }}
-        cols={LAYOUT_COLS}
-        // Margin between grid items
-        margin={LAYOUT_GUTTERS}
-        // Padding of the main layout container
-        containerPadding={LAYOUT_PADDING}
-        breakpoints={LAYOUT_BREAKPOINTS}
-        rowHeight={LAYOUT_ROW_HEIGHT}
-        // No auto resizing, we want to manage the whole page size
-        autoSize={false}
-        // No compacting unless on mobile, as we want the user to be able to place the bricks wherever they want
-        compactType={editor.previewMode === "mobile" ? "vertical" : null}
-        allowOverlap={true}
-        // preventCollision={true}
-        onWidthChange={onWidthChange}
-        onLayoutChange={(layout, layouts) => {
-          console.log("layout change", layout, layouts);
-          return false;
-        }}
+      <div
+        ref={pageRef}
+        className={tx(
+          "grid group/page mx-auto w-full @container page-container relative",
+          {
+            "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
+            // todo: use theme or attributes for bg color
+            "bg-white min-h-[100%] max-w-full": editor.previewMode !== "desktop",
+          },
+          css({
+            gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,
+            gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
+            padding: `${LAYOUT_PADDING[editor.previewMode][1]}px ${LAYOUT_PADDING[editor.previewMode][0]}px`,
+          }),
+        )}
       >
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
           .map((brick) => (
-            <BrickWrapper key={brick.id} brick={brick} />
+            <BrickWrapper key={brick.id} brick={brick}>
+              <ResizeHandle direction="s" />
+              <ResizeHandle direction="n" />
+              <ResizeHandle direction="w" />
+              <ResizeHandle direction="e" />
+            </BrickWrapper>
           ))}
-      </ResponsiveGridLayout>
+      </div>
       <Selecto
         className="selecto"
         selectableTargets={[".brick"]}
@@ -343,11 +199,9 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         onSelect={(e) => {
           editor.setSelectedGroup(e.selected.map((el) => el.id));
           e.added.forEach((el) => {
-            console.log("selected", el);
             el.classList.add("selected");
           });
           e.removed.forEach((el) => {
-            console.log("deselected", el);
             el.classList.remove("selected");
           });
         }}
@@ -356,47 +210,47 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   );
 }
 
-function getResizeHandle(
-  resizeHandle: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne",
-  ref: RefObject<HTMLDivElement>,
-) {
+function ResizeHandle({
+  direction,
+}: {
+  direction: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne";
+}) {
   return (
     <div
-      ref={ref}
       className={tx(
         "react-resizable-handle absolute z-10 transition-opacity duration-200 opacity-0",
         "group-hover/brick:opacity-50 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
-        `react-resizable-handle-${resizeHandle}`,
+        `react-resizable-handle-${direction}`,
         {
-          "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": resizeHandle === "s",
-          "top-px left-px bottom-px w-1 h-[inherit] border-l cursor-w-resize": resizeHandle === "w",
-          "top-px right-px bottom-px w-1 h-[inherit] border-r cursor-e-resize": resizeHandle === "e",
-          "top-px left-px right-px h-1 w-[inherit] border-t cursor-n-resize": resizeHandle === "n",
+          "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": direction === "s",
+          "top-px left-px bottom-px w-1 h-[inherit] border-l cursor-w-resize": direction === "w",
+          "top-px right-px bottom-px w-1 h-[inherit] border-r cursor-e-resize": direction === "e",
+          "top-px left-px right-px h-1 w-[inherit] border-t cursor-n-resize": direction === "n",
 
           // sw and nw
-          "bottom-px left-px w-1 h-1 border-l border-b cursor-sw-resize": resizeHandle === "sw",
-          "top-px left-px w-1 h-1 border-l border-t cursor-nw-resize": resizeHandle === "nw",
+          "bottom-px left-px w-1 h-1 border-l border-b cursor-sw-resize": direction === "sw",
+          "top-px left-px w-1 h-1 border-l border-t cursor-nw-resize": direction === "nw",
 
           // se and ne
-          "bottom-px right-px w-1 h-1 border-r border-b cursor-se-resize": resizeHandle === "se",
-          "top-px right-px w-1 h-1 border-r border-t cursor-ne-resize": resizeHandle === "ne",
+          "bottom-px right-px w-1 h-1 border-r border-b cursor-se-resize": direction === "se",
+          "top-px right-px w-1 h-1 border-r border-t cursor-ne-resize": direction === "ne",
         },
       )}
     >
       <div
         className={tx("absolute w-[7px] h-[7px] bg-orange-400 z-10 shadow-sm", {
-          "top-1/2 -translate-y-1/2 -left-[4px]": resizeHandle === "w",
-          "top-1/2 -translate-y-1/2 -right-[4px]": resizeHandle === "e",
-          "left-1/2 -translate-x-1/2 -top-[4px]": resizeHandle === "n",
-          "left-1/2 -translate-x-1/2 -bottom-[4px]": resizeHandle === "s",
+          "top-1/2 -translate-y-1/2 -left-[4px]": direction === "w",
+          "top-1/2 -translate-y-1/2 -right-[4px]": direction === "e",
+          "left-1/2 -translate-x-1/2 -top-[4px]": direction === "n",
+          "left-1/2 -translate-x-1/2 -bottom-[4px]": direction === "s",
 
           // sw and nw
-          "-bottom-[4px] -left-[4px]": resizeHandle === "sw",
-          "-top-[4px] -left-[4px]": resizeHandle === "nw",
+          "-bottom-[4px] -left-[4px]": direction === "sw",
+          "-top-[4px] -left-[4px]": direction === "nw",
 
           // se and ne
-          "-bottom-[4px] -right-[4px]": resizeHandle === "se",
-          "-top-[4px] -right-[4px]": resizeHandle === "ne",
+          "-bottom-[4px] -right-[4px]": direction === "se",
+          "-top-[4px] -right-[4px]": direction === "ne",
         })}
       />
     </div>
