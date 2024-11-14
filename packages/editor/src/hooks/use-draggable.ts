@@ -90,12 +90,19 @@ function getGridPosition(element: HTMLElement, config: GridConfig) {
 }
 
 const getPosition = (event: Interact.InteractEvent) => {
+  console.log("compute next position");
   const target = event.target as HTMLElement;
-
-  console.log("event dx", event.dx);
   const x = parseFloat(target.dataset.x ?? "0") + event.dx;
   const y = parseFloat(target.dataset.y ?? "0") + event.dy;
+  console.log("end dragging position %o", { x, y });
   return { x, y };
+};
+
+// Update element transform
+const updateElementTransform = (target: HTMLElement, x: number, y: number) => {
+  target.style.transform = `translate(${x}px, ${y}px)`;
+  target.dataset.x = x.toString();
+  target.dataset.y = y.toString();
 };
 
 export const useEditableBrick = (
@@ -126,26 +133,19 @@ export const useEditableBrick = (
     };
   }, []);
 
-  // Update element transform
-  const updateElementTransform = useCallback((target: HTMLElement, x: number, y: number) => {
-    target.style.transform = `translate(${x}px, ${y}px)`;
-    target.dataset.x = x.toString();
-    target.dataset.y = y.toString();
-  }, []);
-
   // Update element size
-  const updateElementSize = useCallback(
-    (
-      target: HTMLElement,
-      { width, height, x, y }: { width: number; height: number; x: number; y: number },
-    ) => {
-      target.style.width = `${width}px`;
-      target.style.height = `${height}px`;
-      updateElementTransform(target, x, y);
-      Object.assign(target.dataset, { x, y, width, height });
-    },
-    [updateElementTransform],
-  );
+  // const updateElementSize = useCallback(
+  //   (
+  //     target: HTMLElement,
+  //     { width, height, x, y }: { width: number; height: number; x: number; y: number },
+  //   ) => {
+  //     target.style.width = `${width}px`;
+  //     target.style.height = `${height}px`;
+  //     updateElementTransform(target, x, y);
+  //     Object.assign(target.dataset, { x, y, width, height });
+  //   },
+  //   [updateElementTransform],
+  // );
 
   const interactable = useRef<Interact.Interactable | null>(null);
 
@@ -186,15 +186,20 @@ export const useEditableBrick = (
         ],
         listeners: {
           start: (event) => {
-            console.log("start drag");
+            const target = event.target as HTMLElement;
+            // target.dataset.x = target.dataset.x ?? "0";
+            // target.dataset.y = target.dataset.y ?? "0";
+            target.dataset.x = "0";
+            target.dataset.y = "0";
+            target.style.transform = `translate(${target.dataset.x}px, ${target.dataset.y}px)`;
             dragCallbacks.onDragStart?.(event);
           },
-          move: (event) => {
+          move: (event: Interact.InteractEvent) => {
+            console.log("move", event.dx, event.dy);
             const position = getPosition(event);
-            console.log("dragging position %o", position);
-
+            // console.log("dragging position %o", position);
             updateElementTransform(event.target as HTMLElement, position.x, position.y);
-            dragCallbacks.onDragMove?.(event, position);
+            // dragCallbacks.onDragMove?.(event, position);
           },
           end: (event: Interact.InteractEvent) => {
             console.log("end drag");
@@ -216,6 +221,7 @@ export const useEditableBrick = (
         inertia: true,
         listeners: {
           start: (event) => {
+            console.log("start resize", event);
             resizeCallbacks.onResizeStart?.(event);
           },
           move: (event) => {
@@ -240,6 +246,7 @@ export const useEditableBrick = (
             // resizeCallbacks.onResizeMove?.(event, size);
           },
           end: (event) => {
+            console.log("end resize", event);
             const size = getSize(event);
             resizeCallbacks.onResizeEnd?.(event, size);
           },
@@ -273,7 +280,6 @@ export const useEditableBrick = (
     resizeOptions,
     getSize,
     resizeEnabled,
-    updateElementTransform,
     // updateElementSize,
     gridConfig,
   ]);
