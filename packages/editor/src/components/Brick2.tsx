@@ -67,19 +67,21 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     const hasMouseMoved = useRef(false);
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
+      console.log("brick onclick");
       const target = e.currentTarget as HTMLElement;
       if (hasMouseMoved.current || target.matches(".react-resizable-handle") || !target.matches(".brick")) {
         return;
       }
-      e.stopPropagation();
+      // e.stopPropagation();
       editor.setSelectedBrick(brick);
-
       hasMouseMoved.current = false;
     };
 
     return (
       <div
         id={brick.id}
+        data-x="0"
+        data-y="0"
         style={style}
         className={tx(
           "brick group/brick flex select-none overflow-clip relative",
@@ -100,11 +102,9 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
           hasMouseMoved.current = false;
         }}
         onMouseUp={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
           setTimeout(() => {
             hasMouseMoved.current = false;
-          }, 0);
+          }, 100);
         }}
         onMouseMove={() => {
           hasMouseMoved.current = true;

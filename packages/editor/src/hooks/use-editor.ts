@@ -35,7 +35,7 @@ export interface EditorStateProps {
   selectedBrick?: Brick;
   selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
-  isResizingForContainerId?: string;
+  shouldShowGrid?: boolean;
   panel?: "library" | "inspector" | "theme" | "settings";
 }
 
@@ -48,11 +48,11 @@ export interface EditorState extends EditorStateProps {
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
-  setIsResizing: (forContainerid: string | false) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
   togglePanel: (panel: EditorStateProps["panel"]) => void;
   hidePanel: (panel: EditorStateProps["panel"]) => void;
   setSelectedGroup: (group: Brick["id"][]) => void;
+  setShouldShowGrid: (show: boolean) => void;
 }
 
 export const createEditorStore = (
@@ -109,10 +109,7 @@ export const createEditorStore = (
               set((state) => {
                 state.isEditingTextForBrickId = forBrickId || undefined;
               }),
-            setIsResizing: (forContainerId: string | false) =>
-              set((state) => {
-                state.isResizingForContainerId = forContainerId || undefined;
-              }),
+
             setPanel: (panel) =>
               set((state) => {
                 state.panel = panel;
@@ -134,6 +131,10 @@ export const createEditorStore = (
             setSelectedGroup: (group) =>
               set((state) => {
                 state.selectedGroup = group;
+              }),
+            setShouldShowGrid: (show) =>
+              set((state) => {
+                state.shouldShowGrid = show;
               }),
           })),
           {
@@ -397,6 +398,11 @@ export const useDraft = () => {
 export const useBricks = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.bricks);
+};
+
+export const useGetBrick = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.getBrick);
 };
 
 export function useDraftVersion() {

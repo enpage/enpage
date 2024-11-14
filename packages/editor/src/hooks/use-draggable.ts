@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, type RefObject } from "react";
 import type { RestrictOptions } from "@interactjs/modifiers/restrict/pointer";
 import type { DraggableOptions } from "@interactjs/actions/drag/plugin";
 import type { ResizableOptions } from "@interactjs/actions/resize/plugin";
+import { useGetBrick, usePreviewMode } from "./use-editor";
 
 interface DragCallbacks {
-  onDragStart?: (event: Interact.InteractEvent) => void;
   onDragMove?: (event: Interact.InteractEvent, position: { x: number; y: number }) => void;
   onDragEnd?: (
     brickId: string,
@@ -54,7 +54,7 @@ interface GridConfig {
   containerVerticalPadding: number;
 }
 
-function snapToGrid({
+function snapPositionToGrid({
   colWidth = 200, // Width of each column
   rowHeight = 80, // Fixed height of rows
   paddingX = 40, // Horizontal padding
@@ -90,19 +90,19 @@ function getGridPosition(element: HTMLElement, config: GridConfig) {
 }
 
 const getPosition = (event: Interact.InteractEvent) => {
-  console.log("compute next position");
   const target = event.target as HTMLElement;
-  const x = parseFloat(target.dataset.x ?? "0") + event.dx;
-  const y = parseFloat(target.dataset.y ?? "0") + event.dy;
-  console.log("end dragging position %o", { x, y });
+  const x = parseFloat(target.dataset.x || "0") + event.dx;
+  const y = parseFloat(target.dataset.y || "0") + event.dy;
   return { x, y };
 };
 
 // Update element transform
 const updateElementTransform = (target: HTMLElement, x: number, y: number) => {
+  console.log("updateElementTransform", x, y);
+  // Ensure we clear any existing transform first
   target.style.transform = `translate(${x}px, ${y}px)`;
-  target.dataset.x = x.toString();
-  target.dataset.y = y.toString();
+  target.dataset.x = String(x);
+  target.dataset.y = String(y);
 };
 
 export const useEditableBrick = (
@@ -121,10 +121,8 @@ export const useEditableBrick = (
   const getSize = useCallback((event: Interact.ResizeEvent) => {
     const target = event.target as HTMLElement;
     const rect = event.rect || { width: 0, height: 0 };
-
     const x = parseFloat(target.dataset.x || "0") + (event.deltaRect?.left || 0);
     const y = parseFloat(target.dataset.y || "0") + (event.deltaRect?.top || 0);
-
     return {
       width: rect.width,
       height: rect.height,
@@ -132,6 +130,9 @@ export const useEditableBrick = (
       y,
     };
   }, []);
+
+  const getBrick = useGetBrick();
+  const previewMode = usePreviewMode();
 
   // Update element size
   // const updateElementSize = useCallback(
@@ -162,7 +163,7 @@ export const useEditableBrick = (
         modifiers: [
           interact.modifiers.snap({
             targets: [
-              snapToGrid({
+              snapPositionToGrid({
                 colWidth: gridConfig.colWidth, // Your column width
                 rowHeight: gridConfig.rowHeight, // Your fixed row height
                 paddingX: gridConfig.containerHorizontalPadding, // Your container padding
@@ -185,31 +186,20 @@ export const useEditableBrick = (
           }),
         ],
         listeners: {
-          start: (event) => {
-            const target = event.target as HTMLElement;
-            // target.dataset.x = target.dataset.x ?? "0";
-            // target.dataset.y = target.dataset.y ?? "0";
-            target.dataset.x = "0";
-            target.dataset.y = "0";
-            target.style.transform = `translate(${target.dataset.x}px, ${target.dataset.y}px)`;
-            dragCallbacks.onDragStart?.(event);
-          },
           move: (event: Interact.InteractEvent) => {
-            console.log("move", event.dx, event.dy);
             const position = getPosition(event);
-            // console.log("dragging position %o", position);
             updateElementTransform(event.target as HTMLElement, position.x, position.y);
-            // dragCallbacks.onDragMove?.(event, position);
           },
           end: (event: Interact.InteractEvent) => {
-            console.log("end drag");
             const target = event.target as HTMLElement;
             const position = getPosition(event);
             const gridPosition = getGridPosition(target, gridConfig);
-            dragCallbacks.onDragEnd?.(target.id, position, gridPosition, event);
+            // Clear transform and data attributes
             target.style.transform = "";
-            delete target.dataset.x;
-            delete target.dataset.y;
+            target.dataset.x = "0";
+            target.dataset.y = "0";
+            // call back
+            dragCallbacks.onDragEnd?.(target.id, position, gridPosition, event);
           },
         },
         ...dragOptions,
@@ -241,8 +231,6 @@ export const useEditableBrick = (
 
             Object.assign(event.target.dataset, { x, y });
             // end test
-
-            // updateElementSize(event.target as HTMLElement, size);
             // resizeCallbacks.onResizeMove?.(event, size);
           },
           end: (event) => {
@@ -254,6 +242,36 @@ export const useEditableBrick = (
         modifiers: [
           interact.modifiers.restrictEdges({
             outer: "parent",
+          }),
+          interact.modifiers.restrictSize({
+            // a function that returns the max/min width/height based on the target's current dimensions
+            // @ts-ignore
+            min: (x, y, event) => {
+              const elementId = event.element?.id; // Access the element ID
+              if (!elementId) return { width: 0, height: 0 };
+              const minW = getBrick(elementId)?.position[previewMode].minW;
+              const minH = getBrick(elementId)?.position[previewMode].minH;
+              return {
+                width: minW ? minW * gridConfig.colWidth : gridConfig.colWidth,
+                height: minH ? minH * gridConfig.rowHeight : gridConfig.rowHeight,
+              };
+            },
+            // @ts-ignore
+            max: (x, y, event) => {
+              const elementId = event.element?.id; // Access the element ID
+              if (!elementId) return { width: Infinity, height: Infinity };
+              const maxW = getBrick(elementId)?.position[previewMode].maxW;
+              const maxH = getBrick(elementId)?.position[previewMode].maxH;
+              return {
+                width: maxW ? maxW * gridConfig.colWidth : Infinity,
+                height: maxH ? maxH * gridConfig.rowHeight : Infinity,
+              };
+            },
+          }),
+          // snap TEST
+          interact.modifiers.snapSize({
+            targets: [interact.snappers.grid({ width: gridConfig.colWidth, height: gridConfig.rowHeight })],
+            endOnly: true,
           }),
           ...(resizeOptions.modifiers || []),
         ],
@@ -268,6 +286,7 @@ export const useEditableBrick = (
     }
 
     return () => {
+      console.log("cleanup use-draggable");
       interactable.current?.unset();
       interactable.current = null;
     };
@@ -280,6 +299,8 @@ export const useEditableBrick = (
     resizeOptions,
     getSize,
     resizeEnabled,
+    getBrick,
+    previewMode,
     // updateElementSize,
     gridConfig,
   ]);

@@ -144,6 +144,7 @@ const homePageBricks = defineBricks([
           x: 0,
           w: 12,
           h: 3,
+          minW: 7,
         },
       },
     },

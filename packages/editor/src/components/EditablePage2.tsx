@@ -60,9 +60,6 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       containerVerticalPadding: LAYOUT_PADDING[editor.previewMode][1],
     },
     dragCallbacks: {
-      onDragStart: () => {
-        setDraggingOrResizing(true);
-      },
       onDragEnd: (brickId, pos, gridPos) => {
         const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
         console.log("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
@@ -161,7 +158,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
             "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
             // todo: use theme or attributes for bg color
             "bg-white min-h-[100%] max-w-full": editor.previewMode !== "desktop",
-            // "dragging-or-resizing": draggingOrResizing,
+            "dragging-or-resizing": draggingOrResizing,
           },
           css({
             gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,
