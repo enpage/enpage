@@ -5,39 +5,42 @@ import { BsTablet } from "react-icons/bs";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
 import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
-import { useDraftUndoManager, useEditor, useAttributes, usePagesInfo } from "@enpage/sdk/browser/use-editor";
-import { tx, css } from "@enpage/sdk/browser/twind";
+import {
+  useDraftUndoManager,
+  useEditor,
+  useAttributes,
+  usePagesInfo,
+  useEditorMode,
+  usePageVersion,
+} from "~/hooks/use-editor";
+import { tx, css } from "@enpage/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { DropdownMenu, TextField } from "@enpage/style-system";
+import { DropdownMenu, TextField, Popover } from "@enpage/style-system";
+import { post } from "~/utils/api";
+import { IoIosSave } from "react-icons/io";
 
 export default function TopBar() {
   const editor = useEditor();
   const attributes = useAttributes();
+  const editorMode = useEditorMode();
+  const pageVersion = usePageVersion();
   const pages = usePagesInfo();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
-
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
 
+  const publish = useCallback(() => {
+    post(
+      `/sites/${editor.pageConfig.siteId}/pages/${editor.pageConfig.id}/versions/${pageVersion}/publish`,
+      {},
+    );
+  }, [editor.pageConfig, pageVersion]);
+
   const switchPreviewMode = useCallback(() => {
-    switch (editor.previewMode) {
-      case "desktop":
-        if (attributes.$tabletBreakpointEnabled) {
-          editor.setPreviewMode("tablet");
-        } else {
-          editor.setPreviewMode("mobile");
-        }
-        break;
-      case "tablet":
-        editor.setPreviewMode("mobile");
-        break;
-      case "mobile":
-        editor.setPreviewMode("desktop");
-        break;
-    }
-  }, [editor.previewMode, editor.setPreviewMode, attributes.$tabletBreakpointEnabled]);
+    editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
+  }, [editor.previewMode, editor.setPreviewMode]);
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
@@ -49,7 +52,7 @@ export default function TopBar() {
     disabled:text-white/40
   `;
 
-  const rocketBtn = `px-3 bg-gradient-to-tr from-orange-500 to-yellow-400 border-l border-l-orange-300
+  const rocketBtn = `px-3 bg-gradient-to-tr from-orange-500 !to-yellow-400 border-l border-l-orange-300
   hover:bg-gradient-to-tr hover:from-orange-600 hover:to-yellow-500`;
 
   const btnWithArrow = "cursor-default !aspect-auto";
@@ -76,42 +79,75 @@ export default function TopBar() {
     >
       <button
         type="button"
-        disabled={false}
+        disabled={editor.mode === "local"}
         onClick={() => {
           window.location.href = "/dashboard";
         }}
-        className={tx(baseCls)}
+        className={tx(baseCls, "flex-shrink-0")}
       >
-        <img src={logo} alt="Upstart" className="h-9 w-auto" />
+        <img src={logo} alt="Upstart" className={tx("h-[56%] w-auto")} />
       </button>
 
-      <div className={tx(baseCls, "px-5", css({ paddingBlock: "0.6rem" }))}>
-        <TextField.Root
-          placeholder="Ask AI to generate elements or modify your page"
-          size="3"
-          className={tx(" focus:!bg-white focus-within:!bg-white", css({ width: "30rem" }))}
-        >
-          <TextField.Slot>
-            <BsStars className="w-5 h-5 text-upstart-400" />
-          </TextField.Slot>
-        </TextField.Root>
+      <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
+        <Popover.Root>
+          <Popover.Trigger>
+            <button type="button" className="w-full">
+              <TextField.Root
+                placeholder="Ask AI to modify your page"
+                size="3"
+                className={tx("focus:!outline-white/40 focus-within:!outline-white/40 flex-1 w-full")}
+              >
+                <TextField.Slot>
+                  <BsStars className="w-5 h-5 text-upstart-400" />
+                </TextField.Slot>
+              </TextField.Root>
+            </button>
+          </Popover.Trigger>
+          <Popover.Content onOpenAutoFocus={(e) => e.preventDefault()} side="bottom" size="1">
+            <div className="text-sm flex flex-col gap-2.5">
+              <h3 className="text-sm2 font-semibold uppercase">Prompt Examples</h3>
+              <strong>Generate elements:</strong>
+              <ul className="italic list-outside list-disc leading-5 ml-4">
+                <li>
+                  <q>Add a hero section with a call to action</q>
+                </li>
+                <li>
+                  <q>Add a testimonial section</q>
+                </li>
+                <li>
+                  <q>Add a contact form with name, email and company name</q>
+                </li>
+              </ul>
+              <strong>Modify your theme:</strong>
+              <ul className="italic list-outside list-disc leading-5 ml-4">
+                <li>
+                  <q>Modify my theme with lighter colors</q>
+                </li>
+              </ul>
+            </div>
+          </Popover.Content>
+        </Popover.Root>
       </div>
 
-      <div className={tx("border-r border-r-upstart-700", baseCls)} />
+      {/* <div className={tx("border-r border-r-upstart-700", baseCls)} /> */}
 
-      <button disabled={!canUndo} onClick={() => undo()} type="button" className={tx(btnClass, commonCls)}>
+      <button
+        disabled={!canUndo}
+        onClick={() => undo()}
+        type="button"
+        className={tx(btnClass, commonCls, "ml-auto")}
+      >
         <LuUndo className="h-7 w-auto" />
-        <span className={tooltipCls}>Undo</span>
+        <span className={tx(tooltipCls)}>Undo</span>
       </button>
       <button disabled={!canRedo} onClick={() => redo()} type="button" className={tx(btnClass, commonCls)}>
         <LuRedo className="h-7 w-auto" />
-        <span className={tooltipCls}>Redo</span>
+        <span className={tx(tooltipCls)}>Redo</span>
       </button>
       <button type="button" className={tx(btnClass, commonCls)} onClick={switchPreviewMode}>
         {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
         {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
-        {editor.previewMode === "tablet" && <BsTablet className="h-7 w-auto" />}
-        <span className={tooltipCls}>Switch View</span>
+        <span className={tx(tooltipCls)}>Switch View</span>
       </button>
 
       <TopbarMenu
@@ -131,20 +167,38 @@ export default function TopBar() {
       >
         <button type="button" className={tx(btnClass, commonCls, btnWithArrow)}>
           <VscCopy className="h-7 w-auto" />
-          <span className={tooltipCls}>Pages</span>
-          <RiArrowDownSLine className={arrowClass} />
+          <span className={tx(tooltipCls)}>Pages</span>
+          <RiArrowDownSLine className={tx(arrowClass)} />
         </button>
       </TopbarMenu>
 
       <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
-      <TopbarMenu items={[{ label: "Publish on web" }, { label: "Schedule publish", shortcut: "⌘⇧D" }]}>
-        <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}>
-          <RxRocket className="h-7 w-auto" />
-          <span className="text-base font-bold px-2">Publish</span>
-          <RiArrowDownSLine className={arrowClass} />
+      {editorMode === "remote" ? (
+        <TopbarMenu
+          items={[
+            { label: "Publish on web", onClick: publish },
+            { label: "Schedule publish", shortcut: "⌘⇧D" },
+          ]}
+        >
+          <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}>
+            <RxRocket className={tx("h-6 w-auto")} />
+            <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Publish</span>
+            <RiArrowDownSLine className={arrowClass} />
+          </button>
+        </TopbarMenu>
+      ) : (
+        <button
+          type="button"
+          className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}
+          onClick={() => {
+            window.location.href = "/sign-up/?from=editor";
+          }}
+        >
+          <IoIosSave className={tx("h-5 w-auto")} />
+          <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Save</span>
         </button>
-      </TopbarMenu>
+      )}
     </nav>
   );
 }

@@ -1,12 +1,9 @@
 import {
   Type,
-  type TSchema,
   type StringOptions,
   type NumberOptions,
   type SchemaOptions,
   type ObjectOptions,
-  type Static,
-  type TObject,
   type TAny,
   type TProperties,
 } from "@sinclair/typebox";
@@ -23,6 +20,7 @@ type EnumOption = {
 type AttributeOptions<T extends Record<string, unknown>> = {
   "ui:group"?: string;
   "ui:group:title"?: string;
+  "ui:group:order"?: number;
   advanced?: boolean;
   "ui:hidden"?: boolean | "if-empty";
 } & T;
@@ -45,7 +43,7 @@ export function defineAttributes(attrs: TProperties) {
   return Type.Object(
     { ...defaultAttributes, ...attrs },
     {
-      id: "attributes",
+      $id: "attributes",
     },
   );
 }
@@ -131,46 +129,11 @@ export const attr = {
   /**
    * Define a color attribute
    */
-  color(
-    name: string,
-    defaultValue = "",
-    opts: AttributeOptions<Omit<SchemaOptions, "title" | "default">> = {},
-  ) {
-    return Type.Union(
-      [
-        // For RGB(A) HEX colors
-        Type.String({
-          format: "rgb-hex",
-          pattern: "^#[0-9a-fA-F]{3,8}$",
-        }),
-        // For RGB(A) object
-        Type.Object({
-          r: Type.Number({ minimum: 0, maximum: 255 }),
-          g: Type.Number({ minimum: 0, maximum: 255 }),
-          b: Type.Number({ minimum: 0, maximum: 255 }),
-          a: Type.Number({ minimum: 0, maximum: 1 }),
-        }),
-        // HSL(A) colors
-        Type.String({ title: name, default: defaultValue, ...opts, format: "hsl-string" }),
-        // HSL(A) object
-        Type.Object({
-          h: Type.Number({ minimum: 0, maximum: 360 }),
-          s: Type.Number({ minimum: 0, maximum: 100 }),
-          l: Type.Number({ minimum: 0, maximum: 100 }),
-          a: Type.Number({ minimum: 0, maximum: 1 }),
-        }),
-        // For CSS color names
-        Type.String({ title: name, default: defaultValue, ...opts, format: "color-name" }),
-        // For gradients
-        Type.Array(
-          Type.Object({
-            color: Type.String({ format: "color" }),
-            position: Type.String({ format: "percentage" }),
-          }),
-        ),
-      ],
-      { title: name, default: defaultValue },
-    );
+  color(name: string, defaultValue = "", opts?: AttributeOptions<Omit<StringOptions, "title" | "default">>) {
+    const defaultOpts = {
+      "ui:field": "color",
+    };
+    return Type.String({ title: name, default: defaultValue, ...defaultOpts, ...opts });
   },
   /**
    * Define a date
@@ -237,10 +200,19 @@ const defaultAttributes = {
     ],
   }),
 
+  $pagePath: attr.string("Page path", "/", {
+    description: "The URL path of the page",
+    "ui:group": "location",
+    "ui:group:title": "Location",
+    "ui:group:order": 1,
+    "ui:field": "path",
+  }),
+
   $pageTitle: attr.string("Page title", "Untitled", {
     "ui:group": "meta",
     "ui:group:title": "Meta tags / SEO",
   }),
+
   $pageDescription: attr.string("Page description", "", {
     "ui:widget": "textarea",
     "ui:options": {
@@ -258,38 +230,19 @@ const defaultAttributes = {
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
-  $tabletBreakpointEnabled: attr.boolean("Enable tablet layout", false, {
-    description: "Enable a different layout for tablets",
-    "ui:group": "layout",
-    "ui:group:title": "Layout",
-  }),
-
   $gridGap: attr.number("Grid gap", 10, {
     min: 0,
     max: 100,
     description: "Grid gap in pixels",
     "ui:group": "layout",
-    "ui:group:title": "Layout",
+    "ui:group:title": "Layout & Design",
   }),
 
-  // $gridMobileCols: attr.number("Mobile columns", 2, {
-  //   min: 1,
-  //   max: 12,
-  //   "ui:group": "layout",
-  //   "ui:hidden": true,
-  // }),
-  // $gridTabletCols: attr.number("Tablet columns", 4, {
-  //   min: 1,
-  //   max: 12,
-  //   "ui:group": "layout",
-  //   "ui:hidden": true,
-  // }),
-  // $gridDesktopCols: attr.number("Desktop columns", 12, {
-  //   min: 1,
-  //   max: 12,
-  //   "ui:group": "layout",
-  //   "ui:hidden": true,
-  // }),
+  $backgroundColor: attr.color("Page background color", "#ffffff", {
+    "ui:field": "color",
+    "ui:group": "layout",
+    "ui:group:title": "Layout & Design",
+  }),
 };
 
 export function resolveAttributes(attributes: ReturnType<typeof defineAttributes>) {
@@ -297,10 +250,3 @@ export function resolveAttributes(attributes: ReturnType<typeof defineAttributes
 }
 
 export type AttributesResolved = ReturnType<typeof resolveAttributes>;
-
-// export type AttributesResolved<
-//   S extends TObject = TObject,
-//   B extends S & typeof defaultAttributes = S & typeof defaultAttributes,
-// > = {
-//   [key in keyof B]: Static<B[key]>;
-// };

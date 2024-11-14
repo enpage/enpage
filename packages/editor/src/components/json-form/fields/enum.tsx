@@ -1,10 +1,8 @@
 import type { FieldProps } from "@rjsf/utils";
-import { SegmentedControl, Slider } from "@enpage/style-system";
-import clsx from "clsx";
-import { tx } from "@enpage/sdk/browser/twind";
-import { BiMinus } from "react-icons/bi";
+import { SegmentedControl } from "@enpage/style-system";
+import { tx } from "@enpage/style-system/twind";
 import type { Brick } from "@enpage/sdk/shared/bricks";
-import { useDraft } from "@enpage/sdk/browser/use-editor";
+import { useDraft } from "~/hooks/use-editor";
 
 interface EnumOption {
   const: string;
@@ -111,7 +109,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
               <button
                 key={option.const}
                 type="button"
-                className={clsx(
+                className={tx(
                   `text-sm first:rounded-l last:rounded-r py-0.5 flex-1 flex items-center justify-center`,
                   {
                     "bg-upstart-600 text-white": currentValue === option.const,

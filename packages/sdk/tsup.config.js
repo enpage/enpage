@@ -72,28 +72,6 @@ export default defineConfig((options) => {
       loader,
       removeNodeProtocol: false,
     },
-    // The dev-client uses Vite's import.meta.env.DEV
-    // We bundle it using tsup to avoid the automatic replacement at build time
-    {
-      entry: ["src/browser", ...ignored],
-      outDir: "dist/browser",
-      target: "es2020",
-      format: ["esm"],
-      dts: !options.watch,
-      verbose: true,
-      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
-      clean: !options.watch,
-      minify: !options.watch,
-      sourcemap: options.watch ? "inline" : false,
-      // splitting: false,
-      // skipNodeModulesBundle: true,
-      external,
-      esbuildOptions(input) {
-        input.banner = banner;
-      },
-      loader,
-      removeNodeProtocol: false,
-    },
     {
       entry: [
         "src/shared",

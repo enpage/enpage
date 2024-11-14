@@ -1,7 +1,7 @@
-import { useAttributes, useAttributesSchema } from "@enpage/sdk/browser/use-editor";
+import { useAttributes, useAttributesSchema, useDraft, usePreviewMode } from "../hooks/use-editor";
 import { sortJsonSchemaProperties } from "../utils/sort-json-schema-props";
 import Form, { type IChangeEvent } from "@rjsf/core";
-import { css, tx } from "@enpage/sdk/browser/twind";
+import { css, tx } from "@enpage/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import validator from "@rjsf/validator-ajv8";
 import { customFields } from "./json-form/fields";
@@ -25,7 +25,6 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
 
   // Group fields by their ui:group
   const groupedFields = properties.reduce<GroupedFields>((acc, prop) => {
-    console.log({ prop });
     const group = (prop.content.props.uiSchema?.["ui:group"] as string) || "default";
     groupTitles[group] = prop.content.props.uiSchema?.["ui:group:title"] ?? "Other";
     if (!acc[group]) {
@@ -37,11 +36,10 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
 
   return (
     <div className="rjsf-sections">
-      {title && <h2 className="text-sm bg-upstart-200 px-2">{title}</h2>}
-
+      {title && <h2 className="text-sm bg-upstart-200 dark:bg-dark-700 px-2">{title}</h2>}
       {Object.entries(groupedFields).map(([group, fields]) => (
         <div key={group} className="form-section">
-          <h3 className="text-sm bg-upstart-100 text-gray-700 px-2 py-1 sticky top-0 z-[999]">
+          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
             {groupTitles[group]}
           </h3>
           <div className="section-fields">
@@ -65,13 +63,14 @@ const tabContentScrollClass = css({
 });
 
 export default function SettingsForm() {
+  const draft = useDraft();
   const attributes = useAttributes();
   const attrSchema = useAttributesSchema();
   const filteredAttrSchema = sortJsonSchemaProperties(attrSchema);
 
   const onChange = (data: IChangeEvent, id?: string) => {
     console.log("changed attr", data, id);
-    // draft.updateBrickProps(brick.id, data.formData);
+    draft.updateAttributes(data.formData);
   };
 
   const uiSchema = createUiSchema(filteredAttrSchema);

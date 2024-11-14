@@ -1,6 +1,6 @@
 import { Tabs } from "@enpage/style-system";
 import type { ComponentProps } from "react";
-import { tx, css } from "@enpage/sdk/browser/twind";
+import { tx, css } from "@enpage/style-system/twind";
 
 const tabContentScrollClass = css({
   scrollbarColor: "var(--violet-4) var(--violet-2)",

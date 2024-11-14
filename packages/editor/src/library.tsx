@@ -1,13 +1,12 @@
-import { EditorWrapper, type EditorWrapperProps } from "@enpage/sdk/browser/EditorWrapper";
-import { ClientOnly } from "./utils/client-only";
+import { EditorWrapper, type EditorWrapperProps } from "./components/EditorWrapper";
 import Editor from "./components/Editor";
 
-export default function EditorComponent({ pageConfig, pages }: EditorWrapperProps) {
+export default function EditorComponent(props: EditorWrapperProps) {
   return (
-    <ClientOnly>
-      <EditorWrapper pageConfig={pageConfig} pages={pages}>
-        <Editor />
-      </EditorWrapper>
-    </ClientOnly>
+    <EditorWrapper {...props}>
+      <Editor />
+    </EditorWrapper>
   );
 }
+
+export * as testConfig from "./test-enpage.config";

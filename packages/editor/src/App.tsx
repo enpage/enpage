@@ -1,7 +1,7 @@
 import { createPageConfigSampleFromTemplateConfig } from "@enpage/sdk/shared/page";
 import * as testEnpageConfig from "./test-enpage.config";
 import type { EnpageTemplateConfig } from "@enpage/sdk/shared/template-config";
-import { EditorWrapper } from "@enpage/sdk/browser/EditorWrapper";
+import { EditorWrapper } from "~/components/EditorWrapper";
 import { ClientOnly } from "./utils/client-only";
 import Editor from "./components/Editor";
 
@@ -21,7 +21,7 @@ export default function App() {
   ];
   return (
     <ClientOnly>
-      <EditorWrapper pageConfig={pageConfig} pages={testPages}>
+      <EditorWrapper pageConfig={pageConfig} pages={testPages} mode="local">
         <Editor />
       </EditorWrapper>
     </ClientOnly>

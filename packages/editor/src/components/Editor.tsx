@@ -1,4 +1,13 @@
-import { useDraft, useEditor } from "@enpage/sdk/browser/use-editor";
+import {
+  useDraft,
+  useEditor,
+  useBricksSubscribe,
+  useAttributesSubscribe,
+  usePagePathSubscribe,
+  useThemeSubscribe,
+  usePageConfig,
+  useEditorMode,
+} from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { useEffect, useRef, type ComponentProps } from "react";
@@ -6,10 +15,11 @@ import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
-import Page from "@enpage/sdk/browser/page";
-import { tx, injectGlobal, css } from "@enpage/sdk/browser/twind";
+import EditablePage from "./EditablePage";
+import { tx, injectGlobal, css } from "@enpage/style-system/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
+import { patch } from "../utils/api";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -18,11 +28,57 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
+  const editorMode = useEditorMode();
+  const pageConfig = usePageConfig();
 
-  //const draftCtx = useDraftStoreContext();
-  // useEffect(() => {
-  //   draftCtx.persist.rehydrate();
-  // }, []);
+  /**
+   *    method: "PATCH",
+      path: `/sites/:siteId/pages/:pageId/versions/latest`,
+      responses: {
+        200: getVersionSuccess,
+        500: errorSchema,
+      },
+      summary: "Patch latest version pf page {{pageId}} for site {{siteId}}",
+      body: z.object({
+        attributes: z.record(z.unknown()).optional(),
+        elements: z.record(z.unknown()).optional(),
+        label: z.string().optional(),
+        path: z.string().optional(),
+        theme: z.record(z.unknown()).optional(),
+      }),
+   */
+
+  function updatePage(payload: Record<string, unknown>) {
+    if (editorMode === "local") {
+      return;
+    }
+    return patch(`/sites/${pageConfig.siteId}/pages/${pageConfig.id}/versions/latest`, payload)
+      .then((res) => {
+        console.log("Page version saved");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error("Error while updating page version");
+        console.log(err);
+      });
+  }
+
+  useBricksSubscribe(async (bricks) => {
+    console.debug("Bricks have changed, updating page version");
+    updatePage({ elements: bricks });
+  });
+  useAttributesSubscribe((attributes) => {
+    console.debug("Attributes have changed, updating page version");
+    updatePage({ attributes });
+  });
+  usePagePathSubscribe((path) => {
+    console.debug("pagePath has changed, updating page version");
+    updatePage({ path });
+  });
+  useThemeSubscribe((theme) => {
+    console.debug("theme has changed, updating page version");
+    updatePage({ theme });
+  });
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
@@ -86,7 +142,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
         )}
       >
         <DeviceFrame>
-          <Page />
+          <EditablePage />
         </DeviceFrame>
       </div>
     </div>

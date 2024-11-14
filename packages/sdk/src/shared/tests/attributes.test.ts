@@ -10,7 +10,7 @@ describe("Attributes test suite", () => {
         isStudent: attr.boolean("Is Student"),
         createdAt: attr.date("Created At"),
       });
-      expect(attributes.id).toBe("attributes");
+      expect(attributes.$id).toBe("attributes");
       expect(attributes.type).toBe("object");
       expect(attributes.properties).toBeTypeOf("object");
       expect(attributes.properties).toHaveProperty("$pageLanguage");

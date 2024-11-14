@@ -52,8 +52,6 @@ export const renderTemplatePlugin = (
         addEntryClient(doc, head, body);
         // Set site language. Will result in <html lang="xx">
         renderMetaTags(doc, head, context);
-        // Add stylesheets to the document head
-        addStylesheets(cfg, logger, doc, head);
         // Add the vite preload error script (to reload the page on preload error)
         attachVitePreloadErrorScript(doc, head);
         // rerwrite stadalone <img> tags to <picture> tags
@@ -264,23 +262,4 @@ function renderMetaTags(doc: Document, head: HTMLHeadElement, context: GenericPa
     name: "revised",
     content: new Date().toISOString(),
   });
-}
-
-/**
- * Adds stylesheets to the document head.
- */
-function addStylesheets(cfg: EnpageTemplateConfig, logger: Logger, doc: Document, head: HTMLHeadElement) {
-  // const styles = ["tailwind", "client", "anim"];
-  // for (const style of styles) {
-  //   if (style === "tailwind" && cfg.manifest.settings?.disableTailwind) continue;
-  //   const link = doc.createElement("link");
-  //   link.rel = "stylesheet";
-  //   link.href = `/@enpage/style-system/${style}.css`;
-  //   head.appendChild(link);
-  // }
-
-  const link = doc.createElement("link");
-  link.rel = "stylesheet";
-  link.textContent = '@import "open-props/postcss/style";';
-  head.appendChild(link);
 }

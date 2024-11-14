@@ -1,4 +1,4 @@
-import { tx } from "@enpage/sdk/browser/twind";
+import { tx } from "@enpage/style-system/twind";
 
 export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
   [&_label]:(text-sm leading-tight)
@@ -6,7 +6,7 @@ export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
   [&_label.label.file-label]:(mb-0)
   [&_.control-label]:(block mb-1)
   [&_fieldset]:(flex flex-col)
-  [&_.form-group:has(*)]:(px-3 py-4 border-b border-gray-200 dark:border-dark-700)
+  [&_.form-group:has(*)]:(px-3 py-4 border-b border-gray-200 dark:border-dark-600)
   [&>.form-group]:(!px-0 !py-0)
   [&_.field-description]:(mt-1 mb-1 text-xs text-gray-600 dark:text-white/50 leading-none)
   [&.hide-help_.field-description]:(hidden)

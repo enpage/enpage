@@ -1,9 +1,9 @@
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import App from "./App";
-import { setupTwindReact } from "@enpage/sdk/browser/twind";
+import { setupTwindReact } from "@enpage/style-system/twind";
 
-setupTwindReact();
+// setupTwindReact();
 
 const hydrate = () =>
   startTransition(() => {
@@ -13,6 +13,7 @@ const hydrate = () =>
         <App />
       </StrictMode>,
     );
+    setupTwindReact();
   });
 
 if (typeof requestIdleCallback === "function") {

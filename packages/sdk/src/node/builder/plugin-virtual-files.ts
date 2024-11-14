@@ -32,6 +32,7 @@ export async function pluginVirtual(
     "virtual:enpage-page-config.json": JSON.stringify({
       id: "temp-page",
       siteId: "temp-site",
+      path: "/",
       attributes: templateConfig.attributes,
       datasources: templateConfig.datasources,
       data: context?.data,

@@ -1,13 +1,13 @@
-import { Tabs, Button, Callout, TextArea, Spinner, Select, useAutoAnimate } from "@enpage/style-system";
+import { Tabs, Button, Callout, TextArea, Spinner, Select, useAutoAnimate, Text } from "@enpage/style-system";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
 import { forwardRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
 import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
-import { tx, tw } from "@enpage/sdk/browser/twind";
+import { tx, tw, css } from "@enpage/style-system/twind";
 import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
-import { useDraft } from "@enpage/sdk/browser/use-editor";
+import { useDraft } from "~/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 
@@ -44,17 +44,19 @@ export default function ThemePanel() {
 
   return (
     <Tabs.Root defaultValue="current">
-      <Tabs.List className="sticky top-0 !bg-white z-50">
-        <Tabs.Trigger value="current" className="!flex-1">
-          Current
-        </Tabs.Trigger>
-        <Tabs.Trigger value="list" className="!flex-1">
-          List
-        </Tabs.Trigger>
-        <Tabs.Trigger value="ai" className="!flex-1">
-          Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
-        </Tabs.Trigger>
-      </Tabs.List>
+      <div className="bg-white dark:bg-dark-800">
+        <Tabs.List className="sticky top-0 z-50">
+          <Tabs.Trigger value="current" className="!flex-1">
+            Current
+          </Tabs.Trigger>
+          <Tabs.Trigger value="list" className="!flex-1">
+            List
+          </Tabs.Trigger>
+          <Tabs.Trigger value="ai" className="!flex-1">
+            Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
+          </Tabs.Trigger>
+        </Tabs.List>
+      </div>
       <ScrollablePanelTab tab="ai" className="p-2">
         <Callout.Root size="1">
           <Callout.Icon>
@@ -93,16 +95,16 @@ export default function ThemePanel() {
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="current" className="p-2">
         <Callout.Root size="1">
-          <Callout.Text>
-            Customize your theme colors and typography to match your brand.
-            <br />
-            <strong className="font-semibold">Note</strong>: Theme is applied to your entire site, not only
-            the current page.
+          <Callout.Text className={tx("text-balance")}>
+            Customize your theme colors and typography to match your brand. Please note that theme is applied
+            to your entire site, not only the current page.
           </Callout.Text>
         </Callout.Root>
         <div className="mt-1 flex flex-col gap-y-6">
           <fieldset>
-            <div className="font-semibold text-sm my-2 bg-gray-200 py-1 -mx-2 px-2">Colors</div>
+            <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
+              Colors
+            </div>
             <div className="text-sm flex flex-col gap-y-4 px-1">
               {Object.entries(draft.theme.colors).map(([colorType, color]) => (
                 <ColorFieldRow
@@ -132,7 +134,9 @@ export default function ThemePanel() {
             </div>
           </fieldset>
           <fieldset>
-            <div className="font-semibold text-sm my-2 bg-gray-200 py-1 -mx-2 px-2">Typography</div>
+            <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
+              Typography
+            </div>
             <div className="text-sm flex flex-col gap-y-4 px-1">
               {Object.entries(draft.theme.typography)
                 .filter((obj) => obj[0] !== "base")
@@ -142,10 +146,10 @@ export default function ThemePanel() {
                       {/* @ts-ignore */}
                       {themeSchema.properties.typography.properties[fontType].title}
                     </label>
-                    <p className="text-xs text-gray-500 mb-2">
+                    <Text color="gray" as="p" size="2" className="mb-1">
                       {/* @ts-ignore */}
                       {themeSchema.properties.typography.properties[fontType].description}
-                    </p>
+                    </Text>
                     <Select.Root
                       defaultValue={font as string}
                       size="2"
@@ -193,7 +197,10 @@ const ThemeListWrapper = forwardRef<HTMLDivElement, ComponentProps<"div">>(funct
   ref,
 ) {
   return (
-    <div ref={ref} className={tx("flex flex-col divide-y divide-upstart-100", className)}>
+    <div
+      ref={ref}
+      className={tx("flex flex-col divide-y divide-upstart-100 dark:divide-dark-600", className)}
+    >
       {children}
     </div>
   );
@@ -210,7 +217,7 @@ function ThemePreview({ theme }: { theme: Theme }) {
           {Object.entries(theme.colors).map(([colorName, color]) => (
             <div
               key={colorName}
-              className="w-7 h-7 rounded-full [&:not(:first-child)]:(-ml-1) ring-1 ring-white"
+              className="w-7 h-7 rounded-full [&:not(:first-child)]:(-ml-1) ring-1 ring-white dark:ring-dark-300"
               style={{
                 backgroundColor: color,
               }}

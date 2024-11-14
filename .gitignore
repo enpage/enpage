@@ -8,6 +8,8 @@ lerna-debug.log*
 .pnpm-debug.log*
 .DS_Store
 
+bundlemeta.json
+
 # VSCode files
 .vscode/*
 !.vscode/extensions.json

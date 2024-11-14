@@ -2,7 +2,7 @@ import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
 import { resolveAttributes, type AttributesResolved } from "./attributes";
 import type { Manifest } from "vite";
 import type { TemplateManifest } from "./manifest";
-import { defineBricks, type Brick, type DefinedBrick } from "./bricks";
+import type { Brick } from "./bricks";
 import type { EnpageTemplateConfig } from "./template-config";
 import invariant from "./utils/invariant";
 
@@ -22,6 +22,8 @@ export type PageConfig<
 > = {
   id: string;
   siteId: string;
+  path: string;
+
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -75,6 +77,7 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageT
   return {
     id: "page-1",
     siteId: "site-1",
+    path,
     datasources: templateConfig.datasources,
     data: undefined,
     attributes: templateConfig.attributes,

@@ -1,5 +1,5 @@
 import type { FieldProps } from "@rjsf/utils";
-import clsx from "clsx";
+import { tx } from "@enpage/style-system/twind";
 import { useEffect, useState } from "react";
 
 interface DimensionOption {
@@ -16,6 +16,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (preset === "auto") {
       onChange("auto");
@@ -24,7 +25,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
     } else {
       onChange("100%");
     }
-  }, [preset, onChange]);
+  }, [preset]);
 
   return (
     <div className="dimension-field">
@@ -41,7 +42,7 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
             <button
               key={option}
               type="button"
-              className={clsx(`text-sm first:rounded-l last:rounded-r py-0.5 flex-1 capitalize`, {
+              className={tx(`text-sm first:rounded-l last:rounded-r py-0.5 flex-1 capitalize`, {
                 "bg-upstart-600 text-white": preset === option,
                 "bg-gray-200 hover:bg-gray-300 dark:bg-dark-600 dark:hover:bg-dark-500 text-gray-800 dark:text-white/50":
                   preset !== option,
