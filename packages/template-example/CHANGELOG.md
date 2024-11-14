@@ -1,5 +1,13 @@
 # @enpage/template-example
 
+## 0.0.46
+
+### Patch Changes
+
+- Updated dependencies [[`af259f9`](https://github.com/enpage/enpage/commit/af259f9ca9b004bb1d68913cf6cd1d313aea0015)]:
+  - @enpage/style-system@0.0.21
+  - @enpage/sdk@0.0.46
+
 ## 0.0.45
 
 ### Patch Changes
