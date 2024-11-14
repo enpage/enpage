@@ -45,7 +45,6 @@
     "@dnd-kit/sortable": "8.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@fullhuman/postcss-purgecss": "6.0.0",
-    "@happy-dom/global-registrator": "15.7.4",
     "@hattip/adapter-cloudflare-workers": "0.0.47",
     "@hattip/adapter-node": "0.0.47",
     "@hattip/compose": "0.0.47",
@@ -61,7 +60,6 @@
     "@tiptap/pm": "2.8.0",
     "@tiptap/react": "2.8.0",
     "@tiptap/starter-kit": "2.8.0",
-
     "@vitejs/plugin-react": "^4.3.1",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",

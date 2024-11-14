@@ -38,12 +38,6 @@ importers:
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
-      happy-dom:
-        specifier: 15.7.4
-        version: 15.7.4
-      happy-dom-without-node:
-        specifier: 14.12.3
-        version: 14.12.3
       json-schema-to-markdown:
         specifier: 1.1.1
         version: 1.1.1
@@ -73,7 +67,7 @@ importers:
         version: 1.3.4(@algolia/client-search@5.13.0)(@types/node@22.5.1)(postcss@8.4.42)(search-insights@2.17.2)(typescript@5.5.3)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@22.5.1)(@vitest/ui@2.0.5)(happy-dom@15.7.4)
+        version: 2.0.5(@types/node@22.5.1)(@vitest/ui@2.0.5)
       vue:
         specifier: 3.5.4
         version: 3.5.4(typescript@5.5.3)
@@ -322,9 +316,6 @@ importers:
       '@fullhuman/postcss-purgecss':
         specifier: 6.0.0
         version: 6.0.0(postcss@8.4.42)
-      '@happy-dom/global-registrator':
-        specifier: 15.7.4
-        version: 15.7.4
       '@hattip/adapter-cloudflare-workers':
         specifier: 0.0.47
         version: 0.0.47
@@ -2894,13 +2885,6 @@ packages:
     dependencies:
       postcss: 8.4.42
       purgecss: 6.0.0
-    dev: false
-
-  /@happy-dom/global-registrator@15.7.4:
-    resolution: {integrity: sha512-y8qtwB2eS4Iqy2frJP1b1zkIYQNcSMTU7FdInsVSV+mQ2JGgih8Pi+j+v+iVnYsnqC+SjZNO/4UUhe16ebvZeA==}
-    engines: {node: '>=18.0.0'}
-    dependencies:
-      happy-dom: 15.7.4
     dev: false
 
   /@hattip/adapter-cloudflare-workers@0.0.47:
@@ -6444,7 +6428,7 @@ packages:
       pathe: 1.1.2
       sirv: 2.0.4
       tinyrainbow: 1.2.0
-      vitest: 2.0.5(@types/node@22.5.1)(@vitest/ui@2.0.5)(happy-dom@15.7.4)
+      vitest: 2.0.5(@types/node@22.5.1)(@vitest/ui@2.0.5)
     dev: true
 
   /@vitest/utils@2.0.5:
@@ -8480,24 +8464,6 @@ packages:
     transitivePeerDependencies:
       - uWebSockets.js
     dev: false
-
-  /happy-dom-without-node@14.12.3:
-    resolution: {integrity: sha512-1wp8+GFneT8mBjVnzancXHRuscEUH3vnb38lfCHPxuSu6OiRw1kQzHFbTGYlNCU2YXOlVIlzsS6xg9nAr7Xg6Q==}
-    engines: {node: '>=16.0.0'}
-    dependencies:
-      entities: 4.5.0
-      webidl-conversions: 7.0.0
-      whatwg-mimetype: 3.0.0
-      whatwg-url: 14.0.0
-    dev: true
-
-  /happy-dom@15.7.4:
-    resolution: {integrity: sha512-r1vadDYGMtsHAAsqhDuk4IpPvr6N8MGKy5ntBo7tSdim+pWDxus2PNqOcOt8LuDZ4t3KJHE+gCuzupcx/GKnyQ==}
-    engines: {node: '>=18.0.0'}
-    dependencies:
-      entities: 4.5.0
-      webidl-conversions: 7.0.0
-      whatwg-mimetype: 3.0.0
 
   /has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
@@ -12723,7 +12689,7 @@ packages:
       - universal-cookie
     dev: true
 
-  /vitest@2.0.5(@types/node@22.5.1)(@vitest/ui@2.0.5)(happy-dom@15.7.4):
+  /vitest@2.0.5(@types/node@22.5.1)(@vitest/ui@2.0.5):
     resolution: {integrity: sha512-8GUxONfauuIdeSl5f9GTgVEpg5BTOlplET4WEDaeY2QBiN8wSm68vxN/tb5z405OwppfoCavnwXafiaYBC/xOA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -12760,7 +12726,6 @@ packages:
       chai: 5.1.1
       debug: 4.3.6
       execa: 8.0.1
-      happy-dom: 15.7.4
       magic-string: 0.30.11
       pathe: 1.1.2
       std-env: 3.7.0
@@ -12852,10 +12817,6 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       iconv-lite: 0.6.3
-
-  /whatwg-mimetype@3.0.0:
-    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
-    engines: {node: '>=12'}
 
   /whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
