@@ -20,6 +20,7 @@ import type { Layout } from "react-grid-layout";
 export interface EditorStateProps {
   /**
    * When local, the editor does not fetch data from the server or save data to the server
+   * It is used when the user is not logged in yet or does not have an account yet
    */
   mode: "local" | "remote";
   enabled: boolean;

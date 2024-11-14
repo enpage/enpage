@@ -5,7 +5,13 @@ import { BsTablet } from "react-icons/bs";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
 import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
-import { useDraftUndoManager, useEditor, useAttributes, usePagesInfo } from "~/hooks/use-editor";
+import {
+  useDraftUndoManager,
+  useEditor,
+  useAttributes,
+  usePagesInfo,
+  useEditorMode,
+} from "~/hooks/use-editor";
 import { tx, css } from "@enpage/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
@@ -15,6 +21,7 @@ import { DropdownMenu, TextField, Popover } from "@enpage/style-system";
 export default function TopBar() {
   const editor = useEditor();
   const attributes = useAttributes();
+  const editorMode = useEditorMode();
   const pages = usePagesInfo();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
 
@@ -157,13 +164,26 @@ export default function TopBar() {
 
       <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
-      <TopbarMenu items={[{ label: "Publish on web" }, { label: "Schedule publish", shortcut: "⌘⇧D" }]}>
-        <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}>
+      {editorMode === "remote" ? (
+        <TopbarMenu items={[{ label: "Publish on web" }, { label: "Schedule publish", shortcut: "⌘⇧D" }]}>
+          <button type="button" className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}>
+            <RxRocket className={tx("h-7 w-auto")} />
+            <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Publish</span>
+            <RiArrowDownSLine className={arrowClass} />
+          </button>
+        </TopbarMenu>
+      ) : (
+        <button
+          type="button"
+          className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}
+          onClick={() => {
+            window.location.href = "/sign-up/?from=editor";
+          }}
+        >
           <RxRocket className={tx("h-7 w-auto")} />
           <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Publish</span>
-          <RiArrowDownSLine className={arrowClass} />
         </button>
-      </TopbarMenu>
+      )}
     </nav>
   );
 }
