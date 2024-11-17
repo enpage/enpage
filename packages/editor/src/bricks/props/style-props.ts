@@ -21,7 +21,7 @@ const borderColor = Type.String({
   default: "transparent",
   title: "Border color",
   "ui:field": "color",
-  "ui:color-attr": "border-color",
+  "ui:color-type": "border",
   "ui:group": "border",
 });
 
@@ -103,7 +103,7 @@ const backgroundColor = Type.String({
   default: "transparent",
   title: "Background color",
   "ui:field": "color",
-  "ui:color-attr": "background-color",
+  "ui:color-type": "background",
   "ui:group": "colors",
 });
 
@@ -213,7 +213,7 @@ const color = Type.String({
   default: "transparent",
   title: "Text color",
   "ui:field": "color",
-  "ui:color-attr": "text-color",
+  "ui:color-type": "text",
   "ui:group": "text",
 });
 

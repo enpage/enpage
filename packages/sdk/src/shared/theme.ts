@@ -18,14 +18,18 @@ export const themeSchema = Type.Object(
         title: "Primary color",
         description: "The brand's primary color",
       }),
-      secondary: Type.String({ title: "Secondary color", description: "The brand's second most used color" }),
-      tertiary: Type.Optional(
-        Type.String({ title: "Tertiary color", description: "The brand's third most used color" }),
-      ),
-      accent: Type.Optional(
-        Type.String({ title: "Accent color", description: "The brand's least used color" }),
-      ),
-      neutral: Type.String({ title: "Neutral color", description: "The base grey color" }),
+      secondary: Type.String({
+        title: "Secondary color",
+        description: "The brand's second most used color",
+      }),
+      accent: Type.String({
+        title: "Accent color",
+        description: "The brand's least used color",
+      }),
+      neutral: Type.String({
+        title: "Neutral color",
+        description: "The base grey color",
+      }),
     }),
 
     // Define the theme typography

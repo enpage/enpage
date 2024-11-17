@@ -7,6 +7,7 @@ import {
   useThemeSubscribe,
   usePageConfig,
   useEditorMode,
+  useAttributes,
 } from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
@@ -20,6 +21,7 @@ import { tx, injectGlobal, css } from "@enpage/style-system/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
+import { generateShades, generateTextColors } from "@enpage/sdk/shared/themes/color-system";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -28,25 +30,10 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
+  const editor = useEditor();
   const editorMode = useEditorMode();
   const pageConfig = usePageConfig();
-
-  /**
-   *    method: "PATCH",
-      path: `/sites/:siteId/pages/:pageId/versions/latest`,
-      responses: {
-        200: getVersionSuccess,
-        500: errorSchema,
-      },
-      summary: "Patch latest version pf page {{pageId}} for site {{siteId}}",
-      body: z.object({
-        attributes: z.record(z.unknown()).optional(),
-        elements: z.record(z.unknown()).optional(),
-        label: z.string().optional(),
-        path: z.string().optional(),
-        theme: z.record(z.unknown()).optional(),
-      }),
-   */
+  const attributes = useAttributes();
 
   function updatePage(payload: Record<string, unknown>) {
     if (editorMode === "local") {
@@ -82,20 +69,37 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
+    const shades = Object.entries(themeUsed.colors).reduce(
+      (acc, [colorName, color]) => {
+        acc[`color-${colorName}`] = color;
+        for (const [key, value] of Object.entries(generateShades(color))) {
+          acc[`color-${colorName}-${key}`] = value;
+          for (const [tonalKey, val] of Object.entries(generateTextColors(value))) {
+            if (tonalKey === "base") {
+              acc[`text-${colorName}-${key}`] = val;
+            } else {
+              acc[`text-${colorName}-${key}-${tonalKey}`] = val;
+            }
+          }
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
     const injected = `
      @layer upstart-theme {
         :root {
-          --color-primary: ${themeUsed.colors.primary};
-          --color-secondary: ${themeUsed.colors.secondary};
-          --color-tertiary: ${themeUsed.colors.tertiary};
-          --color-accent: ${themeUsed.colors.accent};
-          --color-neutral: ${themeUsed.colors.neutral};
+          ${Object.entries(shades)
+            .map(([key, value]) => `--${key}: ${value};`)
+            .join("\n")}
           --color-link: var(--color-primary);
+
           --font-size-hero-1: clamp(2rem, 9vw, 3.5rem);
           --font-size-hero-2: clamp(3rem, 9vw, 5rem);
           --font-size-hero-3: clamp(4rem, 9vw, 7rem);
           --font-size-hero-4: clamp(5rem, 9vw, 9rem);
           --font-size-hero-5: clamp(6rem, 9vw, 11rem);
+
         }
         [data-upstart-theme] {
           .page-container {
@@ -104,6 +108,8 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
         }
     }
     `;
+
+    console.log("Injecting theme", injected);
     injectGlobal(injected);
   }, [draft.previewTheme, draft.theme]);
 
@@ -129,7 +135,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div
         className={tx(
-          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto",
+          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto transition-colors duration-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -138,6 +144,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
             "&:hover": {
               scrollbarColor: "var(--violet-7) var(--violet-3)",
             },
+            backgroundColor: editor.previewMode === "desktop" ? attributes.$backgroundColor : "transparent",
           }),
         )}
       >

@@ -129,8 +129,6 @@ export default function TopBar() {
         </Popover.Root>
       </div>
 
-      {/* <div className={tx("border-r border-r-upstart-700", baseCls)} /> */}
-
       <button
         disabled={!canUndo}
         onClick={() => undo()}
@@ -150,27 +148,29 @@ export default function TopBar() {
         <span className={tx(tooltipCls)}>Switch View</span>
       </button>
 
-      <TopbarMenu
-        items={[
-          { label: "New page" },
-          { label: "Duplicate page" },
-          { type: "separator" },
-          ...pages.map((page) => ({
-            label: page.label,
-            type: "checkbox" as const,
-            checked: editor.pageConfig.id === page.id,
-            onClick: () => {
-              window.location.href = `/sites/${editor.pageConfig.siteId}/pages/${page.id}/edit`;
-            },
-          })),
-        ]}
-      >
-        <button type="button" className={tx(btnClass, commonCls, btnWithArrow)}>
-          <VscCopy className="h-7 w-auto" />
-          <span className={tx(tooltipCls)}>Pages</span>
-          <RiArrowDownSLine className={tx(arrowClass)} />
-        </button>
-      </TopbarMenu>
+      {editorMode === "remote" && (
+        <TopbarMenu
+          items={[
+            { label: "New page" },
+            { label: "Duplicate page" },
+            { type: "separator" },
+            ...pages.map((page) => ({
+              label: page.label,
+              type: "checkbox" as const,
+              checked: editor.pageConfig.id === page.id,
+              onClick: () => {
+                window.location.href = `/sites/${editor.pageConfig.siteId}/pages/${page.id}/edit`;
+              },
+            })),
+          ]}
+        >
+          <button type="button" className={tx(btnClass, commonCls, btnWithArrow)}>
+            <VscCopy className="h-7 w-auto" />
+            <span className={tx(tooltipCls)}>Pages</span>
+            <RiArrowDownSLine className={tx(arrowClass)} />
+          </button>
+        </TopbarMenu>
+      )}
 
       <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 

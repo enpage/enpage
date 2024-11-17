@@ -16,6 +16,7 @@ import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
 import type { Layout } from "react-grid-layout";
+import type { ColorAdjustment } from "@enpage/sdk/shared/themes/color-system";
 
 export interface EditorStateProps {
   /**
@@ -26,18 +27,23 @@ export interface EditorStateProps {
   enabled: boolean;
   pageConfig: GenericPageConfig;
   pages: PageBasicInfo[];
+
   /**
    * The brick manifest that is being dragged from the library
    */
   draggingBrick?: Static<BrickManifest>;
   previewMode: ResponsiveMode;
-  editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
   shouldShowGrid?: boolean;
   panel?: "library" | "inspector" | "theme" | "settings";
+  panelPosition: "left" | "right";
+  /**
+   * Latest used color adjustment
+   */
+  colorAdjustment: ColorAdjustment;
 }
 
 export interface EditorState extends EditorStateProps {
@@ -45,7 +51,6 @@ export interface EditorState extends EditorStateProps {
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
-  setEditingPageIndex: (index: number) => void;
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
@@ -54,16 +59,19 @@ export interface EditorState extends EditorStateProps {
   hidePanel: (panel: EditorStateProps["panel"]) => void;
   setSelectedGroup: (group?: Brick["id"][]) => void;
   setShouldShowGrid: (show: boolean) => void;
+  setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
+  togglePanelPosition: () => void;
 }
 
 export const createEditorStore = (
   initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig; pages: PageBasicInfo[] },
 ) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
-    editingPageIndex: 0,
     enabled: true,
     previewMode: "desktop",
     mode: "local",
+    colorAdjustment: "default",
+    panelPosition: "left",
   };
 
   return createStore<EditorState>()(
@@ -85,10 +93,7 @@ export const createEditorStore = (
               set((state) => {
                 state.settingsVisible = !state.settingsVisible;
               }),
-            setEditingPageIndex: (index) =>
-              set((state) => {
-                state.editingPageIndex = index;
-              }),
+
             setSelectedBrick: (brick) =>
               set((state) => {
                 state.selectedBrick = brick;
@@ -136,6 +141,14 @@ export const createEditorStore = (
             setShouldShowGrid: (show) =>
               set((state) => {
                 state.shouldShowGrid = show;
+              }),
+            setColorAdjustment: (colorAdjustment) =>
+              set((state) => {
+                state.colorAdjustment = colorAdjustment;
+              }),
+            togglePanelPosition: () =>
+              set((state) => {
+                state.panelPosition = state.panelPosition === "left" ? "right" : "left";
               }),
           })),
           {
@@ -391,6 +404,11 @@ export const useSelectedGroup = () => {
   return useStore(ctx, (state) => state.selectedGroup);
 };
 
+export const useColorAdjustment = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.colorAdjustment);
+};
+
 export const useEditorMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.mode);
@@ -429,6 +447,11 @@ export const useAttributesSchema = () => {
 export const usePageConfig = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.pageConfig);
+};
+
+export const useTheme = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.theme);
 };
 
 export const useBricksSubscribe = (callback: (bricks: DraftState["bricks"]) => void) => {

@@ -3,25 +3,35 @@ import { PiPalette } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
 import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
 import { useDraftUndoManager, useEditor, useAttributes } from "../hooks/use-editor";
-import { tx, css } from "@enpage/style-system/twind";
+import { tx, tw, css } from "@enpage/style-system/twind";
 import { DropdownMenu } from "@enpage/style-system";
+import { VscLayoutSidebarLeft, VscLayoutSidebarRight } from "react-icons/vsc";
 
 export default function Toolbar() {
   const editor = useEditor();
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
 
   // bg-upstart-600
-  const baseCls = `bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.15)] dark:to-[rgba(255,255,255,0.05)] border-y border-t-gray-200 border-b-gray-300 dark:(border-t-dark-500 border-b-dark-600)`;
+  const baseCls = `bg-gradient-to-r from-transparent
+  to-[rgba(255,255,255,0.15)] dark:to-[rgba(255,255,255,0.05)]
+  border-y border-t-gray-200 border-b-gray-300
+  dark:(border-t-dark-500 border-b-dark-600)`;
+
   const commonCls = `${baseCls}
     w-full
-    hover:(from-upstart-600 to-upstart-500 text-white) dark:hover:(from-upstart-700 to-upstart-600 text-white)
-    active:(from-upstart-700 to-upstart-500 text-white)
+    hover:from-transparent hover:to-[rgba(255,255,255,0.45)]
+    active:(from-transparent hover:to-[rgba(0,0,0,0.15))
     disabled:text-gray-400/80 disabled:hover:from-transparent disabled:hover:to-transparent
   `;
 
   const btnWithArrow = "cursor-default";
 
-  const btnClass = `flex items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`;
+  const btnClass = tx(
+    `flex border-l-[3px] items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`,
+    css`&:is(.active) {
+      border-left-color: var(--violet-8);
+    }`,
+  );
 
   const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/90 left-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-x-1.5
@@ -58,7 +68,7 @@ export default function Toolbar() {
 
       <button
         type="button"
-        className={tx(btnClass, commonCls)}
+        className={tx(btnClass, commonCls, editor.panel === "theme" && "active")}
         onClick={(e) => {
           editor.togglePanel("theme");
         }}
@@ -69,7 +79,7 @@ export default function Toolbar() {
 
       <button
         type="button"
-        className={tx(btnClass, commonCls)}
+        className={tx(btnClass, commonCls, editor.panel === "settings" && "active")}
         onClick={(e) => {
           editor.togglePanel("settings");
         }}
@@ -77,13 +87,6 @@ export default function Toolbar() {
         <VscSettings className="h-7 w-auto" />
         <span className={tooltipCls}>Settings</span>
       </button>
-
-      {/* <ToolbarMenu items={[{ label: "Create new page" }, { type: "separator" }, { label: "View all pages" }]}>
-        <button type="button" className={tx(btnClass, commonCls, btnWithArrow)}>
-          <VscCopy className="h-7 w-auto" />
-          <span className={tooltipCls}>Pages</span>
-        </button>
-      </ToolbarMenu> */}
 
       <div className={tx("flex-1", "border-t-gray-200 dark:border-t-dark-500")} />
     </nav>

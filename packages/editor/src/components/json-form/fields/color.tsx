@@ -1,19 +1,11 @@
 import type { FieldProps } from "@rjsf/utils";
-import { nanoid } from "nanoid";
-import { Button, Popover, TextField, Text } from "@enpage/style-system";
+import { Button, Popover, Text } from "@enpage/style-system";
 import { tx, colors, css } from "@enpage/style-system/twind";
-import { generateColorHarmony } from "../../color-helpers";
-import { useDraft } from "~/hooks/use-editor";
-import type { Theme } from "@enpage/sdk/shared/theme";
+import { useDraft, useTheme } from "~/hooks/use-editor";
 import transSvg from "./trans.svg?url";
-import { useMemo } from "react";
 import type { Brick } from "@enpage/sdk/shared/bricks";
-
-const shades = ["900", "800", "700", "600", "500", "400", "300", "200", "100", "50"];
-
-const colorsMap = {
-  "border-color": [],
-};
+import type { ColorType, ElementColorType } from "@enpage/sdk/shared/themes/color-system";
+import BaseColorPicker, { ElementColorPicker } from "~/components/ColorPicker";
 
 const ColorField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, idSchema, formContext } = props;
@@ -29,10 +21,9 @@ const ColorField: React.FC<FieldProps> = (props) => {
   // Extract field-level properties
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
-  const pillClassName = `bg-${formData}`;
 
-  const colorType =
-    uiSchema?.["ui:color-attr"] === "border-color" ? "theme-border-colors" : "theme-bg-colors-with-shades";
+  const elementColorType = (uiSchema?.["ui:color-type"] ??
+    "page-background") as ColorElementPreviewPillProps["elementColorType"];
 
   return (
     <ColorFieldRow
@@ -41,36 +32,39 @@ const ColorField: React.FC<FieldProps> = (props) => {
       color={formData}
       required={required}
       onChange={onChange}
-      pillClassName={pillClassName}
-      colorType={colorType}
-      colorName="generic"
+      elementColorType={elementColorType}
     />
   );
 };
+
+type ColorFieldRowProps = {
+  name: string;
+  color: string;
+  labelClassName?: string;
+  description?: string;
+  required?: boolean;
+  onChange: ColorBasePreviewPillProps["onChange"];
+} & (
+  | {
+      colorType?: ColorBasePreviewPillProps["colorType"];
+      elementColorType?: never;
+    }
+  | {
+      colorType?: never;
+      elementColorType?: ColorElementPreviewPillProps["elementColorType"];
+    }
+);
 
 export function ColorFieldRow({
   name,
   description,
   color,
   required,
-  pillClassName,
   labelClassName,
-  descClassName,
   onChange,
   colorType,
-  colorName,
-}: {
-  name: string;
-  color: string;
-  pillClassName: string;
-  labelClassName?: string;
-  descClassName?: string;
-  description?: string;
-  required?: boolean;
-  onChange: ColorPreviewPillProps["onChange"];
-  colorType: ColorPreviewPillProps["colorType"];
-  colorName: ColorPreviewPillProps["colorName"];
-}) {
+  elementColorType,
+}: ColorFieldRowProps) {
   return (
     <div className="color-field flex items-center justify-between">
       {name && (
@@ -86,45 +80,31 @@ export function ColorFieldRow({
           )}
         </div>
       )}
-      <ColorPreviewPill
-        onChange={onChange}
-        bgClassName={pillClassName}
-        colorType={colorType}
-        color={color}
-        colorName={colorName}
-      />
+      {colorType && <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} />}
+      {elementColorType && (
+        <ColorElementPreviewPill onChange={onChange} elementColorType={elementColorType} color={color} />
+      )}
     </div>
   );
 }
 
-type ColorPreviewPillProps = {
+type ColorElementPreviewPillProps = {
   color: string;
-  bgClassName: string;
-  bgOpacityClassName?: string;
-  colorType?:
-    | "all"
-    | "theme-colors"
-    | "theme-border-colors"
-    | "theme-bg-colors-with-shades"
-    | "neutral"
-    | "theme-base";
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
-  colorName: keyof Theme["colors"] | "generic";
+  elementColorType: ElementColorType;
   onChange: (newVal: string) => void;
 };
 
-function ColorPreviewPill({
+function ColorElementPreviewPill({
   color,
-  bgClassName,
-  bgOpacityClassName,
-  colorName,
   onChange,
-  colorType = "all",
+  elementColorType,
   side = "bottom",
   align = "center",
-}: ColorPreviewPillProps) {
-  const pillBgColor = color.startsWith("#") ? `bg-[${color}]` : `bg-${color}`;
+}: ColorElementPreviewPillProps) {
+  const theme = useTheme();
+
   const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
   const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
 
@@ -135,160 +115,93 @@ function ColorPreviewPill({
           type="button"
           className={tx(
             "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            // bgClassName,
-            pillBgColor,
-            bgOpacityClassName,
             css({
               backgroundImage: pillBgFile,
+              backgroundColor: color === "transparent" ? "transparent" : color,
               backgroundSize,
             }),
           )}
         />
       </Popover.Trigger>
-      <ColorPopover
-        colorType={colorType}
+      <ColorElementPopover
+        elementColorType={elementColorType}
         side={side}
         align={align}
         color={color}
-        colorName={colorName}
         onChange={onChange}
       />
     </Popover.Root>
   );
 }
 
-function ColorPopover({
+type ColorBasePreviewPillProps = {
+  color: string;
+  side?: "left" | "right" | "top" | "bottom";
+  align?: "start" | "center" | "end";
+  colorType: ColorType;
+  onChange: (newVal: string) => void;
+};
+
+function ColorBasePreviewPill({
+  color,
+  onChange,
   colorType,
-  colorName,
+  side = "bottom",
+  align = "center",
+}: ColorBasePreviewPillProps) {
+  const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
+  const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
+  return (
+    <Popover.Root>
+      <Popover.Trigger>
+        <button
+          type="button"
+          className={tx(
+            "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
+            css({
+              backgroundImage: pillBgFile,
+              backgroundColor: color === "transparent" ? "transparent" : color,
+              backgroundSize,
+            }),
+          )}
+        />
+      </Popover.Trigger>
+      <ColorBasePopover colorType={colorType} side={side} align={align} color={color} onChange={onChange} />
+    </Popover.Root>
+  );
+}
+
+function ColorBasePopover({
+  colorType,
   side,
   align,
   color,
   onChange,
-}: Pick<ColorPreviewPillProps, "colorType" | "align" | "side" | "color" | "colorName" | "onChange">) {
-  const { theme } = useDraft();
-  let width = "308px";
-  let filteredColors = colors;
-  let filteredShades = shades;
-
-  const defaultColors = colors.flatMap((color) => shades.map((shade) => `${color}-${shade}`));
-  let direction: "flex-row" | "flex-col" = "flex-row";
-
-  const showSuggestions = useMemo(() => colorName !== "generic" && colorName !== "primary", [colorName]);
-  const suggestions = useMemo(
-    () => (showSuggestions ? generateColorHarmony(theme.colors, colorName) : []),
-    [theme.colors, showSuggestions, colorName],
-  );
-
-  switch (colorType) {
-    case "theme-colors":
-      width = "120px";
-      break;
-
-    case "theme-border-colors":
-      width = "220px";
-      filteredColors = ["neutral", "primary", "secondary", "tertiary", "accent"];
-      filteredShades = ["4", "5", "6", "7"];
-      direction = "flex-col";
-      side = "right";
-      align = "start";
-      break;
-
-    case "theme-bg-colors-with-shades":
-      width = "106px";
-      direction = "flex-col";
-      filteredColors = ["neutral", "primary", "secondary", "tertiary"];
-      filteredShades = ["0", "1", "2"];
-      side = "right";
-      align = "start";
-      break;
-    case "neutral":
-      width = "90px";
-      filteredColors = ["gray", "zinc"];
-      direction = "flex-col";
-      filteredShades = ["600", "500", "400", "300"];
-      side = "right";
-      align = "start";
-      break;
-    case "theme-base":
-      width = "590px";
-      filteredShades = ["900", "700", "500", "300"];
-      direction = "flex-col";
-      side = "right";
-      align = "start";
-      break;
-    default:
-      filteredColors = filteredColors.filter((color) => ["white", "black", "gray"].includes(color) === false);
-      width = "308px";
-  }
-
+}: Pick<ColorBasePreviewPillProps, "align" | "side" | "color" | "colorType" | "onChange">) {
+  const width = "300px";
   return (
     <Popover.Content width={width} side={side} align={align} maxWidth={width}>
-      {colorType}
-      <div className="w-full flex gap-1 justify-center items-center mx-auto">
-        {filteredColors.map((color) => (
-          <div key={color} className={tx("flex gap-1 justify-center items-center", direction)}>
-            {filteredShades.map((shade) => (
-              <button
-                key={shade}
-                type="button"
-                onClick={() => onChange(`${color}-${shade}`)}
-                className={tx(
-                  "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400",
-                  `bg-${color}-${shade}`,
-                )}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-      {colorType === "theme-base" && (
-        <form className="group ">
-          <div
-            className={tx("mt-2 flex text-xs items-center gap-x-1 border-t border-upstart-100 pt-2", {
-              "justify-between": showSuggestions,
-              "justify-end": !showSuggestions,
-            })}
-          >
-            {showSuggestions && (
-              <div className="flex flex-1 items-center gap-x-2">
-                <span>Suggestions:</span>
-                <div className="flex gap-1">
-                  {suggestions.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      className={tx(
-                        "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400",
-                        `bg-[${suggestion}]`,
-                      )}
-                      onClick={() => onChange(suggestion)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-            <div className="flex gap-1 items-center justify-end">
-              <span>Use a custom color:</span>
-              <TextField.Root
-                required
-                placeholder="#123456"
-                size="1"
-                className="w-20"
-                pattern="#[0-9a-fA-F]{6}"
-                maxLength={7}
-              />
-              <Button
-                size="1"
-                variant="soft"
-                className="mr-2 group-invalid:pointer-events-none group-invalid:opacity-60"
-                type="submit"
-              >
-                Save
-              </Button>
-            </div>
-          </div>
-        </form>
-      )}
+      <BaseColorPicker colorType={colorType} initialValue={color} onChange={onChange} />
+    </Popover.Content>
+  );
+}
+
+function ColorElementPopover({
+  elementColorType,
+  side,
+  align,
+  color,
+  onChange,
+}: Pick<ColorElementPreviewPillProps, "align" | "side" | "color" | "elementColorType" | "onChange">) {
+  let width = "398px";
+  switch (elementColorType) {
+    case "page-background":
+      width = "144px";
+      break;
+  }
+  return (
+    <Popover.Content width={width} side={side} align={align} maxWidth={width}>
+      <ElementColorPicker elementColorType={elementColorType} initialValue={color} onChange={onChange} />
     </Popover.Content>
   );
 }

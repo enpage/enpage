@@ -26,6 +26,8 @@ import { defaults as buttonDefaults, manifest as buttonManifest } from "./button
 import { defaults as iconDefaults, manifest as iconManifest } from "./icon";
 // widget "social-links"
 import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from "./widget-social-links";
+// widget countdown
+import { defaults as countdownDefaults, manifest as countdownManifest } from "./widget-countdown";
 
 import type { BrickManifest } from "@enpage/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";
@@ -45,6 +47,7 @@ export const manifests: Record<string, BrickManifest> = {
   [buttonDefaults.type]: buttonManifest,
   [iconDefaults.type]: iconManifest,
   [socialLinksDefaults.type]: socialLinksManifest,
+  [countdownDefaults.type]: countdownManifest,
 };
 
 export const defaults: Record<string, Static<BrickManifest>> = {
@@ -62,4 +65,5 @@ export const defaults: Record<string, Static<BrickManifest>> = {
   [buttonDefaults.type]: buttonDefaults,
   [iconDefaults.type]: iconDefaults,
   [socialLinksDefaults.type]: socialLinksDefaults,
+  [countdownDefaults.type]: countdownDefaults,
 };

@@ -1,4 +1,14 @@
-import { Tabs, Button, Callout, TextArea, Spinner, Select, useAutoAnimate, Text } from "@enpage/style-system";
+import {
+  Tabs,
+  Button,
+  Callout,
+  TextArea,
+  Spinner,
+  Select,
+  useAutoAnimate,
+  Text,
+  SegmentedControl,
+} from "@enpage/style-system";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
 import { forwardRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
@@ -10,6 +20,7 @@ import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
 import { useDraft } from "~/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
+import type { ColorAdjustment, ColorType } from "@enpage/sdk/shared/themes/color-system";
 
 export default function ThemePanel() {
   const draft = useDraft();
@@ -100,7 +111,7 @@ export default function ThemePanel() {
             to your entire site, not only the current page.
           </Callout.Text>
         </Callout.Root>
-        <div className="mt-1 flex flex-col gap-y-6">
+        <div className="mt-1 flex flex-col gap-y-5">
           <fieldset>
             <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
               Colors
@@ -114,11 +125,8 @@ export default function ThemePanel() {
                   /* @ts-ignore */
                   description={themeSchema.properties.colors.properties[colorType].description}
                   color={color}
-                  pillClassName={tw(`bg-[${color}]`)}
                   labelClassName="font-medium"
-                  descClassName="text-xs text-gray-500"
-                  colorType={colorType === "neutral" ? "neutral" : "theme-base"}
-                  colorName={colorType as keyof Theme["colors"]}
+                  colorType={colorType as ColorType}
                   onChange={(newColor) => {
                     console.log("updating theme color %s with %s", colorType, newColor);
                     draft.setTheme({
@@ -134,7 +142,7 @@ export default function ThemePanel() {
             </div>
           </fieldset>
           <fieldset>
-            <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
+            <div className="font-medium text-sm mb-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
               Typography
             </div>
             <div className="text-sm flex flex-col gap-y-4 px-1">
@@ -154,7 +162,6 @@ export default function ThemePanel() {
                       defaultValue={font as string}
                       size="2"
                       onValueChange={(newFont) => {
-                        console.log("new font!", newFont);
                         draft.setTheme({
                           ...draft.theme,
                           typography: {
@@ -164,7 +171,7 @@ export default function ThemePanel() {
                         });
                       }}
                     >
-                      <Select.Trigger className="!w-full" />
+                      <Select.Trigger className="!w-full !capitalize">{font}</Select.Trigger>
                       <Select.Content>
                         <Select.Group>
                           {themeSchema.properties.typography.properties.body.anyOf.map((item) => (
@@ -178,6 +185,9 @@ export default function ThemePanel() {
                   </div>
                 ))}
             </div>
+          </fieldset>
+          <fieldset>
+            <pre className="text-xs">{JSON.stringify(draft.theme, null, 1)}</pre>
           </fieldset>
         </div>
       </ScrollablePanelTab>

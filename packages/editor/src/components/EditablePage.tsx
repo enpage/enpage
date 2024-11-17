@@ -2,7 +2,7 @@ import { css, tx } from "@enpage/style-system/twind";
 import { useEffect, useRef, useState } from "react";
 import type { Brick } from "@enpage/sdk/shared/bricks";
 import BrickWrapper from "./Brick";
-import { useBricks, useDraft, useEditor } from "../hooks/use-editor";
+import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LAYOUT_COLS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
 import Selecto from "react-selecto";
@@ -15,6 +15,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   const editor = useEditor();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
+  const attributes = useAttributes();
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
 
@@ -125,11 +126,11 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
       <div
         ref={pageRef}
         className={tx(
-          "grid group/page mx-auto w-full @container page-container relative",
+          "grid group/page mx-auto w-full @container page-container relative transition-all duration-300",
+          `bg-[${attributes.$backgroundColor}]`,
           {
             "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
-            // todo: use theme or attributes for bg color
-            "bg-white min-h-[100%] max-w-full": editor.previewMode !== "desktop",
+            "min-h-[100%] max-w-full": editor.previewMode !== "desktop",
           },
           css({
             gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,

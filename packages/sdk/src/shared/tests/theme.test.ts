@@ -11,8 +11,8 @@ describe("Theme test suite", () => {
         colors: {
           primary: "#FF9900",
           secondary: "#333999",
-          tertiary: "#666",
           neutral: "#999",
+          accent: "#FFCC00",
         },
         typography: {
           base: 18,

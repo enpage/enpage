@@ -20,6 +20,7 @@ export default defineConfig({
     presetTypo(),
   ],
   variants: [["hasChildMenudHover", "&:has(.container-menu-wrapper:hover)"]],
+
   rules: [
     [
       "brick-container",
@@ -40,13 +41,34 @@ export default defineConfig({
     ["bg-accent-", ({ $$ }) => ({ backgroundColor: `var(--color-accent-${$$})` })],
     ["bg-primary-", ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})` })],
     ["bg-secondary-", ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})` })],
-    ["bg-tertiary-", ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})` })],
 
     ["border-neutral-", ({ $$ }) => ({ borderColor: `var(--color-neutral-${$$})` })],
     ["border-accent-", ({ $$ }) => ({ borderColor: `var(--color-accent-${$$})` })],
     ["border-primary-", ({ $$ }) => ({ borderColor: `var(--color-primary-${$$})` })],
     ["border-secondary-", ({ $$ }) => ({ borderColor: `var(--color-secondary-${$$})` })],
-    ["border-tertiary-", ({ $$ }) => ({ borderColor: `var(--color-tertiary-${$$})` })],
+
+    /**
+     * Can be used with text-neutral-500, but also text-neutral-500-subtle, text-neutral-500-tonal-subtle, text-neutral-500-strong, etc.
+     */
+    ["text-neutral-", ({ $$ }) => ({ color: `var(--text-neutral-${$$})` })],
+    ["text-accent-", ({ $$ }) => ({ color: `var(--text-accent-${$$})` })],
+    ["text-primary-", ({ $$ }) => ({ color: `var(--text-primary-${$$})` })],
+    ["text-secondary-", ({ $$ }) => ({ color: `var(--text-secondary-${$$})` })],
+
+    ["outline-primary-", ({ $$ }) => ({ outlineColor: `var(--color-primary-${$$})` })],
+    ["outline-secondary-", ({ $$ }) => ({ outlineColor: `var(--color-secondary-${$$})` })],
+    ["outline-accent-", ({ $$ }) => ({ outlineColor: `var(--color-accent-${$$})` })],
+    ["outline-neutral-", ({ $$ }) => ({ outlineColor: `var(--color-neutral-${$$})` })],
+
+    ["color-", ({ $$ }) => ({ color: `var(--color-${$$})` })],
+    [
+      "neutral-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-neutral-${$$})`, color: `var(--text-neutral-${$$})` }),
+    ],
+    [
+      "accent-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-accent-${$$})`, color: `var(--text-accent-${$$})` }),
+    ],
 
     [
       "primary-",
@@ -56,10 +78,7 @@ export default defineConfig({
       "secondary-",
       ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})`, color: `var(--text-secondary-${$$})` }),
     ],
-    [
-      "tertiary-",
-      ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})`, color: `var(--text-tertiary-${$$})` }),
-    ],
+
     ["brick-light-", ({ $$ }) => `bg-${$$}-300 text-${$$}-50`],
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],
@@ -134,9 +153,9 @@ export default defineConfig({
           950: "#262626",
         },
       },
+
       containers: {
-        mobile: "1rem",
-        tablet: "768px",
+        mobile: "1px",
         desktop: "1024px",
       },
     },
