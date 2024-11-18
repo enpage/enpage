@@ -4,27 +4,48 @@ import type { RestrictOptions } from "@interactjs/modifiers/restrict/pointer";
 import type { DraggableOptions } from "@interactjs/actions/drag/plugin";
 import type { ResizableOptions } from "@interactjs/actions/resize/plugin";
 import { useGetBrick, usePreviewMode, useSelectedGroup } from "./use-editor";
+import type { Brick, BrickConstraints } from "@enpage/sdk/shared/bricks";
+import { defaults } from "../bricks/all-manifests";
+import invariant from "@enpage/sdk/shared/utils/invariant";
 
 interface DragCallbacks {
   onDragMove?: (event: Interact.InteractEvent, position: { x: number; y: number }) => void;
   onDragEnd?: (
     brickId: string,
     position: { x: number; y: number },
-    gridPosition: { col: number; row: number },
+    gridPosition: { x: number; y: number },
     event: Interact.InteractEvent,
   ) => void;
+}
+
+interface DropCallbacks {
+  onDropMove?: (
+    event: Interact.DropEvent,
+    gridPosition: { x: number; y: number },
+    brick: {
+      type: Brick["type"];
+      constraints: BrickConstraints;
+    },
+  ) => void;
+  onDrop?: (
+    event: Interact.DropEvent,
+    gridPosition: { x: number; y: number },
+    brickType?: Brick["type"],
+  ) => void;
+  onDropActivate?: (event: Interact.DropEvent) => void;
+  onDropDeactivate?: (event: Interact.DropEvent) => void;
 }
 
 interface ResizeCallbacks {
   onResizeStart?: (event: Interact.InteractEvent) => void;
   onResizeMove?: (
     event: Interact.InteractEvent,
-    size: { width: number; height: number; x: number; y: number },
+    size: { w: number; h: number; x: number; y: number },
   ) => void;
   onResizeEnd?: (
     brickId: string,
-    size: { width: number; height: number; x: number; y: number },
-    gridSize: { width: number; height: number },
+    size: { w: number; h: number; x: number; y: number },
+    gridSize: { w: number; h: number },
     event: Interact.InteractEvent,
   ) => void;
 }
@@ -36,6 +57,7 @@ interface UseInteractOptions {
   resizeOptions?: Partial<ResizableOptions>;
   dragRestrict?: Partial<RestrictOptions>;
   dragCallbacks?: DragCallbacks;
+  dropCallbacks?: DropCallbacks;
   resizeCallbacks?: ResizeCallbacks;
   gridConfig: GridConfig;
 }
@@ -47,7 +69,7 @@ interface InteractMethods {
   updateResizeOptions: (options: Parameters<Interact.Interactable["resizable"]>[0]) => void;
 }
 
-type QuerySelector = string | RefObject<HTMLElement>;
+type QuerySelector = string;
 
 interface GridConfig {
   colWidth: number;
@@ -70,10 +92,10 @@ function snapPositionToGrid({
   };
 }
 
-function getGridPosition(element: HTMLElement, config: GridConfig) {
+function getGridPosition(element: HTMLElement | { left: number; top: number }, config: GridConfig) {
   // Get element's initial position (getBoundingClientRect gives position relative to viewport)
-  const rect = element.getBoundingClientRect();
-  const container = element.closest(".page-container")!.getBoundingClientRect();
+  const rect = element instanceof HTMLElement ? element.getBoundingClientRect() : element;
+  const container = document.querySelector(".page-container")!.getBoundingClientRect();
 
   // Calculate actual position relative to container
   const actualX = rect.left - container.left;
@@ -84,16 +106,16 @@ function getGridPosition(element: HTMLElement, config: GridConfig) {
   const gridY = Math.round((actualY - config.containerVerticalPadding) / config.rowHeight);
 
   return {
-    col: Math.max(0, gridX),
-    row: Math.max(0, gridY),
+    x: Math.max(0, gridX),
+    y: Math.max(0, gridY),
   };
 }
 
 function getGridSize(element: HTMLElement, config: GridConfig) {
   const rect = element.getBoundingClientRect();
   return {
-    width: Math.round(rect.width / config.colWidth),
-    height: Math.round(rect.height / config.rowHeight),
+    w: Math.round(rect.width / config.colWidth),
+    h: Math.round(rect.height / config.rowHeight),
   };
 }
 
@@ -110,8 +132,28 @@ const updateElementTransform = (target: HTMLElement, x: number, y: number) => {
   target.dataset.y = String(y);
 };
 
-export const useEditableBrick = (
-  ref: QuerySelector,
+function getDropPosition(event: Interact.DropEvent, gridConfig: GridConfig) {
+  const grid = event.target as HTMLElement;
+  const gridRect = grid.getBoundingClientRect();
+  const rect = {
+    left: event.dragEvent.clientX - gridRect.left,
+    top: event.dragEvent.client.y - gridRect.top,
+  };
+  // Calculate grid position
+  const col = Math.round((rect.left - gridConfig.containerHorizontalPadding) / gridConfig.colWidth);
+  const row = Math.round((rect.top - gridConfig.containerVerticalPadding) / gridConfig.rowHeight);
+  return {
+    absolute: rect,
+    grid: {
+      x: Math.max(1, col),
+      y: Math.max(1, row),
+    },
+  };
+}
+
+export const useEditablePage = (
+  bricksSelectorOrRef: QuerySelector,
+  pageRef: RefObject<HTMLElement>,
   {
     gridConfig,
     dragEnabled = true,
@@ -120,6 +162,7 @@ export const useEditableBrick = (
     resizeOptions = {},
     dragCallbacks = {},
     resizeCallbacks = {},
+    dropCallbacks = {},
   }: UseInteractOptions,
 ): InteractMethods => {
   // Helper to get size from event
@@ -129,8 +172,8 @@ export const useEditableBrick = (
     const x = parseFloat(target.dataset.x || "0") + (event.deltaRect?.left || 0);
     const y = parseFloat(target.dataset.y || "0") + (event.deltaRect?.top || 0);
     return {
-      width: rect.width,
-      height: rect.height,
+      w: rect.width,
+      h: rect.height,
       x,
       y,
     };
@@ -140,12 +183,11 @@ export const useEditableBrick = (
   const selectedGroup = useSelectedGroup();
   const previewMode = usePreviewMode();
   const interactable = useRef<Interact.Interactable | null>(null);
+  const dropzone = useRef<Interact.Interactable | null>(null);
   const { getBrickRef } = useBricksRefs();
 
   useEffect(() => {
-    if (typeof ref !== "string" && !ref.current) return;
-
-    interactable.current = interact(typeof ref === "string" ? ref : (ref.current as HTMLElement), {
+    interactable.current = interact(bricksSelectorOrRef, {
       styleCursor: false,
     });
 
@@ -262,8 +304,10 @@ export const useEditableBrick = (
             min: (x, y, event) => {
               const elementId = event.element?.id; // Access the element ID
               if (!elementId) return { width: 0, height: 0 };
-              const minW = getBrick(elementId)?.position[previewMode].minW;
-              const minH = getBrick(elementId)?.position[previewMode].minH;
+              const brickType = getBrick(elementId)?.type;
+              invariant(brickType, "Brick type not found");
+              const minW = defaults[brickType].minWidth[previewMode];
+              const minH = defaults[brickType].minHeight[previewMode];
               return {
                 width: minW ? minW * gridConfig.colWidth : gridConfig.colWidth,
                 height: minH ? minH * gridConfig.rowHeight : gridConfig.rowHeight,
@@ -273,11 +317,12 @@ export const useEditableBrick = (
             max: (x, y, event) => {
               const elementId = event.element?.id; // Access the element ID
               if (!elementId) return { width: Infinity, height: Infinity };
-              const maxW = getBrick(elementId)?.position[previewMode].maxW;
-              const maxH = getBrick(elementId)?.position[previewMode].maxH;
+              const brickType = getBrick(elementId)?.type;
+              invariant(brickType, "Brick type not found");
+              const maxW = defaults[brickType].maxWidth[previewMode];
               return {
                 width: maxW ? maxW * gridConfig.colWidth : Infinity,
-                height: maxH ? maxH * gridConfig.rowHeight : Infinity,
+                height: Infinity,
               };
             },
           }),
@@ -303,7 +348,7 @@ export const useEditableBrick = (
       interactable.current = null;
     };
   }, [
-    ref,
+    bricksSelectorOrRef,
     dragCallbacks,
     resizeCallbacks,
     dragEnabled,
@@ -315,9 +360,48 @@ export const useEditableBrick = (
     getBrickRef,
     previewMode,
     selectedGroup,
-    // updateElementSize,
     gridConfig,
   ]);
+
+  useEffect(() => {
+    if (pageRef.current) {
+      dropzone.current = interact(pageRef.current);
+      dropzone.current
+        .dropzone({
+          accept: ".draggable-brick",
+          ondrop: (event) => {
+            const brickId = event.relatedTarget.id;
+            const pos = getDropPosition(event, gridConfig);
+            console.log("ondrop", pos);
+          },
+        })
+        .on("dropactivate", function (event: Interact.DropEvent) {
+          dropCallbacks.onDropActivate?.(event);
+        })
+        .on("dropdeactivate", function (event: Interact.DropEvent) {
+          dropCallbacks.onDropDeactivate?.(event);
+        })
+        .on("dropmove", function (event: Interact.DropEvent) {
+          const pos = getDropPosition(event, gridConfig);
+          const type = event.relatedTarget.dataset.brickType;
+
+          if (type) {
+            const constraints: BrickConstraints = {
+              preferredHeight: defaults[type].preferredHeight,
+              preferredWidth: defaults[type].preferredWidth,
+              minHeight: defaults[type].minHeight,
+              minWidth: defaults[type].minWidth,
+              maxWidth: defaults[type].maxWidth,
+            };
+            dropCallbacks.onDropMove?.(event, pos.grid, { type, constraints });
+          }
+        });
+    }
+    return () => {
+      dropzone.current?.unset();
+      dropzone.current = null;
+    };
+  }, [pageRef, gridConfig, dropCallbacks]);
 
   // Methods to control the interaction
   /**

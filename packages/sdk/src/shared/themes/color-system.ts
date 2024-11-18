@@ -2,6 +2,7 @@ import chroma from "chroma-js";
 import type { Theme } from "../theme";
 import invariant from "../utils/invariant";
 export { default as chroma } from "chroma-js";
+import { colors } from "@enpage/style-system/twind";
 
 export type ColorType = "primary" | "secondary" | "accent" | "neutral";
 export type ElementColorType =
@@ -172,7 +173,9 @@ interface ContrastRequirements {
 
 export function isStandardColor(color: string): boolean {
   invariant(typeof color === "string", `Invalid color provided inisStandardColor(): ${color}`);
-  return color.startsWith("rgb") || color.startsWith("hsl") || color.startsWith("#");
+  return (
+    color.startsWith("rgb") || color.startsWith("hsl") || color.startsWith("#") || color.startsWith("var(--")
+  );
 }
 
 function cleanGradientClass(className: string): string {
@@ -225,6 +228,37 @@ export const generateReadableTextColor = (
     return "#000000"; // Fallback to black
   }
 };
+
+export function generateColorsVars(theme: Theme) {
+  const shades = Object.entries(theme.colors).reduce(
+    (acc, [colorName, color]) => {
+      acc[`color-${colorName}`] = color;
+      for (const [key, value] of Object.entries(generateShades(color))) {
+        acc[`color-${colorName}-${key}`] = value;
+        for (const [tonalKey, val] of Object.entries(generateTextColors(value))) {
+          if (tonalKey === "base") {
+            acc[`text-${colorName}-${key}`] = val;
+          } else {
+            acc[`text-${colorName}-${key}-${tonalKey}`] = val;
+          }
+        }
+      }
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+  shades["color-gray-50"] = colors.gray[50];
+  shades["color-gray-100"] = colors.gray[100];
+  shades["color-gray-200"] = colors.gray[200];
+  shades["color-gray-300"] = colors.gray[300];
+  shades["color-gray-400"] = colors.gray[400];
+  shades["color-gray-500"] = colors.gray[500];
+  shades["color-gray-600"] = colors.gray[600];
+  shades["color-gray-700"] = colors.gray[700];
+  shades["color-gray-800"] = colors.gray[800];
+  shades["color-gray-900"] = colors.gray[900];
+  return shades;
+}
 
 interface TextColors {
   base: string; // High contrast (black/white)

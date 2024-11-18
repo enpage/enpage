@@ -20,7 +20,6 @@ export default defineConfig({
     presetTypo(),
   ],
   variants: [["hasChildMenudHover", "&:has(.container-menu-wrapper:hover)"]],
-
   rules: [
     [
       "brick-container",

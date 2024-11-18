@@ -18,12 +18,17 @@ import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import EditablePage from "./EditablePage";
-import { tx, injectGlobal, css } from "@enpage/style-system/twind";
+import { tx, injectGlobal, css, colors } from "@enpage/style-system/twind";
 import { Button } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
-import { generateShades, generateTextColors, isStandardColor } from "@enpage/sdk/shared/themes/color-system";
+import {
+  generateShades,
+  generateTextColors,
+  isStandardColor,
+  generateColorsVars,
+} from "@enpage/sdk/shared/themes/color-system";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -71,29 +76,15 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
-    const shades = Object.entries(themeUsed.colors).reduce(
-      (acc, [colorName, color]) => {
-        acc[`color-${colorName}`] = color;
-        for (const [key, value] of Object.entries(generateShades(color))) {
-          acc[`color-${colorName}-${key}`] = value;
-          for (const [tonalKey, val] of Object.entries(generateTextColors(value))) {
-            if (tonalKey === "base") {
-              acc[`text-${colorName}-${key}`] = val;
-            } else {
-              acc[`text-${colorName}-${key}-${tonalKey}`] = val;
-            }
-          }
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
+    const shades = generateColorsVars(themeUsed);
+
     const injected = `
      @layer upstart-theme {
         :root {
           ${Object.entries(shades)
             .map(([key, value]) => `--${key}: ${value};`)
             .join("\n")}
+
           --color-link: var(--color-primary);
 
           --font-size-hero-1: clamp(2rem, 9vw, 3.5rem);
@@ -148,10 +139,10 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
           }),
           previewMode === "desktop" &&
             isStandardColor(attributes.$backgroundColor) &&
-            `bg-[${attributes.$backgroundColor}]`,
+            css({ backgroundColor: attributes.$backgroundColor }),
           previewMode === "desktop" &&
             isStandardColor(attributes.$textColor) &&
-            `text-[${attributes.$textColor}]`,
+            css({ color: attributes.$textColor }),
           previewMode === "desktop" &&
             !isStandardColor(attributes.$backgroundColor) &&
             attributes.$backgroundColor,

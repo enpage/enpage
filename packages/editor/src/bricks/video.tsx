@@ -4,6 +4,7 @@ import { forwardRef, type ComponentProps } from "react";
 import { tx, apply } from "@enpage/style-system/twind";
 import { commonProps } from "./props/common";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
+import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -13,8 +14,22 @@ export const manifest = defineBrickManifest({
   kind: "brick",
   title: "Video",
   description: "Youtube video",
-  preferredW: 7,
-  preferredH: 6,
+  preferredWidth: {
+    mobile: LAYOUT_COLS.mobile / 2,
+    desktop: LAYOUT_COLS.desktop / 4,
+  },
+  preferredHeight: {
+    mobile: 6,
+    desktop: 6,
+  },
+  minWidth: {
+    mobile: 3,
+    desktop: 3,
+  },
+  minHeight: {
+    mobile: 3,
+    desktop: 3,
+  },
   // svg icon for "video" block
   icon: `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

@@ -69,7 +69,7 @@ export default function SettingsForm() {
   const filteredAttrSchema = sortJsonSchemaProperties(attrSchema);
 
   const onChange = (data: IChangeEvent, id?: string) => {
-    console.log("changed attr", data, id);
+    console.log("changed attr (%s) %o", id, data.formData);
     draft.updateAttributes(data.formData);
   };
 

@@ -5,8 +5,9 @@ import BrickWrapper from "./Brick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LAYOUT_COLS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
+import { canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
-import { useEditableBrick } from "~/hooks/use-draggable";
+import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 
 import "./EditablePage.css";
@@ -19,8 +20,14 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
   const attributes = useAttributes();
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
+  const [draggingOverPos, setDraggingOverPos] = useState<null | {
+    y: number;
+    x: number;
+    h: number;
+    w: number;
+  }>(null);
 
-  useEditableBrick(".brick", {
+  useEditablePage(".brick", pageRef, {
     gridConfig: {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
@@ -29,24 +36,30 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     },
     dragCallbacks: {
       onDragEnd: (brickId, pos, gridPos) => {
-        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
-        console.debug("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
-          x: gridPos.col,
-          y: gridPos.row,
+          x: gridPos.x,
+          y: gridPos.y,
         });
         editor.setSelectedGroup();
       },
     },
+    dropCallbacks: {
+      onDropMove(event, gridPosition, brick) {
+        const canDrop = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
+        console.log("canDrop", canDrop);
+        setDraggingOverPos(canDrop || null);
+      },
+      onDropDeactivate() {
+        setDraggingOverPos(null);
+      },
+    },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
-        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
-        console.debug("brick id %s resized from %o to %o", brickId, currentPos, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
-          w: gridPos.width,
-          h: gridPos.height,
+          w: gridPos.w,
+          h: gridPos.h,
         });
       },
     },
@@ -64,7 +77,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     }, 250);
 
     updateCellWidth();
-    window.addEventListener("resize", updateCellWidth);
+    window.addEventListener("resize", updateCellWidth, { passive: true });
     return () => window.removeEventListener("resize", updateCellWidth);
   }, [editor.previewMode]);
 
@@ -85,7 +98,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         !target.closest(".brick")
       ) {
         editor.deselectBrick();
-        // also deslect the library panel
+        // also deselect the library panel
         editor.hidePanel("library");
       }
     };
@@ -128,9 +141,10 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         ref={pageRef}
         className={tx(
           "grid group/page mx-auto w-full @container page-container relative transition-all duration-300",
-          isStandardColor(attributes.$backgroundColor) && `bg-[${attributes.$backgroundColor}]`,
+          isStandardColor(attributes.$backgroundColor) &&
+            css({ backgroundColor: attributes.$backgroundColor }),
+          isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor }),
           !isStandardColor(attributes.$backgroundColor) && attributes.$backgroundColor,
-          isStandardColor(attributes.$textColor) && `text-[${attributes.$textColor}]`,
           !isStandardColor(attributes.$textColor) && attributes.$textColor,
           {
             "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
@@ -153,6 +167,18 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
               <ResizeHandle direction="e" />
             </BrickWrapper>
           ))}
+
+        <div
+          className={tx(
+            "drop-indicator bg-upstart-400/50 rounded transition duration-300",
+            css({
+              opacity: draggingOverPos ? 1 : 0,
+              gridColumn: `${draggingOverPos?.x ?? 0} / span ${draggingOverPos?.w ?? 1}`,
+              gridRow: `${draggingOverPos?.y ?? 0} / span ${draggingOverPos?.h ?? 1}`,
+              display: draggingOverPos ? "block" : "none",
+            }),
+          )}
+        />
       </div>
       <Selecto
         className="selecto"

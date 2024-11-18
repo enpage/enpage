@@ -7,6 +7,7 @@ import { useEditableText } from "./hooks/use-editable-text";
 import { useBrickStyle } from "./hooks/use-brick-style";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
+import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -16,8 +17,22 @@ export const manifest = defineBrickManifest({
   kind: "brick",
   title: "Text",
   description: "Text with formatting options",
-  preferredW: 6,
-  preferredH: 10,
+  preferredWidth: {
+    mobile: LAYOUT_COLS.mobile / 2,
+    desktop: LAYOUT_COLS.desktop / 4,
+  },
+  preferredHeight: {
+    mobile: 6,
+    desktop: 6,
+  },
+  minWidth: {
+    mobile: 3,
+    desktop: 3,
+  },
+  minHeight: {
+    mobile: 3,
+    desktop: 3,
+  },
   // svg icon for "text" block
   icon: `
    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">

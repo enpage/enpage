@@ -16,8 +16,6 @@ import { tx } from "@enpage/style-system/twind";
 import { Button, TextField, Text, Select, Tabs, Inset } from "@enpage/style-system";
 import { useColorAdjustment, useEditor, useTheme } from "~/hooks/use-editor";
 import invariant from "@enpage/sdk/shared/utils/invariant";
-import { WiDirectionDown, WiDirectionLeft } from "react-icons/wi";
-import { e } from "@enpage/sdk/shared/page-4Usy7QIv";
 
 interface BaseColorPickerProps {
   colorType: ColorType;
@@ -255,11 +253,7 @@ function ColorPillList({
               `bg-${color} hover:outline-gray-300 hover:scale-110`,
             )}
             onClick={() => {
-              if (elementColorType.includes("text")) {
-                onChange(`text-${color}`);
-              } else {
-                onChange(`bg-${color}`);
-              }
+              onChange(`var(--color-${color})`);
             }}
           />
         ))}

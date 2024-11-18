@@ -16,10 +16,10 @@ import config from "./twind.config";
 export { getSheet } from "@twind/core";
 export { default as inline } from "@twind/with-react/inline";
 
-export const colors = Object.keys(config.theme.colors ?? {}).filter(
-  (color) =>
-    ["inherit", "current", "transparent", "neutral", "zinc", "black", "white"].includes(color) === false,
-);
+export const colors = config.theme.colors as Record<
+  string,
+  Record<50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900, string>
+>;
 
 function isProd() {
   //@ts-ignore
