@@ -19,6 +19,7 @@ import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css } from "@enpage/style-system/twind";
+import { Button } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
@@ -166,7 +167,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
 }
 
 function ThemePreviewConfirmButton() {
-  return <div />;
+  return <Button>Accept theme</Button>;
 }
 
 type PanelProps = ComponentProps<"aside">;
