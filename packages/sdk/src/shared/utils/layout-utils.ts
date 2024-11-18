@@ -1,26 +1,14 @@
 import { LAYOUT_COLS } from "../layout-constants";
 import type { Breakpoint, Brick, BrickConstraints } from "../bricks";
 
-// Column breakdowns for responsive behavior
-const breakpointConfig = {
-  mobile: {
-    columnRatio: 1, // Each column is 1 unit (12 smaller columns)
-    minColSpan: 3, // Minimum 3 columns on mobile (1/4 width)
-  },
-  desktop: {
-    columnRatio: 1, // Each column is 1 unit (12 large columns)
-    minColSpan: 3, // Minimum 3 columns on desktop (1/4 width)
-  },
-};
-
 const defaultsPreferred = {
   mobile: {
-    width: 6,
-    height: 3,
+    width: LAYOUT_COLS.mobile / 2,
+    height: Math.round(LAYOUT_COLS.mobile / 4),
   },
   desktop: {
-    width: 6,
-    height: 3,
+    width: LAYOUT_COLS.desktop / 3,
+    height: LAYOUT_COLS.desktop / 3,
   },
 };
 
@@ -50,10 +38,8 @@ export function canDropOnLayout(
     });
   }
 
-  const config = breakpointConfig[currentBp];
-
   // Ensure minimum width respects breakpoint constraints
-  const effectiveMinWidth = Math.max(constraints.minWidth[currentBp], config.minColSpan);
+  const effectiveMinWidth = Math.max(constraints.minWidth[currentBp], 1);
 
   // Calculate the width to use - try preferred first, fall back to minimum
   const width = Math.min(constraints.preferredWidth[currentBp] || effectiveMinWidth, LAYOUT_COLS[currentBp]);

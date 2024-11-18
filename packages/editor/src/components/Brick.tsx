@@ -17,6 +17,7 @@ import { useAttributes, useDraft, useEditor, useEditorEnabled } from "../hooks/u
 import { isEqualWith } from "lodash-es";
 import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import { propToStyle } from "@enpage/sdk/shared/themes/color-system";
 
 const BrickText = lazy(() => import("../bricks/text"));
 const BrickHero = lazy(() => import("../bricks/hero"));
@@ -83,9 +84,10 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         data-y="0"
         style={style}
         className={tx(
-          "brick group/brick flex select-none relative",
-          "group-hover/page:(outline outline-dashed outline-upstart-100)",
-          "hover:z-[9999] hover:shadow-lg",
+          // no transition otherwise it will slow down the drag
+          "brick group/brick flex select-none relative overflow-hidden",
+          "group-hover/page:(outline outline-dashed outline-upstart-100/20)",
+          "hover:(z-[9999] shadow-lg)",
           className,
           css({
             gridColumn: `${brick.position[editor.previewMode].x + 1} / span ${brick.position[editor.previewMode].w}`,
@@ -94,6 +96,15 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
               outline: "2px dotted var(--violet-8) !important",
             },
           }),
+
+          // Border
+          propToStyle(brick.props.borderColor as string, "borderColor"),
+          brick.props.borderRadius as string,
+          brick.props.borderStyle as string,
+          brick.props.borderWidth as string,
+
+          // Background
+          propToStyle(brick.props.backgroundColor as string, "background"),
         )}
         ref={ref}
         onClick={onClick}

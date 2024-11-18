@@ -14,19 +14,13 @@ import BaseColorPicker, { ElementColorPicker } from "~/components/ColorPicker";
 
 const ColorField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, idSchema, formContext } = props;
-  const context = formContext as { brickId: Brick["id"] };
-  const draft = useDraft();
-  const brick = draft.getBrick(context.brickId);
-
-  // don't render border color field if border is set to 0
-  if (name === "borderColor" && brick?.props.borderWidth === "border-0") {
-    return null;
-  }
+  // if (name === "borderColor" && brick?.props.borderWidth === "border-0") {
+  //   return null;
+  // }
 
   // Extract field-level properties
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
-
   const elementColorType = (uiSchema?.["ui:color-type"] ??
     "page-background") as ColorElementPreviewPillProps["elementColorType"];
 
@@ -202,10 +196,14 @@ function ColorElementPopover({
   let width = "398px";
   switch (elementColorType) {
     case "page-background":
+    case "background":
       width = "200px";
       break;
     case "page-text":
       width = "180px";
+      break;
+    case "border":
+      width = "186px";
       break;
   }
   return (

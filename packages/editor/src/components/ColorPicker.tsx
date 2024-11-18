@@ -439,5 +439,61 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
       </ColorPillList>
     );
   }
+
+  if (elementColorType === "border") {
+    const colors = ["gray", "primary", "secondary", "accent", "neutral"];
+    const shades = ["100", "200", "300", "400"];
+
+    return (
+      <ColorPillList
+        type="solid"
+        elementColorType={elementColorType}
+        currentColor={initialValue}
+        cols={shades.length}
+        colors={makeCominations(colors, shades)}
+        onChange={onChange}
+      />
+    );
+  }
+
+  if (elementColorType === "background") {
+    const colors = ["primary", "secondary", "neutral"];
+    const shades = ["50", "100", "200"];
+
+    return (
+      <Tabs.Root defaultValue={defaultColorType}>
+        <Inset clip="padding-box" side="top" pb="current">
+          <Tabs.List size="1">
+            <Tabs.Trigger value="solid" className="!flex-1">
+              Solid
+            </Tabs.Trigger>
+            <Tabs.Trigger value="gradient" className="!flex-1">
+              Gradient
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Inset>
+        <Tabs.Content value="solid">
+          <ColorPillList
+            type="solid"
+            elementColorType={elementColorType}
+            currentColor={initialValue}
+            cols={shades.length}
+            colors={makeCominations(colors, shades)}
+            onChange={onChange}
+          />
+        </Tabs.Content>
+        <Tabs.Content value="gradient">
+          <ColorPillList
+            elementColorType={elementColorType}
+            currentColor={initialValue}
+            type="gradient"
+            cols={4}
+            colors={makeGradientCombinations(colors)}
+            onChange={onChange}
+          />
+        </Tabs.Content>
+      </Tabs.Root>
+    );
+  }
   return <div>Element color picker "{elementColorType}"</div>;
 };

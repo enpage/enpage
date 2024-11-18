@@ -2,12 +2,12 @@ import chroma from "chroma-js";
 import type { Theme } from "../theme";
 import invariant from "../utils/invariant";
 export { default as chroma } from "chroma-js";
-import { colors } from "@enpage/style-system/twind";
+import { colors, css } from "@enpage/style-system/twind";
 
 export type ColorType = "primary" | "secondary" | "accent" | "neutral";
 export type ElementColorType =
   | "page-background"
-  | "element-background"
+  | "background"
   | "text"
   | "page-text"
   | "border"
@@ -228,6 +228,14 @@ export const generateReadableTextColor = (
     return "#000000"; // Fallback to black
   }
 };
+
+export function propToStyle(prop: string | undefined, cssAttr: string) {
+  if (typeof prop === "undefined") {
+    return undefined;
+  }
+  // @ts-ignore
+  return isStandardColor(prop) ? css({ [cssAttr]: prop }) : prop;
+}
 
 export function generateColorsVars(theme: Theme) {
   const shades = Object.entries(theme.colors).reduce(
