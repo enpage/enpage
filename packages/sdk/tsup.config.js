@@ -47,7 +47,7 @@ const external = [
   "__STATIC_CONTENT_MANIFEST",
 ];
 
-const ignored = ["!**/*.md", "!**/tests/**/*"];
+const ignored = ["!**/*.md", "!**/tests/**/*", "!**/sample.ts", "!**/ajv.ts", "!**/datasources/**/*.ts"];
 
 export default defineConfig((options) => {
   return [
@@ -77,7 +77,11 @@ export default defineConfig((options) => {
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
-      dts: true,
+      dts: {
+        compilerOptions: {
+          exclude: ignored,
+        },
+      },
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       clean: !options.watch,
       minify: !options.watch,

@@ -153,17 +153,20 @@ export const createEditorStore = (
           })),
           {
             name: `editor-state-${initProps.pageConfig.id}`,
-            skipHydration: true,
+            skipHydration: initProps.mode === "remote",
             partialize: (state) =>
               Object.fromEntries(
                 Object.entries(state).filter(
                   ([key]) =>
                     ![
+                      "enabled",
+                      "mode",
                       "selectedBrick",
                       "panel",
                       "previewMode",
-                      "isResizingForContainerId",
                       "isEditingTextForBrickId",
+                      "draggingBrick",
+                      "shouldShowGrid",
                     ].includes(key),
                 ),
               ),
@@ -186,6 +189,11 @@ export interface DraftStateProps {
   theme: Theme;
   previewTheme?: Theme;
   version?: string;
+  /**
+   * When local, the editor does not fetch data from the server or save data to the server
+   * It is used when the user is not logged in yet or does not have an account yet
+   */
+  mode: "local" | "remote";
 }
 
 export interface DraftState extends DraftStateProps {
@@ -225,6 +233,7 @@ export const createDraftStore = (
     bricks: [],
     theme: themes[1],
     data: {},
+    mode: "local",
   };
   return createStore<DraftState>()(
     subscribeWithSelector(
@@ -334,10 +343,10 @@ export const createDraftStore = (
           })),
           {
             name: "draft-state",
-            skipHydration: true,
+            skipHydration: initProps.mode === "remote",
             partialize: (state) =>
               Object.fromEntries(
-                Object.entries(state).filter(([key]) => !["attrSchema", "attr"].includes(key)),
+                Object.entries(state).filter(([key]) => !["previewTheme", "attrSchema"].includes(key)),
               ),
           },
         ),

@@ -10,6 +10,7 @@ import { useEditableBrick } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 
 import "./EditablePage.css";
+import { isStandardColor } from "@enpage/sdk/shared/themes/color-system";
 
 export default function EditablePage(props: { initialBricks?: Brick[]; onMount?: () => void }) {
   const editor = useEditor();
@@ -127,7 +128,10 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         ref={pageRef}
         className={tx(
           "grid group/page mx-auto w-full @container page-container relative transition-all duration-300",
-          `bg-[${attributes.$backgroundColor}]`,
+          isStandardColor(attributes.$backgroundColor) && `bg-[${attributes.$backgroundColor}]`,
+          !isStandardColor(attributes.$backgroundColor) && attributes.$backgroundColor,
+          isStandardColor(attributes.$textColor) && `text-[${attributes.$textColor}]`,
+          !isStandardColor(attributes.$textColor) && attributes.$textColor,
           {
             "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
             "min-h-[100%] max-w-full": editor.previewMode !== "desktop",

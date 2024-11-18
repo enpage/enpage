@@ -8,6 +8,7 @@ import {
   type TProperties,
 } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
+import type { ElementColor } from "./themes/color-system";
 
 // KEEP IT
 type EnumOption = {
@@ -129,9 +130,15 @@ export const attr = {
   /**
    * Define a color attribute
    */
-  color(name: string, defaultValue = "", opts?: AttributeOptions<Omit<StringOptions, "title" | "default">>) {
+  color(
+    name: string,
+    defaultValue: ElementColor = "",
+    opts?: AttributeOptions<Omit<StringOptions, "title" | "default">>,
+  ) {
     const defaultOpts = {
       "ui:field": "color",
+      // important for the json schema form not to display several fields because of the union type
+      // "ui:fieldReplacesAnyOrOneOf": true,
     };
     return Type.String({ title: name, default: defaultValue, ...defaultOpts, ...opts });
   },
@@ -242,6 +249,13 @@ const defaultAttributes = {
     "ui:field": "color",
     "ui:group": "layout",
     "ui:group:title": "Layout & Design",
+  }),
+
+  $textColor: attr.color("Default text color", "#222222", {
+    "ui:field": "color",
+    "ui:group": "layout",
+    "ui:group:title": "Layout & Design",
+    "ui:color-type": "page-text",
   }),
 };
 

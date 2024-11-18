@@ -1,5 +1,6 @@
 import chroma from "chroma-js";
 import type { Theme } from "../theme";
+import invariant from "../utils/invariant";
 export { default as chroma } from "chroma-js";
 
 export type ColorType = "primary" | "secondary" | "accent" | "neutral";
@@ -7,6 +8,7 @@ export type ElementColorType =
   | "page-background"
   | "element-background"
   | "text"
+  | "page-text"
   | "border"
   | "shadow"
   | "accent";
@@ -20,6 +22,8 @@ export type ColorAdjustment = (typeof colorAdjustments)[number];
 
 export const shades = ["900", "800", "700", "600", "500", "400", "300", "200", "100", "50"] as const;
 type Shade = (typeof shades)[number];
+
+export type ElementColor = string;
 
 // Extended constraints to handle different color styles
 interface ColorConstraints {
@@ -43,9 +47,11 @@ export const getHarmoniousHues = (baseHue: number, harmonyType: HarmonyType) => 
 };
 
 export function getColorsSuggestions(baseHueOrColor: number | string, theme: Theme) {
-  const baseHue = typeof baseHueOrColor === "string" ? chroma(baseHueOrColor).hsl()[0] : baseHueOrColor;
-  const themeColors = Object.values(theme.colors).map((color) => chroma(color).hsl()[0]);
+  const baseHue = typeof baseHueOrColor === "string" ? chroma(baseHueOrColor).get("hsl.h") : baseHueOrColor;
+  const themeColors = Object.values(theme.colors).map((color) => chroma(color).get("hsl.h"));
   const excluded = [...themeColors, baseHue];
+
+  console.log({ baseHueOrColor, excluded });
 
   return Array.from(
     new Set([
@@ -85,7 +91,7 @@ export const generateShades = (baseColor: string) => {
   // Define adjustments for each shade
   // Format: [lightness adjustment, chroma multiplier]
   const adjustments: Record<string, [number, number]> = {
-    50: [+0.3, 0.15], // Much lighter, much less saturated
+    50: [+0.3, 0.12], // Much lighter, much less saturated
     100: [+0.25, 0.25], // Very light, less saturated
     200: [+0.2, 0.4], // Lighter, slightly less saturated
     300: [+0.1, 0.7], // Light, slightly less saturated
@@ -164,13 +170,36 @@ interface ContrastRequirements {
   preferredContrast: number;
 }
 
-const generateReadableTextColor = (
+export function isStandardColor(color: string): boolean {
+  invariant(typeof color === "string", `Invalid color provided inisStandardColor(): ${color}`);
+  return color.startsWith("rgb") || color.startsWith("hsl") || color.startsWith("#");
+}
+
+function cleanGradientClass(className: string): string {
+  const matches = className.match(/\s((from|to-)[\S]+)/);
+  return matches ? matches[1] : className;
+}
+
+/**
+ * @deprecated Not working well with gradients
+ */
+export const generateReadableTextColor = (
   backgroundColor: string,
   requirements: ContrastRequirements = { minContrast: 4.5, preferredContrast: 7 },
 ): string => {
-  try {
-    const bgColor = chroma(backgroundColor);
+  if (!isStandardColor(backgroundColor)) {
+    backgroundColor = cleanGradientClass(backgroundColor);
+    console.log("backgroundColor rewrite to", backgroundColor);
+    const matchingElement = document.querySelector(`.${backgroundColor}`);
+    if (!matchingElement) {
+      console.warn("No matching element:", backgroundColor);
+      return "#000000"; // Fallback to black
+    }
+    backgroundColor = window.getComputedStyle(matchingElement).backgroundColor;
+    console.log("backgroundColor from element", backgroundColor);
+  }
 
+  try {
     // Calculate relative luminance for contrast ratio
     const bgLuminance = chroma(backgroundColor).luminance();
 

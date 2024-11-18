@@ -1,7 +1,6 @@
 import type { defineDataSources } from "./datasources";
 import type { defineAttributes } from "./attributes";
 import type { defineManifest } from "./manifest";
-import type { defineBricks } from "./bricks";
 import type { definePages } from "./page";
 
 export type EnpageTemplateConfig = {

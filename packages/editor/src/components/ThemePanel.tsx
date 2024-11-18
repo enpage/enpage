@@ -127,7 +127,7 @@ export default function ThemePanel() {
                   color={color}
                   labelClassName="font-medium"
                   colorType={colorType as ColorType}
-                  onChange={(newColor) => {
+                  onChange={(newColor: string) => {
                     console.log("updating theme color %s with %s", colorType, newColor);
                     draft.setTheme({
                       ...draft.theme,

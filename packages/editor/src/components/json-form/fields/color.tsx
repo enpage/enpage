@@ -4,7 +4,12 @@ import { tx, colors, css } from "@enpage/style-system/twind";
 import { useDraft, useTheme } from "~/hooks/use-editor";
 import transSvg from "./trans.svg?url";
 import type { Brick } from "@enpage/sdk/shared/bricks";
-import type { ColorType, ElementColorType } from "@enpage/sdk/shared/themes/color-system";
+import {
+  isStandardColor,
+  type ColorType,
+  type ElementColor,
+  type ElementColorType,
+} from "@enpage/sdk/shared/themes/color-system";
 import BaseColorPicker, { ElementColorPicker } from "~/components/ColorPicker";
 
 const ColorField: React.FC<FieldProps> = (props) => {
@@ -39,19 +44,21 @@ const ColorField: React.FC<FieldProps> = (props) => {
 
 type ColorFieldRowProps = {
   name: string;
-  color: string;
   labelClassName?: string;
   description?: string;
   required?: boolean;
-  onChange: ColorBasePreviewPillProps["onChange"];
 } & (
   | {
+      color: string;
       colorType?: ColorBasePreviewPillProps["colorType"];
+      onChange: ColorBasePreviewPillProps["onChange"];
       elementColorType?: never;
     }
   | {
+      color: ElementColor;
       colorType?: never;
       elementColorType?: ColorElementPreviewPillProps["elementColorType"];
+      onChange: ColorElementPreviewPillProps["onChange"];
     }
 );
 
@@ -89,11 +96,11 @@ export function ColorFieldRow({
 }
 
 type ColorElementPreviewPillProps = {
-  color: string;
+  color: ElementColor;
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   elementColorType: ElementColorType;
-  onChange: (newVal: string) => void;
+  onChange: (newVal: ElementColor) => void;
 };
 
 function ColorElementPreviewPill({
@@ -103,8 +110,6 @@ function ColorElementPreviewPill({
   side = "bottom",
   align = "center",
 }: ColorElementPreviewPillProps) {
-  const theme = useTheme();
-
   const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
   const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
 
@@ -115,11 +120,12 @@ function ColorElementPreviewPill({
           type="button"
           className={tx(
             "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            css({
-              backgroundImage: pillBgFile,
-              backgroundColor: color === "transparent" ? "transparent" : color,
-              backgroundSize,
-            }),
+            elementColorToClassName(color),
+            color === "transparent" &&
+              css({
+                backgroundImage: pillBgFile,
+                backgroundSize,
+              }),
           )}
         />
       </Popover.Trigger>
@@ -196,7 +202,10 @@ function ColorElementPopover({
   let width = "398px";
   switch (elementColorType) {
     case "page-background":
-      width = "144px";
+      width = "200px";
+      break;
+    case "page-text":
+      width = "180px";
       break;
   }
   return (
@@ -204,6 +213,13 @@ function ColorElementPopover({
       <ElementColorPicker elementColorType={elementColorType} initialValue={color} onChange={onChange} />
     </Popover.Content>
   );
+}
+
+function elementColorToClassName(color: ElementColor, prefix = "bg") {
+  if (isStandardColor(color)) {
+    return `${prefix}-${color}`;
+  }
+  return color;
 }
 
 export default ColorField;

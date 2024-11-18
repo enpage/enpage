@@ -8,6 +8,7 @@ import {
   usePageConfig,
   useEditorMode,
   useAttributes,
+  usePreviewMode,
 } from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
@@ -21,7 +22,7 @@ import { tx, injectGlobal, css } from "@enpage/style-system/twind";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
-import { generateShades, generateTextColors } from "@enpage/sdk/shared/themes/color-system";
+import { generateShades, generateTextColors, isStandardColor } from "@enpage/sdk/shared/themes/color-system";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -30,7 +31,7 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
-  const editor = useEditor();
+  const previewMode = usePreviewMode();
   const editorMode = useEditorMode();
   const pageConfig = usePageConfig();
   const attributes = useAttributes();
@@ -109,7 +110,6 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
     }
     `;
 
-    console.log("Injecting theme", injected);
     injectGlobal(injected);
   }, [draft.previewTheme, draft.theme]);
 
@@ -144,8 +144,17 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
             "&:hover": {
               scrollbarColor: "var(--violet-7) var(--violet-3)",
             },
-            backgroundColor: editor.previewMode === "desktop" ? attributes.$backgroundColor : "transparent",
           }),
+          previewMode === "desktop" &&
+            isStandardColor(attributes.$backgroundColor) &&
+            `bg-[${attributes.$backgroundColor}]`,
+          previewMode === "desktop" &&
+            isStandardColor(attributes.$textColor) &&
+            `text-[${attributes.$textColor}]`,
+          previewMode === "desktop" &&
+            !isStandardColor(attributes.$backgroundColor) &&
+            attributes.$backgroundColor,
+          previewMode === "desktop" && !isStandardColor(attributes.$textColor) && attributes.$textColor,
         )}
       >
         <DeviceFrame>

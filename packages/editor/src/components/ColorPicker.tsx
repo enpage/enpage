@@ -1,5 +1,5 @@
 import type React from "react";
-import { useCallback, useMemo, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type PropsWithChildren } from "react";
 import {
   chroma,
   colorAdjustmentBaseValues,
@@ -10,11 +10,14 @@ import {
   type ColorType,
   type ElementColorType,
   generateVariantClasses,
+  type ElementColor,
 } from "@enpage/sdk/themes/color-system";
 import { tx } from "@enpage/style-system/twind";
-import { Button, TextField, Text, Select } from "@enpage/style-system";
+import { Button, TextField, Text, Select, Tabs, Inset } from "@enpage/style-system";
 import { useColorAdjustment, useEditor, useTheme } from "~/hooks/use-editor";
 import invariant from "@enpage/sdk/shared/utils/invariant";
+import { WiDirectionDown, WiDirectionLeft } from "react-icons/wi";
+import { e } from "@enpage/sdk/shared/page-4Usy7QIv";
 
 interface BaseColorPickerProps {
   colorType: ColorType;
@@ -190,39 +193,135 @@ const BaseColorPicker: React.FC<BaseColorPickerProps> = ({
 
 export default BaseColorPicker;
 
-type ElementColor =
-  | {
-      hex: string;
-    }
-  | {
-      hsl: string;
-    }
-  | {
-      oklch: [number, number, number, number?];
-    }
-  | {
-      linearGradient: string;
-    }
-  | {
-      repeatingLinearGradient: string;
-    }
-  | {
-      radialGradient: string;
-    }
-  | {
-      repeatingRadialGradient: string;
-    }
-  | {
-      conicGradient: string;
-    }
-  | {
-      repeatingConicGradient: string;
-    };
-
 interface ElementColorPickerProps {
   elementColorType: ElementColorType;
-  initialValue?: string;
-  onChange?: (color: string, oklabValues: number[]) => void;
+  initialValue: ElementColor;
+  onChange?: (color: ElementColor) => void;
+}
+
+type ColorPillListProps =
+  | {
+      type: "solid";
+      elementColorType: ElementColorType;
+      colors: string[];
+      cols: number;
+      onChange: (color: ElementColor) => void;
+      currentColor: ElementColor;
+    }
+  | {
+      type: "gradient";
+      elementColorType: ElementColorType;
+      colors: { from: string; to: string }[];
+      cols: number;
+      onChange: (color: ElementColor) => void;
+      currentColor: ElementColor;
+    };
+
+function ColorPillList({
+  type,
+  colors,
+  onChange,
+  cols,
+  children,
+  currentColor,
+  elementColorType,
+}: PropsWithChildren<ColorPillListProps>) {
+  const [gradientDir, setGradientDir] = useState<string>(getInitialGradientDir());
+  const [gradientPair, setGradientPair] = useState<{ from: string; to: string } | null>(null);
+
+  function getInitialGradientDir() {
+    const match = currentColor.match(/to-(\w+)/);
+    if (match) {
+      return match[1];
+    }
+    return "t";
+  }
+
+  useEffect(() => {
+    if (type === "gradient" && gradientPair) {
+      onChange(`bg-gradient-to-${gradientDir} from-${gradientPair.from} to-${gradientPair.to}`);
+    }
+  }, [gradientDir, gradientPair, onChange, type]);
+
+  if (type === "solid") {
+    return (
+      <div className={`grid grid-cols-${cols} gap-3`}>
+        {colors.map((color) => (
+          <button
+            type="button"
+            key={color}
+            className={tx(
+              "mx-auto h-8 w-8 rounded-full shadow-sm shadow-upstart-300 transition-transform",
+              `bg-${color} hover:outline-gray-300 hover:scale-110`,
+            )}
+            onClick={() => {
+              if (elementColorType.includes("text")) {
+                onChange(`text-${color}`);
+              } else {
+                onChange(`bg-${color}`);
+              }
+            }}
+          />
+        ))}
+        {children}
+      </div>
+    );
+  } else if (type === "gradient") {
+    const mixs = [
+      ["50", "100"],
+      ["50", "200"],
+      ["100", "200"],
+      ["100", "300"],
+      ["800", "900"],
+    ];
+    return (
+      <>
+        <Select.Root
+          defaultValue={gradientDir}
+          size="1"
+          onValueChange={(g) => {
+            setGradientDir(g);
+          }}
+        >
+          <Select.Trigger className="!w-full" />
+          <Select.Content>
+            <Select.Group>
+              <Select.Label>Gradient direction</Select.Label>
+              <Select.Item value="t">To top</Select.Item>
+              <Select.Item value="b">To bottom</Select.Item>
+              <Select.Item value="l">To left</Select.Item>
+              <Select.Item value="r">To right</Select.Item>
+              <Select.Item value="tl">To top left</Select.Item>
+              <Select.Item value="tr">To top right</Select.Item>
+              <Select.Item value="bl">To bottom left</Select.Item>
+              <Select.Item value="br">To bottom right</Select.Item>
+            </Select.Group>
+          </Select.Content>
+        </Select.Root>
+        <div className={`grid grid-cols-${mixs.length} gap-3 mt-3.5`}>
+          {colors.flatMap((color) =>
+            mixs
+              .map((mix) => ({ from: `${color.from}-${mix[0]}`, to: `${color.to}-${mix[1]}` }))
+              .map((color) => (
+                <button
+                  type="button"
+                  key={`${color.from}-${color.to}`}
+                  className={tx(
+                    "mx-auto h-8 w-8 rounded-full shadow-sm shadow-upstart-300 transition-transform",
+                    `bg-gradient-to-${gradientDir} from-${color.from} to-${color.to} hover:scale-110`,
+                  )}
+                  onClick={() => {
+                    setGradientPair(color);
+                    onChange(`bg-gradient-to-${gradientDir} from-${color.from} to-${color.to}`);
+                  }}
+                />
+              )),
+          )}
+          {children}
+        </div>
+      </>
+    );
+  }
 }
 
 export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
@@ -230,58 +329,120 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
   elementColorType,
   onChange = () => {},
 }) => {
+  const defaultColorType = initialValue.includes("gradient") ? "gradient" : "solid";
+  function makeCominations(colors: string[], shades: string[]) {
+    return colors.flatMap((color) => shades.map((shade) => `${color}-${shade}`));
+  }
+
+  function makeGradientCombinations(colors: string[]) {
+    // combine gradients between each color
+    const gradients: { from: string; to: string }[] = [];
+    for (let i = 0; i < colors.length; i++) {
+      for (let j = 0; j < colors.length; j++) {
+        // don't mix neutral with other colors
+        if (
+          (colors[i] === "neutral" && colors[j] !== "neutral") ||
+          (colors[i] !== "neutral" && colors[j] === "neutral")
+        ) {
+          continue;
+        }
+        gradients.push({ from: colors[i], to: colors[j] });
+      }
+    }
+    return gradients;
+  }
+
   if (elementColorType === "page-background") {
     const colors = ["primary", "secondary", "accent", "neutral"];
-    const shades = ["50", "100", "200"];
+    const shades = ["50", "100", "200", "900"];
 
-    const variants = {
-      "surface-primary": generateVariantClasses("surface", "primary"),
-      "surface-secondary": generateVariantClasses("surface", "secondary"),
-      "surface-neutral": generateVariantClasses("surface", "neutral"),
-
-      "faded-primary": generateVariantClasses("faded", "primary"),
-      "faded-secondary": generateVariantClasses("faded", "secondary"),
-      "faded-neutral": generateVariantClasses("faded", "neutral"),
-
-      "glazed-primary": generateVariantClasses("glazed", "primary"),
-      "glazed-secondary": generateVariantClasses("glazed", "secondary"),
-      "glazed-neutral": generateVariantClasses("glazed", "neutral"),
-
-      "soft-primary": generateVariantClasses("soft", "primary"),
-      "soft-secondary": generateVariantClasses("soft", "secondary"),
-      "soft-neutral": generateVariantClasses("soft", "neutral"),
-    } as const;
     return (
-      <div className="grid grid-cols-3 gap-3">
-        {colors.flatMap((color) =>
-          shades
-            .map((shade) => `${color}-${shade}`)
-            .map((colorShade) => (
+      <Tabs.Root defaultValue={defaultColorType}>
+        <Inset clip="padding-box" side="top" pb="current">
+          <Tabs.List size="1">
+            <Tabs.Trigger value="solid" className="!flex-1">
+              Solid
+            </Tabs.Trigger>
+            <Tabs.Trigger value="gradient" className="!flex-1">
+              Gradient
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Inset>
+        <Tabs.Content value="solid">
+          <ColorPillList
+            type="solid"
+            elementColorType={elementColorType}
+            currentColor={initialValue}
+            cols={shades.length}
+            colors={makeCominations(colors, shades)}
+            onChange={onChange}
+          >
+            <div className={tx(`flex gap-3 mt-1`, `col-span-${shades.length}`)}>
               <button
                 type="button"
-                key={colorShade}
-                className={tx(
-                  "flex-1 h-8 w-8 rounded-full outline  outline-gray-200",
-                  `bg-${colorShade} hover:outline-gray-300`,
-                )}
-                onClick={() => {
-                  const color = `var(--color-${colorShade})`;
-                  onChange(color, []);
-                }}
-              />
-            )),
-        )}
-        <button
-          type="button"
-          onClick={() => {
-            onChange("#ffffff", []);
-          }}
-          className="flex-1 h-6 col-span-3 text-xs rounded-lg
+                onClick={() => onChange("#FFFFFF")}
+                className="flex-1 h-6 col-span-3 text-xs rounded-lg
           outline outline-gray-200 hover:outline-gray-300 bg-white"
-        >
-          White
-        </button>
-      </div>
+              >
+                White
+              </button>
+              <button
+                type="button"
+                onClick={() => onChange("#000000")}
+                className="flex-1 h-6 col-span-3 text-xs rounded-lg
+          outline outline-gray-200 hover:outline-gray-300 bg-black"
+              >
+                Black
+              </button>
+            </div>
+          </ColorPillList>
+        </Tabs.Content>
+        <Tabs.Content value="gradient">
+          <ColorPillList
+            elementColorType={elementColorType}
+            currentColor={initialValue}
+            type="gradient"
+            cols={4}
+            colors={makeGradientCombinations(colors)}
+            onChange={onChange}
+          />
+        </Tabs.Content>
+      </Tabs.Root>
+    );
+  }
+
+  if (elementColorType === "page-text") {
+    const colors = ["gray", "neutral"];
+    const shades = ["50", "100", "800", "900"];
+
+    return (
+      <ColorPillList
+        type="solid"
+        elementColorType={elementColorType}
+        currentColor={initialValue}
+        cols={shades.length}
+        colors={makeCominations(colors, shades)}
+        onChange={onChange}
+      >
+        <div className={tx(`flex gap-3 mt-1`, `col-span-${shades.length}`)}>
+          <button
+            type="button"
+            onClick={() => onChange("#FFFFFF")}
+            className="flex-1 h-6 col-span-3 text-xs rounded-lg
+          outline outline-gray-200 hover:outline-gray-300 bg-white"
+          >
+            White
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange("#000000")}
+            className="flex-1 h-6 col-span-3 text-xs rounded-lg
+          outline outline-gray-200 hover:outline-gray-300 bg-black"
+          >
+            Black
+          </button>
+        </div>
+      </ColorPillList>
     );
   }
   return <div>Element color picker "{elementColorType}"</div>;
