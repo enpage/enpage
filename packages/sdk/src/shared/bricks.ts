@@ -224,7 +224,6 @@ export function defineBrickManifest<
   minWidth,
   minHeight,
   maxWidth,
-  maxHeight,
   icon,
   file,
   props,
@@ -249,10 +248,6 @@ export function defineBrickManifest<
     mobile: number;
     desktop: number;
   };
-  maxHeight?: {
-    mobile: number;
-    desktop: number;
-  };
   preferredWidth?: {
     mobile: number;
     desktop: number;
@@ -272,28 +267,41 @@ export function defineBrickManifest<
     description: Type.Literal(description),
     icon: Type.Literal(icon),
     file: Type.Literal(file),
-    preferredWidth: Type.Object({
-      mobile: Type.Number({ default: preferredWidth ?? minWidth ?? 1 }),
-      desktop: Type.Number({ default: preferredWidth ?? minWidth ?? 1 }),
-    }),
-    preferredHeight: Type.Object({
-      mobile: Type.Number({ default: preferredHeight ?? minHeight ?? 1 }),
-      desktop: Type.Number({ default: preferredHeight ?? minHeight ?? 1 }),
-    }),
-    // preferredHeight: Type.Number({ default: preferredHeight ?? minHeight ?? 1 }),
-    minWidth: Type.Object({
-      mobile: Type.Number({ default: minWidth ?? 1 }),
-      desktop: Type.Number({ default: minWidth ?? 1 }),
-    }),
-    maxWidth: Type.Object({
-      mobile: Type.Number({ default: maxWidth ?? LAYOUT_COLS.mobile }),
-      desktop: Type.Number({ default: maxWidth ?? LAYOUT_COLS.desktop }),
-    }),
-    minHeight: Type.Object({
-      mobile: Type.Number({ default: minHeight ?? 1 }),
-      desktop: Type.Number({ default: minHeight ?? 1 }),
-    }),
-
+    preferredWidth: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: preferredWidth ?? minWidth },
+    ),
+    preferredHeight: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: preferredHeight ?? minHeight },
+    ),
+    minWidth: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: minWidth ?? { mobile: 1, desktop: 1 } },
+    ),
+    maxWidth: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: maxWidth ?? { mobile: LAYOUT_COLS.mobile, desktop: LAYOUT_COLS.desktop } },
+    ),
+    minHeight: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: minHeight ?? { mobile: 1, desktop: 1 } },
+    ),
     ...(datasource && { datasource }),
     ...(datarecord && { datarecord }),
     props,

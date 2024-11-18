@@ -1,6 +1,6 @@
 import { css, tx } from "@enpage/style-system/twind";
 import { useEffect, useRef, useState } from "react";
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import { generateId, type Brick } from "@enpage/sdk/shared/bricks";
 import BrickWrapper from "./Brick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -9,6 +9,7 @@ import { canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
+import { defaults } from "../bricks/all-manifests";
 
 import "./EditablePage.css";
 import { isStandardColor } from "@enpage/sdk/shared/themes/color-system";
@@ -47,11 +48,27 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     dropCallbacks: {
       onDropMove(event, gridPosition, brick) {
         const canDrop = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
-        console.log("canDrop", canDrop);
         setDraggingOverPos(canDrop || null);
       },
       onDropDeactivate() {
         setDraggingOverPos(null);
+      },
+      onDrop(event, gridPosition, brick) {
+        const position = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
+        if (position) {
+          const bricksDefaults = defaults[brick.type];
+          const newBrick: Brick = {
+            id: generateId(),
+            ...bricksDefaults,
+            type: brick.type,
+            position: {
+              desktop: position,
+              mobile: position,
+              [editor.previewMode]: position,
+            },
+          };
+          draft.addBrick(newBrick);
+        }
       },
     },
     resizeCallbacks: {
@@ -170,7 +187,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
         <div
           className={tx(
-            "drop-indicator bg-upstart-400/50 rounded transition duration-300",
+            "drop-indicator bg-upstart-400/50 rounded transition-all duration-300",
             css({
               opacity: draggingOverPos ? 1 : 0,
               gridColumn: `${draggingOverPos?.x ?? 0} / span ${draggingOverPos?.w ?? 1}`,

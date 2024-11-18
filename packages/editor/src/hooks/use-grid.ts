@@ -225,7 +225,6 @@ export const createGridStore = (initProps: Partial<GridStateProps>) => {
               set((state) => {
                 const brick = state.bricks.find((b) => b.id === id);
                 if (!brick) return;
-
                 const maxWidth = state.gridConfig.cols[state.currentBreakpoint];
                 // @ts-ignore
                 brick.size = {

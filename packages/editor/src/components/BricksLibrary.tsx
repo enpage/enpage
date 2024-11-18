@@ -35,7 +35,9 @@ export default function BlocksLibrary() {
     interactable.current = interact(".draggable-brick");
     interactable.current.draggable({
       // inertia: true,
-      autoScroll: true,
+      autoScroll: {
+        enabled: false,
+      },
       // manualStart: true,
       listeners: {
         start: (event: Interact.InteractEvent) => {

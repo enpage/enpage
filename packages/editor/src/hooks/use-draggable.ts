@@ -30,7 +30,10 @@ interface DropCallbacks {
   onDrop?: (
     event: Interact.DropEvent,
     gridPosition: { x: number; y: number },
-    brickType?: Brick["type"],
+    brick: {
+      type: Brick["type"];
+      constraints: BrickConstraints;
+    },
   ) => void;
   onDropActivate?: (event: Interact.DropEvent) => void;
   onDropDeactivate?: (event: Interact.DropEvent) => void;
@@ -369,10 +372,20 @@ export const useEditablePage = (
       dropzone.current
         .dropzone({
           accept: ".draggable-brick",
-          ondrop: (event) => {
-            const brickId = event.relatedTarget.id;
+          ondrop: (event: Interact.DropEvent) => {
             const pos = getDropPosition(event, gridConfig);
-            console.log("ondrop", pos);
+            const type = event.relatedTarget.dataset.brickType;
+            if (type) {
+              console.log("constraints", defaults[type]);
+              const constraints: BrickConstraints = {
+                preferredHeight: defaults[type].preferredHeight,
+                preferredWidth: defaults[type].preferredWidth,
+                minHeight: defaults[type].minHeight,
+                minWidth: defaults[type].minWidth,
+                maxWidth: defaults[type].maxWidth,
+              };
+              dropCallbacks.onDrop?.(event, pos.grid, { type, constraints });
+            }
           },
         })
         .on("dropactivate", function (event: Interact.DropEvent) {
@@ -386,6 +399,7 @@ export const useEditablePage = (
           const type = event.relatedTarget.dataset.brickType;
 
           if (type) {
+            console.log("constraints", defaults[type]);
             const constraints: BrickConstraints = {
               preferredHeight: defaults[type].preferredHeight,
               preferredWidth: defaults[type].preferredWidth,
