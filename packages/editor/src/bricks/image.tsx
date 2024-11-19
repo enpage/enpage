@@ -5,7 +5,7 @@ import { tx, apply } from "@enpage/style-system/twind";
 import { commonProps } from "./props/common";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
-import { useBrickStyle } from "./hooks/use-brick-style";
+import { useBrickStyle } from "../hooks/use-brick-style";
 import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
 
 // get filename from esm import.meta

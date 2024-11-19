@@ -5,7 +5,7 @@ import { useDraft } from "~/hooks/use-editor";
 import type { Brick } from "@enpage/sdk/shared/bricks";
 import type { EditorEvents } from "@tiptap/react";
 
-const TextEditorAsync = lazy(() => import("../../components/TextEditor"));
+const TextEditorAsync = lazy(() => import("../components/TextEditor"));
 
 const noop = () => {};
 

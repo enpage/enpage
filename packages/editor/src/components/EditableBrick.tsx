@@ -19,7 +19,7 @@ import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { propToStyle } from "@enpage/sdk/shared/themes/color-system";
 import BaseBrick from "./BaseBrick";
-import { useBrickWrapperStyle } from "../bricks/hooks/use-brick-style";
+import { useBrickWrapperStyle } from "../hooks/use-brick-style";
 
 const MemoBrickComponent = memo(BaseBrick, (prevProps, nextProps) => {
   const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {

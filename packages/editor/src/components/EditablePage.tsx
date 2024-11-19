@@ -10,7 +10,7 @@ import Selecto from "react-selecto";
 import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 import { defaults } from "../bricks/all-manifests";
-import { isStandardColor } from "@enpage/sdk/shared/themes/color-system";
+import { usePageStyle } from "~/hooks/use-page-style";
 
 export default function EditablePage() {
   const editor = useEditor();
@@ -19,6 +19,7 @@ export default function EditablePage() {
   const attributes = useAttributes();
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
+  const pageClassName = usePageStyle({ attributes, editable: true, previewMode: editor.previewMode });
   const [draggingOverPos, setDraggingOverPos] = useState<null | {
     y: number;
     x: number;
@@ -154,68 +155,7 @@ export default function EditablePage() {
 
   return (
     <>
-      <div
-        ref={pageRef}
-        className={tx(
-          "grid group/page mx-auto w-full page-container relative transition-all duration-300",
-          isStandardColor(attributes.$backgroundColor) &&
-            css({ backgroundColor: attributes.$backgroundColor }),
-          isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor }),
-          !isStandardColor(attributes.$backgroundColor) && attributes.$backgroundColor,
-          !isStandardColor(attributes.$textColor) && attributes.$textColor,
-          // mobile grid
-          `@mobile:(
-            grid-cols-${LAYOUT_COLS.mobile}
-            px-[10px]
-            min-h-[100%]
-            max-w-full
-          )`,
-          // Desktop grid
-          `@desktop:(
-            grid-cols-${LAYOUT_COLS.desktop}
-            px-[${attributes.$pagePaddingHorizontal}px]
-            py-[${attributes.$pagePaddingVertical}px]
-            w-full
-            min-h-[100dvh] h-full
-            ${attributes.$pageWidth}
-          )`,
-          css({
-            gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
-          }),
-          // this is the grid overlay shown when dragging
-          css`
-            &:has(.moving) {
-              &::before {
-                content: "";
-                position: absolute;
-                opacity: 0.5;
-                top: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
-                left: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
-                right: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
-                bottom: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
-                pointer-events: none;
-                background-size:
-                  calc(100%/${LAYOUT_COLS[editor.previewMode]}) 100%,
-                  100% ${LAYOUT_ROW_HEIGHT}px;
-                background-image:
-                  repeating-linear-gradient(to right,
-                    rgba(81, 101, 255, 0.3) 0px,
-                    rgba(81, 101, 255, 0.3) 1px,
-                    transparent 1px,
-                    transparent 200px
-                  ),
-                  repeating-linear-gradient(to bottom,
-                    rgba(81, 101, 255, 0.3) 0px,
-                    rgba(81, 101, 255, 0.3) 1px,
-                    transparent 1px,
-                    transparent 80px
-                  );
-              }
-            }
-
-          `,
-        )}
-      >
+      <div ref={pageRef} className={pageClassName}>
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
           .map((brick) => (

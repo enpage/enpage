@@ -1,6 +1,6 @@
 import { tx, apply, css } from "@enpage/style-system/twind";
-import type { commonStyleProps, textStyleProps } from "../props/style-props";
-import type { commonProps } from "../props/common";
+import type { commonStyleProps, textStyleProps } from "../bricks/props/style-props";
+import type { commonProps } from "../bricks/props/common";
 import type { Static } from "@sinclair/typebox";
 import type { Brick } from "@enpage/sdk/shared/bricks";
 import { propToStyle } from "@enpage/sdk/shared/themes/color-system";
