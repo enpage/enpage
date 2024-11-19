@@ -215,7 +215,7 @@ function ColorElementPopover({
 
 function elementColorToClassName(color: ElementColor, prefix = "bg") {
   if (isStandardColor(color)) {
-    return `${prefix}-${color}`;
+    return `${prefix}-[${color}]`;
   }
   return color;
 }

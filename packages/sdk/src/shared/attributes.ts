@@ -14,6 +14,7 @@ import type { ElementColor } from "./themes/color-system";
 type EnumOption = {
   // name: string;
   title?: string;
+  description?: string;
   value: string;
   icon?: string;
 };
@@ -90,8 +91,9 @@ export const attr = {
   ) {
     const defaultOpts = {
       "ui:field": "enum",
+      "ui:display": opts.displayAs || "select",
     };
-    const { options, ...commonOpts } = opts;
+    const { options, displayAs, ...commonOpts } = opts;
     return Type.Union(
       options.map((opt) =>
         Type.Literal(typeof opt === "string" ? opt : opt.value, {
@@ -205,6 +207,8 @@ const defaultAttributes = {
       { value: "tr", title: "Turkish" },
       { value: "vi", title: "Vietnamese" },
     ],
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
   }),
 
   $pagePath: attr.string("Page path", "/", {
@@ -241,6 +245,22 @@ const defaultAttributes = {
     min: 0,
     max: 100,
     description: "Grid gap in pixels",
+    "ui:group": "layout",
+    "ui:group:title": "Layout & Design",
+  }),
+
+  $pageWidth: attr.enum("Page width", "max-w-screen-2xl", {
+    options: [
+      {
+        value: "max-w-screen-md",
+        title: "M",
+        description: "Common for text-heavy content/blog posts",
+      },
+      { value: "max-w-screen-xl", title: "L", description: "Usefull or some landing pages" },
+      { value: "max-w-screen-2xl", title: "XL", description: "Common width" },
+      { value: "max-w-full", title: "Full", description: "Takes the entire space" },
+    ],
+    displayAs: "button-group",
     "ui:group": "layout",
     "ui:group:title": "Layout & Design",
   }),

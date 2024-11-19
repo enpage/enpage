@@ -164,7 +164,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
           !isStandardColor(attributes.$backgroundColor) && attributes.$backgroundColor,
           !isStandardColor(attributes.$textColor) && attributes.$textColor,
           {
-            "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
+            "w-full max-w-screen-2xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
             "min-h-[100%] max-w-full": editor.previewMode !== "desktop",
           },
           css({

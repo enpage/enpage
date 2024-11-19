@@ -19,7 +19,7 @@ import BlocksLibrary from "./BricksLibrary";
 import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css, colors } from "@enpage/style-system/twind";
-import { Button } from "@enpage/style-system";
+import { Button, AlertDialog, Flex, Portal } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
@@ -127,7 +127,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div
         className={tx(
-          "flex-1 flex place-content-center z-40 overscroll-none overflow-clip transition-colors duration-300",
+          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto transition-colors duration-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -137,6 +137,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
               scrollbarColor: "var(--violet-7) var(--violet-3)",
             },
           }),
+          previewMode === "mobile" && "bg-gray-300",
           previewMode === "desktop" &&
             isStandardColor(attributes.$backgroundColor) &&
             css({ backgroundColor: attributes.$backgroundColor }),
