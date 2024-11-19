@@ -13,7 +13,7 @@ import { jsonFormClass } from "./json-form/form-class";
 import { Tabs } from "@enpage/style-system";
 import { manifests, defaults } from "../bricks/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
-
+import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";
 
 export default function Inspector() {
@@ -120,6 +120,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
         uiSchema={uiSchema}
         onChange={onChange}
         fields={customFields}
+        templates={{ ObjectFieldTemplate: CustomObjectFieldTemplate }}
         onSubmit={(e) => console.log("onSubmit", e)}
         onError={(e) => console.log("onError", e)}
       />

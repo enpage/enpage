@@ -1,5 +1,25 @@
 import { Type, type Static } from "@sinclair/typebox";
 
+const groupBorder = {
+  "ui:group": "border",
+  "ui:group:title": "Border",
+};
+
+const groupSpacing = {
+  "ui:group": "spacing",
+  "ui:group:title": "Spacing",
+};
+
+const groupEffects = {
+  "ui:group": "effects",
+  "ui:group:title": "Effects",
+};
+
+const groupColors = {
+  "ui:group": "colors",
+  "ui:group:title": "Colors",
+};
+
 const borderWidth = Type.Union(
   [
     Type.Literal("border-0", { title: "None" }),
@@ -13,7 +33,7 @@ const borderWidth = Type.Union(
     title: "Border width",
     "ui:field": "enum",
     "ui:display": "button-group",
-    "ui:group": "border",
+    ...groupBorder,
   },
 );
 
@@ -22,7 +42,7 @@ const borderColor = Type.String({
   title: "Border color",
   "ui:field": "color",
   "ui:color-type": "border",
-  "ui:group": "border",
+  ...groupBorder,
 });
 
 const borderStyle = Type.Union(
@@ -37,7 +57,7 @@ const borderStyle = Type.Union(
     description: "The brick border style",
     "ui:field": "enum",
     "ui:display": "button-group",
-    "ui:group": "border",
+    ...groupBorder,
   },
 );
 
@@ -56,7 +76,7 @@ const borderRadius = Type.Union(
     description: "Corners rounding",
     "ui:field": "enum",
     "ui:display": "button-group",
-    "ui:group": "border",
+    ...groupBorder,
   },
 );
 
@@ -74,10 +94,13 @@ const padding = Type.Union(
     description: "Space between the content and the border",
     "ui:field": "enum",
     "ui:display": "button-group",
-    "ui:group": "spacing",
+    ...groupSpacing,
   },
 );
 
+/**
+ * We don't manage margins yet (users have to move bricks over the grid to handle margins)
+ */
 const margin = Type.Union(
   [
     Type.Literal("m-0", { title: "0" }),
@@ -95,7 +118,7 @@ const margin = Type.Union(
     description: "Outside space around the brick",
     "ui:field": "enum",
     "ui:display": "button-group",
-    "ui:group": "spacing",
+    ...groupSpacing,
   },
 );
 
@@ -104,7 +127,7 @@ const backgroundColor = Type.String({
   title: "Background color",
   "ui:field": "color",
   "ui:color-type": "background",
-  "ui:group": "colors",
+  ...groupColors,
 });
 
 const opacity = Type.Optional(
@@ -115,7 +138,7 @@ const opacity = Type.Optional(
     title: "Opacity",
     description: "Global opacity",
     "ui:field": "slider",
-    "ui:group": "effects",
+    ...groupEffects,
   }),
 );
 
@@ -134,7 +157,7 @@ const shadow = Type.Union(
     description: "Shadow",
     "ui:field": "enum",
     "ui:display": "button-group",
-    "ui:group": "effects",
+    ...groupEffects,
   },
 );
 
