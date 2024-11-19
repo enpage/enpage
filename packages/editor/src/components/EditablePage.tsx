@@ -4,7 +4,7 @@ import { generateId, type Brick } from "@enpage/sdk/shared/bricks";
 import BrickWrapper from "./Brick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
-import { LAYOUT_COLS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
+import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
 import { canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/hooks/use-draggable";
@@ -32,8 +32,8 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     gridConfig: {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
-      containerHorizontalPadding: LAYOUT_PADDING[editor.previewMode][0],
-      containerVerticalPadding: LAYOUT_PADDING[editor.previewMode][1],
+      containerHorizontalPadding: parseInt(attributes.$pagePaddingHorizontal as string),
+      containerVerticalPadding: parseInt(attributes.$pagePaddingVertical as string),
     },
     dragCallbacks: {
       onDragEnd: (brickId, pos, gridPos) => {
@@ -87,7 +87,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     const updateCellWidth = debounce(() => {
       if (pageRef.current) {
         const containerWidth = pageRef.current.offsetWidth;
-        const totalGapWidth = LAYOUT_PADDING[editor.previewMode][0] * 2;
+        const totalGapWidth = parseInt(attributes.$pagePaddingHorizontal as string) * 2;
         const availableWidth = containerWidth - totalGapWidth;
         setColWidth(availableWidth / LAYOUT_COLS[editor.previewMode]);
       }
@@ -96,7 +96,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     updateCellWidth();
     window.addEventListener("resize", updateCellWidth, { passive: true });
     return () => window.removeEventListener("resize", updateCellWidth);
-  }, [editor.previewMode]);
+  }, [editor.previewMode, attributes.$pagePaddingHorizontal]);
 
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -164,13 +164,14 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
           !isStandardColor(attributes.$backgroundColor) && attributes.$backgroundColor,
           !isStandardColor(attributes.$textColor) && attributes.$textColor,
           {
-            "w-full max-w-screen-2xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
+            "w-full min-h-[100dvh] h-full": editor.previewMode === "desktop",
+            [attributes.$pageWidth]: editor.previewMode === "desktop",
             "min-h-[100%] max-w-full": editor.previewMode !== "desktop",
           },
           css({
             gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,
             gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
-            padding: `${LAYOUT_PADDING[editor.previewMode][1]}px ${LAYOUT_PADDING[editor.previewMode][0]}px`,
+            padding: `${attributes.$pagePaddingVertical}px ${attributes.$pagePaddingHorizontal}px`,
           }),
         )}
       >

@@ -39,7 +39,7 @@ const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
       {title && <h2 className="text-sm bg-upstart-200 dark:bg-dark-700 px-2">{title}</h2>}
       {Object.entries(groupedFields).map(([group, fields]) => (
         <div key={group} className="form-section">
-          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
+          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] border-b border-upstart-200">
             {groupTitles[group]}
           </h3>
           <div className="section-fields">

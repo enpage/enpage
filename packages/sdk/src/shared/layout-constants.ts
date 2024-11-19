@@ -14,10 +14,10 @@ export const LAYOUT_BREAKPOINTS = {
 /**
  * Important: keep the same pdding for x and y.
  */
-export const LAYOUT_PADDING: Record<string, [number, number]> = {
-  desktop: [20, 20],
-  mobile: [8, 8],
-};
+// export const LAYOUT_PADDING: Record<string, [number, number]> = {
+//   desktop: [20, 20],
+//   mobile: [8, 8],
+// };
 
 /**
  * This is the height of a row in the layout grid.

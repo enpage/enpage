@@ -241,18 +241,10 @@ const defaultAttributes = {
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
-  $gridGap: attr.number("Grid gap", 10, {
-    min: 0,
-    max: 100,
-    description: "Grid gap in pixels",
-    "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
-  }),
-
   $pageWidth: attr.enum("Page width", "max-w-screen-2xl", {
     options: [
       {
-        value: "max-w-screen-md",
+        value: "max-w-screen-lg",
         title: "M",
         description: "Common for text-heavy content/blog posts",
       },
@@ -260,21 +252,50 @@ const defaultAttributes = {
       { value: "max-w-screen-2xl", title: "XL", description: "Common width" },
       { value: "max-w-full", title: "Full", description: "Takes the entire space" },
     ],
+    description: "The maximum width of the page. Desktop only.",
     displayAs: "button-group",
     "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
+    "ui:group:title": "Page Layout & Design",
+  }),
+
+  $pagePaddingVertical: attr.enum("Page vertical spacing", "20", {
+    options: [
+      { value: "0", title: "None" },
+      { value: "10", title: "S" },
+      { value: "20", title: "M" },
+      { value: "30", title: "L" },
+      { value: "50", title: "XL" },
+    ],
+    description: "Vertical spacing. Desktop only.",
+    displayAs: "button-group",
+    "ui:group": "layout",
+    "ui:group:title": "Page Layout & Design",
+  }),
+
+  $pagePaddingHorizontal: attr.enum("Page horizontal spacing", "20", {
+    options: [
+      { value: "0", title: "None" },
+      { value: "10", title: "S" },
+      { value: "20", title: "M" },
+      { value: "30", title: "L" },
+      { value: "50", title: "XL" },
+    ],
+    description: "Horizontal spacing. Desktop only.",
+    displayAs: "button-group",
+    "ui:group": "layout",
+    "ui:group:title": "Page Layout & Design",
   }),
 
   $backgroundColor: attr.color("Page background color", "#ffffff", {
     "ui:field": "color",
     "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
+    "ui:group:title": "Page Layout & Design",
   }),
 
   $textColor: attr.color("Default text color", "#222222", {
     "ui:field": "color",
     "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
+    "ui:group:title": "Page Layout & Design",
     "ui:color-type": "page-text",
   }),
 };
