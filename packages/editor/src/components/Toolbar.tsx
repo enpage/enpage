@@ -68,17 +68,6 @@ export default function Toolbar() {
 
       <button
         type="button"
-        className={tx(btnClass, commonCls, editor.panel === "theme" && "active")}
-        onClick={(e) => {
-          editor.togglePanel("theme");
-        }}
-      >
-        <PiPalette className="h-7 w-auto" />
-        <span className={tooltipCls}>Color theme</span>
-      </button>
-
-      <button
-        type="button"
         className={tx(btnClass, commonCls, editor.panel === "settings" && "active")}
         onClick={(e) => {
           editor.togglePanel("settings");
@@ -86,6 +75,17 @@ export default function Toolbar() {
       >
         <VscSettings className="h-7 w-auto" />
         <span className={tooltipCls}>Settings</span>
+      </button>
+
+      <button
+        type="button"
+        className={tx(btnClass, commonCls, editor.panel === "theme" && "active")}
+        onClick={(e) => {
+          editor.togglePanel("theme");
+        }}
+      >
+        <PiPalette className="h-7 w-auto" />
+        <span className={tooltipCls}>Color theme</span>
       </button>
 
       <div className={tx("flex-1", "border-t-gray-200 dark:border-t-dark-500")} />
