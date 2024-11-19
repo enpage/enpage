@@ -107,15 +107,17 @@ const backgroundColor = Type.String({
   "ui:group": "colors",
 });
 
-const opacity = Type.Number({
-  minimum: 0,
-  maximum: 100,
-  default: 100,
-  title: "Opacity",
-  description: "Global opacity",
-  "ui:field": "slider",
-  "ui:group": "effects",
-});
+const opacity = Type.Optional(
+  Type.Number({
+    minimum: 0.1,
+    maximum: 1,
+    multipleOf: 0.1,
+    title: "Opacity",
+    description: "Global opacity",
+    "ui:field": "slider",
+    "ui:group": "effects",
+  }),
+);
 
 const shadow = Type.Union(
   [

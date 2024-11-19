@@ -38,7 +38,6 @@ const external = [
   "react",
   "react-dom",
 
-  "react-grid-layout",
   "react-resizable",
 
   "fsevents",

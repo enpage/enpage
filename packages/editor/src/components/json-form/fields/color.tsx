@@ -112,14 +112,15 @@ function ColorElementPreviewPill({
       <Popover.Trigger>
         <button
           type="button"
+          data-color={color}
+          data-element-color-type={elementColorType}
           className={tx(
             "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            elementColorToClassName(color),
-            color === "transparent" &&
-              css({
-                backgroundImage: pillBgFile,
-                backgroundSize,
-              }),
+            css({
+              backgroundImage: pillBgFile,
+              backgroundColor: color === "transparent" ? "transparent" : color,
+              backgroundSize,
+            }),
           )}
         />
       </Popover.Trigger>

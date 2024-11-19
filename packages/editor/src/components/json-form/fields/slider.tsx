@@ -8,6 +8,8 @@ const SliderField: React.FC<FieldProps> = (props) => {
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
   const fieldDescription = schema.description || uiSchema?.["ui:description"];
 
+  console.log("SliderField", { schema, uiSchema });
+
   return (
     <div className="slider-field">
       {fieldTitle && (
@@ -21,12 +23,12 @@ const SliderField: React.FC<FieldProps> = (props) => {
       )}
       <Slider
         className="!mt-3"
-        onValueChange={(value) => onChange(value)}
+        onValueChange={(value) => onChange(value[0])}
         size="1"
         variant="soft"
         min={schema.minimum}
         max={schema.maximum}
-        step={1}
+        step={schema.multipleOf ?? 1}
         defaultValue={[formData]}
       />
     </div>

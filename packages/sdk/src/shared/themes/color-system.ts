@@ -171,8 +171,10 @@ interface ContrastRequirements {
   preferredContrast: number;
 }
 
-export function isStandardColor(color: string): boolean {
-  invariant(typeof color === "string", `Invalid color provided inisStandardColor(): ${color}`);
+export function isStandardColor(color: unknown): boolean {
+  if (typeof color !== "string") {
+    return false;
+  }
   return (
     color.startsWith("rgb") || color.startsWith("hsl") || color.startsWith("#") || color.startsWith("var(--")
   );
@@ -229,12 +231,12 @@ export const generateReadableTextColor = (
   }
 };
 
-export function propToStyle(prop: string | undefined, cssAttr: string) {
+export function propToStyle(prop: string | number | undefined, cssAttr: string) {
   if (typeof prop === "undefined") {
     return undefined;
   }
   // @ts-ignore
-  return isStandardColor(prop) ? css({ [cssAttr]: prop }) : prop;
+  return isStandardColor(prop) || typeof prop === "number" ? css({ [cssAttr]: prop }) : prop;
 }
 
 export function generateColorsVars(theme: Theme) {

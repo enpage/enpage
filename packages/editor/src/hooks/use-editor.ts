@@ -15,7 +15,6 @@ import type { TObject } from "@sinclair/typebox";
 import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
-import type { Layout } from "react-grid-layout";
 import type { ColorAdjustment } from "@enpage/sdk/shared/themes/color-system";
 
 export interface EditorStateProps {
@@ -198,7 +197,7 @@ export interface DraftStateProps {
 
 export interface DraftState extends DraftStateProps {
   getBricks: () => Brick[];
-  updateLayout: (positions: Layout[], bp: Breakpoint) => void;
+  updateLayout: (positions: Brick[], bp: Breakpoint) => void;
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
@@ -334,7 +333,7 @@ export const createDraftStore = (
             updateLayout: (positions, bp) =>
               set((state) => {
                 state.bricks.forEach((b) => {
-                  const index = positions.findIndex((l) => l.i === b.id);
+                  const index = positions.findIndex((l) => l.id === b.id);
                   if (index > -1) {
                     b.position[bp] = { ...b.position[bp], ...positions[index] };
                   }

@@ -105,6 +105,12 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
 
           // Background
           propToStyle(brick.props.backgroundColor as string, "background"),
+
+          // Opacity
+          propToStyle(brick.props.opacity as number | undefined, "opacity"),
+
+          // shadow
+          brick.props.shadow as string,
         )}
         ref={ref}
         onClick={onClick}
@@ -119,7 +125,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         onMouseMove={() => {
           hasMouseMoved.current = true;
         }}
-        // onTouchEnd={onTouchEnd}
       >
         <MemoBrickComponent brick={brick} />
         <BrickOptionsButton brick={brick} />
