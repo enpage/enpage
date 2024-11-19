@@ -11,7 +11,7 @@ import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 import { defaults } from "../bricks/all-manifests";
 
-import "./EditablePage.css";
+// import "./EditablePage.css";
 import { isStandardColor } from "@enpage/sdk/shared/themes/color-system";
 
 export default function EditablePage(props: { initialBricks?: Brick[]; onMount?: () => void }) {
@@ -32,8 +32,10 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     gridConfig: {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
-      containerHorizontalPadding: parseInt(attributes.$pagePaddingHorizontal as string),
-      containerVerticalPadding: parseInt(attributes.$pagePaddingVertical as string),
+      containerHorizontalPadding:
+        editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10,
+      containerVerticalPadding:
+        editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10,
     },
     dragCallbacks: {
       onDragEnd: (brickId, pos, gridPos) => {
@@ -171,8 +173,42 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
           css({
             gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,
             gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
-            padding: `${attributes.$pagePaddingVertical}px ${attributes.$pagePaddingHorizontal}px`,
+            padding:
+              editor.previewMode === "desktop"
+                ? `${attributes.$pagePaddingVertical}px ${attributes.$pagePaddingHorizontal}px`
+                : "10px",
           }),
+          css`
+            &:has(.moving) {
+              &::before {
+                content: "";
+                position: absolute;
+                opacity: 0.2;
+                top: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
+                left: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
+                right: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
+                bottom: ${editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
+                pointer-events: none;
+                background-size:
+                  calc(100%/${LAYOUT_COLS[editor.previewMode]}) 100%,
+                  100% ${LAYOUT_ROW_HEIGHT}px;
+                background-image:
+                  repeating-linear-gradient(to right,
+                    rgba(81, 101, 255, 0.3) 0px,
+                    rgba(81, 101, 255, 0.3) 1px,
+                    transparent 1px,
+                    transparent 200px
+                  ),
+                  repeating-linear-gradient(to bottom,
+                    rgba(81, 101, 255, 0.3) 0px,
+                    rgba(81, 101, 255, 0.3) 1px,
+                    transparent 1px,
+                    transparent 80px
+                  );
+              }
+            }
+
+          `,
         )}
       >
         {bricks
