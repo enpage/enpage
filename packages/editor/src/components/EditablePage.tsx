@@ -10,8 +10,6 @@ import Selecto from "react-selecto";
 import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
 import { defaults } from "../bricks/all-manifests";
-
-// import "./EditablePage.css";
 import { isStandardColor } from "@enpage/sdk/shared/themes/color-system";
 
 export default function EditablePage(props: { initialBricks?: Brick[]; onMount?: () => void }) {
@@ -178,6 +176,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
                 ? `${attributes.$pagePaddingVertical}px ${attributes.$pagePaddingHorizontal}px`
                 : "10px",
           }),
+          // this is the grid overlay shown when dragging
           css`
             &:has(.moving) {
               &::before {
