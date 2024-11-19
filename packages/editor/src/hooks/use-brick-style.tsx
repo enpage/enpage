@@ -16,10 +16,7 @@ export function useBrickStyle(
 ) {
   return tx([
     apply(props.className),
-    // apply("flex-1", props.className),
-    props.z && `z-[${props.z}]`,
     props.padding,
-    props.shadow,
     props.color && `text-${props.color}`,
     props.fontSize && `text-${props.fontSize}`,
     props.fontWeight && `font-${props.fontWeight}`,
@@ -33,13 +30,13 @@ export function useBrickWrapperStyle({
   className,
 }: { brick: Brick; editable: boolean; className?: string }) {
   return tx(
+    apply(className),
     // no transition otherwise it will slow down the drag
     "brick group/brick flex relative overflow-hidden",
     {
       "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
         editable,
     },
-    className,
     `@desktop:(
         col-start-${brick.position.desktop.x + 1}
         col-span-${brick.position.desktop.w}
@@ -73,5 +70,8 @@ export function useBrickWrapperStyle({
 
     // shadow
     brick.props.shadow as string,
+
+    // z-index
+    (brick.props.z as string) && `z-[${brick.props.z}]`,
   );
 }
