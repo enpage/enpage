@@ -66,7 +66,7 @@ export default function Inspector() {
       )}
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
-          <h2 className="py-1.5 px-2 flex justify-between bg-upstart-100 dark:bg-dark-600 items-center font-medium text-sm capitalize flex-1 select-none">
+          <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:bg-dark-600 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
             <TbHelp
               className="w-5 h-5 dark:text-white opacity-50 dark:hover:opacity-80 cursor-pointer"
@@ -92,7 +92,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   const brickDefaults = defaults[brick.type];
   const [state, setState] = useState({ ...brickDefaults.props, ...brick.props });
 
-  console.log("el state", state);
+  console.log("element state", state);
 
   const onChange = (data: IChangeEvent, id?: string) => {
     if (!id) {
