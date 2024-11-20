@@ -1,10 +1,10 @@
 import { Type } from "@sinclair/typebox";
 
 export const commonProps = Type.Object({
-  // id: Type.String({
-  //   title: "Brick ID",
-  //   "ui:widget": "hidden",
-  // }),
+  id: Type.String({
+    title: "Brick ID",
+    "ui:widget": "hidden",
+  }),
   // hack to allow passing a class name between bricks, such as Hero -> Text
   className: Type.Optional(
     Type.String({
