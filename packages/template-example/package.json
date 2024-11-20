@@ -1,6 +1,6 @@
 {
   "name": "@enpage/template-example",
-  "version": "0.0.47",
+  "version": "0.0.48",
   "description": "Enpage template example",
   "type": "module",
   "exports": {
