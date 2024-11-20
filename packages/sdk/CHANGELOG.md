@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.49
+
+### Patch Changes
+
+- [#212](https://github.com/enpage/enpage/pull/212) [`4d9472c`](https://github.com/enpage/enpage/commit/4d9472c74501bb1db7a69d5eadd04a4a61d9bdb8) Thanks [@mattallty](https://github.com/mattallty)! - Fix exports
+
 ## 0.0.48
 
 ### Patch Changes

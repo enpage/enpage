@@ -1,6 +1,6 @@
 {
   "name": "@enpage/sdk",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "type": "module",
   "files": [
     "dist",
