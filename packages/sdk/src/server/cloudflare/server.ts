@@ -2,6 +2,7 @@ import cfwAdapterStatic, { type CloudflareWorkersPlatformInfo } from "@hattip/ad
 import cfwAdapter from "@hattip/adapter-cloudflare-workers/no-static";
 import renderHandler from "../common/render-handler";
 import pageConfigHdl from "./page-config-handler";
+import analyticsHdl from "./analytics-handler";
 import { compose, type RequestHandler } from "@hattip/compose";
 
 /**
@@ -26,6 +27,7 @@ import { compose, type RequestHandler } from "@hattip/compose";
 export default function createFetchHandler(
   useStatic = false,
   pageConfigHandler: RequestHandler<CloudflareWorkersPlatformInfo> = pageConfigHdl,
+  analyticsHandler: RequestHandler<CloudflareWorkersPlatformInfo> = analyticsHdl,
   renderingHandler: RequestHandler<CloudflareWorkersPlatformInfo> = renderHandler,
 ) {
   const handler = compose(pageConfigHandler, renderingHandler);
