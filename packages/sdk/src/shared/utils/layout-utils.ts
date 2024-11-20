@@ -1,5 +1,6 @@
 import { LAYOUT_COLS } from "../layout-constants";
-import type { Breakpoint, Brick, BrickConstraints } from "../bricks";
+import type { Brick, BrickConstraints } from "../bricks";
+import type { ResponsiveMode } from "../responsive";
 
 const defaultsPreferred = {
   mobile: {
@@ -56,7 +57,7 @@ export function adjustMobileLayout(layout: Brick[]): Brick[] {
 
 export function canDropOnLayout(
   bricks: Brick[],
-  currentBp: Breakpoint,
+  currentBp: ResponsiveMode,
   dropPosition: { y: number; x: number },
   constraints: BrickConstraints,
 ): { y: number; x: number; w: number; h: number } | false {

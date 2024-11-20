@@ -58,7 +58,6 @@ export type Brick<T extends string = string> = {
 
 export type BricksLayout = Brick[];
 export type ResponsivePosition = Brick["position"];
-export type Breakpoint = keyof Brick["position"];
 
 export type DefinedBrick = Omit<Brick, "id" | "position" | "manifest"> & {
   position: {

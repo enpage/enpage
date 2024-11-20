@@ -4,11 +4,10 @@ import { RxDesktop } from "react-icons/rx";
 import { BsTablet } from "react-icons/bs";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { type MouseEvent, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import {
   useDraftUndoManager,
   useEditor,
-  useAttributes,
   usePagesInfo,
   useEditorMode,
   usePageVersion,
@@ -30,6 +29,10 @@ export default function TopBar() {
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
+
+  useEffect(() => {
+    console.log({ pastStates, futureStates });
+  }, [pastStates, futureStates]);
 
   const publish = useCallback(() => {
     post(
@@ -57,7 +60,9 @@ export default function TopBar() {
 
   const btnWithArrow = "cursor-default !aspect-auto";
 
-  const btnClass = `flex items-center justify-center py-3 gap-x-0.5 px-3.5  group relative disabled:hover:cursor-default aspect-square`;
+  const btnClass = `flex items-center justify-center py-3 gap-x-0.5 px-3.5  group relative
+  focus-visible:outline-none
+  disabled:hover:cursor-default aspect-square`;
 
   const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/80 top-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-y-1.5
@@ -134,7 +139,9 @@ export default function TopBar() {
 
         <button
           disabled={!canUndo}
-          onClick={() => undo()}
+          onClick={() => {
+            undo();
+          }}
           type="button"
           className={tx(btnClass, commonCls, "ml-auto")}
         >

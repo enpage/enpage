@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "@enpage/sdk/shared/responsive";
 import invariant from "@enpage/sdk/shared/utils/invariant";
-import type { Breakpoint, Brick, BrickPosition } from "@enpage/sdk/shared/bricks";
+import type { Brick, BrickPosition } from "@enpage/sdk/shared/bricks";
 import type { Theme } from "@enpage/sdk/shared/theme";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
 import type { AttributesResolved } from "@enpage/sdk/shared/attributes";
@@ -17,6 +17,7 @@ export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
 import type { ColorAdjustment } from "@enpage/sdk/shared/themes/color-system";
 import { adjustMobileLayout } from "@enpage/sdk/shared/utils/layout-utils";
+import { isEqual } from "lodash-es";
 
 export interface EditorStateProps {
   /**
@@ -172,7 +173,7 @@ export const createEditorStore = (
           },
         ),
         // limit undo history to 100
-        { limit: 100 },
+        { limit: 100, equality: (pastState, currentState) => isEqual(pastState, currentState) },
       ),
     ),
   );
@@ -235,6 +236,9 @@ export const createDraftStore = (
     data: {},
     mode: "local",
   };
+
+  console.log("Creating draft store with", initProps);
+
   return createStore<DraftState>()(
     subscribeWithSelector(
       temporal(
@@ -351,10 +355,14 @@ export const createDraftStore = (
         {
           // limit undo history to 100
           limit: 100,
-          // handleSet: (handleSet) =>
-          //   throttle<typeof handleSet>((state) => {
-          //     handleSet(state);
-          //   }, 200),
+          equality: (pastState, currentState) => isEqual(pastState, currentState),
+          handleSet: (handleSet) =>
+            debounce<typeof handleSet>((state) => {
+              if (state) {
+                console.info("handleSet called", state);
+                handleSet(state);
+              }
+            }, 200),
         },
       ),
     ),
@@ -465,7 +473,7 @@ export const useBricksSubscribe = (callback: (bricks: DraftState["bricks"]) => v
   const ctx = useDraftStoreContext();
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return ctx.subscribe((state) => state.bricks, debounce(callback, 200));
+    return ctx.subscribe((state) => state.bricks, debounce(callback, 200), { fireImmediately: false });
   }, []);
 };
 

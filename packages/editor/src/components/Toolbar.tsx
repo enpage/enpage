@@ -22,7 +22,8 @@ export default function Toolbar() {
   `;
 
   const btnClass = tx(
-    `flex border-l-[3px] items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`,
+    `flex border-l-[3px] items-center justify-center py-3 gap-x-0.5 aspect-square
+    group relative disabled:hover:cursor-default focus-visible:outline-none`,
     css`&:is(.active) {
       border-left-color: var(--violet-8);
     }`,

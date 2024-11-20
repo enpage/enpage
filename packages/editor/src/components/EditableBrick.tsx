@@ -1,4 +1,4 @@
-import type { Breakpoint, Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@enpage/sdk/shared/bricks";
 import {
   forwardRef,
   lazy,

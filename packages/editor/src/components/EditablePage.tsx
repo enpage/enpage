@@ -161,6 +161,7 @@ export default function EditablePage() {
 
   useHotkeys("esc", () => {
     editor.deselectBrick();
+    editor.setPanel();
   });
 
   useHotkeys("mod+c", () => {

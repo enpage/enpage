@@ -16,19 +16,13 @@ import { useEffect, useRef, type ComponentProps } from "react";
 import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
-import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css, colors } from "@enpage/style-system/twind";
 import { Button, AlertDialog, Flex, Portal } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
-import {
-  generateShades,
-  generateTextColors,
-  isStandardColor,
-  generateColorsVars,
-} from "@enpage/sdk/shared/themes/color-system";
+import { isStandardColor, generateColorsVars } from "@enpage/sdk/shared/themes/color-system";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -104,8 +98,6 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
 
     injectGlobal(injected);
   }, [draft.previewTheme, draft.theme]);
-
-  usePreviewModeInit();
 
   return (
     <div
