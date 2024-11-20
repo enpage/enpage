@@ -151,24 +151,6 @@ const homePageBricks = defineBricks([
   ]),
   ...createRow([
     {
-      type: "text-with-title",
-      props: { title: "My title", content: "Hey there!" },
-      position: {
-        mobile: {
-          x: 0,
-          y: 3,
-          w: "full",
-          h: 3,
-        },
-        desktop: {
-          x: 0,
-          y: 3,
-          w: "third",
-          h: 3,
-        },
-      },
-    },
-    {
       type: "text",
       props: { content: "Something" },
       position: {

@@ -23,6 +23,7 @@
 }
 
 .mobile {
+  min-height: 800px;
   height: 94dvh;
   max-height: 800px;
   aspect-ratio: 9/19.5;

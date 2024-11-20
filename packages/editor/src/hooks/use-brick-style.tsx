@@ -4,6 +4,7 @@ import type { commonProps } from "../bricks/props/common";
 import type { Static } from "@sinclair/typebox";
 import type { Brick } from "@enpage/sdk/shared/bricks";
 import { propToStyle } from "@enpage/sdk/shared/themes/color-system";
+import { LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
 
 /**
  * The classNames for the brick
@@ -43,12 +44,16 @@ export function useBrickWrapperStyle({
         row-start-${brick.position.desktop.y + 1}
         row-span-${brick.position.desktop.h}
       )
+
       @mobile:(
         col-start-${brick.position.mobile.x + 1}
-        col-span-${brick.position.mobile.w})
+        col-span-${brick.position.mobile.w}
         row-start-${brick.position.mobile.y + 1}
-        row-span-${brick.position.mobile.h}
+        row-span-${brick.position.mobile.manualHeight ?? brick.position.mobile.h}
       )`,
+    brick.position.mobile.manualHeight &&
+      css({ height: `${brick.position.mobile.manualHeight * LAYOUT_ROW_HEIGHT}px` }),
+
     editable &&
       css({
         "&.selected": {

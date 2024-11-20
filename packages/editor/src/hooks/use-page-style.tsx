@@ -18,23 +18,25 @@ export function usePageStyle({
     // mobile grid
     `@mobile:(
       grid-cols-${LAYOUT_COLS.mobile}
+      auto-rows-[minmax(${LAYOUT_ROW_HEIGHT}px,_max-content)]
       px-[10px]
       py-[10px]
-      min-h-[100%]
+      min-h-[110%]
       max-w-full
     )`,
     // Desktop grid
     `@desktop:(
       grid-cols-${LAYOUT_COLS.desktop}
+      auto-rows-[${LAYOUT_ROW_HEIGHT}px]
       px-[${attributes.$pagePaddingHorizontal}px]
       py-[${attributes.$pagePaddingVertical}px]
       w-full
       min-h-[100dvh] h-full
       ${attributes.$pageWidth}
     )`,
-    css({
-      gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
-    }),
+    // css({
+    //   gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
+    // }),
 
     editable && "transition-all duration-300",
     // this is the grid overlay shown when dragging

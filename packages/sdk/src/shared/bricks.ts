@@ -26,6 +26,8 @@ export type BrickPosition = {
    * Height in rows in grid units, not pixels.
    */
   h: number;
+
+  manualHeight?: number;
   /**
    * If true, the brick won't be displayed.
    */
@@ -37,10 +39,10 @@ export type DefinedBrickPosition = {
   h: number;
   x: number | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
   y: number;
-  minW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
-  minH?: number;
-  maxW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
-  maxH?: number;
+  // minW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
+  // minH?: number;
+  // maxW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
+  // maxH?: number;
   hidden?: boolean;
 };
 
@@ -69,21 +71,6 @@ export type LayoutCols = {
   mobile: number;
   desktop: number;
 };
-
-// function mapConstraints(
-//   manifest: ResolvedBrickManifest,
-//   mode: "desktop" | "mobile",
-//   cols: LayoutCols = LAYOUT_COLS,
-// ): BrickConstraints {
-//   return {
-//     preferredWidth: manifest.preferredWidth,
-//     preferredHeight: manifest.preferredHeight,
-//     minWidth: manifest.minWidth,
-//     minHeight: manifest.minHeight,
-//     maxWidth: manifest.maxWidth,
-//     maxHeight: manifest.maxHeight,
-//   };
-// }
 
 function mapPosition(
   position: DefinedBrickPosition,

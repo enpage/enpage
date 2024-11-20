@@ -1,17 +1,14 @@
 import { LuPlus } from "react-icons/lu";
 import { PiPalette } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
-import { useDraftUndoManager, useEditor, useAttributes } from "../hooks/use-editor";
+import type { MouseEvent, PropsWithChildren } from "react";
+import { useEditor } from "../hooks/use-editor";
 import { tx, tw, css } from "@enpage/style-system/twind";
 import { DropdownMenu } from "@enpage/style-system";
-import { VscLayoutSidebarLeft, VscLayoutSidebarRight } from "react-icons/vsc";
 
 export default function Toolbar() {
   const editor = useEditor();
-  const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
 
-  // bg-upstart-600
   const baseCls = `bg-gradient-to-r from-transparent
   to-[rgba(255,255,255,0.15)] dark:to-[rgba(255,255,255,0.05)]
   border-y border-t-gray-200 border-b-gray-300
@@ -20,11 +17,9 @@ export default function Toolbar() {
   const commonCls = `${baseCls}
     w-full
     hover:from-transparent hover:to-[rgba(255,255,255,0.45)]
-    active:(from-transparent hover:to-[rgba(0,0,0,0.15))
+    active:(from-transparent hover:to-[rgba(0,0,0,0.15)])
     disabled:text-gray-400/80 disabled:hover:from-transparent disabled:hover:to-transparent
   `;
-
-  const btnWithArrow = "cursor-default";
 
   const btnClass = tx(
     `flex border-l-[3px] items-center justify-center py-3 gap-x-0.5 aspect-square group relative disabled:hover:cursor-default`,
@@ -36,8 +31,6 @@ export default function Toolbar() {
   const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/90 left-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-x-1.5
   group-hover:block group-hover:opacity-100 group-hover:translate-x-0 text-nowrap whitespace-nowrap pointer-events-none`;
-
-  const arrowClass = "h-4 w-4 opacity-60  -mr-3.5 -ml-1";
 
   return (
     <nav
@@ -55,17 +48,18 @@ export default function Toolbar() {
       )}
     >
       <div className={tx("flex-1", baseCls)} />
-
       <button
         type="button"
-        disabled={false}
+        disabled={editor.previewMode === "mobile"}
         onClick={() => editor.togglePanel("library")}
         className={tx(btnClass, commonCls, editor.panel === "library" && "active")}
       >
         <LuPlus className="h-7 w-auto" />
-        <span className={tooltipCls}>Add elements</span>
+        {editor.previewMode === "desktop" && <span className={tooltipCls}>Add elements</span>}
+        {editor.previewMode === "mobile" && (
+          <span className={tx(tooltipCls, "!bg-gray-400/90")}>Disabled in mobile view</span>
+        )}
       </button>
-
       <button
         type="button"
         className={tx(btnClass, commonCls, editor.panel === "settings" && "active")}
@@ -76,7 +70,6 @@ export default function Toolbar() {
         <VscSettings className="h-7 w-auto" />
         <span className={tooltipCls}>Settings</span>
       </button>
-
       <button
         type="button"
         className={tx(btnClass, commonCls, editor.panel === "theme" && "active")}
@@ -87,7 +80,6 @@ export default function Toolbar() {
         <PiPalette className="h-7 w-auto" />
         <span className={tooltipCls}>Color theme</span>
       </button>
-
       <div className={tx("flex-1", "border-t-gray-200 dark:border-t-dark-500")} />
     </nav>
   );

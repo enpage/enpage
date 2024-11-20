@@ -16,6 +16,7 @@ import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
 import type { ColorAdjustment } from "@enpage/sdk/shared/themes/color-system";
+import { adjustMobileLayout } from "@enpage/sdk/shared/utils/layout-utils";
 
 export interface EditorStateProps {
   /**
@@ -162,7 +163,6 @@ export const createEditorStore = (
                       "mode",
                       "selectedBrick",
                       "panel",
-                      "previewMode",
                       "isEditingTextForBrickId",
                       "draggingBrick",
                       "shouldShowGrid",
@@ -196,8 +196,8 @@ export interface DraftStateProps {
 }
 
 export interface DraftState extends DraftStateProps {
+  setBricks: (bricks: Brick[]) => void;
   getBricks: () => Brick[];
-  updateLayout: (positions: Brick[], bp: Breakpoint) => void;
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
@@ -214,6 +214,7 @@ export interface DraftState extends DraftStateProps {
   updateAttributes: (attr: AttributesResolved) => void;
   save(): Promise<void>;
   setVersion(version: string): void;
+  adjustMobileLayout(): void;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
@@ -241,6 +242,10 @@ export const createDraftStore = (
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+            setBricks: (bricks) =>
+              set((state) => {
+                state.bricks = bricks;
+              }),
             deleteBrick: (id) =>
               set((state) => {
                 const brickIndex = state.bricks.findIndex((item) => item.id === id);
@@ -329,15 +334,9 @@ export const createDraftStore = (
               set((state) => {
                 state.version = version;
               }),
-
-            updateLayout: (positions, bp) =>
+            adjustMobileLayout: () =>
               set((state) => {
-                state.bricks.forEach((b) => {
-                  const index = positions.findIndex((l) => l.id === b.id);
-                  if (index > -1) {
-                    b.position[bp] = { ...b.position[bp], ...positions[index] };
-                  }
-                });
+                state.bricks = adjustMobileLayout(state.bricks);
               }),
           })),
           {

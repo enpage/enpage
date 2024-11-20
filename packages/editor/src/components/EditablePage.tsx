@@ -5,7 +5,7 @@ import BrickWrapper from "./EditableBrick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
-import { canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
+import { adjustMobileLayout, canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
@@ -28,6 +28,9 @@ export default function EditablePage() {
   }>(null);
 
   useEditablePage(".brick", pageRef, {
+    dragOptions: {
+      enabled: editor.previewMode === "desktop",
+    },
     gridConfig: {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
@@ -38,11 +41,13 @@ export default function EditablePage() {
     },
     dragCallbacks: {
       onDragEnd: (brickId, pos, gridPos) => {
+        console.log("onDragEnd (%s)", editor.previewMode, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
           x: gridPos.x,
           y: gridPos.y,
         });
+        // reset the selected group
         editor.setSelectedGroup();
       },
     },
@@ -55,6 +60,7 @@ export default function EditablePage() {
         setDraggingOverPos(null);
       },
       onDrop(event, gridPosition, brick) {
+        console.log("onDrop (%s)", editor.previewMode, gridPosition, brick);
         const position = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
         if (position) {
           const bricksDefaults = defaults[brick.type];
@@ -69,16 +75,29 @@ export default function EditablePage() {
             },
           };
           draft.addBrick(newBrick);
+
+          // rewrite the mobile layout based on the desktop layout
+          draft.adjustMobileLayout();
+        } else {
+          console.warn("Can't drop here");
         }
       },
     },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
+        console.log("onResizeEnd (%s)", editor.previewMode, brickId, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
           w: gridPos.w,
           h: gridPos.h,
+          // when resizing trhough the mobile view, set the manual height
+          // so that the system knows that the height is not automatic
+          ...(editor.previewMode === "mobile" ? { manualHeight: gridPos.h } : {}),
         });
+
+        if (editor.previewMode === "mobile") {
+          draft.adjustMobileLayout();
+        }
       },
     },
   });

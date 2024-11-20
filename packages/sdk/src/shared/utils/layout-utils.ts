@@ -12,6 +12,48 @@ const defaultsPreferred = {
   },
 };
 
+/**
+ * Adjust the bricks "mobile" position based on the "desktop" position by:
+ * - Setting each brick to 100% width
+ * - Guess the order based on the desktop position
+ * - Respecting the optional "manualHeight" that could be already set on the brick's mobile position
+ * - Add a blank row between each brick
+ */
+export function adjustMobileLayout(layout: Brick[]): Brick[] {
+  // Sort bricks by desktop position (top to bottom, left to right)
+  const sortedBricks = [...layout].sort((a, b) => {
+    const posA = a.position.desktop;
+    const posB = b.position.desktop;
+    if (posA.y === posB.y) return posA.x - posB.x;
+    return posA.y - posB.y;
+  });
+
+  let currentY = 0;
+  const spacing = 1; // Add 1 unit spacing between bricks
+
+  return sortedBricks.map((brick) => {
+    const newBrick = { ...brick };
+    const mobilePosition = brick.position.mobile;
+
+    // Set new mobile position
+    newBrick.position = {
+      ...brick.position,
+      mobile: {
+        ...mobilePosition,
+        x: 0,
+        y: currentY,
+        w: LAYOUT_COLS.mobile,
+        h: mobilePosition.manualHeight || mobilePosition.h,
+      },
+    };
+
+    // Update currentY for next brick
+    currentY += newBrick.position.mobile.h + spacing;
+
+    return newBrick;
+  });
+}
+
 export function canDropOnLayout(
   bricks: Brick[],
   currentBp: Breakpoint,

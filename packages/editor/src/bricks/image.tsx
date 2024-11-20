@@ -71,7 +71,12 @@ const Image = forwardRef<HTMLImageElement, Manifest["props"] & ComponentProps<"i
 
   return (
     <div className={tx(apply("flex items-center justify-center h-full w-full"), className)}>
-      <img src={src} ref={ref} alt={alt} className={tx(apply("max-h-full min-w-1 min-h-1 brick-content"))} />
+      <img
+        src={src}
+        ref={ref}
+        alt={alt}
+        className={tx(apply("max-h-full min-w-1 min-h-1 brick-content select-none pointer-events-none"))}
+      />
     </div>
   );
 });

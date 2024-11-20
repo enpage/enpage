@@ -58,6 +58,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         id={brick.id}
         data-x="0"
         data-y="0"
+        data-position={JSON.stringify(brick.position[editor.previewMode])}
         style={style}
         className={wrapperClass}
         ref={ref}
@@ -88,8 +89,6 @@ export default BrickWrapperMemo;
 function BrickOptionsButton({ brick }: { brick: Brick }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
-  const attributes = useAttributes();
-
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
       <DropdownMenu.Trigger>

@@ -295,6 +295,8 @@ export const useEditablePage = (
             const size = getSize(event);
             const gridSize = getGridSize(target, gridConfig);
             resizeCallbacks.onResizeEnd?.(target.id, size, gridSize, event);
+            event.target.style.width = "auto";
+            // event.target.style.height = "auto";
           },
         },
         modifiers: [
@@ -376,7 +378,7 @@ export const useEditablePage = (
             const pos = getDropPosition(event, gridConfig);
             const type = event.relatedTarget.dataset.brickType;
             if (type) {
-              console.log("constraints", defaults[type]);
+              console.debug("Dropped %s", type);
               const constraints: BrickConstraints = {
                 preferredHeight: defaults[type].preferredHeight,
                 preferredWidth: defaults[type].preferredWidth,
