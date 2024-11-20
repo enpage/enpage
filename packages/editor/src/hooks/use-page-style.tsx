@@ -19,6 +19,7 @@ export function usePageStyle({
     `@mobile:(
       grid-cols-${LAYOUT_COLS.mobile}
       px-[10px]
+      py-[10px]
       min-h-[100%]
       max-w-full
     )`,

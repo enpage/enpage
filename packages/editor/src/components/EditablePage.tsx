@@ -94,9 +94,23 @@ export default function EditablePage() {
       }
     }, 250);
 
+    console.debug("updating cell width");
+
     updateCellWidth();
+
+    // mutation oberver for the page container styles
+    const observer = new MutationObserver(updateCellWidth);
+    observer.observe(pageRef.current as Node, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+
     window.addEventListener("resize", updateCellWidth, { passive: true });
-    return () => window.removeEventListener("resize", updateCellWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateCellWidth);
+      observer.disconnect();
+    };
   }, [editor.previewMode, attributes.$pagePaddingHorizontal]);
 
   // listen for global click events on the document
