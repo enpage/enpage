@@ -1,5 +1,11 @@
 # @enpage/style-system
 
+## 0.0.22
+
+### Patch Changes
+
+- [#210](https://github.com/enpage/enpage/pull/210) [`52b4ffc`](https://github.com/enpage/enpage/commit/52b4ffca49017e32fe9e1dd6a38319c73b1be3a6) Thanks [@mattallty](https://github.com/mattallty)! - Editor improvements
+
 ## 0.0.21
 
 ### Patch Changes
