@@ -1,51 +1,103 @@
 import { css, tx } from "@enpage/style-system/twind";
 import { useEffect, useRef, useState } from "react";
-import type { Brick } from "@enpage/sdk/shared/bricks";
-import BrickWrapper from "./Brick";
-import { useBricks, useDraft, useEditor } from "../hooks/use-editor";
+import { generateId, type Brick } from "@enpage/sdk/shared/bricks";
+import BrickWrapper from "./EditableBrick";
+import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
-import { LAYOUT_COLS, LAYOUT_PADDING, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
+import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
+import { adjustMobileLayout, canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
-import { useEditableBrick } from "~/hooks/use-draggable";
+import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
+import { defaults } from "../bricks/all-manifests";
+import { usePageStyle } from "~/hooks/use-page-style";
 
-import "./EditablePage.css";
-
-export default function EditablePage(props: { initialBricks?: Brick[]; onMount?: () => void }) {
+export default function EditablePage() {
   const editor = useEditor();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
+  const attributes = useAttributes();
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
+  const pageClassName = usePageStyle({ attributes, editable: true, previewMode: editor.previewMode });
+  const [draggingOverPos, setDraggingOverPos] = useState<null | {
+    y: number;
+    x: number;
+    h: number;
+    w: number;
+  }>(null);
 
-  useEditableBrick(".brick", {
+  useEditablePage(".brick", pageRef, {
+    dragOptions: {
+      enabled: editor.previewMode === "desktop",
+    },
     gridConfig: {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
-      containerHorizontalPadding: LAYOUT_PADDING[editor.previewMode][0],
-      containerVerticalPadding: LAYOUT_PADDING[editor.previewMode][1],
+      containerHorizontalPadding:
+        editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10,
+      containerVerticalPadding:
+        editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10,
     },
     dragCallbacks: {
       onDragEnd: (brickId, pos, gridPos) => {
-        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
-        console.debug("brick id %s changed from %o to %o", brickId, currentPos, gridPos);
+        console.log("onDragEnd (%s)", editor.previewMode, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
-          x: gridPos.col,
-          y: gridPos.row,
+          x: gridPos.x,
+          y: gridPos.y,
         });
+        // reset the selected group
         editor.setSelectedGroup();
+      },
+    },
+    dropCallbacks: {
+      onDropMove(event, gridPosition, brick) {
+        const canDrop = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
+        setDraggingOverPos(canDrop || null);
+      },
+      onDropDeactivate() {
+        setDraggingOverPos(null);
+      },
+      onDrop(event, gridPosition, brick) {
+        console.log("onDrop (%s)", editor.previewMode, gridPosition, brick);
+        const position = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
+        if (position) {
+          const bricksDefaults = defaults[brick.type];
+          const newBrick: Brick = {
+            id: generateId(),
+            ...bricksDefaults,
+            type: brick.type,
+            position: {
+              desktop: position,
+              mobile: position,
+              [editor.previewMode]: position,
+            },
+          };
+          draft.addBrick(newBrick);
+
+          // rewrite the mobile layout based on the desktop layout
+          draft.adjustMobileLayout();
+        } else {
+          console.warn("Can't drop here");
+        }
       },
     },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
-        const currentPos = draft.getBrick(brickId)!.position[editor.previewMode];
-        console.debug("brick id %s resized from %o to %o", brickId, currentPos, gridPos);
+        console.log("onResizeEnd (%s)", editor.previewMode, brickId, gridPos);
         draft.updateBrickPosition(brickId, editor.previewMode, {
           ...draft.getBrick(brickId)!.position[editor.previewMode],
-          w: gridPos.width,
-          h: gridPos.height,
+          w: gridPos.w,
+          h: gridPos.h,
+          // when resizing trhough the mobile view, set the manual height
+          // so that the system knows that the height is not automatic
+          ...(editor.previewMode === "mobile" ? { manualHeight: gridPos.h } : {}),
         });
+
+        if (editor.previewMode === "mobile") {
+          draft.adjustMobileLayout();
+        }
       },
     },
   });
@@ -55,16 +107,30 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
     const updateCellWidth = debounce(() => {
       if (pageRef.current) {
         const containerWidth = pageRef.current.offsetWidth;
-        const totalGapWidth = LAYOUT_PADDING[editor.previewMode][0] * 2;
+        const totalGapWidth = parseInt(attributes.$pagePaddingHorizontal as string) * 2;
         const availableWidth = containerWidth - totalGapWidth;
         setColWidth(availableWidth / LAYOUT_COLS[editor.previewMode]);
       }
     }, 250);
 
+    console.debug("updating cell width");
+
     updateCellWidth();
-    window.addEventListener("resize", updateCellWidth);
-    return () => window.removeEventListener("resize", updateCellWidth);
-  }, [editor.previewMode]);
+
+    // mutation oberver for the page container styles
+    const observer = new MutationObserver(updateCellWidth);
+    observer.observe(pageRef.current as Node, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+
+    window.addEventListener("resize", updateCellWidth, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateCellWidth);
+      observer.disconnect();
+    };
+  }, [editor.previewMode, attributes.$pagePaddingHorizontal]);
 
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -83,7 +149,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
         !target.closest(".brick")
       ) {
         editor.deselectBrick();
-        // also deslect the library panel
+        // also deselect the library panel
         editor.hidePanel("library");
       }
     };
@@ -95,6 +161,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
   useHotkeys("esc", () => {
     editor.deselectBrick();
+    editor.setPanel();
   });
 
   useHotkeys("mod+c", () => {
@@ -122,22 +189,7 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
 
   return (
     <>
-      <div
-        ref={pageRef}
-        className={tx(
-          "grid group/page mx-auto w-full @container page-container relative",
-          {
-            "w-full max-w-7xl min-h-[100dvh] h-full": editor.previewMode === "desktop",
-            // todo: use theme or attributes for bg color
-            "bg-white min-h-[100%] max-w-full": editor.previewMode !== "desktop",
-          },
-          css({
-            gridTemplateColumns: `repeat(${LAYOUT_COLS[editor.previewMode]}, minmax(0, 1fr))`,
-            gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
-            padding: `${LAYOUT_PADDING[editor.previewMode][1]}px ${LAYOUT_PADDING[editor.previewMode][0]}px`,
-          }),
-        )}
-      >
+      <div ref={pageRef} className={pageClassName}>
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
           .map((brick) => (
@@ -148,6 +200,18 @@ export default function EditablePage(props: { initialBricks?: Brick[]; onMount?:
               <ResizeHandle direction="e" />
             </BrickWrapper>
           ))}
+
+        <div
+          className={tx(
+            "drop-indicator bg-upstart-400/50 rounded transition-all duration-300",
+            css({
+              opacity: draggingOverPos ? 1 : 0,
+              gridColumn: `${draggingOverPos?.x ?? 0} / span ${draggingOverPos?.w ?? 1}`,
+              gridRow: `${draggingOverPos?.y ?? 0} / span ${draggingOverPos?.h ?? 1}`,
+              display: draggingOverPos ? "block" : "none",
+            }),
+          )}
+        />
       </div>
       <Selecto
         className="selecto"

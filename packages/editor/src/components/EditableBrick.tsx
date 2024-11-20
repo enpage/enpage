@@ -1,4 +1,4 @@
-import type { Breakpoint, Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@enpage/sdk/shared/bricks";
 import {
   forwardRef,
   lazy,
@@ -17,35 +17,11 @@ import { useAttributes, useDraft, useEditor, useEditorEnabled } from "../hooks/u
 import { isEqualWith } from "lodash-es";
 import { DropdownMenu, Button, IconButton, Portal } from "@enpage/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import { propToStyle } from "@enpage/sdk/shared/themes/color-system";
+import BaseBrick from "./BaseBrick";
+import { useBrickWrapperStyle } from "../hooks/use-brick-style";
 
-const BrickText = lazy(() => import("../bricks/text"));
-const BrickHero = lazy(() => import("../bricks/hero"));
-const BrickImage = lazy(() => import("../bricks/image"));
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const bricksMap: Record<string, LazyExoticComponent<ComponentType<any>>> = {
-  text: BrickText,
-  hero: BrickHero,
-  image: BrickImage,
-};
-
-const BrickComponent = ({ brick, ...otherProps }: { brick: Brick } & ComponentProps<"div">) => {
-  const BrickModule = bricksMap[brick.type];
-
-  if (!BrickModule) {
-    return null;
-  }
-
-  const { wrapper, ...rest } = brick.props;
-
-  return (
-    <Suspense>
-      <BrickModule id={brick.id} {...rest} {...otherProps} textEditable={true} />
-    </Suspense>
-  );
-};
-
-const MemoBrickComponent = memo(BrickComponent, (prevProps, nextProps) => {
+const MemoBrickComponent = memo(BaseBrick, (prevProps, nextProps) => {
   const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {
     if (key === "content") {
       // If the key is in our ignore list, consider it equal
@@ -62,9 +38,10 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 };
 
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
-  ({ brick, style, className, onMouseDown, onMouseUp, onTouchEnd, children }, ref) => {
+  ({ brick, style, className, children }, ref) => {
     const editor = useEditor();
     const hasMouseMoved = useRef(false);
+    const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className });
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
       const target = e.currentTarget as HTMLElement;
@@ -81,20 +58,9 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         id={brick.id}
         data-x="0"
         data-y="0"
+        data-position={JSON.stringify(brick.position[editor.previewMode])}
         style={style}
-        className={tx(
-          "brick group/brick flex select-none relative",
-          "group-hover/page:(outline outline-dashed outline-upstart-100)",
-          "hover:z-[9999] hover:shadow-lg",
-          className,
-          css({
-            gridColumn: `${brick.position[editor.previewMode].x + 1} / span ${brick.position[editor.previewMode].w}`,
-            gridRow: `${brick.position[editor.previewMode].y + 1} / span ${brick.position[editor.previewMode].h}`,
-            "&.selected": {
-              outline: "2px dotted var(--violet-8) !important",
-            },
-          }),
-        )}
+        className={wrapperClass}
         ref={ref}
         onClick={onClick}
         onMouseDown={(e) => {
@@ -108,7 +74,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         onMouseMove={() => {
           hasMouseMoved.current = true;
         }}
-        // onTouchEnd={onTouchEnd}
       >
         <MemoBrickComponent brick={brick} />
         <BrickOptionsButton brick={brick} />
@@ -124,8 +89,6 @@ export default BrickWrapperMemo;
 function BrickOptionsButton({ brick }: { brick: Brick }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
-  const attributes = useAttributes();
-
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
       <DropdownMenu.Trigger>

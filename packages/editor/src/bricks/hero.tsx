@@ -6,6 +6,7 @@ import { commonProps, contentAwareProps } from "./props/common";
 import TextBrick from "./text";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
+import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -15,8 +16,22 @@ export const manifest = defineBrickManifest({
   title: "Hero",
   kind: "brick",
   description: "A big textual element for home pages",
-  preferredW: 12,
-  preferredH: 6,
+  preferredWidth: {
+    mobile: LAYOUT_COLS.mobile / 2,
+    desktop: LAYOUT_COLS.desktop / 4,
+  },
+  preferredHeight: {
+    mobile: 6,
+    desktop: 6,
+  },
+  minWidth: {
+    mobile: 3,
+    desktop: 3,
+  },
+  minHeight: {
+    mobile: 3,
+    desktop: 3,
+  },
   icon: `
    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>

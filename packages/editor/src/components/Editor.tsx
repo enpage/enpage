@@ -7,6 +7,8 @@ import {
   useThemeSubscribe,
   usePageConfig,
   useEditorMode,
+  useAttributes,
+  usePreviewMode,
 } from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
@@ -14,12 +16,13 @@ import { useEffect, useRef, type ComponentProps } from "react";
 import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
-import { usePreviewModeInit } from "../hooks/use-is-device-type";
 import EditablePage from "./EditablePage";
-import { tx, injectGlobal, css } from "@enpage/style-system/twind";
+import { tx, injectGlobal, css, colors } from "@enpage/style-system/twind";
+import { Button, AlertDialog, Flex, Portal } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { patch } from "../utils/api";
+import { isStandardColor, generateColorsVars } from "@enpage/sdk/shared/themes/color-system";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -28,25 +31,10 @@ type EditorProps = ComponentProps<"div"> & {
 export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
+  const previewMode = usePreviewMode();
   const editorMode = useEditorMode();
   const pageConfig = usePageConfig();
-
-  /**
-   *    method: "PATCH",
-      path: `/sites/:siteId/pages/:pageId/versions/latest`,
-      responses: {
-        200: getVersionSuccess,
-        500: errorSchema,
-      },
-      summary: "Patch latest version pf page {{pageId}} for site {{siteId}}",
-      body: z.object({
-        attributes: z.record(z.unknown()).optional(),
-        elements: z.record(z.unknown()).optional(),
-        label: z.string().optional(),
-        path: z.string().optional(),
-        theme: z.record(z.unknown()).optional(),
-      }),
-   */
+  const attributes = useAttributes();
 
   function updatePage(payload: Record<string, unknown>) {
     if (editorMode === "local") {
@@ -82,20 +70,23 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
+    const shades = generateColorsVars(themeUsed);
+
     const injected = `
      @layer upstart-theme {
         :root {
-          --color-primary: ${themeUsed.colors.primary};
-          --color-secondary: ${themeUsed.colors.secondary};
-          --color-tertiary: ${themeUsed.colors.tertiary};
-          --color-accent: ${themeUsed.colors.accent};
-          --color-neutral: ${themeUsed.colors.neutral};
+          ${Object.entries(shades)
+            .map(([key, value]) => `--${key}: ${value};`)
+            .join("\n")}
+
           --color-link: var(--color-primary);
+
           --font-size-hero-1: clamp(2rem, 9vw, 3.5rem);
           --font-size-hero-2: clamp(3rem, 9vw, 5rem);
           --font-size-hero-3: clamp(4rem, 9vw, 7rem);
           --font-size-hero-4: clamp(5rem, 9vw, 9rem);
           --font-size-hero-5: clamp(6rem, 9vw, 11rem);
+
         }
         [data-upstart-theme] {
           .page-container {
@@ -104,10 +95,9 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
         }
     }
     `;
+
     injectGlobal(injected);
   }, [draft.previewTheme, draft.theme]);
-
-  usePreviewModeInit();
 
   return (
     <div
@@ -129,7 +119,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div
         className={tx(
-          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto",
+          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto transition-colors duration-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -139,6 +129,17 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
               scrollbarColor: "var(--violet-7) var(--violet-3)",
             },
           }),
+          previewMode === "mobile" && "bg-gray-300",
+          previewMode === "desktop" &&
+            isStandardColor(attributes.$backgroundColor) &&
+            css({ backgroundColor: attributes.$backgroundColor }),
+          previewMode === "desktop" &&
+            isStandardColor(attributes.$textColor) &&
+            css({ color: attributes.$textColor }),
+          previewMode === "desktop" &&
+            !isStandardColor(attributes.$backgroundColor) &&
+            attributes.$backgroundColor,
+          previewMode === "desktop" && !isStandardColor(attributes.$textColor) && attributes.$textColor,
         )}
       >
         <DeviceFrame>
@@ -150,7 +151,7 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
 }
 
 function ThemePreviewConfirmButton() {
-  return <div />;
+  return <Button>Accept theme</Button>;
 }
 
 type PanelProps = ComponentProps<"aside">;

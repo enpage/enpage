@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect } from "react";
 import { temporal } from "zundo";
 import type { ResponsiveMode } from "@enpage/sdk/shared/responsive";
 import invariant from "@enpage/sdk/shared/utils/invariant";
-import type { Breakpoint, Brick, BrickPosition } from "@enpage/sdk/shared/bricks";
+import type { Brick, BrickPosition } from "@enpage/sdk/shared/bricks";
 import type { Theme } from "@enpage/sdk/shared/theme";
 import { themes } from "@enpage/sdk/shared/themes/all-themes";
 import type { AttributesResolved } from "@enpage/sdk/shared/attributes";
@@ -15,7 +15,9 @@ import type { TObject } from "@sinclair/typebox";
 import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
-import type { Layout } from "react-grid-layout";
+import type { ColorAdjustment } from "@enpage/sdk/shared/themes/color-system";
+import { adjustMobileLayout } from "@enpage/sdk/shared/utils/layout-utils";
+import { isEqual } from "lodash-es";
 
 export interface EditorStateProps {
   /**
@@ -26,18 +28,23 @@ export interface EditorStateProps {
   enabled: boolean;
   pageConfig: GenericPageConfig;
   pages: PageBasicInfo[];
+
   /**
    * The brick manifest that is being dragged from the library
    */
   draggingBrick?: Static<BrickManifest>;
   previewMode: ResponsiveMode;
-  editingPageIndex: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
   shouldShowGrid?: boolean;
   panel?: "library" | "inspector" | "theme" | "settings";
+  panelPosition: "left" | "right";
+  /**
+   * Latest used color adjustment
+   */
+  colorAdjustment: ColorAdjustment;
 }
 
 export interface EditorState extends EditorStateProps {
@@ -45,7 +52,6 @@ export interface EditorState extends EditorStateProps {
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
-  setEditingPageIndex: (index: number) => void;
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
@@ -54,16 +60,19 @@ export interface EditorState extends EditorStateProps {
   hidePanel: (panel: EditorStateProps["panel"]) => void;
   setSelectedGroup: (group?: Brick["id"][]) => void;
   setShouldShowGrid: (show: boolean) => void;
+  setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
+  togglePanelPosition: () => void;
 }
 
 export const createEditorStore = (
   initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig; pages: PageBasicInfo[] },
 ) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
-    editingPageIndex: 0,
     enabled: true,
     previewMode: "desktop",
     mode: "local",
+    colorAdjustment: "default",
+    panelPosition: "left",
   };
 
   return createStore<EditorState>()(
@@ -85,10 +94,7 @@ export const createEditorStore = (
               set((state) => {
                 state.settingsVisible = !state.settingsVisible;
               }),
-            setEditingPageIndex: (index) =>
-              set((state) => {
-                state.editingPageIndex = index;
-              }),
+
             setSelectedBrick: (brick) =>
               set((state) => {
                 state.selectedBrick = brick;
@@ -137,27 +143,37 @@ export const createEditorStore = (
               set((state) => {
                 state.shouldShowGrid = show;
               }),
+            setColorAdjustment: (colorAdjustment) =>
+              set((state) => {
+                state.colorAdjustment = colorAdjustment;
+              }),
+            togglePanelPosition: () =>
+              set((state) => {
+                state.panelPosition = state.panelPosition === "left" ? "right" : "left";
+              }),
           })),
           {
             name: `editor-state-${initProps.pageConfig.id}`,
-            skipHydration: true,
+            skipHydration: initProps.mode === "remote",
             partialize: (state) =>
               Object.fromEntries(
                 Object.entries(state).filter(
                   ([key]) =>
                     ![
+                      "enabled",
+                      "mode",
                       "selectedBrick",
                       "panel",
-                      "previewMode",
-                      "isResizingForContainerId",
                       "isEditingTextForBrickId",
+                      "draggingBrick",
+                      "shouldShowGrid",
                     ].includes(key),
                 ),
               ),
           },
         ),
         // limit undo history to 100
-        { limit: 100 },
+        { limit: 100, equality: (pastState, currentState) => isEqual(pastState, currentState) },
       ),
     ),
   );
@@ -173,11 +189,16 @@ export interface DraftStateProps {
   theme: Theme;
   previewTheme?: Theme;
   version?: string;
+  /**
+   * When local, the editor does not fetch data from the server or save data to the server
+   * It is used when the user is not logged in yet or does not have an account yet
+   */
+  mode: "local" | "remote";
 }
 
 export interface DraftState extends DraftStateProps {
+  setBricks: (bricks: Brick[]) => void;
   getBricks: () => Brick[];
-  updateLayout: (positions: Layout[], bp: Breakpoint) => void;
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
@@ -194,6 +215,7 @@ export interface DraftState extends DraftStateProps {
   updateAttributes: (attr: AttributesResolved) => void;
   save(): Promise<void>;
   setVersion(version: string): void;
+  adjustMobileLayout(): void;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
@@ -212,7 +234,11 @@ export const createDraftStore = (
     bricks: [],
     theme: themes[1],
     data: {},
+    mode: "local",
   };
+
+  console.log("Creating draft store with", initProps);
+
   return createStore<DraftState>()(
     subscribeWithSelector(
       temporal(
@@ -220,6 +246,10 @@ export const createDraftStore = (
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+            setBricks: (bricks) =>
+              set((state) => {
+                state.bricks = bricks;
+              }),
             deleteBrick: (id) =>
               set((state) => {
                 const brickIndex = state.bricks.findIndex((item) => item.id === id);
@@ -308,33 +338,31 @@ export const createDraftStore = (
               set((state) => {
                 state.version = version;
               }),
-
-            updateLayout: (positions, bp) =>
+            adjustMobileLayout: () =>
               set((state) => {
-                state.bricks.forEach((b) => {
-                  const index = positions.findIndex((l) => l.i === b.id);
-                  if (index > -1) {
-                    b.position[bp] = { ...b.position[bp], ...positions[index] };
-                  }
-                });
+                state.bricks = adjustMobileLayout(state.bricks);
               }),
           })),
           {
             name: "draft-state",
-            skipHydration: true,
+            skipHydration: initProps.mode === "remote",
             partialize: (state) =>
               Object.fromEntries(
-                Object.entries(state).filter(([key]) => !["attrSchema", "attr"].includes(key)),
+                Object.entries(state).filter(([key]) => !["previewTheme", "attrSchema"].includes(key)),
               ),
           },
         ),
         {
           // limit undo history to 100
           limit: 100,
-          // handleSet: (handleSet) =>
-          //   throttle<typeof handleSet>((state) => {
-          //     handleSet(state);
-          //   }, 200),
+          equality: (pastState, currentState) => isEqual(pastState, currentState),
+          handleSet: (handleSet) =>
+            debounce<typeof handleSet>((state) => {
+              if (state) {
+                console.info("handleSet called", state);
+                handleSet(state);
+              }
+            }, 200),
         },
       ),
     ),
@@ -391,6 +419,11 @@ export const useSelectedGroup = () => {
   return useStore(ctx, (state) => state.selectedGroup);
 };
 
+export const useColorAdjustment = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.colorAdjustment);
+};
+
 export const useEditorMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.mode);
@@ -431,11 +464,16 @@ export const usePageConfig = () => {
   return useStore(ctx, (state) => state.pageConfig);
 };
 
+export const useTheme = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.theme);
+};
+
 export const useBricksSubscribe = (callback: (bricks: DraftState["bricks"]) => void) => {
   const ctx = useDraftStoreContext();
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return ctx.subscribe((state) => state.bricks, debounce(callback, 200));
+    return ctx.subscribe((state) => state.bricks, debounce(callback, 200), { fireImmediately: false });
   }, []);
 };
 

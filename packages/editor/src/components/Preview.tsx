@@ -1,7 +1,7 @@
 import { type ComponentProps, useEffect, useRef, useState } from "react";
 import styles from "./Preview.module.css";
 import { usePreviewMode } from "~/hooks/use-editor";
-import { tx } from "@enpage/style-system/twind";
+import { tx, css } from "@enpage/style-system/twind";
 
 export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
   const ref = useRef<HTMLDivElement>(null);
@@ -20,13 +20,21 @@ export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
     <div
       ref={ref}
       className={tx(
-        "device-frame opacity-20 transition-all duration-200 mx-auto scrollbar-thin",
+        "device-frame opacity-20 transition-all duration-200 mx-auto @container overscroll-contain",
         styles[previewMode],
         {
           [styles.handled]: previewMode === "mobile",
           "!opacity-20": !show,
           "!opacity-100": show,
         },
+        css({
+          scrollbarColor: "var(--violet-4) var(--violet-2)",
+          scrollBehavior: "smooth",
+          scrollbarWidth: previewMode === "desktop" ? "thin" : "none",
+          "&:hover": {
+            scrollbarColor: "var(--violet-7) var(--violet-3)",
+          },
+        }),
       )}
       {...props}
     >

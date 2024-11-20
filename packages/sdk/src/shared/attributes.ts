@@ -8,11 +8,13 @@ import {
   type TProperties,
 } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
+import type { ElementColor } from "./themes/color-system";
 
 // KEEP IT
 type EnumOption = {
   // name: string;
   title?: string;
+  description?: string;
   value: string;
   icon?: string;
 };
@@ -89,8 +91,9 @@ export const attr = {
   ) {
     const defaultOpts = {
       "ui:field": "enum",
+      "ui:display": opts.displayAs || "select",
     };
-    const { options, ...commonOpts } = opts;
+    const { options, displayAs, ...commonOpts } = opts;
     return Type.Union(
       options.map((opt) =>
         Type.Literal(typeof opt === "string" ? opt : opt.value, {
@@ -129,9 +132,15 @@ export const attr = {
   /**
    * Define a color attribute
    */
-  color(name: string, defaultValue = "", opts?: AttributeOptions<Omit<StringOptions, "title" | "default">>) {
+  color(
+    name: string,
+    defaultValue: ElementColor = "",
+    opts?: AttributeOptions<Omit<StringOptions, "title" | "default">>,
+  ) {
     const defaultOpts = {
       "ui:field": "color",
+      // important for the json schema form not to display several fields because of the union type
+      // "ui:fieldReplacesAnyOrOneOf": true,
     };
     return Type.String({ title: name, default: defaultValue, ...defaultOpts, ...opts });
   },
@@ -198,6 +207,8 @@ const defaultAttributes = {
       { value: "tr", title: "Turkish" },
       { value: "vi", title: "Vietnamese" },
     ],
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags / SEO",
   }),
 
   $pagePath: attr.string("Page path", "/", {
@@ -230,18 +241,62 @@ const defaultAttributes = {
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
-  $gridGap: attr.number("Grid gap", 10, {
-    min: 0,
-    max: 100,
-    description: "Grid gap in pixels",
+  $pageWidth: attr.enum("Page width", "max-w-screen-2xl", {
+    options: [
+      {
+        value: "max-w-screen-lg",
+        title: "M",
+        description: "Common for text-heavy content/blog posts",
+      },
+      { value: "max-w-screen-xl", title: "L", description: "Usefull or some landing pages" },
+      { value: "max-w-screen-2xl", title: "XL", description: "Common width" },
+      { value: "max-w-full", title: "Full", description: "Takes the entire space" },
+    ],
+    description: "The maximum width of the page. Desktop only.",
+    displayAs: "button-group",
     "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
+    "ui:group:title": "Page Layout & Design",
+  }),
+
+  $pagePaddingVertical: attr.enum("Page vertical spacing", "20", {
+    options: [
+      { value: "0", title: "None" },
+      { value: "10", title: "S" },
+      { value: "20", title: "M" },
+      { value: "30", title: "L" },
+      { value: "50", title: "XL" },
+    ],
+    description: "Vertical spacing. Desktop only.",
+    displayAs: "button-group",
+    "ui:group": "layout",
+    "ui:group:title": "Page Layout & Design",
+  }),
+
+  $pagePaddingHorizontal: attr.enum("Page horizontal spacing", "20", {
+    options: [
+      { value: "0", title: "None" },
+      { value: "10", title: "S" },
+      { value: "20", title: "M" },
+      { value: "30", title: "L" },
+      { value: "50", title: "XL" },
+    ],
+    description: "Horizontal spacing. Desktop only.",
+    displayAs: "button-group",
+    "ui:group": "layout",
+    "ui:group:title": "Page Layout & Design",
   }),
 
   $backgroundColor: attr.color("Page background color", "#ffffff", {
     "ui:field": "color",
     "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
+    "ui:group:title": "Page Layout & Design",
+  }),
+
+  $textColor: attr.color("Default text color", "#222222", {
+    "ui:field": "color",
+    "ui:group": "layout",
+    "ui:group:title": "Page Layout & Design",
+    "ui:color-type": "page-text",
   }),
 };
 

@@ -11,10 +11,10 @@ import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
 
 export const manifest = defineBrickManifest({
-  type: "carousel",
+  type: "countdown",
   kind: "widget",
-  title: "Carousel",
-  description: "A carousel element",
+  title: "Countdown",
+  description: "A countdown timer",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -31,17 +31,35 @@ export const manifest = defineBrickManifest({
     mobile: 3,
     desktop: 3,
   },
+  // svg icon for the "card" brick
   icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Main container -->
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+    <!-- Main container (centered) -->
+    <rect x="2" y="6" width="20" height="12" rx="1" ry="1"></rect>
 
-    <!-- Main image rectangle -->
-    <rect x="6" y="6" width="12" height="8" rx="1"></rect>
+    <!-- Left digit -->
+    <path d="M4 9 L4 15"></path>
+    <path d="M4 9 L7 9"></path>
+    <path d="M4 12 L7 12"></path>
+    <path d="M4 15 L7 15"></path>
+    <path d="M7 9 L7 15"></path>
 
-    <!-- Navigation dots with more spacing -->
-    <circle cx="9" cy="17" r="0.5" fill="currentColor"></circle>
-    <circle cx="12" cy="17" r="0.5" fill="currentColor"></circle>
-    <circle cx="15" cy="17" r="0.5" fill="currentColor"></circle>
+    <!-- Second digit -->
+    <path d="M9 9 L9 15"></path>
+    <path d="M9 9 L12 9"></path>
+    <path d="M9 12 L12 12"></path>
+    <path d="M9 15 L12 15"></path>
+    <path d="M12 9 L12 15"></path>
+
+    <!-- Colon (tiny) -->
+    <circle cx="15" cy="10.5" r="0.15"></circle>
+    <circle cx="15" cy="13.5" r="0.15"></circle>
+
+    <!-- Third digit -->
+    <path d="M17 9 L17 15"></path>
+    <path d="M17 9 L20 9"></path>
+    <path d="M17 12 L20 12"></path>
+    <path d="M17 15 L20 15"></path>
+    <path d="M20 9 L20 15"></path>
 </svg>
   `,
 
@@ -74,7 +92,7 @@ export const manifest = defineBrickManifest({
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
 
-const Carousel = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const WidgetMap = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   let { content, heroFontSize } = props;
 
@@ -89,4 +107,4 @@ const Carousel = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   return <div>Im a card</div>;
 });
 
-export default Carousel;
+export default WidgetMap;

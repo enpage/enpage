@@ -9,10 +9,6 @@ export const generateId = customAlphabet("1234567890azertyuiopqsdfghjklmwxcvbnAZ
 
 export type BrickPosition = {
   /**
-   * Unique identifier for the brick for react-grid-layout.
-   */
-  i?: string;
-  /**
    * Col start (0-based) in grid units, not pixels.
    */
   x: number;
@@ -31,25 +27,7 @@ export type BrickPosition = {
    */
   h: number;
 
-  /**
-   * Minimum width in columns in grid units, not pixels.
-   */
-  minW?: number;
-  /**
-   * Minimum height in rows in grid units, not pixels.
-   */
-  minH?: number;
-
-  /**
-   * Maximum width in columns in grid units, not pixels.
-   */
-  maxW?: number;
-
-  /**
-   * Maximum height in rows in grid units, not pixels.
-   */
-  maxH?: number;
-
+  manualHeight?: number;
   /**
    * If true, the brick won't be displayed.
    */
@@ -61,10 +39,10 @@ export type DefinedBrickPosition = {
   h: number;
   x: number | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
   y: number;
-  minW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
-  minH?: number;
-  maxW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
-  maxH?: number;
+  // minW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
+  // minH?: number;
+  // maxW?: number | "full" | "half" | "third" | "twoThird" | "quarter" | "threeQuarter";
+  // maxH?: number;
   hidden?: boolean;
 };
 
@@ -76,17 +54,12 @@ export type Brick<T extends string = string> = {
     mobile: BrickPosition;
     desktop: BrickPosition;
   };
-  // manifest: BrickManifest;
 };
 
 export type BricksLayout = Brick[];
 export type ResponsivePosition = Brick["position"];
-export type Breakpoint = keyof Brick["position"];
 
-// type DefinedBrick = Omit<Brick, "id" | "manifest"> & {
-//   manifest?: BrickManifest;
-// };
-export type DefinedBrick = Omit<Brick, "id" | "position"> & {
+export type DefinedBrick = Omit<Brick, "id" | "position" | "manifest"> & {
   position: {
     mobile: DefinedBrickPosition;
     desktop: DefinedBrickPosition;
@@ -132,36 +105,6 @@ function mapPosition(
                   ? (cols[mode] * 3) / 4
                   : position.w,
     h: position.h,
-    minW:
-      position.minW === "full"
-        ? cols[mode]
-        : position.minW === "half"
-          ? cols[mode] / 2
-          : position.minW === "third"
-            ? cols[mode] / 3
-            : position.minW === "quarter"
-              ? cols[mode] / 4
-              : position.minW === "twoThird"
-                ? (cols[mode] * 2) / 3
-                : position.minW === "threeQuarter"
-                  ? (cols[mode] * 3) / 4
-                  : position.minW,
-    minH: position.minH,
-    maxW:
-      position.maxW === "full"
-        ? cols[mode]
-        : position.maxW === "half"
-          ? cols[mode] / 2
-          : position.maxW === "third"
-            ? cols[mode] / 3
-            : position.maxW === "quarter"
-              ? cols[mode] / 4
-              : position.maxW === "twoThird"
-                ? (cols[mode] * 2) / 3
-                : position.maxW === "threeQuarter"
-                  ? (cols[mode] * 3) / 4
-                  : position.maxW,
-    maxH: position.maxH,
     hidden: position.hidden,
   };
 }
@@ -207,11 +150,7 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
       Math.max(brick.position.desktop?.h ?? 0, brick.position.tablet?.h ?? 0, brick.position.mobile?.h ?? 0),
     ),
   );
-  const maxTabletHeight = Math.max(
-    ...bricks.map((brick) =>
-      Math.max(brick.position.tablet?.h ?? 0, brick.position.mobile?.h ?? 0, brick.position.desktop?.h ?? 0),
-    ),
-  );
+
   const maxMobileHeight = Math.max(
     ...bricks.map((brick) =>
       Math.max(brick.position.mobile?.h ?? 0, brick.position.tablet?.h ?? 0, brick.position.desktop?.h ?? 0),
@@ -236,25 +175,18 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
               },
             }
           : null),
-        ...(brick.position.tablet
-          ? {
-              tablet: {
-                ...brick.position.tablet,
-                y: currentRowByBreakpoint.tablet,
-              },
-            }
-          : {}),
       },
     };
-    if (adjusted.position.mobile?.w === 12 && index !== bricks.length - 1) {
+
+    if (adjusted.position.mobile?.w === LAYOUT_COLS.mobile && index !== bricks.length - 1) {
       currentRowByBreakpoint.mobile += adjusted.position.mobile.h;
     }
+
     return adjusted;
   });
 
   // increment the current row
   currentRowByBreakpoint.desktop += maxDesktopHeight;
-  currentRowByBreakpoint.tablet += maxTabletHeight;
   currentRowByBreakpoint.mobile += maxMobileHeight;
 
   // return the created bricks
@@ -273,10 +205,11 @@ export function defineBrickManifest<
   kind,
   title,
   description,
-  preferredW,
-  preferredH,
+  preferredWidth,
+  preferredHeight,
   minWidth,
   minHeight,
+  maxWidth,
   icon,
   file,
   props,
@@ -289,10 +222,26 @@ export function defineBrickManifest<
   icon: BIcon;
   file: BFile;
   description: BDesc;
-  minWidth?: number;
-  minHeight?: number;
-  preferredW?: number;
-  preferredH?: number;
+  minWidth?: {
+    mobile: number;
+    desktop: number;
+  };
+  minHeight?: {
+    mobile: number;
+    desktop: number;
+  };
+  maxWidth?: {
+    mobile: number;
+    desktop: number;
+  };
+  preferredWidth?: {
+    mobile: number;
+    desktop: number;
+  };
+  preferredHeight?: {
+    mobile: number;
+    desktop: number;
+  };
   props: TObject<BProps>;
   datasource?: TObject;
   datarecord?: TObject;
@@ -304,10 +253,41 @@ export function defineBrickManifest<
     description: Type.Literal(description),
     icon: Type.Literal(icon),
     file: Type.Literal(file),
-    preferredW: Type.Number({ default: preferredW ?? minWidth ?? 1 }),
-    preferredH: Type.Number({ default: preferredH ?? minHeight ?? 1 }),
-    minWidth: Type.Number({ default: minWidth ?? 1 }),
-    minHeight: Type.Number({ default: minHeight ?? 1 }),
+    preferredWidth: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: preferredWidth ?? minWidth },
+    ),
+    preferredHeight: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: preferredHeight ?? minHeight },
+    ),
+    minWidth: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: minWidth ?? { mobile: 1, desktop: 1 } },
+    ),
+    maxWidth: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: maxWidth ?? { mobile: LAYOUT_COLS.mobile, desktop: LAYOUT_COLS.desktop } },
+    ),
+    minHeight: Type.Object(
+      {
+        mobile: Type.Number(),
+        desktop: Type.Number(),
+      },
+      { default: minHeight ?? { mobile: 1, desktop: 1 } },
+    ),
     ...(datasource && { datasource }),
     ...(datarecord && { datarecord }),
     props,
@@ -316,3 +296,7 @@ export function defineBrickManifest<
 
 export type BrickManifest = ReturnType<typeof defineBrickManifest>;
 export type ResolvedBrickManifest = Static<BrickManifest>;
+export type BrickConstraints = Pick<
+  ResolvedBrickManifest,
+  "preferredWidth" | "preferredHeight" | "minWidth" | "minHeight" | "maxWidth"
+>;

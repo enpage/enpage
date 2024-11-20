@@ -36,17 +36,39 @@ export default defineConfig({
       ({ $$ }) => ({ padding: `${$$ === "1" ? "1px" : $$ === "0" ? "0" : `${modularScale(+$$, "1rem")}`}` }),
     ],
     // ["family-", ({ $$ }) => ({ fontFamily: `var(--font-${$$})` })],
+
     ["bg-neutral-", ({ $$ }) => ({ backgroundColor: `var(--color-neutral-${$$})` })],
     ["bg-accent-", ({ $$ }) => ({ backgroundColor: `var(--color-accent-${$$})` })],
     ["bg-primary-", ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})` })],
     ["bg-secondary-", ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})` })],
-    ["bg-tertiary-", ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})` })],
 
     ["border-neutral-", ({ $$ }) => ({ borderColor: `var(--color-neutral-${$$})` })],
     ["border-accent-", ({ $$ }) => ({ borderColor: `var(--color-accent-${$$})` })],
     ["border-primary-", ({ $$ }) => ({ borderColor: `var(--color-primary-${$$})` })],
     ["border-secondary-", ({ $$ }) => ({ borderColor: `var(--color-secondary-${$$})` })],
-    ["border-tertiary-", ({ $$ }) => ({ borderColor: `var(--color-tertiary-${$$})` })],
+
+    /**
+     * Can be used with text-neutral-500, but also text-neutral-500-subtle, text-neutral-500-tonal-subtle, text-neutral-500-strong, etc.
+     */
+    ["text-neutral-", ({ $$ }) => ({ color: `var(--text-neutral-${$$})` })],
+    ["text-accent-", ({ $$ }) => ({ color: `var(--text-accent-${$$})` })],
+    ["text-primary-", ({ $$ }) => ({ color: `var(--text-primary-${$$})` })],
+    ["text-secondary-", ({ $$ }) => ({ color: `var(--text-secondary-${$$})` })],
+
+    ["outline-primary-", ({ $$ }) => ({ outlineColor: `var(--color-primary-${$$})` })],
+    ["outline-secondary-", ({ $$ }) => ({ outlineColor: `var(--color-secondary-${$$})` })],
+    ["outline-accent-", ({ $$ }) => ({ outlineColor: `var(--color-accent-${$$})` })],
+    ["outline-neutral-", ({ $$ }) => ({ outlineColor: `var(--color-neutral-${$$})` })],
+
+    ["color-", ({ $$ }) => ({ color: `var(--color-${$$})` })],
+    [
+      "neutral-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-neutral-${$$})`, color: `var(--text-neutral-${$$})` }),
+    ],
+    [
+      "accent-",
+      ({ $$ }) => ({ backgroundColor: `var(--color-accent-${$$})`, color: `var(--text-accent-${$$})` }),
+    ],
 
     [
       "primary-",
@@ -56,10 +78,7 @@ export default defineConfig({
       "secondary-",
       ({ $$ }) => ({ backgroundColor: `var(--color-secondary-${$$})`, color: `var(--text-secondary-${$$})` }),
     ],
-    [
-      "tertiary-",
-      ({ $$ }) => ({ backgroundColor: `var(--color-tertiary-${$$})`, color: `var(--text-tertiary-${$$})` }),
-    ],
+
     ["brick-light-", ({ $$ }) => `bg-${$$}-300 text-${$$}-50`],
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],
@@ -133,10 +152,58 @@ export default defineConfig({
           900: "#333333",
           950: "#262626",
         },
+        primary: {
+          50: "var(--color-primary-50)",
+          100: "var(--color-primary-100)",
+          200: "var(--color-primary-200)",
+          300: "var(--color-primary-300)",
+          400: "var(--color-primary-400)",
+          500: "var(--color-primary-500)",
+          600: "var(--color-primary-600)",
+          700: "var(--color-primary-700)",
+          800: "var(--color-primary-800)",
+          900: "var(--color-primary-900)",
+        },
+        secondary: {
+          50: "var(--color-secondary-50)",
+          100: "var(--color-secondary-100)",
+          200: "var(--color-secondary-200)",
+          300: "var(--color-secondary-300)",
+          400: "var(--color-secondary-400)",
+          500: "var(--color-secondary-500)",
+          600: "var(--color-secondary-600)",
+          700: "var(--color-secondary-700)",
+          800: "var(--color-secondary-800)",
+          900: "var(--color-secondary-900)",
+        },
+        accent: {
+          50: "var(--color-accent-50)",
+          100: "var(--color-accent-100)",
+          200: "var(--color-accent-200)",
+          300: "var(--color-accent-300)",
+          400: "var(--color-accent-400)",
+          500: "var(--color-accent-500)",
+          600: "var(--color-accent-600)",
+          700: "var(--color-accent-700)",
+          800: "var(--color-accent-800)",
+          900: "var(--color-accent-900)",
+        },
+        neutral: {
+          50: "var(--color-neutral-50)",
+          100: "var(--color-neutral-100)",
+          200: "var(--color-neutral-200)",
+          300: "var(--color-neutral-300)",
+          400: "var(--color-neutral-400)",
+          500: "var(--color-neutral-500)",
+          600: "var(--color-neutral-600)",
+          700: "var(--color-neutral-700)",
+          800: "var(--color-neutral-800)",
+          900: "var(--color-neutral-900)",
+        },
       },
+
       containers: {
-        mobile: "1rem",
-        tablet: "768px",
+        mobile: "1px",
         desktop: "1024px",
       },
     },

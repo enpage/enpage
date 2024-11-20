@@ -1,5 +1,5 @@
 import { tx, css } from "@enpage/style-system/twind";
-import { useEditor } from "../hooks/use-editor";
+import { useDraft, useEditor } from "../hooks/use-editor";
 import { manifests } from "../bricks/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
@@ -7,10 +7,11 @@ import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@enpage/style
 import { BsStars } from "react-icons/bs";
 import { TbDragDrop } from "react-icons/tb";
 import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";
-import { useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import type { BrickManifest } from "@enpage/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
+import interact from "interactjs";
 
 const tabContentScrollClass = css({
   scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -23,9 +24,80 @@ const tabContentScrollClass = css({
 
 export default function BlocksLibrary() {
   const editor = useEditor();
+  const draft = useDraft();
   const { shouldDisplay: shouldDisplayLibraryCallout } = useCalloutViewCounter("blocks-library");
   const [brickPrompt, setBrickPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const interactable = useRef<Interact.Interactable | null>(null);
+  const ghost = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    interactable.current = interact(".draggable-brick");
+    interactable.current.draggable({
+      // inertia: true,
+      autoScroll: {
+        enabled: false,
+      },
+      // manualStart: true,
+      listeners: {
+        start: (event: Interact.InteractEvent) => {
+          const target = event.target as HTMLElement;
+          const brickType = target.dataset.brickType;
+          console.log("drag start", brickType, target.clientTop);
+
+          const clone = event.target.cloneNode(true) as HTMLElement;
+          clone.classList.add("clone");
+
+          // Position clone at original element's position
+          const rect = event.target.getBoundingClientRect();
+          clone.id = "library-brick-ghost";
+          clone.style.left = `${rect.left}px`;
+          clone.style.top = `${rect.top}px`;
+          clone.style.position = "absolute";
+          clone.style.zIndex = "999";
+          clone.style.width = `${rect.width}px`;
+          clone.style.height = `${rect.height}px`;
+
+          // Store reference to clone
+          // @ts-ignore
+          event.target.cloneElement = clone;
+
+          document.body.appendChild(clone);
+          // editor.setDraggingBrick(brick);
+        },
+        move: (event: Interact.InteractEvent) => {
+          // @ts-ignore
+          const clone = event.target.cloneElement as HTMLElement | null;
+          if (!clone) {
+            return;
+          }
+
+          // Get current position of clone
+          const position = {
+            x: parseFloat(clone.style.left) || 0,
+            y: parseFloat(clone.style.top) || 0,
+          };
+
+          // Update clone position
+          clone.style.left = `${position.x + event.dx}px`;
+          clone.style.top = `${position.y + event.dy}px`;
+        },
+        end(event: Interact.InteractEvent) {
+          // Remove clone when drag ends
+          // @ts-ignore
+          const clone = event.target.cloneElement as HTMLElement | null;
+          if (clone) {
+            clone.remove();
+          }
+        },
+      },
+    });
+
+    return () => {
+      interactable.current?.unset();
+      interactable.current = null;
+    };
+  }, []);
 
   const generateBrick = async () => {
     if (!brickPrompt) {
@@ -78,33 +150,11 @@ export default function BlocksLibrary() {
           >
             {Object.values(manifests)
               .filter((m) => m.properties.kind.const === "brick")
-              .map((blockImport) => {
-                const block = Value.Create(blockImport);
+              .map((brickImport) => {
+                const brick = Value.Create(brickImport);
                 return (
-                  <Tooltip content={block.description} key={block.type}>
-                    <button
-                      draggable={true}
-                      onDragStart={onDragStart.bind(null, block)}
-                      // data-block={encodeURIComponent(JSON.stringify(block))}
-                      // data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
-                      type="button"
-                      className="rounded border border-transparent hover:border-upstart-600
-                            dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
-                            pointer-events-auto transition"
-                    >
-                      <div
-                        className={tx(
-                          "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
-                        )}
-                      >
-                        <span
-                          className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
-                          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                          dangerouslySetInnerHTML={{ __html: block.icon }}
-                        />
-                        <span className="whitespace-nowrap text-xs">{block.title}</span>
-                      </div>
-                    </button>
+                  <Tooltip content={brick.description} key={brick.type}>
+                    <DraggableBrick brick={brick} />
                   </Tooltip>
                 );
               })}
@@ -124,33 +174,11 @@ export default function BlocksLibrary() {
           >
             {Object.values(manifests)
               .filter((m) => m.properties.kind.const === "widget")
-              .map((blockImport) => {
-                const block = Value.Create(blockImport);
+              .map((brickImport) => {
+                const brick = Value.Create(brickImport);
                 return (
-                  <Tooltip content={block.description} key={block.type}>
-                    <button
-                      draggable={true}
-                      onDragStart={onDragStart.bind(null, block)}
-                      // data-block={encodeURIComponent(JSON.stringify(block))}
-                      // data-manifest={encodeURIComponent(JSON.stringify(blockImport))}
-                      type="button"
-                      className="rounded border border-transparent hover:border-upstart-600
-                            dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
-                            pointer-events-auto transition"
-                    >
-                      <div
-                        className={tx(
-                          "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
-                        )}
-                      >
-                        <span
-                          className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
-                          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                          dangerouslySetInnerHTML={{ __html: block.icon }}
-                        />
-                        <span className="whitespace-nowrap text-xs">{block.title}</span>
-                      </div>
-                    </button>
+                  <Tooltip content={brick.description} key={brick.type}>
+                    <DraggableBrick brick={brick} />
                   </Tooltip>
                 );
               })}
@@ -188,3 +216,36 @@ export default function BlocksLibrary() {
     </Tabs.Root>
   );
 }
+
+type DraggableBrickProps = {
+  brick: Static<BrickManifest>;
+};
+const DraggableBrick = forwardRef<HTMLButtonElement, DraggableBrickProps>(({ brick }, ref) => {
+  return (
+    <button
+      ref={ref}
+      data-brick-type={brick.type}
+      data-brick-min-w={brick.minWidth}
+      data-brick-min-h={brick.minHeight}
+      data-brick-preferred-w={brick.preferredWidth}
+      data-brick-preferred-h={brick.preferredHeight}
+      type="button"
+      className="rounded border border-transparent hover:border-upstart-600
+          bg-white dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
+          pointer-events-auto transition draggable-brick [&:is(.clone)]:(opacity-80 !bg-white)"
+    >
+      <div
+        className={tx(
+          "h-full w-full flex flex-col px-1 py-2 items-center gap-0.5 rounded-[inherit] select-none",
+        )}
+      >
+        <span
+          className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          dangerouslySetInnerHTML={{ __html: brick.icon }}
+        />
+        <span className="whitespace-nowrap text-xs">{brick.title}</span>
+      </div>
+    </button>
+  );
+});

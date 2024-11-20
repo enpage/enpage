@@ -8,7 +8,7 @@ export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
   [&_fieldset]:(flex flex-col)
   [&_.form-group:has(*)]:(px-3 py-4 border-b border-gray-200 dark:border-dark-600)
   [&>.form-group]:(!px-0 !py-0)
-  [&_.field-description]:(mt-1 mb-1 text-xs text-gray-600 dark:text-white/50 leading-none)
+  [&_.field-description]:(mt-1 mb-1 text-xs text-gray-600 dark:text-white/50 leading-tight)
   [&.hide-help_.field-description]:(hidden)
   [&_[type="submit"]]:(bg-upstart-600 text-white py-1 px-4 block w-full rounded mt-6)
   [&_input[type="text"]]:(w-full mt-1 px-1.5 py-1.5 text-sm border border-gray-300 dark:border-transparent dark:bg-dark-800 rounded-md focus:ring-1 focus:border-upstart-500 focus:ring-upstart-500)

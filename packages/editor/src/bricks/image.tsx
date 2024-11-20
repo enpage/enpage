@@ -5,7 +5,8 @@ import { tx, apply } from "@enpage/style-system/twind";
 import { commonProps } from "./props/common";
 import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
-import { useBrickStyle } from "./hooks/use-brick-style";
+import { useBrickStyle } from "../hooks/use-brick-style";
+import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
@@ -15,8 +16,22 @@ export const manifest = defineBrickManifest({
   kind: "brick",
   title: "Image",
   description: "An image brick",
-  preferredW: 4,
-  preferredH: 8,
+  preferredWidth: {
+    mobile: LAYOUT_COLS.mobile / 2,
+    desktop: LAYOUT_COLS.desktop / 4,
+  },
+  preferredHeight: {
+    mobile: 6,
+    desktop: 6,
+  },
+  minWidth: {
+    mobile: 3,
+    desktop: 3,
+  },
+  minHeight: {
+    mobile: 3,
+    desktop: 3,
+  },
   // svg icon for "image" block
   icon: `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -56,7 +71,12 @@ const Image = forwardRef<HTMLImageElement, Manifest["props"] & ComponentProps<"i
 
   return (
     <div className={tx(apply("flex items-center justify-center h-full w-full"), className)}>
-      <img src={src} ref={ref} alt={alt} className={tx(apply("max-h-full min-w-1 min-h-1 brick-content"))} />
+      <img
+        src={src}
+        ref={ref}
+        alt={alt}
+        className={tx(apply("max-h-full min-w-1 min-h-1 brick-content select-none pointer-events-none"))}
+      />
     </div>
   );
 });
