@@ -112,7 +112,6 @@ export const createEditorStore = (
             deselectBrick: (brickId) =>
               set((state) => {
                 if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
-                  console.log("updated selected brick to nothing");
                   state.selectedBrick = undefined;
                   if (state.panel === "inspector") {
                     state.panel = undefined;

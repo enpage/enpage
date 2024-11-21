@@ -140,6 +140,7 @@ export default function EditablePage() {
         !target.closest("[data-radix-popper-content-wrapper]") &&
         !target.closest("[data-radix-select-viewport]") &&
         !target.closest("#floating-panel") &&
+        !target.closest('[role="dialog"]') &&
         !target.closest('[role="toolbar"]') &&
         !target.closest('[role="navigation"]') &&
         !target.matches("html") &&

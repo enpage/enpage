@@ -136,7 +136,7 @@ function Panel({ className, ...props }: PanelProps) {
       {editor.panel === "inspector" && <Inspector />}
       {editor.panel === "theme" && <ThemePanel />}
       {editor.panel === "settings" && <SettingsPanel />}
-      {editor.modal === "image-search" && <ModalSearchImage />}
+      {/* {editor.modal === "image-search" && <ModalSearchImage />} */}
     </aside>
   );
 }
