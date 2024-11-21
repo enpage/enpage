@@ -10,7 +10,7 @@ in creating templates that are responsive, accessible, and easy to customize and
 
 ## Get your Enpage website
 
-Visit [https://enpage.co](https://enpage.co) to try the Enpage Editor and create your own website for free.
+Visit [https://enpage.co](https://enpage.co) to try the Upstart Editor and create your own website for free.
 
 
 ## Develop templates for Enpage

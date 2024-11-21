@@ -32,6 +32,11 @@ if (!isProduction) {
   app.use(base, sirv("./dist/client", { extensions: [] }));
 }
 
+// Local image search for testing
+app.get("/api/v1/search-image", (req, res) => {
+  res.json({ message: "Hello from search image" });
+});
+
 // Serve HTML
 app.use("*", async (req, res) => {
   try {

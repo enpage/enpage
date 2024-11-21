@@ -42,7 +42,7 @@
   "globalAttributes": [
     {
       "name": "ep-label",
-      "description": "Label for the element to appear in the Enpage editor when element is selected."
+      "description": "Label for the element to appear in the Upstart Editor when element is selected."
     },
     {
       "name": "ep-container",

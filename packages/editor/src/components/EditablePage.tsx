@@ -5,7 +5,7 @@ import BrickWrapper from "./EditableBrick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
-import { adjustMobileLayout, canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
+import { canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/hooks/use-draggable";
 import { debounce } from "lodash-es";
@@ -113,8 +113,6 @@ export default function EditablePage() {
       }
     }, 250);
 
-    console.debug("updating cell width");
-
     updateCellWidth();
 
     // mutation oberver for the page container styles
@@ -193,7 +191,7 @@ export default function EditablePage() {
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
           .map((brick) => (
-            <BrickWrapper key={brick.id} brick={brick}>
+            <BrickWrapper key={`${editor.previewMode}-${brick.id}`} brick={brick}>
               <ResizeHandle direction="s" />
               <ResizeHandle direction="n" />
               <ResizeHandle direction="w" />

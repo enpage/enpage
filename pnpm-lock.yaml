@@ -110,6 +110,9 @@ importers:
 
   packages/editor:
     dependencies:
+      '@date-fns/utc':
+        specifier: 1.2.0
+        version: 1.2.0
       '@enpage/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -173,6 +176,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.3
         version: 4.3.3(vite@5.4.10)
+      date-fns:
+        specifier: 3.6.0
+        version: 3.6.0
       dompurify:
         specifier: 3.2.1
         version: 3.2.1

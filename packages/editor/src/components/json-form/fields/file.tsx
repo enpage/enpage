@@ -1,9 +1,11 @@
 import type { FieldProps } from "@rjsf/utils";
 import { nanoid } from "nanoid";
 import { Button, Text } from "@enpage/style-system";
+import { useEditor } from "~/hooks/use-editor";
 
 const FileField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, id = nanoid(7), idSchema } = props;
+  const editor = useEditor();
 
   // Extract field-level properties
   const fieldTitle = schema.title || uiSchema?.["ui:title"];
@@ -28,19 +30,27 @@ const FileField: React.FC<FieldProps> = (props) => {
           onChange={(e) => onChange(e.target.files)}
           required={required}
         />
-
         <Button variant="soft" size="1" radius="full">
           <label
             className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]"
             htmlFor={id}
           >
-            Choose file
+            Upload
           </label>
         </Button>
       </p>
-      {uiSchema?.["ui:show-img-search"] && (
+      {uiSchema?.["ui:allow-url"] && (
         <p>
           <Button variant="soft" size="1" radius="full">
+            <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
+              URL
+            </label>
+          </Button>
+        </p>
+      )}
+      {uiSchema?.["ui:show-img-search"] && (
+        <p>
+          <Button variant="soft" size="1" radius="full" onClick={() => editor.showModal("image-search")}>
             <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
               Search
             </label>

@@ -29,7 +29,7 @@ Templates are the foundation of websites created on the Enpage platform. They ar
   <div>
     <h2>SEO friendly</h2>
     <p class="text-pretty">
-      Enpage templates are designed to be SEO-friendly, optimized for search engines to improve website visibility in search results. Even with dynamic data sources, Enpage ensures optimization by rendering templates server-side. During development or within the Enpage Editor, templates are partially rendered client-side to facilitate live editing and previewing.
+      Enpage templates are designed to be SEO-friendly, optimized for search engines to improve website visibility in search results. Even with dynamic data sources, Enpage ensures optimization by rendering templates server-side. During development or within the Upstart Editor, templates are partially rendered client-side to facilitate live editing and previewing.
     </p>
   </div>
 </div>

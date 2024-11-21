@@ -49,6 +49,7 @@ export const manifest = defineBrickManifest({
         "ui:field": "file",
         "ui:accept": "image/*",
         "ui:show-img-search": true,
+        "ui:allow-url": true,
       }),
       alt: Type.String({
         title: "Alternate Text",

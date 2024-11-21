@@ -38,21 +38,21 @@ export function useBrickWrapperStyle({
       "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
         editable,
     },
+    // Warning: those 2 rules blocks are pretty sensible!
     `@desktop:(
         col-start-${brick.position.desktop.x + 1}
         col-span-${brick.position.desktop.w}
         row-start-${brick.position.desktop.y + 1}
         row-span-${brick.position.desktop.h}
+        h-auto
       )
-
       @mobile:(
         col-start-${brick.position.mobile.x + 1}
         col-span-${brick.position.mobile.w}
         row-start-${brick.position.mobile.y + 1}
         row-span-${brick.position.mobile.manualHeight ?? brick.position.mobile.h}
+        ${brick.position.mobile.manualHeight ? `h-[${brick.position.mobile.manualHeight * LAYOUT_ROW_HEIGHT}px]` : ""}
       )`,
-    brick.position.mobile.manualHeight &&
-      css({ height: `${brick.position.mobile.manualHeight * LAYOUT_ROW_HEIGHT}px` }),
 
     editable &&
       css({

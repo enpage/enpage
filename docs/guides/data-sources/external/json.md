@@ -8,7 +8,7 @@ The `json` data source can be used to fetch data from a JSON endpoint/API.
 
 > [!TIP]
 > You can reference the attributes of the template in the the `url` and `headers` properties.
-This way, you can pass dynamic values to your API and have the site owner configure them in the Enpage Editor.
+This way, you can pass dynamic values to your API and have the site owner configure them in the Upstart Editor.
 Use the notation <code v-pre>{{ attr.attributeName }}</code> to reference an attribute.
 
 ```javascript

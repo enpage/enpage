@@ -13,7 +13,7 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 export const datasources = defineDataSources({
   // Define a data source named "mymedia" using the "threads-media" provider
   mymedia: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "Threads Media",
     // use the "threads-media" provider
     provider: "threads-media",

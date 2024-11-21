@@ -6,7 +6,7 @@ We can distinguish 3 rendering environments:
 
 - **Template dev environment**: This is the rending mode for template developers/designers. In this environment, the template is rendered client-side.
 
-- **Editor environment**: This is the rendering mode for the Enpage editor. In this environment, the template is rendered client-side.
+- **Editor environment**: This is the rendering mode for the Upstart Editor. In this environment, the template is rendered client-side.
 
 - **Production environment**: This is the environment where a website is built. In this environment, the template is rendered server-side, generating static HTML.
 
