@@ -1,4 +1,4 @@
-import { useAttributes, useAttributesSchema, useDraft, usePreviewMode } from "../hooks/use-editor";
+import { useAttributes, useAttributesSchema, useDraft } from "../hooks/use-editor";
 import { sortJsonSchemaProperties } from "../utils/sort-json-schema-props";
 import Form, { type IChangeEvent } from "@rjsf/core";
 import { css, tx } from "@enpage/style-system/twind";

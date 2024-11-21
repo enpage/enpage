@@ -62,7 +62,7 @@ If you can't find a suitable category, you can suggest a new one or use the "Oth
 
 ### Readme file
 
-You can include a `README.enpage.md` file with your template. This file will be displayed on the template page in the Enpage Editor. If you don't include a `README.enpage.md` file, the Enpage Editor will display a default message. The `README.enpage.md` file should be written in Markdown format and in English. If you want to provide translations, you can include additional `README.enpage.<lang>.md` files, where `<lang>` is the language code (e.g., `README.enpage.fr.md` for French).
+You can include a `README.enpage.md` file with your template. This file will be displayed on the template page in the Upstart Editor. If you don't include a `README.enpage.md` file, the Upstart Editor will display a default message. The `README.enpage.md` file should be written in Markdown format and in English. If you want to provide translations, you can include additional `README.enpage.<lang>.md` files, where `<lang>` is the language code (e.g., `README.enpage.fr.md` for French).
 
 ### Premium templates
 

@@ -13,12 +13,12 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 export const datasources = defineDataSources({
   // Define a data source named "mylinks" using the "links" provider
   mylinks: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "Links",
     // use the built-in "links" provider
     provider: "links",
     // Sample data that will be used during development
-    // or when the template is first loaded in the Enpage Editor
+    // or when the template is first loaded in the Upstart Editor
     sampleData: [
       { title: "Enpage", url: "https://enpage.co" },
       { title: "Google", url: "https://google.com" },

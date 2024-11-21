@@ -15,7 +15,7 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 // in the template as a list of videos
 export const datasources = defineDataSources({
   mainVideo: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "Homepage Video",
     // use the built-in youtube-video provider
     provider: "youtube-video"
@@ -38,7 +38,7 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 // in the template as a list of videos
 export const datasources = defineDataSources({
   videos: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "My Videos",
     // use the built-in youtube-playlist provider
     provider: "youtube-playlist"

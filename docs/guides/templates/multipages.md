@@ -4,7 +4,7 @@ Enpage templates are reasonably simple, and focused on a single page.
 
 However, you can create a multi-pages-like experience by using multiple `<section>` elements in your `index.html` file, each of them representing a different page. This opens up the possibility to create a more complex websites with (simulated) multiple pages.
 
-Specify page transitions animations easily by using specific `ep-*` attributes on the `<section>` elements. Animations can then be customized in the Enpage Editor by the site owner.
+Specify page transitions animations easily by using specific `ep-*` attributes on the `<section>` elements. Animations can then be customized in the Upstart Editor by the site owner.
 
 ## Example
 

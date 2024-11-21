@@ -78,7 +78,7 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 // in the template as a list of links
 export const datasources = defineDataSources({
   links: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "Links",
     // Schema of the data source (using zod)
     schema: z.array(
@@ -89,7 +89,7 @@ export const datasources = defineDataSources({
       }),
     ),
     // Sample data that will be used during development
-    // or when first loaded in the Enpage Editor
+    // or when first loaded in the Upstart Editor
     sampleData: [
       { title: "Enpage", url: "https://enpage.co" },
       { title: "Google", url: "https://google.com" },

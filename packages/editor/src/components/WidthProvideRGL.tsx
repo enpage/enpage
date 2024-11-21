@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ComponentType, type RefObject } from "react";
+import { useEffect, useState, type ComponentType, type RefObject } from "react";
 
 // More specific type for the inner ref
 interface WithInnerRef {

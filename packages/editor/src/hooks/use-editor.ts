@@ -40,6 +40,7 @@ export interface EditorStateProps {
   isEditingTextForBrickId?: string;
   shouldShowGrid?: boolean;
   panel?: "library" | "inspector" | "theme" | "settings";
+  modal?: "image-search" | "datasources";
   panelPosition: "left" | "right";
   /**
    * Latest used color adjustment
@@ -62,6 +63,8 @@ export interface EditorState extends EditorStateProps {
   setShouldShowGrid: (show: boolean) => void;
   setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
   togglePanelPosition: () => void;
+  showModal: (modal: EditorStateProps["modal"]) => void;
+  hideModal: () => void;
 }
 
 export const createEditorStore = (
@@ -82,14 +85,17 @@ export const createEditorStore = (
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
             setPreviewMode: (mode) =>
               set((state) => {
                 state.previewMode = mode;
               }),
+
             setSettingsVisible: (visible) =>
               set((state) => {
                 state.settingsVisible = visible;
               }),
+
             toggleSettings: () =>
               set((state) => {
                 state.settingsVisible = !state.settingsVisible;
@@ -102,16 +108,17 @@ export const createEditorStore = (
                   state.panel = "inspector";
                 }
               }),
+
             deselectBrick: (brickId) =>
               set((state) => {
                 if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
-                  console.log("updated selected brick to nothing");
                   state.selectedBrick = undefined;
                   if (state.panel === "inspector") {
                     state.panel = undefined;
                   }
                 }
               }),
+
             setIsEditingText: (forBrickId: string | false) =>
               set((state) => {
                 state.isEditingTextForBrickId = forBrickId || undefined;
@@ -121,35 +128,52 @@ export const createEditorStore = (
               set((state) => {
                 state.panel = panel;
               }),
+
             togglePanel: (panel) =>
               set((state) => {
                 state.panel = state.panel === panel ? undefined : panel;
               }),
+
             hidePanel: (panel) =>
               set((state) => {
                 if (state.panel === panel) {
                   state.panel = undefined;
                 }
               }),
+
             setDraggingBrick: (draggingBrick) =>
               set((state) => {
                 state.draggingBrick = draggingBrick;
               }),
+
             setSelectedGroup: (group) =>
               set((state) => {
                 state.selectedGroup = group;
               }),
+
             setShouldShowGrid: (show) =>
               set((state) => {
                 state.shouldShowGrid = show;
               }),
+
             setColorAdjustment: (colorAdjustment) =>
               set((state) => {
                 state.colorAdjustment = colorAdjustment;
               }),
+
             togglePanelPosition: () =>
               set((state) => {
                 state.panelPosition = state.panelPosition === "left" ? "right" : "left";
+              }),
+
+            showModal: (modal) =>
+              set((state) => {
+                state.modal = modal;
+              }),
+
+            hideModal: () =>
+              set((state) => {
+                state.modal = undefined;
               }),
           })),
           {
@@ -189,6 +213,8 @@ export interface DraftStateProps {
   theme: Theme;
   previewTheme?: Theme;
   version?: string;
+  lastSaved?: Date;
+  dirty?: boolean;
   /**
    * When local, the editor does not fetch data from the server or save data to the server
    * It is used when the user is not logged in yet or does not have an account yet
@@ -198,14 +224,13 @@ export interface DraftStateProps {
 
 export interface DraftState extends DraftStateProps {
   setBricks: (bricks: Brick[]) => void;
-  getBricks: () => Brick[];
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
   addBrick: (brick: Brick) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
-  updateBrickPosition: (id: string, bp: keyof Brick["position"], position: BrickPosition) => void;
+  updateBrickPosition: (id: string, bp: keyof Brick["position"], position: Partial<BrickPosition>) => void;
   updateBricksPositions: (bp: keyof Brick["position"], positions: Record<string, BrickPosition>) => void;
   toggleBrickVisibilityPerBreakpoint: (id: string, breakpoint: keyof Brick["position"]) => void;
   setPreviewTheme: (theme: Theme) => void;
@@ -213,7 +238,8 @@ export interface DraftState extends DraftStateProps {
   validatePreviewTheme: () => void;
   cancelPreviewTheme: () => void;
   updateAttributes: (attr: AttributesResolved) => void;
-  save(): Promise<void>;
+  setLastSaved: (date: Date) => void;
+  setDirty: (dirty: boolean) => void;
   setVersion(version: string): void;
   adjustMobileLayout(): void;
   // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
@@ -246,15 +272,18 @@ export const createDraftStore = (
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
             setBricks: (bricks) =>
               set((state) => {
                 state.bricks = bricks;
               }),
+
             deleteBrick: (id) =>
               set((state) => {
                 const brickIndex = state.bricks.findIndex((item) => item.id === id);
                 state.bricks.splice(brickIndex, 1);
               }),
+
             duplicateBrick: (id) =>
               set((state) => {
                 const brick = state.bricks.find((item) => item.id === id);
@@ -267,22 +296,19 @@ export const createDraftStore = (
                   state.bricks.push(newBrick);
                 }
               }),
+
             updateBrick: (id, brick) =>
               set((state) => {
                 const brickIndex = state.bricks.findIndex((item) => item.id === id);
                 state.bricks[brickIndex] = { ...state.bricks[brickIndex], ...brick };
               }),
+
             updateBrickProps: (id, props) =>
               set((state) => {
                 const brickIndex = _get().bricks.findIndex((item) => item.id === id);
                 state.bricks[brickIndex].props = { ...state.bricks[brickIndex].props, ...props };
               }),
 
-            getBricks: () => _get().bricks,
-
-            save: async () => {
-              //todo: call API
-            },
             getBrick: (id) => {
               return _get().bricks.find((b) => b.id === id);
             },
@@ -290,6 +316,7 @@ export const createDraftStore = (
               set((state) => {
                 state.previewTheme = theme;
               }),
+
             validatePreviewTheme: () =>
               set((state) => {
                 if (state.previewTheme) {
@@ -297,14 +324,17 @@ export const createDraftStore = (
                 }
                 state.previewTheme = undefined;
               }),
+
             cancelPreviewTheme: () =>
               set((state) => {
                 state.previewTheme = undefined;
               }),
+
             setTheme: (theme) =>
               set((state) => {
                 state.theme = theme;
               }),
+
             updateBricksPositions: (bp, positions) =>
               set((state) => {
                 state.bricks.forEach((b) => {
@@ -313,22 +343,26 @@ export const createDraftStore = (
                   }
                 });
               }),
+
             updateBrickPosition: (id, bp, position) =>
               set((state) => {
                 const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex].position[bp] = position;
+                Object.assign(state.bricks[brickIndex].position[bp], position);
               }),
+
             toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
               set((state) => {
                 const brickIndex = state.bricks.findIndex((item) => item.id === id);
                 state.bricks[brickIndex].position[breakpoint]!.hidden =
                   !state.bricks[brickIndex].position[breakpoint]?.hidden;
               }),
+
             addBrick: (brick) =>
               set((state) => {
                 console.log("Adding brick", brick);
                 state.bricks.push(brick);
               }),
+
             updateAttributes: (attr) =>
               set((state) => {
                 state.attr = attr;
@@ -338,9 +372,20 @@ export const createDraftStore = (
               set((state) => {
                 state.version = version;
               }),
+
             adjustMobileLayout: () =>
               set((state) => {
                 state.bricks = adjustMobileLayout(state.bricks);
+              }),
+
+            setLastSaved: (date) =>
+              set((state) => {
+                state.lastSaved = date;
+              }),
+
+            setDirty: (dirty) =>
+              set((state) => {
+                state.dirty = dirty;
               }),
           })),
           {
@@ -348,7 +393,9 @@ export const createDraftStore = (
             skipHydration: initProps.mode === "remote",
             partialize: (state) =>
               Object.fromEntries(
-                Object.entries(state).filter(([key]) => !["previewTheme", "attrSchema"].includes(key)),
+                Object.entries(state).filter(
+                  ([key]) => !["previewTheme", "attrSchema", "lastSaved"].includes(key),
+                ),
               ),
           },
         ),
@@ -356,10 +403,15 @@ export const createDraftStore = (
           // limit undo history to 100
           limit: 100,
           equality: (pastState, currentState) => isEqual(pastState, currentState),
+          partialize: (state) =>
+            Object.fromEntries(
+              Object.entries(state).filter(
+                ([key]) => !["previewTheme", "attrSchema", "lastSaved"].includes(key),
+              ),
+            ) as DraftState,
           handleSet: (handleSet) =>
             debounce<typeof handleSet>((state) => {
               if (state) {
-                console.info("handleSet called", state);
                 handleSet(state);
               }
             }, 200),
@@ -447,6 +499,11 @@ export const useGetBrick = () => {
 export function usePageVersion() {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.version);
+}
+
+export function useLastSaved() {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.lastSaved);
 }
 
 export const useAttributes = () => {

@@ -1,15 +1,4 @@
-import {
-  useDraft,
-  useEditor,
-  useBricksSubscribe,
-  useAttributesSubscribe,
-  usePagePathSubscribe,
-  useThemeSubscribe,
-  usePageConfig,
-  useEditorMode,
-  useAttributes,
-  usePreviewMode,
-} from "../hooks/use-editor";
+import { useDraft, useEditor, useAttributes, usePreviewMode } from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { useEffect, useRef, type ComponentProps } from "react";
@@ -17,12 +6,12 @@ import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import EditablePage from "./EditablePage";
-import { tx, injectGlobal, css, colors } from "@enpage/style-system/twind";
-import { Button, AlertDialog, Flex, Portal } from "@enpage/style-system";
+import { tx, injectGlobal, css } from "@enpage/style-system/twind";
+import { Button } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
-import { patch } from "../utils/api";
 import { isStandardColor, generateColorsVars } from "@enpage/sdk/shared/themes/color-system";
+import { usePageAutoSave } from "~/hooks/use-page-autosave";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -32,41 +21,9 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
   const previewMode = usePreviewMode();
-  const editorMode = useEditorMode();
-  const pageConfig = usePageConfig();
   const attributes = useAttributes();
 
-  function updatePage(payload: Record<string, unknown>) {
-    if (editorMode === "local") {
-      return;
-    }
-    return patch(`/sites/${pageConfig.siteId}/pages/${pageConfig.id}/versions/latest`, payload)
-      .then((res) => {
-        console.log("Page version saved");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.error("Error while updating page version");
-        console.log(err);
-      });
-  }
-
-  useBricksSubscribe(async (bricks) => {
-    console.debug("Bricks have changed, updating page version");
-    updatePage({ elements: bricks });
-  });
-  useAttributesSubscribe((attributes) => {
-    console.debug("Attributes have changed, updating page version");
-    updatePage({ attributes });
-  });
-  usePagePathSubscribe((path) => {
-    console.debug("pagePath has changed, updating page version");
-    updatePage({ path });
-  });
-  useThemeSubscribe((theme) => {
-    console.debug("theme has changed, updating page version");
-    updatePage({ theme });
-  });
+  usePageAutoSave();
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
@@ -174,10 +131,11 @@ function Panel({ className, ...props }: PanelProps) {
       )}
       {...props}
     >
-      {editor.panel === "library" && <BlocksLibrary />}
+      {editor.previewMode === "desktop" && editor.panel === "library" && <BlocksLibrary />}
       {editor.panel === "inspector" && <Inspector />}
       {editor.panel === "theme" && <ThemePanel />}
       {editor.panel === "settings" && <SettingsPanel />}
+      {/* {editor.modal === "image-search" && <ModalSearchImage />} */}
     </aside>
   );
 }

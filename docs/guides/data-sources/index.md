@@ -3,11 +3,11 @@
 Data sources are a way to provide dynamic content to your templates.
 
 Data Sources are defined in the `enpage.config.js` file using the `defineDataSources()` function.
-All data sources have a schema associated with them. This schema is used to validate data and provide a better editing experience in the Enpage Editor.
+All data sources have a schema associated with them. This schema is used to validate data and provide a better editing experience in the Upstart Editor.
 
 We can distinguish 2 types of data sources:
 
-- **Internal**: Holds data that is managed and edited within the Enpage Editor by the site owner.
+- **Internal**: Holds data that is managed and edited within the Upstart Editor by the site owner.
 - **External**:  Holds data that comes from external sources, such as Social Media websites or APIs. They can be fetched manualy or refreshed automatically at a regular interval.
 
 Enpage provides a large number of built-in data sources that can be used with minimal configuration.
@@ -34,7 +34,7 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 export const datasources = defineDataSources({
   // Define a data source named "mylinks" using the "links" provider
   mylinks: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "Links",
     // use the built-in "links" provider
     provider: "links"
@@ -85,7 +85,7 @@ import { defineDataSources, ds } from "@enpage/sdk/datasources";
 // in the template as a list of links
 export const datasources = defineDataSources({
   people: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "People",
     // Schema of the data source
     schema: ds.Array(
@@ -96,7 +96,7 @@ export const datasources = defineDataSources({
       }),
     ),
     // Sample data that will be used during development
-    // or when the template is first loaded in the Enpage Editor
+    // or when the template is first loaded in the Upstart Editor
     sampleData: [
       { firstName: "John", lastName: "Doe", rank: 1 },
       { firstName: "Jane", lastName: "Smith", rank: 2 },
@@ -126,7 +126,7 @@ import { defineDataSources } from "@enpage/sdk/datasources";
 // in the template as a list of videos
 export const datasources = defineDataSources({
   videos: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "My Videos",
     // use the built-in youtube-feed provider
     provider: "youtube-feed"
@@ -148,7 +148,7 @@ import { defineDataSources, ds } from "@enpage/sdk/datasources";
 // in the template as a list of posts
 export const datasources = defineDataSources({
   posts: {
-    // Label of the data source that will be displayed in the Enpage Editor
+    // Label of the data source that will be displayed in the Upstart Editor
     name: "My Posts",
     provider: "json",
     options: {
@@ -162,7 +162,7 @@ export const datasources = defineDataSources({
     // (Optional) JSON schema of the data source (here declared using Typebox)
     // When providibg a schema, Enpage will validate the data
     // before using it in the template. If the data does not match
-    // the schema, an error will be displayed in the Enpage Editor.
+    // the schema, an error will be displayed in the Upstart Editor.
     // This is useful to prevent errors when the API changes.
     // So it's recommended to define the schema.
     schema: ds.Array(
@@ -179,5 +179,5 @@ export const datasources = defineDataSources({
 
 > [!TIP]
 > You can reference the attributes of the template in the the `url` and `headers` properties.
-This way, you can pass dynamic values to your API and have the site owner configure them in the Enpage Editor.
+This way, you can pass dynamic values to your API and have the site owner configure them in the Upstart Editor.
 Use the notation <code v-pre>{{ attr.attributeName }}</code> to reference an attribute.

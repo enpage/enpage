@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
 import { Select, ToggleGroup } from "@enpage/style-system";
 import { tx } from "@enpage/style-system/twind";
-import { useState, memo, useRef, forwardRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   MdFormatBold,
   MdFormatAlignCenter,

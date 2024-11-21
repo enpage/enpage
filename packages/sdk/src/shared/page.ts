@@ -1,7 +1,5 @@
 import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
 import { resolveAttributes, type AttributesResolved } from "./attributes";
-import type { Manifest } from "vite";
-import type { TemplateManifest } from "./manifest";
 import type { Brick } from "./bricks";
 import type { EnpageTemplateConfig } from "./template-config";
 import invariant from "./utils/invariant";
@@ -20,10 +18,33 @@ export type PageConfig<
   A extends EnpageTemplateConfig["attributes"],
   B extends Brick[],
 > = {
+  /**
+   * The page id.
+   */
   id: string;
   siteId: string;
+  /**
+   * Pathname to the page
+   */
   path: string;
+  /**
+   * Label of the page
+   */
+  label: string;
+  /**
+   * Hostname of the site
+   */
+  hostname: string;
 
+  /**
+   * Map of all pages in the site.
+   */
+  pagesMap: {
+    id: string;
+    label: string;
+    path: string;
+    tags: string[];
+  }[];
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -43,28 +64,9 @@ export type PageConfig<
    */
   attr: AttributesResolved;
   bricks: B;
-
-  ssrManifest?: Manifest;
-
-  /**
-   * Template manifest
-   */
-  manifest: TemplateManifest;
 };
 
 export type GenericPageConfig = PageConfig<
-  DatasourceManifestMap,
-  EnpageTemplateConfig["attributes"],
-  Brick[]
->;
-
-export type PageContext<
-  D extends DatasourceManifestMap,
-  A extends EnpageTemplateConfig["attributes"],
-  B extends Brick[],
-> = Pick<PageConfig<D, A, B>, "data" | "attr" | "bricks">;
-
-export type GenericPageContext = PageContext<
   DatasourceManifestMap,
   EnpageTemplateConfig["attributes"],
   Brick[]
@@ -77,14 +79,15 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageT
   return {
     id: "page-1",
     siteId: "site-1",
+    hostname: "localhost",
+    label: "Page #1",
+    pagesMap: [],
     path,
     datasources: templateConfig.datasources,
     data: undefined,
     attributes: templateConfig.attributes,
     attr: resolveAttributes(templateConfig.attributes),
     bricks,
-    ssrManifest: {},
-    manifest: templateConfig.manifest,
   } satisfies GenericPageConfig;
 }
 

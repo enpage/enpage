@@ -32,6 +32,36 @@ if (!isProduction) {
   app.use(base, sirv("./dist/client", { extensions: [] }));
 }
 
+// Local image search for testing
+app.get("/api/v1/search-images", (req, res) => {
+  console.log("params", req.query);
+  if (req.query.orientation === "all") {
+    // biome-ignore lint/performance/noDelete: <explanation>
+    delete req.query.orientation;
+  }
+  const params = new URLSearchParams({
+    per_page: "20",
+    content_filter: "high",
+    ...req.query,
+  });
+  params.set("client_id", process.env.UNSPLASH_ACCESS_KEY);
+  fetch(`https://api.unsplash.com/search/photos?${params}`, {
+    headers: {
+      "Accept-Version": "v1",
+    },
+  })
+    .then(async (response) => {
+      const data = await response.json();
+      if (data.errors) {
+        return res.json({ error: data.errors[0] });
+      }
+      res.json(data);
+    })
+    .catch((error) => {
+      res.json({ error });
+    });
+});
+
 // Serve HTML
 app.use("*", async (req, res) => {
   try {

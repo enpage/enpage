@@ -2,7 +2,7 @@
 
 Template attributes are used to let **site owners** customize the appearance or behavior of your template.
 
-**You** are responsible — as a developer / designer — for defining the attributes you want to expose *to the site owner*. The site owner can then set the values of these attributes within the Enpage editor.
+**You** are responsible — as a developer / designer — for defining the attributes you want to expose *to the site owner*. The site owner can then set the values of these attributes within the Upstart Editor.
 
 Here is an example of how to define settings in your template:
 
@@ -166,7 +166,7 @@ Enpage defines a set of built-in attributes. Built-in attributes names start wit
 ### List of built-in attributes
 
 ::: tip Note
-- You don't need to define these attributes in your template. They are automatically populated by Enpage or the site owner through the Enpage editor.
+- You don't need to define these attributes in your template. They are automatically populated by Enpage or the site owner through the Upstart Editor.
 - Most of these attributes are automatically used to build meta-tags. <ins>You don't need</ins> to add those meta-tags manually.
 :::
 

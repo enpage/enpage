@@ -1,7 +1,7 @@
 import { type ComponentProps, useEffect, useRef, useState } from "react";
-import styles from "./Preview.module.css";
 import { usePreviewMode } from "~/hooks/use-editor";
 import { tx, css } from "@enpage/style-system/twind";
+import styles from "./Preview.module.css";
 
 export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
   const ref = useRef<HTMLDivElement>(null);

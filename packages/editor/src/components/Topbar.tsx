@@ -1,38 +1,36 @@
 import { LuUndo, LuRedo } from "react-icons/lu";
 import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
-import { BsTablet } from "react-icons/bs";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { type MouseEvent, type PropsWithChildren, useCallback, useMemo, useState } from "react";
 import {
   useDraftUndoManager,
   useEditor,
   usePagesInfo,
   useEditorMode,
   usePageVersion,
+  useLastSaved,
 } from "~/hooks/use-editor";
 import { tx, css } from "@enpage/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { DropdownMenu, TextField, Popover, AlertDialog, Button, Flex, Portal } from "@enpage/style-system";
-import { post } from "~/utils/api";
+import { DropdownMenu, TextField, Popover, AlertDialog, Button, Flex } from "@enpage/style-system";
+import { post } from "~/utils/api/base-api";
 import { IoIosSave } from "react-icons/io";
+import { formatDistance } from "date-fns";
 
 export default function TopBar() {
   const editor = useEditor();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
+  const lastSaved = useLastSaved();
   const pages = usePagesInfo();
   const [showSaveAlert, setShowSaveAlert] = useState(false);
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
-
-  useEffect(() => {
-    console.log({ pastStates, futureStates });
-  }, [pastStates, futureStates]);
 
   const publish = useCallback(() => {
     post(
@@ -61,8 +59,9 @@ export default function TopBar() {
   const btnWithArrow = "cursor-default !aspect-auto";
 
   const btnClass = `flex items-center justify-center py-3 gap-x-0.5 px-3.5  group relative
-  focus-visible:outline-none
-  disabled:hover:cursor-default aspect-square`;
+  focus-visible:outline-none disabled:hover:cursor-default `;
+
+  const squareBtn = "aspect-square";
 
   const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/80 top-[calc(100%+.5rem)]
     rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-y-1.5
@@ -143,16 +142,21 @@ export default function TopBar() {
             undo();
           }}
           type="button"
-          className={tx(btnClass, commonCls, "ml-auto")}
+          className={tx(btnClass, commonCls, squareBtn, "ml-auto")}
         >
           <LuUndo className="h-7 w-auto" />
           <span className={tx(tooltipCls)}>Undo</span>
         </button>
-        <button disabled={!canRedo} onClick={() => redo()} type="button" className={tx(btnClass, commonCls)}>
+        <button
+          disabled={!canRedo}
+          onClick={() => redo()}
+          type="button"
+          className={tx(btnClass, squareBtn, commonCls)}
+        >
           <LuRedo className="h-7 w-auto" />
           <span className={tx(tooltipCls)}>Redo</span>
         </button>
-        <button type="button" className={tx(btnClass, commonCls)} onClick={switchPreviewMode}>
+        <button type="button" className={tx(btnClass, squareBtn, commonCls)} onClick={switchPreviewMode}>
           {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
           {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
           <span className={tx(tooltipCls)}>Switch View</span>
@@ -174,7 +178,7 @@ export default function TopBar() {
               })),
             ]}
           >
-            <button type="button" className={tx(btnClass, commonCls, btnWithArrow)}>
+            <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
               <VscCopy className="h-7 w-auto" />
               <span className={tx(tooltipCls)}>Pages</span>
               <RiArrowDownSLine className={tx(arrowClass)} />
@@ -183,6 +187,16 @@ export default function TopBar() {
         )}
 
         <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
+
+        <div className={tx(btnClass, baseCls, "border-x border-l-upstart-400 border-r-upstart-700 px-8")}>
+          {lastSaved ? (
+            <div className={tx("text-sm")}>
+              Last saved {formatDistance(lastSaved, new Date(), { addSuffix: true })}
+            </div>
+          ) : (
+            <div className={tx("text-sm")}>No saved yet</div>
+          )}
+        </div>
 
         {editorMode === "remote" ? (
           <TopbarMenu

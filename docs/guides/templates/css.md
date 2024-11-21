@@ -58,7 +58,7 @@ Make sure to use relatives paths when referencing CSS files in your HTML.
 
 ## Customization
 
-The Enpage Editor allows users to customize the template by changing colors, fonts, and other styles.
+The Upstart Editor allows users to customize the template by changing colors, fonts, and other styles.
 
 By default, the following properties are customizable by the site owner:
 
@@ -119,7 +119,7 @@ Simply use the `ep-component` attribute to define a pseudo component.
 
 :::
 
-When encountering a pseudo component in the Enpage Editor, the site owner will be able to customize the styles of all elements with the same `ep-component` attribute at once.
+When encountering a pseudo component in the Upstart Editor, the site owner will be able to customize the styles of all elements with the same `ep-component` attribute at once.
 
 ## General styling guidelines
 
