@@ -29,10 +29,6 @@ type AttributeOptions<T extends Record<string, unknown>> = {
 
 type GeoPoint = { lat: number; lng: number; name?: string };
 
-type AttributesMap = {
-  [key: string]: TAny;
-};
-
 export function defineAttributes(attrs: TProperties) {
   // Attributes starting with "$" are reserved for internal use
   for (const key in attrs) {

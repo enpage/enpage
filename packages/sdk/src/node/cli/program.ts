@@ -3,9 +3,7 @@ import { program, type Command, type OptionValues } from "commander";
 import type { BuildOptions, CommonOptions } from "./types";
 import { publish } from "./commands/publish/cmd-publish";
 import { login } from "./commands/login/cmd-login";
-import { preview } from "./commands/preview/cmd-preview";
 import { buildTemplate } from "./commands/build/cmd-build";
-import { startDevServer } from "./commands/dev/cmd-dev";
 import { createLogger, type Logger } from "../shared/logger";
 import { logout } from "./commands/logout/cmd-logout";
 
@@ -33,13 +31,6 @@ program
   });
 
 program
-  .command("dev")
-  .description("Start Enpage development server")
-  .action(function (this: Command) {
-    startDevServer(getArgsOptionsObject(this));
-  });
-
-program
   .command("build")
   .description("Build template")
   .option(
@@ -63,13 +54,6 @@ program
 
   .action(function (this: Command) {
     publish(getArgsOptionsObject(this));
-  });
-
-program
-  .command("preview")
-  .description("Preview Enpage template using production-like server")
-  .action(function (this: Command) {
-    preview(getArgsOptionsObject(this));
   });
 
 program

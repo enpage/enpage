@@ -93,39 +93,5 @@ export default defineConfig((options) => {
       loader,
       removeNodeProtocol: false,
     },
-    {
-      entry: ["src/server/node/dev-server.ts"],
-      outDir: "dist/server/node",
-      target: "node18",
-      format: ["esm"],
-      dts: !options.watch,
-      clean: !options.watch,
-      minify: !options.watch,
-      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
-      sourcemap: options.watch ? "inline" : false,
-      splitting: false,
-      external,
-      esbuildOptions(input) {
-        input.banner = banner;
-      },
-      removeNodeProtocol: false,
-    },
-    {
-      entry: ["src/server/cloudflare/server.ts"],
-      outDir: "dist/server/cloudflare",
-      target: "es2020",
-      format: ["esm"],
-      dts: !options.watch,
-      splitting: false,
-      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
-      clean: !options.watch,
-      minify: !options.watch,
-      sourcemap: options.watch ? "inline" : false,
-      external,
-      esbuildOptions(input) {
-        input.banner = banner;
-      },
-      removeNodeProtocol: false,
-    },
   ];
 });

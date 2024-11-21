@@ -240,7 +240,7 @@ export async function uploadTemplate(
   // compute signatures
   for (const file of files) {
     const relativePath = path.relative(templateDir, file);
-    const md5 = await md5sum(file);
+    const md5 = await sha1sum(file);
     signatures[relativePath] = md5;
   }
 
@@ -312,17 +312,12 @@ export async function uploadTemplate(
   };
 }
 
-function md5sum(filePath: string): Promise<string> {
-  return new Promise((res, rej) => {
-    const hash = crypto.createHash("md5");
-    const rStream = fs.createReadStream(filePath);
-    rStream.on("data", (data) => {
-      hash.update(data);
-    });
-    rStream.on("end", () => {
-      res(hash.digest("hex"));
-    });
-  });
+async function sha1sum(filePath: string): Promise<string> {
+  const hash = await crypto.subtle.digest("SHA-1", fs.readFileSync(filePath));
+  // convert arrayBuffer to hex
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function generateUploadId(): string {

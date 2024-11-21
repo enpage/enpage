@@ -64,14 +64,6 @@ export const attributes = defineAttributes({
   testUrl: attr.url("Test URL", "https://enpage.co"),
 });
 
-// // template information
-// export const info = {
-//   name: "Example Template",
-//   description: "Description of the template",
-//   author: "John Doe",
-//   homepage: "https://enpage.co",
-// };
-
 // various settings
 export const manifest = defineManifest({
   author: "John Doe",
