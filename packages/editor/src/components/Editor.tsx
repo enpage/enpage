@@ -6,13 +6,12 @@ import Inspector from "./Inspector";
 import { DeviceFrame } from "./Preview";
 import BlocksLibrary from "./BricksLibrary";
 import EditablePage from "./EditablePage";
-import { tx, injectGlobal, css, colors } from "@enpage/style-system/twind";
-import { Button, AlertDialog, Flex, Portal } from "@enpage/style-system";
+import { tx, injectGlobal, css } from "@enpage/style-system/twind";
+import { Button } from "@enpage/style-system";
 import ThemePanel from "./ThemePanel";
 import SettingsPanel from "./SettingsPanel";
 import { isStandardColor, generateColorsVars } from "@enpage/sdk/shared/themes/color-system";
 import { usePageAutoSave } from "~/hooks/use-page-autosave";
-import ModalSearchImage from "./ModalSearchImage";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";

@@ -1,10 +1,9 @@
 import { LuUndo, LuRedo } from "react-icons/lu";
 import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
-import { BsTablet } from "react-icons/bs";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { type MouseEvent, type PropsWithChildren, useCallback, useMemo, useState } from "react";
 import {
   useDraftUndoManager,
   useEditor,
@@ -17,12 +16,10 @@ import { tx, css } from "@enpage/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { DropdownMenu, TextField, Popover, AlertDialog, Button, Flex, Portal } from "@enpage/style-system";
+import { DropdownMenu, TextField, Popover, AlertDialog, Button, Flex } from "@enpage/style-system";
 import { post } from "~/utils/api/base-api";
 import { IoIosSave } from "react-icons/io";
 import { formatDistance } from "date-fns";
-import { UTCDate } from "@date-fns/utc";
-import { enUS, fr } from "date-fns/locale";
 
 export default function TopBar() {
   const editor = useEditor();
