@@ -72,6 +72,8 @@ export type GenericPageConfig = PageConfig<
   Brick[]
 >;
 
+export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
+
 export function createPageConfigSampleFromTemplateConfig(templateConfig: EnpageTemplateConfig, path = "/") {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigSampleFromTemplateConfig: No bricks found for path ${path}`);
