@@ -11,11 +11,11 @@ import {
   type ElementColorType,
   generateVariantClasses,
   type ElementColor,
-} from "@enpage/sdk/themes/color-system";
-import { tx } from "@enpage/style-system/twind";
-import { Button, TextField, Text, Select, Tabs, Inset } from "@enpage/style-system";
+} from "@upstart.gg/sdk/themes/color-system";
+import { tx } from "@upstart.gg/style-system/twind";
+import { Button, TextField, Text, Select, Tabs, Inset } from "@upstart.gg/style-system";
 import { useColorAdjustment, useEditor, useTheme } from "~/editor/hooks/use-editor";
-import invariant from "@enpage/sdk/shared/utils/invariant";
+import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 
 interface BaseColorPickerProps {
   colorType: ColorType;

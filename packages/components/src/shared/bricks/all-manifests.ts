@@ -29,7 +29,7 @@ import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from
 // widget countdown
 import { defaults as countdownDefaults, manifest as countdownManifest } from "./widget-countdown";
 
-import type { BrickManifest } from "@enpage/sdk/shared/bricks";
+import type { BrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";
 
 export const manifests: Record<string, BrickManifest> = {

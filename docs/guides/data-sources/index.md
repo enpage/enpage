@@ -29,7 +29,7 @@ template to display a list of links.
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "mylinks" using the "links" provider
@@ -79,7 +79,7 @@ See the [typebox documentation](https://github.com/sinclairzx81/typebox) for mor
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataSources, ds } from "@enpage/sdk/datasources";
+import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
 
 // Define an internal data source that will be used
 // in the template as a list of links
@@ -120,7 +120,7 @@ Enpage provides a large range of built-in External Data Sources that you can use
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 // Define an external data source that will be used
 // in the template as a list of videos
@@ -142,7 +142,7 @@ export const datasources = defineDataSources({
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataSources, ds } from "@enpage/sdk/datasources";
+import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
 
 // Define an external data source that will be used
 // in the template as a list of posts

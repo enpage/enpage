@@ -6,8 +6,8 @@ import { memoizeWithout } from "../utils/memoize-without";
 import { useEditableText } from "~/editor/hooks/use-editable-text";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { commonStyleProps } from "./props/style-props";
-import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
-import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
+import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
+import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;

@@ -7,7 +7,7 @@ Use the `csv` data source to fetch data from a CSV file.
 ### Add it to your `enpage.config.js` file
 
 ```javascript
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "products" using the "csv" provider

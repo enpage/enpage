@@ -1,8 +1,8 @@
-import { defineDataSources, ds } from "@enpage/sdk/datasources";
-import { defineAttributes, attr } from "@enpage/sdk/attributes";
-import { defineManifest } from "@enpage/sdk/manifest";
-import { createRow, defineBricks } from "@enpage/sdk/bricks";
-import { definePages } from "@enpage/sdk/page";
+import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
+import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
+import { defineManifest } from "@upstart.gg/sdk/manifest";
+import { createRow, defineBricks } from "@upstart.gg/sdk/bricks";
+import { definePages } from "@upstart.gg/sdk/page";
 
 // define your datasources
 export const datasources = defineDataSources({

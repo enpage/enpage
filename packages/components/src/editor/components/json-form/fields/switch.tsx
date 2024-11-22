@@ -1,5 +1,5 @@
 import type { FieldProps } from "@rjsf/utils";
-import { Switch } from "@enpage/style-system";
+import { Switch } from "@upstart.gg/style-system";
 
 const SwitchField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, idSchema } = props;

@@ -1,10 +1,10 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
-import { tx, apply } from "@enpage/style-system/twind";
+import { tx, apply } from "@upstart.gg/style-system/twind";
 import { commonProps } from "./props/common";
-import { defineBrickManifest } from "@enpage/sdk/shared/bricks";
-import { LAYOUT_COLS } from "@enpage/sdk/shared/layout-constants";
+import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
+import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
 // get filename from esm import.meta
 const filename = new URL(import.meta.url).pathname.split("/").pop() as string;

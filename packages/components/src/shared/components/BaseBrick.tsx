@@ -1,4 +1,4 @@
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { lazy, Suspense, type ComponentProps, type ComponentType, type LazyExoticComponent } from "react";
 
 const BrickText = lazy(() => import("../bricks/text"));

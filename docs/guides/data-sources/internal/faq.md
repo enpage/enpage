@@ -7,7 +7,7 @@ This built-in data source allows you to create a list of frequently asked questi
 ### Add it to your `enpage.config.js` file
 
 ```javascript
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "myfaq" using the "faq" provider

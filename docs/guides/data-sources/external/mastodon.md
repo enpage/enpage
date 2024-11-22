@@ -8,7 +8,7 @@ The Mastodon status data source allows you to fetch information about a Mastodon
 ### Add it to your `enpage.config.js` file
 
 ```javascript
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "mystatuses" using the "mastodon-statuses" provider

@@ -1,14 +1,14 @@
-import { tx, css } from "@enpage/style-system/twind";
+import { tx, css } from "@upstart.gg/style-system/twind";
 import { useDraft, useEditor } from "../hooks/use-editor";
 import { manifests } from "~/shared/bricks/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
-import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@enpage/style-system";
+import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@upstart.gg/style-system";
 import { BsStars } from "react-icons/bs";
 import { TbDragDrop } from "react-icons/tb";
 import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";
 import { forwardRef, useEffect, useRef, useState } from "react";
-import type { BrickManifest } from "@enpage/sdk/shared/bricks";
+import type { BrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import interact from "interactjs";

@@ -4,9 +4,9 @@ import Topbar from "./Topbar";
 import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
 import { DeviceFrame } from "./Preview";
 import EditablePage from "./EditablePage";
-import { tx, injectGlobal, css } from "@enpage/style-system/twind";
-import { Button } from "@enpage/style-system";
-import { isStandardColor, generateColorsVars } from "@enpage/sdk/shared/themes/color-system";
+import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
+import { Button } from "@upstart.gg/style-system";
+import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave } from "~/editor/hooks/use-page-autosave";
 
 type EditorProps = ComponentProps<"div"> & {

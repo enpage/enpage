@@ -1,14 +1,14 @@
 import type { FieldProps } from "@rjsf/utils";
-import { Button, Popover, Text } from "@enpage/style-system";
-import { tx, colors, css } from "@enpage/style-system/twind";
+import { Button, Popover, Text } from "@upstart.gg/style-system";
+import { tx, colors, css } from "@upstart.gg/style-system/twind";
 import transSvg from "./trans.svg?url";
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import {
   isStandardColor,
   type ColorType,
   type ElementColor,
   type ElementColorType,
-} from "@enpage/sdk/shared/themes/color-system";
+} from "@upstart.gg/sdk/shared/themes/color-system";
 import BaseColorPicker, { ElementColorPicker } from "~/editor/components/ColorPicker";
 
 const ColorField: React.FC<FieldProps> = (props) => {

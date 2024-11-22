@@ -24,9 +24,9 @@ program
     "-t, --template <template>",
     "Template to clone",
     // Default: Clone the latest tag of the template-example package
-    // Being in a monorepo, the latest tag is named "#@enpage/template-example@latest"
+    // Being in a monorepo, the latest tag is named "#@upstart.gg/template-example@latest"
     // Only retrieve the template package directory, not the whole monorepo
-    "enpage/enpage/packages/template-example#@enpage/template-example@latest",
+    "enpage/enpage/packages/template-example#@upstart.gg/template-example@latest",
   )
   .action(async (dir) => {
     const options = program.opts();

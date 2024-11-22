@@ -1,8 +1,8 @@
-import { css, tx } from "@enpage/style-system/twind";
-import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
-import { isStandardColor } from "@enpage/sdk/shared/themes/color-system";
-import type { AttributesResolved } from "@enpage/sdk/shared/attributes";
-import type { ResponsiveMode } from "@enpage/sdk/shared/responsive";
+import { css, tx } from "@upstart.gg/style-system/twind";
+import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
+import { isStandardColor } from "@upstart.gg/sdk/shared/themes/color-system";
+import type { AttributesResolved } from "@upstart.gg/sdk/shared/attributes";
+import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 
 export function usePageStyle({
   attributes,

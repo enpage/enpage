@@ -9,7 +9,7 @@ The Instagram data source allows you to fetch photos and videos from a public In
 Add the `instagram-feed` data source to your `enpage.config.js` file.
 
 ```javascript
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "myfeed" using the "instagram-feed" provider

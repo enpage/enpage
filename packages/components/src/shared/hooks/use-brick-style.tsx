@@ -1,10 +1,10 @@
-import { tx, apply, css } from "@enpage/style-system/twind";
+import { tx, apply, css } from "@upstart.gg/style-system/twind";
 import type { commonStyleProps, textStyleProps } from "../bricks/props/style-props";
 import type { commonProps } from "../bricks/props/common";
 import type { Static } from "@sinclair/typebox";
-import type { Brick } from "@enpage/sdk/shared/bricks";
-import { propToStyle } from "@enpage/sdk/shared/themes/color-system";
-import { LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
+import { propToStyle } from "@upstart.gg/sdk/shared/themes/color-system";
+import { LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
 
 /**
  * The classNames for the brick

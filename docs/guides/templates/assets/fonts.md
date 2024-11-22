@@ -8,7 +8,7 @@ Here is an example of how to add a font to your template:
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { useFonts } from "@enpage/sdk/fonts";
+import { useFonts } from "@upstart.gg/sdk/fonts";
 
 useFonts([
   {

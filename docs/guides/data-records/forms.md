@@ -45,7 +45,7 @@ while Enpage will take care of the form validation and submission.
 ```
 
 ```javascript [enpage.config.js]
-import { defineDataRecords } from "@enpage/sdk/datarecords";
+import { defineDataRecords } from "@upstart.gg/sdk/shared/datarecords";
 
 // Define an external data record that will be used
 // in the template to let users submit a contact form

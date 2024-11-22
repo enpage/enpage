@@ -8,7 +8,7 @@ Use the `threads-media` data source to fetch media from a Threads public account
 ### Add it to your `enpage.config.js` file
 
 ```javascript
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "mymedia" using the "threads-media" provider

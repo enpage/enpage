@@ -1,5 +1,5 @@
 import type { FieldProps } from "@rjsf/utils";
-import { tx } from "@enpage/style-system/twind";
+import { tx } from "@upstart.gg/style-system/twind";
 import { useEffect, useState } from "react";
 
 interface DimensionOption {

@@ -1,11 +1,11 @@
-import { css, tx } from "@enpage/style-system/twind";
+import { css, tx } from "@upstart.gg/style-system/twind";
 import { useEffect, useRef, useState } from "react";
-import { generateId, type Brick } from "@enpage/sdk/shared/bricks";
+import { generateId, type Brick } from "@upstart.gg/sdk/shared/bricks";
 import BrickWrapper from "./EditableBrick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
-import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@enpage/sdk/shared/layout-constants";
-import { canDropOnLayout } from "@enpage/sdk/shared/utils/layout-utils";
+import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
+import { canDropOnLayout } from "@upstart.gg/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/editor/hooks/use-draggable";
 import { debounce } from "lodash-es";

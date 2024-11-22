@@ -1,7 +1,7 @@
 import { useAttributes, useAttributesSchema, useDraft } from "../hooks/use-editor";
 import { sortJsonSchemaProperties } from "~/shared/utils/sort-json-schema-props";
 import Form, { type IChangeEvent } from "@rjsf/core";
-import { css, tx } from "@enpage/style-system/twind";
+import { css, tx } from "@upstart.gg/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import validator from "@rjsf/validator-ajv8";
 import { customFields } from "./json-form/fields";

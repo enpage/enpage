@@ -1,5 +1,5 @@
 {
-  "name": "@enpage/sdk",
+  "name": "@upstart.gg/sdk",
   "version": "0.0.50",
   "type": "module",
   "files": [
@@ -124,7 +124,7 @@
     "zustand": "4.5.5"
   },
   "peerDependencies": {
-    "@enpage/style-system": "workspace:*",
+    "@upstart.gg/style-system": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

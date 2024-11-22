@@ -1,8 +1,8 @@
-import { Dialog, TextField, Select, Button, Callout } from "@enpage/style-system";
+import { Dialog, TextField, Select, Button, Callout } from "@upstart.gg/style-system";
 import { useEditor } from "~/editor/hooks/use-editor";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { useState } from "react";
-import { css, tx } from "@enpage/style-system/twind";
+import { css, tx } from "@upstart.gg/style-system/twind";
 
 type Results = {
   total_pages: number;

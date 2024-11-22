@@ -9,7 +9,7 @@ Used to display a single video from Youtube.
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 // Define an external data source that will be used
 // in the template as a list of videos
@@ -32,7 +32,7 @@ Used to display a list of videos from a Youtube playlist.
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 // Define an external data source that will be used
 // in the template as a list of videos

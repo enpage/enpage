@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ComponentProps } from "react";
-import { ContextMenu } from "@enpage/style-system";
+import { ContextMenu } from "@upstart.gg/style-system";
 import { LuChevronRight } from "react-icons/lu";
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDraft } from "../hooks/use-editor";
 
 const ContextMenuWrapper = ({ children }: ComponentProps<"div">) => {

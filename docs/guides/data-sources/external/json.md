@@ -12,7 +12,7 @@ This way, you can pass dynamic values to your API and have the site owner config
 Use the notation <code v-pre>{{ attr.attributeName }}</code> to reference an attribute.
 
 ```javascript
-import { defineDataSources, ds } from "@enpage/sdk/datasources";
+import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "todos" using the "json" provider

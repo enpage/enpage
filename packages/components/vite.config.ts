@@ -28,7 +28,7 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
-    // include: ["@enpage/sdk"],
+    // include: ["@upstart.gg/sdk"],
   },
   server: {
     port: +(process.env.PORT ?? 3008),
@@ -59,8 +59,8 @@ export default defineConfig({
         "react-dom",
         "react/jsx-runtime",
         "@sinclair/typebox",
-        "@enpage/style-system",
-        "@enpage/sdk",
+        "@upstart.gg/style-system",
+        "@upstart.gg/sdk",
         "lodash-es",
         "lodash",
       ],

@@ -1,5 +1,5 @@
 {
-  "name": "create-enpage",
+  "name": "create-upstart",
   "version": "0.0.39",
   "description": "A CLI for creating Enpage templates.",
   "type": "module",

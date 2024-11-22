@@ -1,7 +1,7 @@
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import App from "./App";
-import { setupTwindReact } from "@enpage/style-system/twind";
+import { setupTwindReact } from "@upstart.gg/style-system/twind";
 
 // setupTwindReact();
 

@@ -1,9 +1,9 @@
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { forwardRef, memo, useRef, useState, type ComponentProps, type MouseEvent } from "react";
-import { tx } from "@enpage/style-system/twind";
+import { tx } from "@upstart.gg/style-system/twind";
 import { useDraft, useEditor } from "../hooks/use-editor";
 import { isEqualWith } from "lodash-es";
-import { DropdownMenu, IconButton, Portal } from "@enpage/style-system";
+import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
 import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";

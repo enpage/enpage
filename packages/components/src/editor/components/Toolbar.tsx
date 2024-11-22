@@ -3,8 +3,8 @@ import { PiPalette } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
 import type { MouseEvent, PropsWithChildren } from "react";
 import { useEditor } from "../hooks/use-editor";
-import { tx, css } from "@enpage/style-system/twind";
-import { DropdownMenu } from "@enpage/style-system";
+import { tx, css } from "@upstart.gg/style-system/twind";
+import { DropdownMenu } from "@upstart.gg/style-system";
 
 export default function Toolbar() {
   const editor = useEditor();

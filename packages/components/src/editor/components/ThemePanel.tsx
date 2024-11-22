@@ -1,16 +1,25 @@
-import { Tabs, Button, Callout, TextArea, Spinner, Select, useAutoAnimate, Text } from "@enpage/style-system";
-import { themes } from "@enpage/sdk/shared/themes/all-themes";
+import {
+  Tabs,
+  Button,
+  Callout,
+  TextArea,
+  Spinner,
+  Select,
+  useAutoAnimate,
+  Text,
+} from "@upstart.gg/style-system";
+import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
 import { forwardRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
 import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
-import { tx } from "@enpage/style-system/twind";
-import { type Theme, themeSchema } from "@enpage/sdk/shared/theme";
+import { tx } from "@upstart.gg/style-system/twind";
+import { type Theme, themeSchema } from "@upstart.gg/sdk/shared/theme";
 import { useDraft } from "~/editor/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
-import type { ColorType } from "@enpage/sdk/shared/themes/color-system";
+import type { ColorType } from "@upstart.gg/sdk/shared/themes/color-system";
 
 export default function ThemePanel() {
   const draft = useDraft();

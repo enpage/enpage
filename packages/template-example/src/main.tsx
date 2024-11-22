@@ -1,1 +1,1 @@
-import "@enpage/sdk/browser/app/main";
+import "@upstart.gg/sdk/browser/app/main";

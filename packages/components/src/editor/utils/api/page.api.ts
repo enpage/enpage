@@ -1,4 +1,4 @@
-import type { GenericPageConfig } from "@enpage/sdk/shared/page";
+import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
 import { patch } from "./base-api";
 
 export function updatePage(payload: Record<string, unknown>, pageConfig: GenericPageConfig) {

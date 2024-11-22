@@ -72,7 +72,7 @@ Loop through your Data Sources using the `{% for %}` tag.
 
 ```javascript [enpage.config.js]
 import z from "zod";
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 // Define an internal data source that will be used
 // in the template as a list of links

@@ -5,16 +5,16 @@ import {
   createEditorStore,
 } from "../hooks/use-editor";
 import { useRef, type PropsWithChildren } from "react";
-import type { GenericPageConfig, PageBasicInfo } from "@enpage/sdk/shared/page";
-import { Theme } from "@enpage/style-system";
-import { tx } from "@enpage/style-system/twind";
+import type { GenericPageConfig, PageBasicInfo } from "@upstart.gg/sdk/shared/page";
+import { Theme } from "@upstart.gg/style-system";
+import { tx } from "@upstart.gg/style-system/twind";
 import { useDarkMode } from "usehooks-ts";
 
 import "@radix-ui/themes/styles.css";
-import "@enpage/style-system/radix.css";
-import "@enpage/style-system/default-theme.css";
-import "@enpage/style-system/tiptap-text-editor.css";
-import "@enpage/style-system/react-resizable.css";
+import "@upstart.gg/style-system/radix.css";
+import "@upstart.gg/style-system/default-theme.css";
+import "@upstart.gg/style-system/tiptap-text-editor.css";
+import "@upstart.gg/style-system/react-resizable.css";
 
 export type EditorWrapperProps = {
   mode?: "local" | "remote";

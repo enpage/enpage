@@ -9,7 +9,7 @@ Here is an example of how to define settings in your template:
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineAttributes, attr } from "@enpage/sdk/attributes";
+import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 
 export const attributes = defineAttributes({
   showContactButton: attr.boolean("Show Contact Button", true),

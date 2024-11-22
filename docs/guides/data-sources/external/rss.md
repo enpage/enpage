@@ -7,7 +7,7 @@ Use the `rss` data source to fetch data from an RSS or Atom feed.
 ### Add it to your `enpage.config.js` file
 
 ```javascript
-import { defineDataSources } from "@enpage/sdk/datasources";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 
 export const datasources = defineDataSources({
   // Define a data source named "myfeed" using the "rss" provider

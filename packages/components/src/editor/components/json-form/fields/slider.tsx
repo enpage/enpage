@@ -1,5 +1,5 @@
 import type { FieldProps } from "@rjsf/utils";
-import { Slider } from "@enpage/style-system";
+import { Slider } from "@upstart.gg/style-system";
 
 const SliderField: React.FC<FieldProps> = (props) => {
   const { schema, uiSchema, formData, onChange, required, name, idSchema } = props;

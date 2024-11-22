@@ -7,7 +7,7 @@ Here is an example of how to define Builder settings in your template:
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineBuilderSettings } from "@enpage/sdk/builder-settings";
+import { defineBuilderSettings } from "@upstart.gg/sdk/builder-settings";
 
 defineBuilderSettings({
   // Customize the outline color of the editor

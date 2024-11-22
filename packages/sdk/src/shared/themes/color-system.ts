@@ -2,7 +2,7 @@ import chroma from "chroma-js";
 import type { Theme } from "../theme";
 import invariant from "../utils/invariant";
 export { default as chroma } from "chroma-js";
-import { colors, css } from "@enpage/style-system/twind";
+import { colors, css } from "@upstart.gg/style-system/twind";
 
 export type ColorType = "primary" | "secondary" | "accent" | "neutral";
 export type ElementColorType =

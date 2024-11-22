@@ -1,4 +1,4 @@
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { forwardRef, memo, type ComponentProps } from "react";
 import BaseBrick from "./BaseBrick";
 import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";

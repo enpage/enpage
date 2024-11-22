@@ -1,7 +1,7 @@
 import type { FieldProps } from "@rjsf/utils";
-import { SegmentedControl } from "@enpage/style-system";
-import { tx } from "@enpage/style-system/twind";
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import { SegmentedControl } from "@upstart.gg/style-system";
+import { tx } from "@upstart.gg/style-system/twind";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDraft } from "~/editor/hooks/use-editor";
 
 interface EnumOption {

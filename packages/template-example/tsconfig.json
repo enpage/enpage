@@ -20,7 +20,7 @@
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["@enpage/sdk/custom-attrs.d.ts", "vite/client"]
+    "types": ["@upstart.gg/sdk/custom-attrs.d.ts", "vite/client"]
   },
   "include": ["enpage.config.js"]
 }

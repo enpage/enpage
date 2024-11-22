@@ -27,7 +27,7 @@ cannot be consumed by templates, while Data Sources can.
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataRecords } from "@enpage/sdk/datarecords";
+import { defineDataRecords } from "@upstart.gg/sdk/datarecords";
 
 // Define an internal data record that will be used
 // in the template to let users subscribe to a newsletter
@@ -52,7 +52,7 @@ export const datarecords = defineDataRecords({
 
 ```javascript [enpage.config.js]
 import z from "zod";
-import { defineDataRecords } from "@enpage/sdk/datarecords";
+import { defineDataRecords } from "@upstart.gg/sdk/datarecords";
 
 // Define an internal data record that will be used
 // in the template to let users submit a contact form
@@ -86,7 +86,7 @@ As no data is saved to Enpage in this case, it cannot be retrieved through the E
 ::: code-group
 
 ```javascript [enpage.config.js]
-import { defineDataRecords } from "@enpage/sdk/datarecords";
+import { defineDataRecords } from "@upstart.gg/sdk/datarecords";
 
 // Define an external data record that will be used
 // in the template to let users submit a contact form
@@ -119,7 +119,7 @@ export const datarecords = defineDataRecords({
 
 ```javascript [enpage.config.js]
 import z from "zod";
-import { defineDataRecords } from "@enpage/sdk/datarecords";
+import { defineDataRecords } from "@upstart.gg/sdk/datarecords";
 
 // Define an external data record that will be used
 // in the template to let users submit a contact form

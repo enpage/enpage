@@ -1,8 +1,8 @@
 import { useEditor as useTextEditor, EditorContent, type EditorEvents, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Select, ToggleGroup } from "@enpage/style-system";
-import { tx } from "@enpage/style-system/twind";
+import { Select, ToggleGroup } from "@upstart.gg/style-system";
+import { tx } from "@upstart.gg/style-system/twind";
 import { useState, useRef, useEffect } from "react";
 import {
   MdFormatBold,
@@ -13,7 +13,7 @@ import {
 } from "react-icons/md";
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
-import type { Brick } from "@enpage/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useEditor } from "../hooks/use-editor";
 
 const extensions = [
