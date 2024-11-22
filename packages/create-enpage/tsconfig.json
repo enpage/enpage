@@ -16,10 +16,7 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "@common/*": ["../../common/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src", "../../common"]
+  "include": ["src"]
 }

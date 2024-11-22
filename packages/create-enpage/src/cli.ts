@@ -8,7 +8,7 @@ import { existsSync, lstatSync, readdirSync } from "node:fs";
 import { cp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { input, select } from "@inquirer/prompts";
 import { execSync } from "node:child_process";
-import { GitIgnoreMatcher } from "@common/utils/gitignore-matcher";
+import { GitIgnoreMatcher } from "./gitignore-matcher";
 
 program
   .description("Create a new Enpage template")
