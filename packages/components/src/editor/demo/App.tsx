@@ -1,5 +1,5 @@
 import { createPageConfigSampleFromTemplateConfig } from "@upstart.gg/sdk/shared/page";
-import * as testEnpageConfig from "~/test-enpage.config";
+import * as testEnpageConfig from "~/test-config";
 import type { EnpageTemplateConfig } from "@upstart.gg/sdk/shared/template-config";
 import { EditorWrapper } from "~/editor/components/EditorWrapper";
 import { ClientOnly } from "~/shared/utils/client-only";

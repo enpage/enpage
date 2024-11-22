@@ -9,4 +9,4 @@ export default function EditorComponent(props: EditorWrapperProps) {
   );
 }
 
-export * as testConfig from "./test-enpage.config";
+export * as testConfig from "./test-config";
