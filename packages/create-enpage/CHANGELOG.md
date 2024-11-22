@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.42
+
+### Patch Changes
+
+- [`794cee0`](https://github.com/enpage/enpage/commit/794cee00c0f29dceb9bdd47e7eac2581625b1cd2) Thanks [@mattallty](https://github.com/mattallty)! - New GenericPageContext
+
 ## 0.0.41
 
 ### Patch Changes
