@@ -1,5 +1,11 @@
 # create-enpage
 
+## 0.0.41
+
+### Patch Changes
+
+- [`b5e6b16`](https://github.com/enpage/enpage/commit/b5e6b169145ad8cb67cdb7c54bb00c1354159016) Thanks [@mattallty](https://github.com/mattallty)! - Fix test-config export
+
 ## 0.0.40
 
 ### Patch Changes
