@@ -1,5 +1,12 @@
 # @enpage/template-example
 
+## 0.0.50
+
+### Patch Changes
+
+- Updated dependencies [[`b91cc45`](https://github.com/enpage/enpage/commit/b91cc454e01fde5e3f422482b4bf5f1500504a84)]:
+  - @enpage/sdk@0.0.50
+
 ## 0.0.49
 
 ### Patch Changes

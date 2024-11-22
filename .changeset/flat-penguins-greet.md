@@ -1,5 +1,0 @@
----
-"@enpage/components": patch
----
-
-Publish

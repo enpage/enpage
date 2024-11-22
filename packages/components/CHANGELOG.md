@@ -1,5 +1,16 @@
 # @enpage/editor
 
+## 0.0.40
+
+### Patch Changes
+
+- [#216](https://github.com/enpage/enpage/pull/216) [`1bdd7d9`](https://github.com/enpage/enpage/commit/1bdd7d9d7c6bcf3a0ebbb8066a8ca1e22d075831) Thanks [@mattallty](https://github.com/mattallty)! - Rename package to @enpage/components
+
+- [`1047690`](https://github.com/enpage/enpage/commit/10476904f89726a55e527a2f7064c79a6fa006e7) Thanks [@mattallty](https://github.com/mattallty)! - Publish
+
+- Updated dependencies [[`b91cc45`](https://github.com/enpage/enpage/commit/b91cc454e01fde5e3f422482b4bf5f1500504a84)]:
+  - @enpage/sdk@0.0.50
+
 ## 0.0.39
 
 ### Patch Changes

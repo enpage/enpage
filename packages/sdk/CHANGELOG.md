@@ -1,5 +1,11 @@
 # @enpage/sdk
 
+## 0.0.50
+
+### Patch Changes
+
+- [#214](https://github.com/enpage/enpage/pull/214) [`b91cc45`](https://github.com/enpage/enpage/commit/b91cc454e01fde5e3f422482b4bf5f1500504a84) Thanks [@mattallty](https://github.com/mattallty)! - Simplify types
+
 ## 0.0.49
 
 ### Patch Changes
