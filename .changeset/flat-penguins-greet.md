@@ -1,0 +1,5 @@
+---
+"@enpage/components": patch
+---
+
+Publish

@@ -1,5 +1,4 @@
 ---
-"@enpage/editor": patch
 "@enpage/sdk": patch
 ---
 
