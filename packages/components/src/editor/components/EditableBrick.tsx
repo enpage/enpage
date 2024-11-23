@@ -62,7 +62,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
           hasMouseMoved.current = true;
         }}
       >
-        <MemoBrickComponent brick={brick} />
+        <MemoBrickComponent brick={brick} editable />
         <BrickOptionsButton brick={brick} />
         {children} {/* Make sure to include children to add resizable handle */}
       </div>
