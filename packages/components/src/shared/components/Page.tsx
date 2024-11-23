@@ -1,15 +1,13 @@
 // todo: We should  move BrickWrapper to shared components
-import BrickWrapper from "~/editor/components/EditableBrick";
-import { useAttributes, useBricks } from "~/editor/hooks/use-editor";
+import type { GenericPageContext } from "@upstart.gg/sdk/shared/page";
+import BrickWrapper from "./Brick";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
 
-export default function LivePage() {
-  const attributes = useAttributes();
-  const bricks = useBricks();
-  const pageClassName = usePageStyle({ attributes });
+export default function Page({ page }: { page: GenericPageContext }) {
+  const pageClassName = usePageStyle({ attributes: page.attr });
   return (
     <div className={pageClassName}>
-      {bricks.map((brick) => (
+      {page.bricks.map((brick) => (
         <BrickWrapper key={brick.id} brick={brick} />
       ))}
     </div>
