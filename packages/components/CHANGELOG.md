@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.56
+
+### Patch Changes
+
+- [`95e0c9b`](https://github.com/enpage/enpage/commit/95e0c9b471f63a73b876c84baabcd5f87f15b6a6) Thanks [@mattallty](https://github.com/mattallty)! - move analytics to sdk
+
+- Updated dependencies [[`95e0c9b`](https://github.com/enpage/enpage/commit/95e0c9b471f63a73b876c84baabcd5f87f15b6a6)]:
+  - @upstart.gg/sdk@0.0.56
+
 ## 0.0.55
 
 ### Patch Changes
