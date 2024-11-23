@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.54
+
+### Patch Changes
+
+- [#220](https://github.com/enpage/enpage/pull/220) [`b62fa13`](https://github.com/enpage/enpage/commit/b62fa13a775d99e523312927c70802a524e38ad6) Thanks [@mattallty](https://github.com/mattallty)! - make sure not to include text editor when outside the editor
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.54
+
 ## 0.0.53
 
 ### Patch Changes
