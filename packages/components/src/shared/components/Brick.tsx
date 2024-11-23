@@ -10,7 +10,7 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 };
 
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(({ brick, className }, ref) => {
-  const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className });
+  const wrapperClass = useBrickWrapperStyle({ brick, editable: false, className });
   return (
     <div id={brick.id} className={wrapperClass} ref={ref}>
       <MemoBrickComponent brick={brick} />
