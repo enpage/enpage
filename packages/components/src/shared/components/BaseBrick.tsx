@@ -16,9 +16,9 @@ const bricksMap: Record<string, LazyExoticComponent<ComponentType<any>>> = {
 
 const BaseBrick = ({
   brick,
-  textEditable,
+  editable,
   ...otherProps
-}: { brick: Brick; textEditable?: boolean } & ComponentProps<"div">) => {
+}: { brick: Brick; editable?: boolean } & ComponentProps<"div">) => {
   // const BrickModule = lazy(() => import(`../bricks/${brick.type}.js`));
   const BrickModule = bricksMap[brick.type];
   if (!BrickModule) {
@@ -27,7 +27,7 @@ const BaseBrick = ({
   const { wrapper, ...rest } = brick.props;
   return (
     <Suspense>
-      <BrickModule id={brick.id} {...rest} {...otherProps} textEditable={textEditable} />
+      <BrickModule id={brick.id} {...rest} {...otherProps} editable={editable} />
     </Suspense>
   );
 };

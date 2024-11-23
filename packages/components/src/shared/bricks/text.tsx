@@ -51,6 +51,19 @@ export const defaults = Value.Create(manifest);
  */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
+  return props.editable ? <EditableText ref={ref} {...props} /> : <NonEditableText ref={ref} {...props} />;
+});
+
+const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+  const className = useBrickStyle(props);
+  return (
+    <div ref={ref} className={className}>
+      {props.content}
+    </div>
+  );
+});
+
+const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
   const content = useEditableText(props.id, props.content);
   return (
