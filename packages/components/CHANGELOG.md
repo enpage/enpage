@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.55
+
+### Patch Changes
+
+- [#222](https://github.com/enpage/enpage/pull/222) [`14483b7`](https://github.com/enpage/enpage/commit/14483b7e90db476fae52aa6438577c6208d9416f) Thanks [@mattallty](https://github.com/mattallty)! - add basic analytics
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.55
+
 ## 0.0.54
 
 ### Patch Changes
