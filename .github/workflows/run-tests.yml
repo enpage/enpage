@@ -51,6 +51,7 @@ jobs:
     name: Test job
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4

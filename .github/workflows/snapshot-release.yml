@@ -13,6 +13,7 @@ jobs:
     if: github.event.pull_request.merged == true && !startsWith(github.event.pull_request.title, 'chore(release):')
     name: Snapshot Release
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
