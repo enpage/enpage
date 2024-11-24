@@ -34,10 +34,6 @@ export function usePageStyle({
       min-h-[100dvh] h-full
       ${attributes.$pageWidth}
     )`,
-    // css({
-    //   gridAutoRows: `${LAYOUT_ROW_HEIGHT}px`,
-    // }),
-
     editable && "transition-all duration-300",
     // this is the grid overlay shown when dragging
     editable &&
