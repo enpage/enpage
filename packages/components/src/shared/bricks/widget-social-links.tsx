@@ -7,9 +7,6 @@ import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
-// get filename from esm import.meta
-const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
-
 export const manifest = defineBrickManifest({
   type: "social-links",
   kind: "widget",
@@ -49,8 +46,6 @@ export const manifest = defineBrickManifest({
     <line x1="11" y1="17" x2="13" y2="17" stroke-width="0.5"></line>
 </svg>
   `,
-
-  file: filename,
   props: Type.Composite([
     contentAwareProps,
     commonProps,
