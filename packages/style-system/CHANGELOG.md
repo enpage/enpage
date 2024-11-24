@@ -1,5 +1,14 @@
 # @upstart.gg/style-system
 
+## 0.0.26
+
+### Patch Changes
+
+- [#225](https://github.com/enpage/enpage/pull/225) [`3eabb54`](https://github.com/enpage/enpage/commit/3eabb545a876dc3a8b3ef927a6f5b9cee70424c4) Thanks [@mattallty](https://github.com/mattallty)! - - Improve bricks lazy loading
+  - First analytics functions
+  - First draft of datarecords types
+  - Fix twind ssr to work on CF workers
+
 ## 0.0.25
 
 ### Patch Changes
