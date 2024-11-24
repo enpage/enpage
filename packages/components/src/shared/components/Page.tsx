@@ -1,4 +1,3 @@
-// todo: We should  move BrickWrapper to shared components
 import type { GenericPageContext } from "@upstart.gg/sdk/shared/page";
 import BrickWrapper from "./Brick";
 import { usePageStyle } from "~/shared/hooks/use-page-style";

@@ -8,9 +8,6 @@ import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
-// get filename from esm import.meta
-const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
-
 export const manifest = defineBrickManifest({
   type: "image",
   kind: "brick",
@@ -40,7 +37,6 @@ export const manifest = defineBrickManifest({
       <polyline points="21 15 16 10 5 21"></polyline>
     </svg>
   `,
-  file: filename,
   props: Type.Composite([
     Type.Object({
       src: Type.String({

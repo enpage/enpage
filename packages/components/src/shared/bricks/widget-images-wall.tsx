@@ -7,9 +7,6 @@ import { commonStyleProps } from "./props/style-props";
 import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
-// get filename from esm import.meta
-const filename = new URL(import.meta.url).pathname.split("/").pop() as string;
-
 export const manifest = defineBrickManifest({
   type: "image-wall",
   kind: "widget",
@@ -42,8 +39,6 @@ export const manifest = defineBrickManifest({
     <rect x="13" y="14" width="6" height="5" rx="1"></rect>
 </svg>
   `,
-
-  file: filename,
   props: Type.Composite([
     contentAwareProps,
     commonProps,

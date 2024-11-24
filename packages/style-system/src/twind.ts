@@ -45,14 +45,15 @@ export const tw = /* #__PURE__ */ twind(
 
 export function setupTwindReact(prod = isProd()) {
   install(config, prod);
-
-  addEventListener("warning", (event) => {
-    // @ts-ignore
-    const warning = event.detail;
-    if (warning.code === "TWIND_INVALID_CLASS") {
-      event.preventDefault();
-    }
-  });
+  if (typeof globalThis.addEventListener === "function") {
+    globalThis.addEventListener("warning", (event) => {
+      // @ts-ignore
+      const warning = event.detail;
+      if (warning?.code === "TWIND_INVALID_CLASS") {
+        event.preventDefault();
+      }
+    });
+  }
 }
 
 export const tx = /* #__PURE__ */ tx$.bind(tw);

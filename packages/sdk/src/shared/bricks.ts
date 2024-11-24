@@ -197,7 +197,6 @@ export function defineBrickManifest<
   BType extends string,
   BTitle extends string,
   BIcon extends string,
-  BFile extends string,
   BDesc extends string,
   BProps extends TProperties,
 >({
@@ -211,7 +210,6 @@ export function defineBrickManifest<
   minHeight,
   maxWidth,
   icon,
-  file,
   props,
   datasource,
   datarecord,
@@ -220,7 +218,6 @@ export function defineBrickManifest<
   kind: string;
   title: BTitle;
   icon: BIcon;
-  file: BFile;
   description: BDesc;
   minWidth?: {
     mobile: number;
@@ -252,7 +249,6 @@ export function defineBrickManifest<
     title: Type.Literal(title),
     description: Type.Literal(description),
     icon: Type.Literal(icon),
-    file: Type.Literal(file),
     preferredWidth: Type.Object(
       {
         mobile: Type.Number(),
