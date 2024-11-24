@@ -1,18 +1,21 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { lazy, Suspense, type ComponentProps, type ComponentType, type LazyExoticComponent } from "react";
 
-const BrickText = lazy(() => import("../bricks/text"));
-const BrickHero = lazy(() => import("../bricks/hero"));
-const BrickImage = lazy(() => import("../bricks/image"));
-
-// const bricks = import.meta.glob("../bricks/*");
-
+// Load all bricks in the bricks directory
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const bricksMap: Record<string, LazyExoticComponent<ComponentType<any>>> = {
-  text: BrickText,
-  hero: BrickHero,
-  image: BrickImage,
-};
+const bricks = import.meta.glob<false, string, { default: ComponentType<any> }>(["../bricks/*.tsx"]);
+
+const bricksMap = Object.entries(bricks).reduce(
+  (acc, [path, importFn]) => {
+    // Extract component name from path (e.g., ./components/Button.jsx -> Button)
+    const componentName = path.match(/\.\/bricks\/(.*)\.tsx$/)![1];
+    // Create lazy component using React.lazy
+    acc[componentName] = lazy(importFn);
+    return acc;
+  },
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  {} as Record<string, LazyExoticComponent<ComponentType<any>>>,
+);
 
 const BaseBrick = ({
   brick,
