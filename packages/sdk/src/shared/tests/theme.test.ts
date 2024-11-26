@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { defineCustomThemes } from "../theme";
+import { defineThemes } from "../theme";
 
 describe("Theme test suite", () => {
   describe("defineCustomThemes", () => {
     it("should define a custom theme", () => {
-      const [theme] = defineCustomThemes({
+      const [theme] = defineThemes({
         id: "dark",
         name: "Dark",
         description: "A dark theme",

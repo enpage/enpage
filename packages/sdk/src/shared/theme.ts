@@ -7,7 +7,9 @@ export const themeSchema = Type.Object(
   {
     id: Type.String({ title: "ID", description: "The unique identifier of the theme" }),
     name: Type.String({ title: "Name", description: "The name of the theme" }),
-    description: Type.String({ title: "Description", description: "The description of the theme" }),
+    description: Type.Optional(
+      Type.String({ title: "Description", description: "The description of the theme" }),
+    ),
     tags: Type.Optional(
       Type.Array(Type.String({ title: "Tag" }), { title: "Tags", description: "The tags of the theme" }),
     ),
@@ -170,6 +172,6 @@ export type Theme = Static<typeof themeSchema>;
  * @param theme
  * @returns
  */
-export function defineCustomThemes<T extends Theme>(theme: T | T[]): T[] {
+export function defineThemes<T extends Theme>(theme: T | T[]): T[] {
   return Array.isArray(theme) ? theme : [theme];
 }
