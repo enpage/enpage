@@ -1,5 +1,13 @@
 # @upstart.gg/sdk
 
+## 0.0.60
+
+### Patch Changes
+
+- [#232](https://github.com/enpage/enpage/pull/232) [`363601a`](https://github.com/enpage/enpage/commit/363601a4580412b775babf52ee21a53dc38691ba) Thanks [@mattallty](https://github.com/mattallty)! - Add themes to config
+
+- [#232](https://github.com/enpage/enpage/pull/232) [`363601a`](https://github.com/enpage/enpage/commit/363601a4580412b775babf52ee21a53dc38691ba) Thanks [@mattallty](https://github.com/mattallty)! - Rework types
+
 ## 0.0.59
 
 ### Patch Changes
