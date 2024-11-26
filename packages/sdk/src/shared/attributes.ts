@@ -45,6 +45,8 @@ export function defineAttributes(attrs: TProperties) {
   );
 }
 
+export type Attributes = ReturnType<typeof defineAttributes>;
+
 export const attr = {
   /**
    * Define a text
@@ -295,7 +297,7 @@ const defaultAttributes = {
   }),
 };
 
-export function resolveAttributes(attributes: ReturnType<typeof defineAttributes>) {
+export function resolveAttributes(attributes: Attributes) {
   return Value.Create(attributes);
 }
 

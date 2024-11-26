@@ -11,7 +11,7 @@ export type TemplateConfig = {
   /**
    * The attributes declared for the template
    */
-  attributes: ReturnType<typeof defineAttributes>;
+  attributes?: ReturnType<typeof defineAttributes>;
   /**
    * The datasources declared for the template
    */
@@ -22,3 +22,5 @@ export type TemplateConfig = {
   // bricks: ReturnType<typeof defineBricks>;
   pages: ReturnType<typeof definePages>;
 };
+
+export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConfig, "attributes">>;

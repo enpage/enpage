@@ -5,6 +5,7 @@ export const templateManifestSchema = z.object({
   id: z.string().optional(),
   name: z.string(),
   description: z.string(),
+  // indexed by language code
   readme: z.record(z.string()).optional(),
   tags: z.array(z.string()).optional(),
   author: z.string(),
@@ -13,6 +14,7 @@ export const templateManifestSchema = z.object({
 });
 
 export type TemplateManifest = z.infer<typeof templateManifestSchema>;
+export type PublishedTemplateManifest = TemplateManifest & Required<Pick<TemplateManifest, "id">>;
 
 export function defineManifest(manifest: Omit<TemplateManifest, "id" | "thumbnail">): TemplateManifest {
   return manifest;
