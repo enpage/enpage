@@ -1,7 +1,7 @@
 import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
-import { resolveAttributes, type AttributesResolved } from "./attributes";
+import { defineAttributes, resolveAttributes, type AttributesResolved } from "./attributes";
 import type { Brick } from "./bricks";
-import type { TemplateConfig } from "./template-config";
+import type { TemplateConfig, ResolvedTemplateConfig } from "./template-config";
 import invariant from "./utils/invariant";
 
 export type PageBasicInfo = {
@@ -15,7 +15,7 @@ export type PageBasicInfo = {
  */
 export type PageConfig<
   D extends DatasourceManifestMap,
-  A extends TemplateConfig["attributes"],
+  A extends ResolvedTemplateConfig["attributes"],
   B extends Brick[],
 > = {
   /**
@@ -66,7 +66,11 @@ export type PageConfig<
   bricks: B;
 };
 
-export type GenericPageConfig = PageConfig<DatasourceManifestMap, TemplateConfig["attributes"], Brick[]>;
+export type GenericPageConfig = PageConfig<
+  DatasourceManifestMap,
+  ResolvedTemplateConfig["attributes"],
+  Brick[]
+>;
 
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
@@ -74,15 +78,18 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigSampleFromTemplateConfig: No bricks found for path ${path}`);
 
+  if (!templateConfig.attributes) {
+    templateConfig.attributes = defineAttributes({});
+  }
+
   return {
-    id: "page-1",
-    siteId: "site-1",
-    hostname: "localhost",
-    label: "Page #1",
+    id: "",
+    siteId: "",
+    hostname: "",
+    label: "Home page",
     pagesMap: [],
     path,
     datasources: templateConfig.datasources,
-    data: undefined,
     attributes: templateConfig.attributes,
     attr: resolveAttributes(templateConfig.attributes),
     bricks,
