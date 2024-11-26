@@ -4,6 +4,7 @@ import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineManifest } from "@upstart.gg/sdk/manifest";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { definePages } from "@upstart.gg/sdk/page";
+import { defineThemes } from "@upstart.gg/sdk/theme";
 
 // define your datasources
 export const datasources = defineDataSources({
@@ -187,3 +188,31 @@ export const pages = definePages([
     bricks: homePageBricks,
   },
 ]);
+
+export const themes = defineThemes({
+  id: "aurora",
+  name: "Aurora",
+  description: "Vibrant gradients with ethereal color transitions",
+  tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
+
+  colors: {
+    primary: "#7c3aed", // Purple
+    secondary: "#2dd4bf", // Teal
+    // Cyan
+    accent: "#ec4899", // Pink
+    neutral: "#4b5563", // Grey
+  },
+  typography: {
+    base: 16,
+    heading: "neo-grotesque",
+    body: "geometric-humanist",
+  },
+  customFonts: [
+    {
+      name: "Cabinet Grotesk",
+      src: "https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&display=swap",
+      weight: "700",
+      display: "swap",
+    },
+  ],
+});
