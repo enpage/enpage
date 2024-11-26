@@ -1,5 +1,11 @@
 # @upstart.gg/sdk
 
+## 0.0.59
+
+### Patch Changes
+
+- [#229](https://github.com/enpage/enpage/pull/229) [`bd2f6a6`](https://github.com/enpage/enpage/commit/bd2f6a6d9cd1df38e3c8b73c8c2bbc05ba50bf8c) Thanks [@mattallty](https://github.com/mattallty)! - Rework types
+
 ## 0.0.58
 
 ### Patch Changes

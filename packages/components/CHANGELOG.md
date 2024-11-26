@@ -1,5 +1,12 @@
 # @upstart.gg/components
 
+## 0.0.59
+
+### Patch Changes
+
+- Updated dependencies [[`bd2f6a6`](https://github.com/enpage/enpage/commit/bd2f6a6d9cd1df38e3c8b73c8c2bbc05ba50bf8c)]:
+  - @upstart.gg/sdk@0.0.59
+
 ## 0.0.58
 
 ### Patch Changes
