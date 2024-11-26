@@ -3,6 +3,7 @@ import { defineAttributes, resolveAttributes, type AttributesResolved } from "./
 import type { Brick } from "./bricks";
 import type { TemplateConfig, ResolvedTemplateConfig } from "./template-config";
 import invariant from "./utils/invariant";
+import type { Theme } from "./theme";
 
 export type PageBasicInfo = {
   id: string;
@@ -64,6 +65,8 @@ export type PageConfig<
    */
   attr: AttributesResolved;
   bricks: B;
+
+  theme: Theme;
 };
 
 export type GenericPageConfig = PageConfig<
@@ -93,6 +96,7 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
     attributes: templateConfig.attributes,
     attr: resolveAttributes(templateConfig.attributes),
     bricks,
+    theme: templateConfig.themes[0],
   } satisfies GenericPageConfig;
 }
 
