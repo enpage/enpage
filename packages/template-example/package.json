@@ -1,6 +1,6 @@
 {
   "name": "@upstart.gg/template-example",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "description": "Enpage template example",
   "type": "module",
   "exports": {
@@ -24,8 +24,8 @@
   "dependencies": {
     "@upstart.gg/sdk": "workspace:*",
     "@upstart.gg/style-system": "workspace:*",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "18.3.0-canary-3d9b20132-20240124",
+    "react-dom": "18.3.0-canary-3d9b20132-20240124",
     "tailwindcss": "3.4.10"
   },
   "author": "Matthias Etienne",
