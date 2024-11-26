@@ -4,7 +4,6 @@ import {
   type NumberOptions,
   type SchemaOptions,
   type ObjectOptions,
-  type TAny,
   type TProperties,
 } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";

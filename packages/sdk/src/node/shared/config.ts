@@ -1,4 +1,4 @@
-import type { EnpageTemplateConfig } from "~/shared/template-config";
+import type { TemplateConfig } from "~/shared/template-config";
 import { templateManifestSchema } from "~/shared/manifest";
 import { defineAttributes } from "~/shared/attributes";
 import fs from "node:fs";
@@ -11,14 +11,14 @@ import { basename, dirname, extname } from "node:path";
 export async function loadConfigFromJsFile(
   configPath: string,
   logger = defaultLogger,
-): Promise<EnpageTemplateConfig> {
+): Promise<TemplateConfig> {
   if (!fs.existsSync(configPath)) {
     logger.error(
       "🔴 No enpage.config.js found!\nYour project must have an enpage.config.js file in the root directory.\n\n",
     );
     process.exit(1);
   }
-  const config = (await import(configPath)) as EnpageTemplateConfig;
+  const config = (await import(configPath)) as TemplateConfig;
 
   // Parse the readme files fro the same directory as the config file
   const readmePath = dirname(configPath);
@@ -43,7 +43,7 @@ export async function loadConfigFromJsFile(
   return config;
 }
 
-export function loadConfigFromManifestFile(manifestPath: string, logger: Logger): EnpageTemplateConfig {
+export function loadConfigFromManifestFile(manifestPath: string, logger: Logger): TemplateConfig {
   if (!fs.existsSync(manifestPath)) {
     logger.error("🔴 No enpage.manifest.json found!\nYou may want to 'build' your template.\n\n");
     process.exit(1);
@@ -51,7 +51,7 @@ export function loadConfigFromManifestFile(manifestPath: string, logger: Logger)
   return JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
 }
 
-export function validateTemplateConfig(config: EnpageTemplateConfig, logger: Logger) {
+export function validateTemplateConfig(config: TemplateConfig, logger: Logger) {
   for (const key in config.datasources) {
     if (
       !(config.datasources[key].provider || config.datasources[key].provider === "json") &&

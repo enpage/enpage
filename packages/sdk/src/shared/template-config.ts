@@ -3,7 +3,7 @@ import type { defineAttributes } from "./attributes";
 import type { defineManifest } from "./manifest";
 import type { definePages } from "./page";
 
-export type EnpageTemplateConfig = {
+export type TemplateConfig = {
   /**
    * The template manifest and settings
    */

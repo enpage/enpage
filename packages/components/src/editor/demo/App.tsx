@@ -1,12 +1,12 @@
 import { createPageConfigSampleFromTemplateConfig } from "@upstart.gg/sdk/shared/page";
 import * as testEnpageConfig from "~/test-config";
-import type { EnpageTemplateConfig } from "@upstart.gg/sdk/shared/template-config";
+import type { TemplateConfig } from "@upstart.gg/sdk/shared/template-config";
 import { EditorWrapper } from "~/editor/components/EditorWrapper";
 import { ClientOnly } from "~/shared/utils/client-only";
 import Editor from "~/editor/components/Editor";
 
 export default function App() {
-  const pageConfig = createPageConfigSampleFromTemplateConfig(testEnpageConfig as EnpageTemplateConfig);
+  const pageConfig = createPageConfigSampleFromTemplateConfig(testEnpageConfig as TemplateConfig);
   const testPages = [
     {
       label: "Page 1",
