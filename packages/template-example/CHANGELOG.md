@@ -1,5 +1,15 @@
 # @upstart.gg/template-example
 
+## 0.0.61
+
+### Patch Changes
+
+- [#234](https://github.com/enpage/enpage/pull/234) [`80bfe1f`](https://github.com/enpage/enpage/commit/80bfe1f4f628ac4baca17bac5f9fd94387d656dc) Thanks [@mattallty](https://github.com/mattallty)! - Rework style system
+
+- Updated dependencies [[`80bfe1f`](https://github.com/enpage/enpage/commit/80bfe1f4f628ac4baca17bac5f9fd94387d656dc)]:
+  - @upstart.gg/style-system@0.0.27
+  - @upstart.gg/sdk@0.0.61
+
 ## 0.0.60
 
 ### Patch Changes
