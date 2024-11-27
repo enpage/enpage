@@ -1,4 +1,4 @@
-import { Tabs } from "@upstart.gg/style-system";
+import { Tabs } from "@upstart.gg/style-system/system";
 import type { ComponentProps } from "react";
 import { tx, css } from "@upstart.gg/style-system/twind";
 

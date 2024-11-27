@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ComponentProps } from "react";
-import { ContextMenu } from "@upstart.gg/style-system";
+import { ContextMenu } from "@upstart.gg/style-system/system";
 import { LuChevronRight } from "react-icons/lu";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDraft } from "../hooks/use-editor";

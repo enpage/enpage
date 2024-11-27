@@ -1,6 +1,6 @@
 import type { FieldProps } from "@rjsf/utils";
 import { nanoid } from "nanoid";
-import { Button, Text } from "@upstart.gg/style-system";
+import { Button, Text } from "@upstart.gg/style-system/system";
 import { useEditor } from "~/editor/hooks/use-editor";
 import { useState } from "react";
 import ModalSearchImage from "~/editor/components/ModalSearchImage";

@@ -1,7 +1,7 @@
 import { useEditor as useTextEditor, EditorContent, type EditorEvents, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Select, ToggleGroup } from "@upstart.gg/style-system";
+import { Select, ToggleGroup } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useState, useRef, useEffect } from "react";
 import {

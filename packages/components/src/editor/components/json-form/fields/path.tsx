@@ -1,6 +1,6 @@
 import type { FieldProps } from "@rjsf/utils";
 import { nanoid } from "nanoid";
-import { TextField } from "@upstart.gg/style-system";
+import { TextField } from "@upstart.gg/style-system/system";
 import { TbSlash } from "react-icons/tb";
 
 const PathField: React.FC<FieldProps> = (props) => {
