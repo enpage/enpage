@@ -44,6 +44,9 @@
     "tailwindcss-animate": "1.0.7",
     "tailwindcss-opentype": "1.1.0"
   },
+  "devDependencies": {
+    "tsup": "8.2.4"
+  },
   "publishConfig": {
     "access": "public"
   }
