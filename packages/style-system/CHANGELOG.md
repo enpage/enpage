@@ -1,5 +1,11 @@
 # @upstart.gg/style-system
 
+## 0.0.28
+
+### Patch Changes
+
+- [`7e505d1`](https://github.com/enpage/enpage/commit/7e505d1c9ac7cb57be895feafb5b5e47015ae0a2) Thanks [@mattallty](https://github.com/mattallty)! - twind.config -> twind-config
+
 ## 0.0.27
 
 ### Patch Changes
