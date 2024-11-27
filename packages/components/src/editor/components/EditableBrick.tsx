@@ -3,7 +3,7 @@ import { forwardRef, memo, useRef, useState, type ComponentProps, type MouseEven
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDraft, useEditor } from "../hooks/use-editor";
 import { isEqualWith } from "lodash-es";
-import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system";
+import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
 import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";

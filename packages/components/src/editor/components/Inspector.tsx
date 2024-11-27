@@ -10,7 +10,7 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import { jsonFormClass } from "./json-form/form-class";
-import { Tabs } from "@upstart.gg/style-system";
+import { Tabs } from "@upstart.gg/style-system/system";
 import { manifests, defaults } from "~/shared/bricks/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";

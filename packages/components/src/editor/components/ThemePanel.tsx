@@ -7,7 +7,7 @@ import {
   Select,
   useAutoAnimate,
   Text,
-} from "@upstart.gg/style-system";
+} from "@upstart.gg/style-system/system";
 import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
 import { forwardRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";

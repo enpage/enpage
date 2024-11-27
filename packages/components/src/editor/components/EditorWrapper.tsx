@@ -6,7 +6,7 @@ import {
 } from "../hooks/use-editor";
 import { useRef, type PropsWithChildren } from "react";
 import type { GenericPageConfig, PageBasicInfo } from "@upstart.gg/sdk/shared/page";
-import { Theme } from "@upstart.gg/style-system";
+import { Theme } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDarkMode } from "usehooks-ts";
 

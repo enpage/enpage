@@ -1,4 +1,4 @@
-import { Dialog, TextField, Select, Button, Callout } from "@upstart.gg/style-system";
+import { Dialog, TextField, Select, Button, Callout } from "@upstart.gg/style-system/system";
 import { useEditor } from "~/editor/hooks/use-editor";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { useState } from "react";
