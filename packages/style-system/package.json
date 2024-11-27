@@ -1,11 +1,11 @@
 {
   "name": "@upstart.gg/style-system",
-  "version": "0.0.28",
+  "version": "0.0.27",
   "description": "Base tailwindcss setup with some extra plugins as well as colors and editor styles",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc -w"
+    "build": "tsup",
+    "dev": "tsup -w"
   },
   "exports": {
     "./*.css": {
@@ -24,8 +24,6 @@
     "@radix-ui/react-context-menu": "2.2.2",
     "@radix-ui/react-toggle-group": "1.1.0",
     "@radix-ui/themes": "3.1.4",
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.13",
     "@twind/core": "1.1.3",
     "@twind/preset-autoprefix": "1.0.7",
     "@twind/preset-container-queries": "1.0.7",
@@ -35,14 +33,8 @@
     "@twind/preset-tailwind-forms": "1.1.2",
     "@twind/preset-typography": "1.0.7",
     "@twind/with-react": "1.1.3",
-    "@whiterussianstudio/tailwind-easing": "^1.0.0",
     "animate.css": "^4.1.1",
-    "csstype": "3.1.3",
-    "polished": "4.3.1",
-    "tailwind-scrollbar": "^3.1.0",
-    "tailwindcss": "3.4.10",
-    "tailwindcss-animate": "1.0.7",
-    "tailwindcss-opentype": "1.1.0"
+    "polished": "4.3.1"
   },
   "devDependencies": {
     "tsup": "8.2.4"

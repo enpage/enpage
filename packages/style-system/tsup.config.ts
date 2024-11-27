@@ -6,7 +6,10 @@ export default defineConfig((options) => {
     format: ["esm"],
     clean: !options.watch,
     minify: !options.watch,
-    target: "node20",
+    bundle: false,
+    dts: true,
+    splitting: false,
+    target: "esnext",
     external: ["zod", "stripe"],
   };
 });
