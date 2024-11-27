@@ -8,28 +8,12 @@
     "dev": "tsc -w"
   },
   "exports": {
-    ".": {
-      "types": "./dist/system.d.ts",
-      "import": "./dist/system.js"
-    },
-    "./twind-ssr": {
-      "types": "./dist/twind-ssr.d.ts",
-      "import": "./dist/twind-ssr.js"
-    },
-    "./twind": {
-      "types": "./dist/twind.d.ts",
-      "import": "./dist/twind.js"
-    },
     "./*.css": {
       "import": "./src/*.css"
     },
-    "./tailwind-preset": {
-      "import": "./src/tailwind.config.js",
-      "require": "./src/tailwind.config.js"
-    },
-    "./colors": {
-      "import": "./src/colors.js",
-      "require": "./src/colors.js"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
     }
   },
   "keywords": [],
