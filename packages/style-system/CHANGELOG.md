@@ -1,5 +1,11 @@
 # @upstart.gg/style-system
 
+## 0.0.29
+
+### Patch Changes
+
+- [#239](https://github.com/enpage/enpage/pull/239) [`2170dc8`](https://github.com/enpage/enpage/commit/2170dc80db3704ad48f92e0ddfe185cf6766855c) Thanks [@mattallty](https://github.com/mattallty)! - Tweek tsup config for style system
+
 ## 0.0.28
 
 ### Patch Changes
