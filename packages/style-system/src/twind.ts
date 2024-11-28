@@ -11,7 +11,7 @@ import {
   keyframes as keyframes$,
   observe as observe$,
 } from "@twind/core";
-import config from "./twind-config";
+import config from "./twind-config.js";
 
 export { getSheet } from "@twind/core";
 export { default as inline } from "@twind/with-react/inline";
