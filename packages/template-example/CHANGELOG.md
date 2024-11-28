@@ -1,5 +1,12 @@
 # @upstart.gg/template-example
 
+## 0.0.65
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.65
+
 ## 0.0.64
 
 ### Patch Changes
