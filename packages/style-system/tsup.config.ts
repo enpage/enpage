@@ -4,12 +4,12 @@ export default defineConfig((options) => {
   return {
     entry: ["src/**/*.ts"],
     format: ["esm"],
+    dts: true,
+    target: "es2020",
+    metafile: !!(process.env.CI || process.env.ANALYSE_BUNDLE),
     clean: !options.watch,
     minify: !options.watch,
-    bundle: false,
-    dts: true,
+    sourcemap: options.watch ? "inline" : false,
     splitting: false,
-    target: "esnext",
-    external: ["zod", "stripe"],
   };
 });
