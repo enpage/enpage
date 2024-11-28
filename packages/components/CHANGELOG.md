@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.65
+
+### Patch Changes
+
+- [#241](https://github.com/enpage/enpage/pull/241) [`7b6553d`](https://github.com/enpage/enpage/commit/7b6553d61f461f0bac48e7a21471ec4a4dcd6062) Thanks [@mattallty](https://github.com/mattallty)! - Add onReady to EditorWrapper
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.65
+
 ## 0.0.64
 
 ### Patch Changes
