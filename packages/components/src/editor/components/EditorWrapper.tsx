@@ -4,7 +4,7 @@ import {
   createDraftStore,
   createEditorStore,
 } from "../hooks/use-editor";
-import { useRef, type PropsWithChildren } from "react";
+import { useEffect, useRef, type PropsWithChildren } from "react";
 import type { GenericPageConfig, PageBasicInfo } from "@upstart.gg/sdk/shared/page";
 import { Theme } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
@@ -21,6 +21,7 @@ export type EditorWrapperProps = {
   enabled?: boolean;
   pageConfig: GenericPageConfig;
   pages: PageBasicInfo[];
+  onReady?: () => void;
 };
 
 /**
@@ -33,6 +34,7 @@ export function EditorWrapper({
   pages,
   mode,
   children,
+  onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
   const editorStore = useRef(createEditorStore({ enabled, pageConfig, pages, mode })).current;
   const draftStore = useRef(
@@ -45,6 +47,8 @@ export function EditorWrapper({
   ).current;
 
   const { isDarkMode } = useDarkMode();
+
+  useEffect(onReady, []);
 
   return (
     <EditorStoreContext.Provider value={editorStore} key="EditorStoreContext">
