@@ -90,7 +90,12 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
     siteId: "",
     hostname: "",
     label: "Home page",
-    pagesMap: [],
+    pagesMap: templateConfig.pages.map((p) => ({
+      id: p.path,
+      label: p.label,
+      path: p.path,
+      tags: [],
+    })),
     path,
     datasources: templateConfig.datasources,
     attributes: templateConfig.attributes,
@@ -101,11 +106,22 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
 }
 
 export type TemplatePage = {
+  id: string;
   label: string;
   path: string;
   bricks: Brick[];
+  tags: string[];
 };
 
-export function definePages(pages: TemplatePage[]) {
-  return pages;
+type DefinedTemplatePage = Omit<TemplatePage, "id" | "tags"> & {
+  id?: string;
+  tags?: string[];
+};
+
+export function definePages(pages: DefinedTemplatePage[]): TemplatePage[] {
+  return pages.map((p) => ({
+    ...p,
+    id: p.id ?? p.path,
+    tags: p.tags ?? [],
+  }));
 }
