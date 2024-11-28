@@ -1,5 +1,15 @@
 # @upstart.gg/components
 
+## 0.0.63
+
+### Patch Changes
+
+- [#237](https://github.com/enpage/enpage/pull/237) [`09322ce`](https://github.com/enpage/enpage/commit/09322ce2f697f05584cc333ad0c2d1bc2af35440) Thanks [@mattallty](https://github.com/mattallty)! - Fix style system
+
+- Updated dependencies [[`09322ce`](https://github.com/enpage/enpage/commit/09322ce2f697f05584cc333ad0c2d1bc2af35440)]:
+  - @upstart.gg/style-system@0.0.28
+  - @upstart.gg/sdk@0.0.63
+
 ## 0.0.62
 
 ### Patch Changes

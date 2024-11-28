@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- [#237](https://github.com/enpage/enpage/pull/237) [`09322ce`](https://github.com/enpage/enpage/commit/09322ce2f697f05584cc333ad0c2d1bc2af35440) Thanks [@mattallty](https://github.com/mattallty)! - Fix style system
+
+## 0.0.28
+
+### Patch Changes
+
 - [`7e505d1`](https://github.com/enpage/enpage/commit/7e505d1c9ac7cb57be895feafb5b5e47015ae0a2) Thanks [@mattallty](https://github.com/mattallty)! - twind.config -> twind-config
 
 ## 0.0.27
