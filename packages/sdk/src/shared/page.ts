@@ -106,22 +106,19 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
 }
 
 export type TemplatePage = {
-  id: string;
   label: string;
   path: string;
   bricks: Brick[];
   tags: string[];
 };
 
-type DefinedTemplatePage = Omit<TemplatePage, "id" | "tags"> & {
-  id?: string;
+type DefinedTemplatePage = Omit<TemplatePage, "tags"> & {
   tags?: string[];
 };
 
 export function definePages(pages: DefinedTemplatePage[]): TemplatePage[] {
   return pages.map((p) => ({
     ...p,
-    id: p.id ?? p.path,
     tags: p.tags ?? [],
   }));
 }
