@@ -11,6 +11,13 @@ export type PageBasicInfo = {
   label: string;
 };
 
+export type PagesMapEntry = {
+  id: string;
+  label: string;
+  path: string;
+  tags: string[];
+};
+
 /**
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
@@ -40,12 +47,7 @@ export type PageConfig<
   /**
    * Map of all pages in the site.
    */
-  pagesMap: {
-    id: string;
-    label: string;
-    path: string;
-    tags: string[];
-  }[];
+  pagesMap: PagesMapEntry[];
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -77,7 +79,14 @@ export type GenericPageConfig = PageConfig<
 
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
-export function createPageConfigSampleFromTemplateConfig(templateConfig: TemplateConfig, path = "/") {
+export type GenericSiteConfig = Omit<
+  GenericPageConfig,
+  "siteId" | "id" | "hostname" | "label" | "pagesMap"
+> & {
+  pagesMap: Omit<PagesMapEntry, "id">[];
+};
+
+export function createSiteConfigFromTemplateConfig(templateConfig: TemplateConfig, path = "/") {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigSampleFromTemplateConfig: No bricks found for path ${path}`);
 
@@ -86,15 +95,11 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
   }
 
   return {
-    id: "",
-    siteId: "",
-    hostname: "",
-    label: "Home page",
     pagesMap: templateConfig.pages.map((p) => ({
-      id: p.path,
+      id: crypto.randomUUID(),
       label: p.label,
       path: p.path,
-      tags: [],
+      tags: p.tags,
     })),
     path,
     datasources: templateConfig.datasources,
@@ -102,7 +107,7 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
     attr: resolveAttributes(templateConfig.attributes),
     bricks,
     theme: templateConfig.themes[0],
-  } satisfies GenericPageConfig;
+  } satisfies GenericSiteConfig;
 }
 
 export type TemplatePage = {
