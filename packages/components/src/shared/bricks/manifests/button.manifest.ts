@@ -1,17 +1,16 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
-import { forwardRef } from "react";
-import { tx, css } from "@upstart.gg/style-system/twind";
-import { commonProps, contentAwareProps } from "./props/common";
-import { commonStyleProps } from "./props/style-props";
+import { commonProps, contentAwareProps } from "../props/common";
+import { commonStyleProps } from "../props/style-props";
 import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
+// get filename from esm import.meta
 export const manifest = defineBrickManifest({
-  type: "form",
-  kind: "widget",
-  title: "Form",
-  description: "A form element",
+  type: "button",
+  title: "Button",
+  kind: "brick",
+  description: "A button with text and optional icon",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -28,18 +27,15 @@ export const manifest = defineBrickManifest({
     mobile: 3,
     desktop: 3,
   },
-  icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  icon: `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
     <!-- Main container -->
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
-    <!-- Two input boxes -->
-    <rect x="6" y="6" width="12" height="3" rx="1"></rect>
-    <rect x="6" y="11" width="12" height="3" rx="1"></rect>
+    <!-- Button container -->
+    <rect x="4" y="11" width="16" height="6" rx="2"></rect>
 
-    <!-- Right-aligned button -->
-    <rect x="12" y="17" width="6" height="2" rx="1"
-      fill="currentColor"
-    ></rect>
+    <!-- Text line inside button -->
+    <line x1="9" y1="14" x2="15" y2="14"></line>
 </svg>
   `,
   props: Type.Composite([
@@ -69,20 +65,3 @@ export const manifest = defineBrickManifest({
 
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
-
-const WidgetForm = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
-  props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
-
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
-  }
-
-  const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
-  });
-
-  return <div>Im a card</div>;
-});
-
-export default WidgetForm;

@@ -5,7 +5,7 @@ import type { DraggableOptions } from "@interactjs/actions/drag/plugin";
 import type { ResizableOptions } from "@interactjs/actions/resize/plugin";
 import { useGetBrick, usePreviewMode, useSelectedGroup } from "./use-editor";
 import type { Brick, BrickConstraints } from "@upstart.gg/sdk/shared/bricks";
-import { defaults } from "~/shared/bricks/all-manifests";
+import { defaults } from "~/shared/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 
 interface DragCallbacks {

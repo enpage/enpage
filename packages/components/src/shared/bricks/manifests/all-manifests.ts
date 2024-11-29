@@ -1,33 +1,33 @@
 // hero
-import { defaults as heroDefaults, manifest as heroManifest } from "./hero";
+import { defaults as heroDefaults, manifest as heroManifest } from "./hero.manifest";
 // image
-import { defaults as imageDefaults, manifest as imageManifest } from "./image";
+import { defaults as imageDefaults, manifest as imageManifest } from "./image.manifest";
 // video
-import { defaults as videoDefaults, manifest as videoManifest } from "./video";
+import { defaults as videoDefaults, manifest as videoManifest } from "./video.manfest";
 // text
-import { defaults as textDefaults, manifest as textManifest } from "./text";
+import { defaults as textDefaults, manifest as textManifest } from "./text.manifest";
 // widget card
-import { defaults as cardDefaults, manifest as cardManifest } from "./widget-card";
+import { defaults as cardDefaults, manifest as cardManifest } from "./card.manifest";
 // widget map
-import { defaults as mapDefaults, manifest as mapManifest } from "./widget-map";
+import { defaults as mapDefaults, manifest as mapManifest } from "./map.manifest";
 // widget form
-import { defaults as formDefaults, manifest as formManifest } from "./widget-form";
+import { defaults as formDefaults, manifest as formManifest } from "./form.manifest";
 // widget images-wall
-import { defaults as imagesWallDefaults, manifest as imagesWallManifest } from "./widget-images-wall";
+import { defaults as imagesWallDefaults, manifest as imagesWallManifest } from "./images-wall.manifest";
 // widget carousel
-import { defaults as carouselDefaults, manifest as carouselManifest } from "./widget-carousel";
+import { defaults as carouselDefaults, manifest as carouselManifest } from "./carousel.manifest";
 // widget header
-import { defaults as headerDefaults, manifest as headerManifest } from "./widget-header";
+import { defaults as headerDefaults, manifest as headerManifest } from "./header.manifest";
 // widget footer
-import { defaults as footerDefaults, manifest as footerManifest } from "./widget-footer";
+import { defaults as footerDefaults, manifest as footerManifest } from "./footer.manifest";
 // button
-import { defaults as buttonDefaults, manifest as buttonManifest } from "./button";
+import { defaults as buttonDefaults, manifest as buttonManifest } from "./button.manifest";
 // icon
-import { defaults as iconDefaults, manifest as iconManifest } from "./icon";
+import { defaults as iconDefaults, manifest as iconManifest } from "./icon.manifest";
 // widget "social-links"
-import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from "./widget-social-links";
+import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from "./social-links.manifest";
 // widget countdown
-import { defaults as countdownDefaults, manifest as countdownManifest } from "./widget-countdown";
+import { defaults as countdownDefaults, manifest as countdownManifest } from "./countdown.manifest";
 
 import type { BrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";

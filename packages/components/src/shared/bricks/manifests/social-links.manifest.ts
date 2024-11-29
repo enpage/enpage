@@ -1,9 +1,7 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
-import { forwardRef } from "react";
-import { tx, css } from "@upstart.gg/style-system/twind";
-import { commonProps, contentAwareProps } from "./props/common";
-import { commonStyleProps } from "./props/style-props";
+import { commonProps, contentAwareProps } from "../props/common";
+import { commonStyleProps } from "../props/style-props";
 import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
@@ -73,20 +71,3 @@ export const manifest = defineBrickManifest({
 
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
-
-const SocialLinks = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
-  props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
-
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
-  }
-
-  const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
-  });
-
-  return <div>Im a card</div>;
-});
-
-export default SocialLinks;
