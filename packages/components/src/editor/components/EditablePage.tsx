@@ -9,7 +9,7 @@ import { canDropOnLayout } from "@upstart.gg/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/editor/hooks/use-draggable";
 import { debounce } from "lodash-es";
-import { defaults } from "~/shared/bricks/all-manifests";
+import { defaults } from "~/shared/bricks/manifests/all-manifests";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
 
 export default function EditablePage() {

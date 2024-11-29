@@ -30,7 +30,7 @@ export const CustomObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
         <div key={group} className="form-section">
           {/* Render group title only when there is at least one non-hidden element */}
           {fields.some((field) => !field.hidden) && (
-            <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] border-b border-upstart-200">
+            <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
               {groupTitles[group]}
             </h3>
           )}

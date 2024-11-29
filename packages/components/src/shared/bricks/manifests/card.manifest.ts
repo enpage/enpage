@@ -1,17 +1,15 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
-import { forwardRef } from "react";
-import { tx, css } from "@upstart.gg/style-system/twind";
-import { commonProps, contentAwareProps } from "./props/common";
-import { commonStyleProps } from "./props/style-props";
+import { commonProps, contentAwareProps } from "../props/common";
+import { commonStyleProps } from "../props/style-props";
 import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "map",
+  type: "card",
   kind: "widget",
-  title: "Map",
-  description: "A map element with a location",
+  title: "Card",
+  description: "A multi-purpose card that can have a title, subtitle, image, and content",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -30,19 +28,20 @@ export const manifest = defineBrickManifest({
   },
   // svg icon for the "card" brick
   icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Main container -->
+    <!-- Card container -->
     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
-    <!-- Map fold lines (even thinner) -->
-    <path d="M3 9 L21 9" stroke-width="0.3"></path>
-    <path d="M9 3 L9 21" stroke-width="0.3"></path>
-    <path d="M15 3 L15 21" stroke-width="0.3"></path>
-    <path d="M3 15 L21 15" stroke-width="0.3"></path>
+    <!-- Image area separator line -->
+    <line x1="3" y1="11" x2="21" y2="11"></line>
 
-    <!-- Location pin (teardrop shape) -->
-    <path d="M12 5 C10.3431 5 9 6.34315 9 8 C9 9.3124 9.84285 10.4274 11 10.8229 L12 13 L13 10.8229 C14.1571 10.4274 15 9.3124 15 8 C15 6.34315 13.6569 5 12 5Z"></path>
+    <!-- Title (shorter line) -->
+    <line x1="7" y1="14" x2="17" y2="14"></line>
+
+    <!-- Text content (shorter line) -->
+    <line x1="7" y1="17" x2="15" y2="17"></line>
 </svg>
   `,
+
   props: Type.Composite([
     contentAwareProps,
     commonProps,
@@ -70,20 +69,3 @@ export const manifest = defineBrickManifest({
 
 export type Manifest = Static<typeof manifest>;
 export const defaults = Value.Create(manifest);
-
-const WidgetMap = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
-  props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
-
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
-  }
-
-  const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
-  });
-
-  return <div>Im a card</div>;
-});
-
-export default WidgetMap;
