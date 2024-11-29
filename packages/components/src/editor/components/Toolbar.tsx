@@ -10,19 +10,19 @@ export default function Toolbar() {
   const editor = useEditor();
 
   const baseCls = `bg-gradient-to-r from-transparent
-  to-[rgba(255,255,255,0.15)] dark:to-[rgba(255,255,255,0.05)]
+  to-[rgba(255,255,255,0.15)] dark:to-dark-800
   border-y border-t-gray-200 border-b-gray-300
-  dark:(border-t-dark-500 border-b-dark-600)`;
+  dark:(border-t-dark-600 border-b-dark-700)`;
 
   const commonCls = `${baseCls}
     w-full
-    hover:from-transparent hover:to-[rgba(255,255,255,0.45)]
+    hover:from-transparent hover:to-[rgba(255,255,255,0.45)] dark:hover:to-dark-700
     active:(from-transparent hover:to-[rgba(0,0,0,0.15)])
     disabled:text-gray-400/80 disabled:hover:from-transparent disabled:hover:to-transparent
   `;
 
   const btnClass = tx(
-    `flex border-l-[3px] items-center justify-center py-3 gap-x-0.5 aspect-square
+    `flex border-l-[3px] border-transparent items-center justify-center py-3 gap-x-0.5 aspect-square
     group relative disabled:hover:cursor-default focus-visible:outline-none`,
     css`&:is(.active) {
       border-left-color: var(--violet-8);
@@ -37,9 +37,9 @@ export default function Toolbar() {
     <nav
       role="toolbar"
       className={tx(
-        `bg-gray-200 dark:bg-dark-700 z-[9999]
+        `bg-gray-200 dark:bg-dark-800 z-[9999]
           flex flex-col w-[3.7rem] text-xl text-gray-600 dark:text-gray-300
-          border-r border-gray-300 dark:border-dark-500`,
+          border-r border-gray-300 dark:border-dark-700`,
         {
           "shadow-[0px_0px_10px_0px_rgba(0,0,0,0.08)]": !editor.panel,
         },

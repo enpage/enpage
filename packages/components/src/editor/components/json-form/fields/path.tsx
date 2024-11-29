@@ -26,7 +26,7 @@ const PathField: React.FC<FieldProps> = (props) => {
       )}
       <TextField.Root defaultValue={path} className="!mt-1.5">
         <TextField.Slot>
-          <TbSlash className="bg-gray-100 h-6 w-6 rounded-md stroke-1 !-ml-1" />
+          <TbSlash className="bg-transparent h-5 w-5 rounded-md stroke-1 !-ml-1 !-mr-1" />
         </TextField.Slot>
       </TextField.Root>
     </div>
