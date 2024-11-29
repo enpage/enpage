@@ -16,8 +16,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "paths": {
       "~/*": ["./src/*"]
-    },
-    "declarationMap": true
+    }
   },
   "include": ["src"]
 }

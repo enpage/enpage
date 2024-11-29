@@ -12,6 +12,7 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "noEmit": true,
     // "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -21,8 +22,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "paths": {
       "~/*": ["./src/*"]
-    },
-    "declarationMap": true
+    }
   },
   "include": ["src"]
 }
