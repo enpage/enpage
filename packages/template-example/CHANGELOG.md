@@ -1,5 +1,15 @@
 # @upstart.gg/template-example
 
+## 0.0.66
+
+### Patch Changes
+
+- [#243](https://github.com/enpage/enpage/pull/243) [`f445afb`](https://github.com/enpage/enpage/commit/f445afb24b74c468a950a211a48e71b3f79c3c7e) Thanks [@mattallty](https://github.com/mattallty)! - new createSiteConfigFromTemplateConfig() method
+
+- Updated dependencies [[`b7eb556`](https://github.com/enpage/enpage/commit/b7eb556abb58cfc4a57ec3e9041c1c2e6ce925a0), [`f445afb`](https://github.com/enpage/enpage/commit/f445afb24b74c468a950a211a48e71b3f79c3c7e), [`d6b4982`](https://github.com/enpage/enpage/commit/d6b498228fd3fb558a7452c6652b2728b4a61418)]:
+  - @upstart.gg/style-system@0.0.30
+  - @upstart.gg/sdk@0.0.66
+
 ## 0.0.65
 
 ### Patch Changes

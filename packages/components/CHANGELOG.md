@@ -1,5 +1,23 @@
 # @upstart.gg/components
 
+## 0.0.66
+
+### Patch Changes
+
+- [#247](https://github.com/enpage/enpage/pull/247) [`b7eb556`](https://github.com/enpage/enpage/commit/b7eb556abb58cfc4a57ec3e9041c1c2e6ce925a0) Thanks [@mattallty](https://github.com/mattallty)! - Various improvements
+
+- [#243](https://github.com/enpage/enpage/pull/243) [`f445afb`](https://github.com/enpage/enpage/commit/f445afb24b74c468a950a211a48e71b3f79c3c7e) Thanks [@mattallty](https://github.com/mattallty)! - new createSiteConfigFromTemplateConfig() method
+
+- [#246](https://github.com/enpage/enpage/pull/246) [`560d53a`](https://github.com/enpage/enpage/commit/560d53ac68e38c0d2d1c5ee6614580405e336f3f) Thanks [@mattallty](https://github.com/mattallty)! - Split manifests from components
+
+- [#246](https://github.com/enpage/enpage/pull/246) [`560d53a`](https://github.com/enpage/enpage/commit/560d53ac68e38c0d2d1c5ee6614580405e336f3f) Thanks [@mattallty](https://github.com/mattallty)! - fix styles
+
+- [#245](https://github.com/enpage/enpage/pull/245) [`d6b4982`](https://github.com/enpage/enpage/commit/d6b498228fd3fb558a7452c6652b2728b4a61418) Thanks [@mattallty](https://github.com/mattallty)! - Simplify types
+
+- Updated dependencies [[`b7eb556`](https://github.com/enpage/enpage/commit/b7eb556abb58cfc4a57ec3e9041c1c2e6ce925a0), [`f445afb`](https://github.com/enpage/enpage/commit/f445afb24b74c468a950a211a48e71b3f79c3c7e), [`d6b4982`](https://github.com/enpage/enpage/commit/d6b498228fd3fb558a7452c6652b2728b4a61418)]:
+  - @upstart.gg/style-system@0.0.30
+  - @upstart.gg/sdk@0.0.66
+
 ## 0.0.65
 
 ### Patch Changes
