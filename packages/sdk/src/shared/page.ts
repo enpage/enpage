@@ -73,22 +73,20 @@ export type GenericPageConfig = PageConfig<
 
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
-export type GenericSiteConfig = Omit<
-  GenericPageConfig,
-  "siteId" | "id" | "hostname" | "label" | "pagesMap"
-> & {
-  pagesMap: Omit<PagesMapEntry, "id">[];
-};
-
-export function createSiteConfigFromTemplateConfig(templateConfig: TemplateConfig, path = "/") {
+export function getPageConfig(
+  templateConfig: TemplateConfig,
+  options: Pick<GenericPageConfig, "id" | "siteId" | "label" | "hostname">,
+  path = "/",
+) {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
-  invariant(bricks, `createPageConfigSampleFromTemplateConfig: No bricks found for path ${path}`);
+  invariant(bricks, `createPageConfigFromTemplateConfig: No bricks found for path ${path}`);
 
   if (!templateConfig.attributes) {
     templateConfig.attributes = defineAttributes({});
   }
 
   return {
+    ...options,
     pagesMap: templateConfig.pages.map((p) => ({
       id: crypto.randomUUID(),
       label: p.label,
@@ -101,7 +99,36 @@ export function createSiteConfigFromTemplateConfig(templateConfig: TemplateConfi
     attr: resolveAttributes(templateConfig.attributes),
     bricks,
     theme: templateConfig.themes[0],
-  } satisfies GenericSiteConfig;
+  } satisfies GenericPageConfig;
+}
+
+/**
+ * Creates the necessary config for a new site based on the given template.
+ * Returns an object with property "site" and "pages", which should be used to create the site and pages in db.
+ * A temporary hostname is generated for the site, corresponding to the site id.
+ */
+export function getNewSiteConfig(
+  templateConfig: TemplateConfig,
+  options: Pick<GenericPageConfig, "label"> = { label: "New site" },
+) {
+  const siteId = crypto.randomUUID();
+  const hostname = `${siteId}.upstart.gg`;
+
+  const site = {
+    id: siteId,
+    label: options.label,
+    hostname,
+  };
+
+  const pages = templateConfig.pages.map((p) =>
+    getPageConfig(
+      templateConfig,
+      { siteId: site.id, id: crypto.randomUUID(), label: p.label, hostname },
+      p.path,
+    ),
+  );
+
+  return { site, pages };
 }
 
 export type TemplatePage = {
