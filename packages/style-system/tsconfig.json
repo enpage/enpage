@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
     "types": ["node"],
@@ -23,6 +24,5 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/dist", "**/*.js"]
+  "include": ["src"]
 }

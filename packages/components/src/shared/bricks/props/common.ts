@@ -31,6 +31,7 @@ export const editable = Type.Boolean({
   title: "Editable",
   description: "Allow editing of text content",
   default: false,
+  "ui:widget": "hidden",
 });
 
 export const contentAwareProps = Type.Object({

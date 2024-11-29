@@ -5,10 +5,11 @@ import type { TemplateConfig, ResolvedTemplateConfig } from "./template-config";
 import invariant from "./utils/invariant";
 import type { Theme } from "./theme";
 
-export type PageBasicInfo = {
+export type PagesMapEntry = {
   id: string;
-  siteId: string;
   label: string;
+  path: string;
+  tags: string[];
 };
 
 /**
@@ -40,12 +41,7 @@ export type PageConfig<
   /**
    * Map of all pages in the site.
    */
-  pagesMap: {
-    id: string;
-    label: string;
-    path: string;
-    tags: string[];
-  }[];
+  pagesMap: PagesMapEntry[];
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -77,7 +73,14 @@ export type GenericPageConfig = PageConfig<
 
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
-export function createPageConfigSampleFromTemplateConfig(templateConfig: TemplateConfig, path = "/") {
+export type GenericSiteConfig = Omit<
+  GenericPageConfig,
+  "siteId" | "id" | "hostname" | "label" | "pagesMap"
+> & {
+  pagesMap: Omit<PagesMapEntry, "id">[];
+};
+
+export function createSiteConfigFromTemplateConfig(templateConfig: TemplateConfig, path = "/") {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigSampleFromTemplateConfig: No bricks found for path ${path}`);
 
@@ -86,26 +89,35 @@ export function createPageConfigSampleFromTemplateConfig(templateConfig: Templat
   }
 
   return {
-    id: "",
-    siteId: "",
-    hostname: "",
-    label: "Home page",
-    pagesMap: [],
+    pagesMap: templateConfig.pages.map((p) => ({
+      id: crypto.randomUUID(),
+      label: p.label,
+      path: p.path,
+      tags: p.tags,
+    })),
     path,
     datasources: templateConfig.datasources,
     attributes: templateConfig.attributes,
     attr: resolveAttributes(templateConfig.attributes),
     bricks,
     theme: templateConfig.themes[0],
-  } satisfies GenericPageConfig;
+  } satisfies GenericSiteConfig;
 }
 
 export type TemplatePage = {
   label: string;
   path: string;
   bricks: Brick[];
+  tags: string[];
 };
 
-export function definePages(pages: TemplatePage[]) {
-  return pages;
+type DefinedTemplatePage = Omit<TemplatePage, "tags"> & {
+  tags?: string[];
+};
+
+export function definePages(pages: DefinedTemplatePage[]): TemplatePage[] {
+  return pages.map((p) => ({
+    ...p,
+    tags: p.tags ?? [],
+  }));
 }

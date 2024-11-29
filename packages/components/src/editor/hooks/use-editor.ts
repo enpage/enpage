@@ -12,7 +12,7 @@ import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
 import type { AttributesResolved } from "@upstart.gg/sdk/shared/attributes";
 import { generateId, type BrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import type { TObject } from "@sinclair/typebox";
-import type { GenericPageConfig, PageBasicInfo } from "@upstart.gg/sdk/shared/page";
+import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
 import type { ColorAdjustment } from "@upstart.gg/sdk/shared/themes/color-system";
@@ -27,7 +27,6 @@ export interface EditorStateProps {
   mode: "local" | "remote";
   enabled: boolean;
   pageConfig: GenericPageConfig;
-  pages: PageBasicInfo[];
 
   /**
    * The brick manifest that is being dragged from the library
@@ -68,7 +67,7 @@ export interface EditorState extends EditorStateProps {
 }
 
 export const createEditorStore = (
-  initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig; pages: PageBasicInfo[] },
+  initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig },
 ) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
     enabled: true,
@@ -458,7 +457,7 @@ export const useEditorEnabled = () => {
 
 export const usePagesInfo = () => {
   const ctx = useEditorStoreContext();
-  return useStore(ctx, (state) => state.pages);
+  return useStore(ctx, (state) => state.pageConfig.pagesMap);
 };
 
 export const usePreviewMode = () => {
