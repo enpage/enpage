@@ -5,12 +5,6 @@ import type { TemplateConfig, ResolvedTemplateConfig } from "./template-config";
 import invariant from "./utils/invariant";
 import type { Theme } from "./theme";
 
-export type PageBasicInfo = {
-  id: string;
-  siteId: string;
-  label: string;
-};
-
 export type PagesMapEntry = {
   id: string;
   label: string;

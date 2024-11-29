@@ -5,7 +5,7 @@ import {
   createEditorStore,
 } from "../hooks/use-editor";
 import { useEffect, useRef, type PropsWithChildren } from "react";
-import type { GenericPageConfig, PageBasicInfo } from "@upstart.gg/sdk/shared/page";
+import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
 import { Theme } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDarkMode } from "usehooks-ts";
@@ -20,7 +20,6 @@ export type EditorWrapperProps = {
   mode?: "local" | "remote";
   enabled?: boolean;
   pageConfig: GenericPageConfig;
-  pages: PageBasicInfo[];
   onReady?: () => void;
 };
 
@@ -31,12 +30,11 @@ export type EditorWrapperProps = {
 export function EditorWrapper({
   enabled = true,
   pageConfig,
-  pages,
   mode,
   children,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ enabled, pageConfig, pages, mode })).current;
+  const editorStore = useRef(createEditorStore({ enabled, pageConfig, mode })).current;
   const draftStore = useRef(
     createDraftStore({
       bricks: pageConfig.bricks,
