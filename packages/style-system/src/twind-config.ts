@@ -206,6 +206,16 @@ export default defineConfig({
         mobile: "1px",
         desktop: "1024px",
       },
+
+      animation: {
+        "fade-in": "fade-in 0.5s",
+      },
+      keyframes: {
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+      },
     },
   },
 });
