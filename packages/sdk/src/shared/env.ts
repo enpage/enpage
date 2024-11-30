@@ -1,4 +1,3 @@
-import type { HattipHandler } from "@hattip/core";
 import type { D1Database, R2Bucket, KVNamespace } from "@cloudflare/workers-types";
 
 export type EnpageEnv = {
@@ -22,5 +21,3 @@ export type EnpageEnv = {
   TIKTOK_CLIENT_SECRET?: string;
   YOUTUBE_API_KEY?: string;
 };
-
-export type PageInfoHandler = HattipHandler;
