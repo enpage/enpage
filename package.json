@@ -48,7 +48,6 @@
   },
   "pnpm": {
     "overrides": {
-      "jsdom>tough-cookie": "5.0.0-rc.4",
       "react": "18.3.0-canary-3d9b20132-20240124",
       "react-dom": "18.3.0-canary-3d9b20132-20240124",
       "@twind/core": "1.1.3",
