@@ -1,6 +1,6 @@
 {
   "name": "@upstart.gg/sdk",
-  "version": "0.0.66",
+  "version": "0.0.67",
   "type": "module",
   "files": [
     "dist",
@@ -59,7 +59,6 @@
     "date-fns": "3.6.0",
     "debug": "4.3.6",
     "dompurify": "3.1.6",
-
     "fast-glob": "3.3.2",
     "form-data": "4.0.0",
     "get-port": "7.1.0",
