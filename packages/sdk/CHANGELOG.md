@@ -1,5 +1,11 @@
 # @upstart.gg/sdk
 
+## 0.0.67
+
+### Patch Changes
+
+- [#248](https://github.com/enpage/enpage/pull/248) [`fffda4f`](https://github.com/enpage/enpage/commit/fffda4f13d52847d857c3479b0e27c1adeaac756) Thanks [@mattallty](https://github.com/mattallty)! - clean deps
+
 ## 0.0.66
 
 ### Patch Changes
