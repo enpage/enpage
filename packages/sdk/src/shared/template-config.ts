@@ -1,8 +1,8 @@
-import type { defineDataSources } from "./datasources";
-import type { defineAttributes } from "./attributes";
-import type { defineManifest } from "./manifest";
-import type { definePages } from "./page";
-import type { defineThemes } from "./theme";
+import { defineDataSources } from "./datasources";
+import { defineAttributes } from "./attributes";
+import { defineManifest } from "./manifest";
+import { definePages } from "./page";
+import { defineThemes } from "./theme";
 
 export type TemplateConfig = {
   /**
@@ -28,3 +28,16 @@ export type TemplateConfig = {
 };
 
 export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConfig, "attributes">>;
+
+/**
+ * Define the template configuration
+ */
+export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
+  return {
+    attributes: defineAttributes(config.attributes || {}),
+    manifest: defineManifest(config.manifest),
+    pages: definePages(config.pages),
+    themes: defineThemes(config.themes),
+    ...(config.datasources ? { datasources: defineDataSources(config.datasources) } : {}),
+  };
+}
