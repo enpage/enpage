@@ -41,7 +41,7 @@ export const datasources = defineDataSources({
     provider: "facebook-posts",
     options: {
       limit: 5,
-      nextRefreshDelay: 60 * 60 * 1000,
+      refreshInterval: 60 * 60 * 1000,
     },
   },
   videos: {

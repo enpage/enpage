@@ -1,8 +1,8 @@
 import type { RssOptions } from "./options";
 import { parseFeed } from "htmlparser2";
-import type { DatasourceFetcher } from "../../types";
 import { type RssSchema, rssSchema } from "./schema";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { DatasourceFetcher } from "~/shared/datasources";
 
 const fetchRss: DatasourceFetcher<RssSchema, null, RssOptions> = async ({ options }) => {
   const { url } = options;

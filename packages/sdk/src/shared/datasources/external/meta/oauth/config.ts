@@ -1,12 +1,16 @@
-import type { OAuthConfig } from "../../../types";
+import { Type, type Static } from "@sinclair/typebox";
+import { buildOAuthConfigSchema } from "~/shared/datasources";
 
-export interface MetaOAuthConfig {
-  type: "short-lived" | "long-lived";
-  accessToken: string;
-  userId: string;
-  permissions: string[];
-  expiresIn: number;
-  tokenType: string;
-}
+const metaOAuthConfig = Type.Object({
+  type: Type.Union([Type.Literal("short-lived"), Type.Literal("long-lived")]),
+  accessToken: Type.String(),
+  userId: Type.String(),
+  permissions: Type.Array(Type.String()),
+  expiresIn: Type.Number(),
+  tokenType: Type.String(),
+});
 
-export type MetaFullOAuthConfig = OAuthConfig<MetaOAuthConfig>;
+export type MetaOAuthConfig = Static<typeof metaOAuthConfig>;
+
+const metaFullOAuthConfig = buildOAuthConfigSchema(metaOAuthConfig);
+export type MetaFullOAuthConfig = Static<typeof metaFullOAuthConfig>;

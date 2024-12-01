@@ -101,11 +101,11 @@ jobs:
           SLACK_CHANNEL: "releases"
           SLACK_USERNAME: "SDKReleaser"
           SLACK_COLOR: 'success'
-          SLACK_TITLE: "New Enpage snapshots available"
+          SLACK_TITLE: "New Upstart snapshots available"
           SLACK_FOOTER: ""
           SLACK_ICON_EMOJI: ':rocket:'
           SLACK_MESSAGE_ON_SUCCESS: |
-            Some snapshot packages from enpage/enpage have been released! :tada:
+            Some snapshot packages from have been released! :tada:
 
             ${{ steps.parse_published_packages.outputs.result.message }}
 

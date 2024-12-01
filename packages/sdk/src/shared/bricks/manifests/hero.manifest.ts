@@ -2,14 +2,14 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "social-links",
-  kind: "widget",
-  title: "Social links",
-  description: "A list of social media links",
+  type: "hero",
+  title: "Hero",
+  kind: "brick",
+  description: "A big textual element for home pages",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -26,22 +26,11 @@ export const manifest = defineBrickManifest({
     mobile: 3,
     desktop: 3,
   },
-  icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Main container -->
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-
-    <!-- Dots and social info -->
-    <circle cx="8" cy="8" r="1" fill="currentColor"></circle>
-    <line x1="11" y1="7" x2="16" y2="7"></line>
-    <line x1="11" y1="9" x2="13" y2="9" stroke-width="0.5"></line>
-
-    <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
-    <line x1="11" y1="11" x2="16" y2="11"></line>
-    <line x1="11" y1="13" x2="13.5" y2="13" stroke-width="0.5"></line>
-
-    <circle cx="8" cy="16" r="1" fill="currentColor"></circle>
-    <line x1="11" y1="15" x2="16" y2="15"></line>
-    <line x1="11" y1="17" x2="13" y2="17" stroke-width="0.5"></line>
+  icon: `
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect x="10" y="10" width="80" height="80" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+  <rect x="20" y="35" width="60" height="12" rx="2" fill="currentColor"/>
+  <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
 </svg>
   `,
   props: Type.Composite([

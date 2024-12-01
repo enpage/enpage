@@ -1,7 +1,7 @@
 import { type MastodonAccountSchema, mastodonAccountSchema } from "./schema";
-import type { DatasourceFetcher } from "~/shared/datasources/types";
 import type { MastodonCommonOptions } from "../options";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { DatasourceFetcher } from "~/shared/datasources";
 
 const fetchMastodonAccount: DatasourceFetcher<MastodonAccountSchema, null, MastodonCommonOptions> = async ({
   options,

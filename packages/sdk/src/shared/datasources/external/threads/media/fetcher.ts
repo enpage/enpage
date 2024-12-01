@@ -1,11 +1,11 @@
 import { type ThreadsMediaSchema, threadsMediaSchema } from "./schema";
 import type { MetaOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
-import type { DatasourceFetcher } from "~/shared/datasources/types";
 import invariant from "~/shared/utils/invariant";
 import { UnauthorizedError } from "~/shared/errors";
 import type { MetaOptions } from "~/shared/datasources/external/meta/options";
 import { stringifyObjectValues } from "~/shared/datasources/utils";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { DatasourceFetcher } from "~/shared/datasources";
 
 /**
  * todo: add a way to retrieve media/posts from Threads for a given user other than "me"

@@ -1,7 +1,7 @@
 import { useCallback, lazy, Suspense } from "react";
 import DOMPurify from "dompurify";
-import { useDraft } from "~/editor/hooks/use-editor";
-import type { Brick } from "@upstart.gg/sdk/shared/bricks";
+import { useDraft } from "./use-editor";
+import type { Brick } from "~/shared/bricks";
 import type { EditorEvents } from "@tiptap/react";
 
 const TextEditorAsync = lazy(() => import("../components/TextEditor"));

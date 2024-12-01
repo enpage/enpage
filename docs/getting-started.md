@@ -1,14 +1,11 @@
 # Getting Started
 
-This guide will help you get started with creating templates for Enpage.
+This guide will help you get started with creating templates for Upstart.
 
 ## Prerequisites
 
-Before you start creating templates for Enpage, you need to have the following:
-
-- Basic knowledge of HTML, CSS, and JavaScript
-- Node.js installed on your computer as well as a package manager like npm, pnpm or yarn.
-- An account on Enpage (needed to submit your template)
+You only need an account on Upstart to start creating templates.
+Visit [https://upstart.gg](https://upstart.gg) to create your account.
 
 ## Create a new template
 

@@ -1,4 +1,4 @@
-import { Type, type Static } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 
 const groupBorder = {
   "ui:group": "border",

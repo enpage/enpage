@@ -1,10 +1,10 @@
 import type { YoutubeListOptions } from "./options";
 import { type YoutubeListSchema, youtubeListSchema } from "./schema";
-import type { DatasourceFetcher } from "~/shared/datasources/types";
-import type { YoutubeOAuthConfig } from "../oauth/config";
 import { UnauthorizedError } from "~/shared/errors";
 import { stringifyObjectValues } from "~/shared/datasources/utils";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { YoutubeOAuthConfig } from "../oauth/config";
+import type { DatasourceFetcher } from "~/shared/datasources";
 
 const fetchYoutubeList: DatasourceFetcher<
   YoutubeListSchema,

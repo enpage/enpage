@@ -3,7 +3,7 @@ import fetchFacebookPostDatasource from "../fetcher";
 import { UnauthorizedError } from "~/shared/errors";
 import type { MetaOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
 import type { MetaOptions } from "~/shared/datasources/external/meta/options";
-import type { DatasourceFetcherParams } from "~/shared/datasources/types";
+import type { DatasourceFetcherParams } from "~/shared/datasources";
 
 // Mock the fetch function
 global.fetch = vi.fn();

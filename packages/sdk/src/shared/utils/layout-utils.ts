@@ -1,6 +1,7 @@
 import { LAYOUT_COLS } from "../layout-constants";
-import type { Brick, BrickConstraints } from "../bricks";
+import type { Brick } from "../bricks";
 import type { ResponsiveMode } from "../responsive";
+import type { BrickConstraints } from "../brick-manifest";
 
 const defaultsPreferred = {
   mobile: {

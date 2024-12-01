@@ -1,10 +1,10 @@
 import { facebookPostSchema, type FacebookPostSchema } from "./schema";
 import type { MetaOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
-import type { DatasourceFetcher } from "~/shared/datasources/types";
 import { UnauthorizedError } from "~/shared/errors";
 import type { MetaOptions } from "~/shared/datasources/external/meta/options";
 import { stringifyObjectValues } from "~/shared/datasources/utils";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { DatasourceFetcher } from "~/shared/datasources";
 
 const fetchFacebookPostDatasource: DatasourceFetcher<
   FacebookPostSchema,

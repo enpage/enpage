@@ -1,9 +1,10 @@
-import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
+import type { DatasourcesMap, DatasourcesResolved } from "./datasources";
 import { defineAttributes, resolveAttributes, type AttributesResolved } from "./attributes";
-import type { Brick } from "./bricks";
-import type { TemplateConfig, ResolvedTemplateConfig } from "./template-config";
+import { brickSchema, type Brick } from "./bricks";
+import type { TemplateConfig, ResolvedTemplateConfig } from "./template";
 import invariant from "./utils/invariant";
 import type { Theme } from "./theme";
+import { Type, type Static } from "@sinclair/typebox";
 
 export type PagesMapEntry = {
   id: string;
@@ -16,7 +17,7 @@ export type PagesMapEntry = {
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
 export type PageConfig<
-  D extends DatasourceManifestMap,
+  D extends DatasourcesMap,
   A extends ResolvedTemplateConfig["attributes"],
   B extends Brick[],
 > = {
@@ -50,7 +51,7 @@ export type PageConfig<
    * Resolved static data sources for the page.
    * Undefined if no data sources are defined.
    */
-  data?: D extends DatasourceManifestMap ? DatasourceResolved<D> : undefined;
+  data?: D extends DatasourcesMap ? DatasourcesResolved<D> : undefined;
 
   /**
    * Page attributes.
@@ -65,11 +66,7 @@ export type PageConfig<
   theme: Theme;
 };
 
-export type GenericPageConfig = PageConfig<
-  DatasourceManifestMap,
-  ResolvedTemplateConfig["attributes"],
-  Brick[]
->;
+export type GenericPageConfig = PageConfig<DatasourcesMap, ResolvedTemplateConfig["attributes"], Brick[]>;
 
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
@@ -77,7 +74,7 @@ export function getPageConfig(
   templateConfig: TemplateConfig,
   options: Pick<GenericPageConfig, "id" | "siteId" | "label" | "hostname">,
   path = "/",
-) {
+): GenericPageConfig {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigFromTemplateConfig: No bricks found for path ${path}`);
 
@@ -131,16 +128,23 @@ export function getNewSiteConfig(
   return { site, pages };
 }
 
-export type TemplatePage = {
-  label: string;
-  path: string;
-  bricks: Brick[];
-  tags: string[];
-};
+const templatePageSchema = Type.Object({
+  label: Type.String(),
+  path: Type.String(),
+  bricks: Type.Array(brickSchema),
+  tags: Type.Array(Type.String()),
+});
 
-type DefinedTemplatePage = Omit<TemplatePage, "tags"> & {
-  tags?: string[];
-};
+export type TemplatePage = Static<typeof templatePageSchema>;
+
+export const definedTemplatePage = Type.Composite([
+  Type.Omit(templatePageSchema, ["tags"]),
+  Type.Object({
+    tags: Type.Optional(Type.Array(Type.String())),
+  }),
+]);
+
+type DefinedTemplatePage = Static<typeof definedTemplatePage>;
 
 export function definePages(pages: DefinedTemplatePage[]): TemplatePage[] {
   return pages.map((p) => ({

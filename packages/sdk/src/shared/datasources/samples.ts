@@ -5,8 +5,8 @@ import { sample as mastodonStatusSample } from "./external/mastodon/status/sampl
 import { sample as rssSample } from "./external/rss/sample";
 import { sample as threadsMediaSample } from "./external/threads/media/sample";
 import { sample as tiktokVideoSample } from "./external/tiktok/video/sample";
-import type { DatasourceProvider } from "./types";
 import { sample as youtubeListSample } from "./external/youtube/list/sample";
+import type { DatasourceProvider } from "../datasources";
 
 export const samples: Record<Exclude<DatasourceProvider, "json">, Static<TSchema>> = {
   "facebook-posts": facebookListSample,

@@ -10,7 +10,7 @@ updates:
       - "/"
       - "/packages/create-enpage"
       - "/packages/editor"
-      - "/packages/sdk"
+      - "/packages/components"
       - "/packages/style-system"
       - "/packages/template-example"
     schedule:

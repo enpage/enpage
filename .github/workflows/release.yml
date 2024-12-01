@@ -114,12 +114,12 @@ jobs:
           SLACK_CHANNEL: "releases"
           SLACK_USERNAME: "SDKReleaser"
           SLACK_COLOR: 'success'
-          SLACK_TITLE: "Enpage SDK release"
+          SLACK_TITLE: "Upstart SDK release"
           SLACK_FOOTER: ""
           MSG_MINIMAL: true
           SLACK_ICON_EMOJI:  ':rocket:'
           SLACK_MESSAGE_ON_SUCCESS: |
-            Some packages from enpage/enpage have been released! :tada:
+            Some Upstart packages have been released! :tada:
 
             ```
             ${{ steps.changesets.outputs.publishedPackages }}

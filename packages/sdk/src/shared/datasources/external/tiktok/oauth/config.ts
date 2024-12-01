@@ -1,4 +1,4 @@
-import type { OAuthConfig } from "~/shared/datasources/types";
+import type { OAuthConfig } from "~/shared/datarecords/types";
 
 export interface TiktokOAuthConfig {
   accessToken: string;

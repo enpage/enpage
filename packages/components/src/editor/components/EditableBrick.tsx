@@ -6,7 +6,7 @@ import { isEqualWith } from "lodash-es";
 import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
-import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";
+import { useBrickWrapperStyle } from "../../../../sdk/src/shared/hooks/use-brick-style";
 
 const MemoBrickComponent = memo(BaseBrick, (prevProps, nextProps) => {
   const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {

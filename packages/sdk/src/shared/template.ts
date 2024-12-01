@@ -1,8 +1,22 @@
-import { defineDataSources } from "./datasources";
+import { datasourcesMap, defineDataSources } from "./datasources";
 import { defineAttributes } from "./attributes";
-import { defineManifest } from "./manifest";
-import { definePages } from "./page";
-import { defineThemes } from "./theme";
+import { defineManifest, manifestSchema } from "./manifest";
+import { definedTemplatePage, definePages } from "./page";
+import { defineThemes, themeSchema } from "./theme";
+import { Type } from "@sinclair/typebox";
+
+export const templateSchema = Type.Object(
+  {
+    manifest: manifestSchema,
+    themes: Type.Array(themeSchema),
+    datasources: Type.Optional(datasourcesMap),
+    pages: Type.Array(definedTemplatePage),
+  },
+  {
+    title: "Template schema",
+    description: "The template configuration schema",
+  },
+);
 
 export type TemplateConfig = {
   /**

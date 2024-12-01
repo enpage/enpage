@@ -43,7 +43,7 @@ export const datasources = defineDataSources({
     provider: "facebook-posts",
     options: {
       limit: 5,
-      nextRefreshDelay: 60 * 60 * 1000,
+      refreshInterval: 60 * 60 * 1000,
     },
   },
   videos: {
@@ -137,7 +137,6 @@ const homePageBricks = defineBricks([
           x: 0,
           w: "full",
           h: 3,
-          minW: 7,
         },
       },
     },
@@ -149,13 +148,11 @@ const homePageBricks = defineBricks([
       position: {
         mobile: {
           x: "third",
-          y: 4,
           w: "full",
           h: 3,
         },
         desktop: {
           x: "third",
-          y: 4,
           w: "third",
           h: 3,
         },
@@ -172,7 +169,6 @@ const homePageBricks = defineBricks([
         },
         desktop: {
           x: "twoThird",
-          y: 4,
           w: "third",
           h: 3,
         },

@@ -46,7 +46,15 @@ const external = [
   "__STATIC_CONTENT_MANIFEST",
 ];
 
-const ignored = ["!**/*.md", "!**/tests/**/*", "!**/sample.ts"];
+const ignored = [
+  "!**/*.md",
+  "!**/tests/**/*",
+  "!**/sample.ts",
+  // test
+  "!**/hooks/**/*",
+  "!**/node/cli/commands/**/*",
+  "!**/shared/bricks/**/*",
+];
 
 export default defineConfig((options) => {
   return [
@@ -85,7 +93,7 @@ export default defineConfig((options) => {
       clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      splitting: false,
+      // splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;

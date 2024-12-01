@@ -2,14 +2,14 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "form",
+  type: "social-links",
   kind: "widget",
-  title: "Form",
-  description: "A form element",
+  title: "Social links",
+  description: "A list of social media links",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -30,14 +30,18 @@ export const manifest = defineBrickManifest({
     <!-- Main container -->
     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
-    <!-- Two input boxes -->
-    <rect x="6" y="6" width="12" height="3" rx="1"></rect>
-    <rect x="6" y="11" width="12" height="3" rx="1"></rect>
+    <!-- Dots and social info -->
+    <circle cx="8" cy="8" r="1" fill="currentColor"></circle>
+    <line x1="11" y1="7" x2="16" y2="7"></line>
+    <line x1="11" y1="9" x2="13" y2="9" stroke-width="0.5"></line>
 
-    <!-- Right-aligned button -->
-    <rect x="12" y="17" width="6" height="2" rx="1"
-      fill="currentColor"
-    ></rect>
+    <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
+    <line x1="11" y1="11" x2="16" y2="11"></line>
+    <line x1="11" y1="13" x2="13.5" y2="13" stroke-width="0.5"></line>
+
+    <circle cx="8" cy="16" r="1" fill="currentColor"></circle>
+    <line x1="11" y1="15" x2="16" y2="15"></line>
+    <line x1="11" y1="17" x2="13" y2="17" stroke-width="0.5"></line>
 </svg>
   `,
   props: Type.Composite([

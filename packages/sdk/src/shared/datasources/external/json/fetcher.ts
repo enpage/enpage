@@ -1,5 +1,5 @@
+import type { DatasourceFetcher } from "~/shared/datasources";
 import type { HttpJsonOptions } from "./options";
-import type { DatasourceFetcher } from "../../types";
 import { get } from "lodash-es";
 
 /**

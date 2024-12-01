@@ -1,5 +1,4 @@
-import { Type, type Static, type TSchema } from "@sinclair/typebox";
-import type { DatasourceProvider } from "./datasources/types";
+import { Type, type Static, type TObject, type TSchema } from "@sinclair/typebox";
 import { youtubeListSchema } from "./datasources/external/youtube/list/schema";
 import { facebookPostSchema } from "./datasources/external/facebook/posts/schema";
 import { instagramFeedSchema } from "./datasources/external/instagram/feed/schema";
@@ -13,30 +12,74 @@ import { mastodonCommonOptions } from "./datasources/external/mastodon/options";
 import { httpJsonOptions } from "./datasources/external/json/options";
 import { rssOptions } from "./datasources/external/rss/options";
 import { tiktokVideoOptions } from "./datasources/external/tiktok/video/options";
+import type { GenericPageContext } from "./page";
+import type { OAuthConfig } from "./datarecords/types";
 
 export { Type as ds, type TSchema } from "@sinclair/typebox";
 
+export const providerOptions = Type.Object({
+  refreshInterval: Type.Optional(Type.Number()),
+});
+
+export type ProviderOptions = Static<typeof providerOptions>;
+
+export const buildOAuthConfigSchema = <T extends TSchema>(T: T) =>
+  Type.Object({
+    siteId: Type.String(),
+    siteDatasourceId: Type.String(),
+    config: T,
+    oauthTokenExpireAt: Type.String(),
+    oauthRefreshTokenExpireAt: Type.Optional(Type.String()),
+    nextRefreshTokenAt: Type.Optional(Type.String()),
+  });
+
+export type DatasourceFetcherParams<
+  OAuthProps = unknown,
+  Opts extends Record<string, unknown> = ProviderOptions,
+> = {
+  options: Opts;
+  pageConfig: GenericPageContext;
+  oauth: OAuthProps extends null ? null : OAuthConfig<OAuthProps>;
+};
+
+export type DatasourceFetcher<
+  T = unknown,
+  OAuthOpts = unknown,
+  Opts extends Record<string, unknown> = ProviderOptions,
+> = (params: DatasourceFetcherParams<OAuthOpts, Opts>) => Promise<T>;
+
+export const providersSchema = Type.Union([
+  Type.Literal("facebook-posts"),
+  Type.Literal("instagram-feed"),
+  Type.Literal("mastodon-status"),
+  Type.Literal("rss"),
+  Type.Literal("threads-media"),
+  Type.Literal("tiktok-video"),
+  Type.Literal("youtube-list"),
+  Type.Literal("json"),
+]);
+
+export type DatasourceProvider = Static<typeof providersSchema>;
+
 type HttpJsonSchema = TSchema;
 
-export const providersSchemaMap: Record<DatasourceProvider, TSchema> = {
+const providersSchemaMap = Type.Object({
   "youtube-list": youtubeListSchema,
   "facebook-posts": facebookPostSchema,
   "instagram-feed": instagramFeedSchema,
   "mastodon-status": mastodonStatusArraySchema,
   json: Type.Union([
-    Type.Array(Type.Any()),
+    Type.Array(Type.Object({}, { additionalProperties: true })),
     Type.Object({}, { additionalProperties: true }),
-  ]) as HttpJsonSchema,
+  ]),
   rss: rssSchema,
   "threads-media": threadsMediaSchema,
   "tiktok-video": tiktokVideoResponseSchema,
-};
+});
 
-export type DatasourceProviderSchemaMap = {
-  [key in DatasourceProvider]: Static<(typeof providersSchemaMap)[key]>;
-};
+export type DatasourceProviderSchemaMap = Static<typeof providersSchemaMap>;
 
-export const providersOptionsMap: Record<DatasourceProvider, TSchema> = {
+const providersOptionsMap = Type.Object({
   "youtube-list": youtubeListOptions,
   "facebook-posts": metaOptions,
   "instagram-feed": metaOptions,
@@ -45,74 +88,89 @@ export const providersOptionsMap: Record<DatasourceProvider, TSchema> = {
   rss: rssOptions,
   "threads-media": metaOptions,
   "tiktok-video": tiktokVideoOptions,
+});
+
+export type DatasourceProviderOptionsMap = Static<typeof providersOptionsMap>;
+
+const providersChoices = Type.Union([
+  Type.Object({
+    provider: Type.Literal("youtube-list"),
+    options: youtubeListOptions,
+  }),
+  Type.Object({
+    provider: Type.Union([
+      Type.Literal("facebook-posts"),
+      Type.Literal("instagram-feed"),
+      Type.Literal("threads-media"),
+    ]),
+    options: metaOptions,
+  }),
+  Type.Object({
+    provider: Type.Literal("mastodon-status"),
+    options: mastodonCommonOptions,
+  }),
+  Type.Object({
+    provider: Type.Literal("rss"),
+    options: rssOptions,
+  }),
+  Type.Object({
+    provider: Type.Literal("tiktok-video"),
+    options: tiktokVideoOptions,
+  }),
+  Type.Object({
+    provider: Type.Literal("json"),
+    options: httpJsonOptions,
+    schema: Type.Union([
+      Type.Array(Type.Object({}, { additionalProperties: true })),
+      Type.Object({}, { additionalProperties: true }),
+    ]),
+  }),
+]);
+
+const datasourceProviderManifest = Type.Composite([
+  providersChoices,
+  Type.Object({
+    name: Type.String(),
+    description: Type.Optional(Type.String()),
+    sampleData: Type.Optional(Type.Any()),
+    refresh: Type.Optional(
+      Type.Object({
+        method: Type.Union([Type.Literal("interval"), Type.Literal("manual"), Type.Literal("live")]),
+        interval: Type.Optional(Type.Number()),
+      }),
+    ),
+  }),
+]);
+
+export type DatasourceProviderManifest = Static<typeof datasourceProviderManifest>;
+
+const datasourceGenericManifest = Type.Object({
+  provider: Type.Literal("generic"),
+  name: Type.String(),
+  description: Type.Optional(Type.String()),
+  schema: Type.Object({}, { additionalProperties: true }),
+  refresh: Type.Optional(
+    Type.Object({
+      method: Type.Union([Type.Literal("interval"), Type.Literal("manual")]),
+      interval: Type.Optional(Type.Number()),
+    }),
+  ),
+  sampleData: Type.Optional(Type.Any()),
+});
+
+export type DatasourceGenericManifest = Static<typeof datasourceGenericManifest>;
+
+export const datasourcesMap = Type.Record(
+  Type.String(),
+  Type.Union([datasourceGenericManifest, datasourceProviderManifest]),
+);
+
+export type DatasourcesMap = Static<typeof datasourcesMap>;
+
+export type DatasourcesResolved<T extends DatasourcesMap> = {
+  data: T["schema"];
 };
 
-export type DatasourceProviderOptionsMap = {
-  [key in DatasourceProvider]: Static<(typeof providersOptionsMap)[key]>;
-};
-
-export type DatasourceProviderManifest<
-  P extends DatasourceProvider,
-  O extends DatasourceProviderOptionsMap[P] = DatasourceProviderOptionsMap[P],
-  S extends TSchema = P extends "json" ? HttpJsonSchema : (typeof providersSchemaMap)[P],
-> = {
-  provider: P;
-  options: O;
-  name: string;
-  description?: string;
-} & (P extends "json"
-  ? {
-      schema: S;
-      sampleData?: Static<S>;
-    }
-  : {
-      schema?: never;
-      sampleData?: Static<S>;
-    }) & {
-    refresh?: {
-      method: "interval" | "manual" | "live";
-      interval?: number;
-    };
-  };
-
-export type DatasourceGenericManifest<S extends TSchema> = {
-  provider?: never;
-  name: string;
-  description?: string;
-  schema: S;
-  refresh?: {
-    method: "interval" | "manual";
-    interval?: number;
-  };
-  sampleData?: Static<S>;
-};
-
-export type DatasourceManifestMap = Record<
-  string,
-  | DatasourceGenericManifest<TSchema>
-  | {
-      [P in DatasourceProvider]: DatasourceProviderManifest<P>;
-    }[DatasourceProvider]
->;
-
-// Helper type to ensure the correct structure of datasources
-type EnsureDatasourceManifestMap<T> = T extends DatasourceManifestMap ? T : never;
-
-type IsProvider<T> = T extends { provider: DatasourceProvider } ? T : never;
-
-export type DatasourceResolved<D extends DatasourceManifestMap> = {
-  [K in keyof D]: IsProvider<D[K]> extends never
-    ? D[K] extends DatasourceGenericManifest<infer S>
-      ? DatasourceGenericManifest<S> & { data: Static<S> }
-      : unknown
-    : D[K] extends DatasourceProviderManifest<infer P, infer O, infer S>
-      ? P extends DatasourceProvider
-        ? DatasourceProviderManifest<P, O, S> & {
-            data: P extends "json" ? Static<S> : Static<(typeof providersSchemaMap)[P]>;
-          }
-        : unknown
-      : unknown;
-};
-export function defineDataSources<T extends DatasourceManifestMap>(datasources: T) {
-  return datasources as EnsureDatasourceManifestMap<T>;
+export function defineDataSources<T extends DatasourcesMap>(datasources: T) {
+  return datasources;
 }
