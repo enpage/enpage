@@ -8,7 +8,6 @@ import type { ResponsiveMode } from "~/shared/responsive";
 import invariant from "~/shared/utils/invariant";
 import type { Brick, BrickPosition } from "~/shared/bricks";
 import type { Theme } from "~/shared/theme";
-import { themes } from "~/shared/themes/all-themes";
 import type { AttributesResolved } from "~/shared/attributes";
 import { generateId } from "~/shared/bricks";
 import type { TObject } from "@sinclair/typebox";
@@ -254,11 +253,11 @@ export const createDraftStore = (
   initProps: Partial<DraftStateProps> & {
     attr: DraftStateProps["attr"];
     attrSchema: DraftStateProps["attrSchema"];
+    theme: DraftStateProps["theme"];
   },
 ) => {
-  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attrSchema"> = {
+  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attrSchema" | "theme"> = {
     bricks: [],
-    theme: themes[1],
     data: {},
     mode: "local",
   };

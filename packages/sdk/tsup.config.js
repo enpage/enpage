@@ -61,7 +61,7 @@ export default defineConfig((options) => {
     {
       entry: ["src/node", ...ignored],
       outDir: "dist/node",
-      target: "node20.10",
+      target: "node22.11",
       format: ["esm"],
       dts: false,
       clean: !options.watch,
@@ -84,16 +84,12 @@ export default defineConfig((options) => {
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
-      dts: {
-        compilerOptions: {
-          exclude: ignored,
-        },
-      },
+      dts: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      // splitting: false,
+      splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;
