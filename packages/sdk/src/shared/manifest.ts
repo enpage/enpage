@@ -48,7 +48,3 @@ export const manifestSchema = Type.Object({
 
 export type TemplateManifest = Static<typeof manifestSchema>;
 export type PublishedTemplateManifest = TemplateManifest & Required<Pick<TemplateManifest, "id">>;
-
-export function defineManifest(manifest: Omit<TemplateManifest, "id" | "thumbnail">): TemplateManifest {
-  return manifest;
-}

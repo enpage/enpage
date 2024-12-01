@@ -180,12 +180,3 @@ export const themeSchema = Type.Object(
 );
 
 export type Theme = Static<typeof themeSchema>;
-
-/**
- * Define one or more custom themes
- * @param theme
- * @returns
- */
-export function defineThemes<T extends Theme>(theme: T | T[]): T[] {
-  return Array.isArray(theme) ? theme : [theme];
-}

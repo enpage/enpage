@@ -46,15 +46,7 @@ const external = [
   "__STATIC_CONTENT_MANIFEST",
 ];
 
-const ignored = [
-  "!**/*.md",
-  "!**/tests/**/*",
-  "!**/sample.ts",
-  // test
-  "!**/hooks/**/*",
-  "!**/node/cli/commands/**/*",
-  "!**/shared/bricks/**/*",
-];
+const ignored = ["!**/*.md", "!**/tests/**/*", "!**/sample.ts"];
 
 export default defineConfig((options) => {
   return [
@@ -72,7 +64,7 @@ export default defineConfig((options) => {
       splitting: false,
       external,
       // Force bundling of lodash-es for the CLI
-      noExternal: ["lodash-es"],
+      // noExternal: ["lodash-es"],
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -80,16 +72,25 @@ export default defineConfig((options) => {
       removeNodeProtocol: false,
     },
     {
-      entry: ["src/shared", ...ignored],
+      entry: [
+        "src/shared/template.ts",
+        "src/shared/attributes.ts",
+        "src/shared/themes",
+        "src/shared/analytics",
+        "src/shared/datasources/internal",
+        "src/shared/datasources/external",
+        "src/shared/env.ts",
+        ...ignored,
+      ],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
+      splitting: false,
       dts: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       clean: !options.watch,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;

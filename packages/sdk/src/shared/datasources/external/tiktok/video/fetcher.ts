@@ -1,13 +1,13 @@
 import type { TiktokVideoOptions } from "./options";
 import { type TiktokVideoResponseSchema, tiktokVideoResponseSchema } from "./schema";
-import type { TiktokOAuthConfig } from "../oauth/config";
 import { UnauthorizedError } from "~/shared/errors";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
-import type { DatasourceFetcher } from "~/shared/datasources";
+import type { TiktokFullOAuthConfig } from "../oauth/config";
+import type { DatasourceFetcher } from "~/shared/datasources/fetcher";
 
 const fetchTiktokVideoDatasource: DatasourceFetcher<
   TiktokVideoResponseSchema,
-  TiktokOAuthConfig,
+  TiktokFullOAuthConfig,
   TiktokVideoOptions
 > = async ({ options, oauth }) => {
   const params = new URLSearchParams({

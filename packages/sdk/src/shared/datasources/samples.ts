@@ -6,7 +6,7 @@ import { sample as rssSample } from "./external/rss/sample";
 import { sample as threadsMediaSample } from "./external/threads/media/sample";
 import { sample as tiktokVideoSample } from "./external/tiktok/video/sample";
 import { sample as youtubeListSample } from "./external/youtube/list/sample";
-import type { DatasourceProvider } from "../datasources";
+import type { DatasourceProvider } from "./types";
 
 export const samples: Record<Exclude<DatasourceProvider, "json">, Static<TSchema>> = {
   "facebook-posts": facebookListSample,

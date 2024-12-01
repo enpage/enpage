@@ -1,5 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { buildOAuthConfigSchema } from "~/shared/datasources";
+import { buildOAuthConfigSchema } from "~/shared/oauth";
 
 const metaOAuthConfig = Type.Object({
   type: Type.Union([Type.Literal("short-lived"), Type.Literal("long-lived")]),

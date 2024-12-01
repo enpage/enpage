@@ -3,12 +3,13 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import chalk from "chalk";
 import type { CommandArgOpts } from "../../types";
 import { formatAPIError, getPackageManager } from "../../utils";
-import { getTokenOrThrow, isLoggedIn } from "../../store";
+import { getTokenOrThrow } from "../../store";
 import { uploadTemplate } from "./uploader";
 import path from "node:path";
 import { post } from "../../api";
 import { API_ENDPOINT_REGISTER_TEMPLATE } from "../../constants";
 import { loadConfigFromJsFile, validateTemplateConfig } from "~/node/shared/config";
+import { isLoggedIn } from "../../is-logged-in";
 
 export async function publish({ options, args, logger }: CommandArgOpts) {
   // check if user is logged in

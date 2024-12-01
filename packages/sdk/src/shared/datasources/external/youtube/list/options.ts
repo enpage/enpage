@@ -1,5 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { providerOptions } from "~/shared/datasources";
+import { providerOptions } from "~/shared/datasources/types";
 
 export const youtubeListOptions = Type.Composite([
   providerOptions,

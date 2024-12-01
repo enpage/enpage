@@ -1,14 +1,14 @@
 import { instagramFeedSchema, type InstagramFeedSchema } from "./schema";
-import type { MetaOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
+import type { MetaFullOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
 import { UnauthorizedError } from "~/shared/errors";
 import type { MetaOptions } from "~/shared/datasources/external/meta/options";
 import { stringifyObjectValues } from "~/shared/datasources/utils";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
-import type { DatasourceFetcher } from "~/shared/datasources";
+import type { DatasourceFetcher } from "~/shared/datasources/fetcher";
 
 const fetchInstagramFeedDatasource: DatasourceFetcher<
   InstagramFeedSchema,
-  MetaOAuthConfig,
+  MetaFullOAuthConfig,
   MetaOptions
 > = async ({ options, oauth }) => {
   const params = new URLSearchParams({

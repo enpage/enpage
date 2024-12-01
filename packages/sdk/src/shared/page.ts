@@ -1,10 +1,10 @@
-import type { DatasourcesMap, DatasourcesResolved } from "./datasources";
 import { defineAttributes, resolveAttributes, type AttributesResolved } from "./attributes";
 import { brickSchema, type Brick } from "./bricks";
 import type { TemplateConfig, ResolvedTemplateConfig } from "./template";
 import invariant from "./utils/invariant";
 import type { Theme } from "./theme";
 import { Type, type Static } from "@sinclair/typebox";
+import type { DatasourcesMap, DatasourcesResolved } from "./datasources/types";
 
 export type PagesMapEntry = {
   id: string;
@@ -67,7 +67,6 @@ export type PageConfig<
 };
 
 export type GenericPageConfig = PageConfig<DatasourcesMap, ResolvedTemplateConfig["attributes"], Brick[]>;
-
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
 export function getPageConfig(
@@ -144,11 +143,4 @@ export const definedTemplatePage = Type.Composite([
   }),
 ]);
 
-type DefinedTemplatePage = Static<typeof definedTemplatePage>;
-
-export function definePages(pages: DefinedTemplatePage[]): TemplatePage[] {
-  return pages.map((p) => ({
-    ...p,
-    tags: p.tags ?? [],
-  }));
-}
+export type DefinedTemplatePage = Static<typeof definedTemplatePage>;

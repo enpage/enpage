@@ -1,7 +1,6 @@
 import type { CredentialsStore } from "./types";
 import { CLI_PROJECT_NAME, OAUTH_ENDPOINT_USER_INFO } from "./constants";
 import Conf from "conf";
-import { get } from "./api";
 import path from "node:path";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -16,29 +15,6 @@ const accessStore = new Conf<CredentialsStore>({
   encryptionKey: key,
   clearInvalidConfig: true,
 });
-
-export async function isLoggedIn(checkRemote = false): Promise<boolean> {
-  const token = accessStore.get("access_token");
-  const expiration = accessStore.get("expires_at");
-
-  if (!token) {
-    return false;
-  }
-
-  if (expiration && expiration < Date.now()) {
-    console.log("Seems like your token expired...");
-    return false;
-  }
-
-  if (!checkRemote) {
-    return true;
-  }
-
-  // Check if token is valid
-  const { isSuccess } = await get(OAUTH_ENDPOINT_USER_INFO);
-
-  return isSuccess;
-}
 
 /**
  * Get access token or throw error if not found

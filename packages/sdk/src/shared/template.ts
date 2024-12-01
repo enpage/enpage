@@ -1,28 +1,14 @@
-import { datasourcesMap, defineDataSources } from "./datasources";
 import { defineAttributes } from "./attributes";
-import { defineManifest, manifestSchema } from "./manifest";
-import { definedTemplatePage, definePages } from "./page";
-import { defineThemes, themeSchema } from "./theme";
-import { Type } from "@sinclair/typebox";
-
-export const templateSchema = Type.Object(
-  {
-    manifest: manifestSchema,
-    themes: Type.Array(themeSchema),
-    datasources: Type.Optional(datasourcesMap),
-    pages: Type.Array(definedTemplatePage),
-  },
-  {
-    title: "Template schema",
-    description: "The template configuration schema",
-  },
-);
+import type { TemplateManifest } from "./manifest";
+import type { TemplatePage } from "./page";
+import type { Theme } from "./theme";
+import type { DatasourcesMap } from "./datasources/types";
 
 export type TemplateConfig = {
   /**
    * The template manifest and settings
    */
-  manifest: ReturnType<typeof defineManifest>;
+  manifest: TemplateManifest;
   /**
    * The attributes declared for the template
    */
@@ -30,15 +16,15 @@ export type TemplateConfig = {
   /**
    * The datasources declared for the template
    */
-  datasources?: ReturnType<typeof defineDataSources>;
+  datasources?: DatasourcesMap;
   /**
    * The Pages
    */
-  pages: ReturnType<typeof definePages>;
+  pages: TemplatePage[];
   /**
    * The themes declared by the site.
    */
-  themes: ReturnType<typeof defineThemes>;
+  themes: Theme[];
 };
 
 export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConfig, "attributes">>;
@@ -49,9 +35,12 @@ export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConf
 export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
   return {
     attributes: defineAttributes(config.attributes || {}),
-    manifest: defineManifest(config.manifest),
-    pages: definePages(config.pages),
-    themes: defineThemes(config.themes),
-    ...(config.datasources ? { datasources: defineDataSources(config.datasources) } : {}),
+    manifest: config.manifest,
+    pages: config.pages.map((p) => ({
+      ...p,
+      tags: p.tags ?? [],
+    })),
+    themes: config.themes,
+    ...(config.datasources ? { datasources: config.datasources } : {}),
   };
 }
