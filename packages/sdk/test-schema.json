@@ -51,9 +51,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "name"
-      ]
+      "required": ["name"]
     },
     "themes": {
       "type": "array",
@@ -111,12 +109,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "primary",
-              "secondary",
-              "accent",
-              "neutral"
-            ]
+            "required": ["primary", "secondary", "accent", "neutral"]
           },
           "typography": {
             "type": "object",
@@ -297,11 +290,7 @@
                 ]
               }
             },
-            "required": [
-              "base",
-              "heading",
-              "body"
-            ]
+            "required": ["base", "heading", "body"]
           },
           "customFonts": {
             "title": "Custom fonts",
@@ -500,19 +489,11 @@
                   ]
                 }
               },
-              "required": [
-                "name",
-                "src"
-              ]
+              "required": ["name", "src"]
             }
           }
         },
-        "required": [
-          "id",
-          "name",
-          "colors",
-          "typography"
-        ]
+        "required": ["id", "name", "colors", "typography"]
       }
     },
     "datasources": {
@@ -553,16 +534,11 @@
                       "type": "number"
                     }
                   },
-                  "required": [
-                    "method"
-                  ]
+                  "required": ["method"]
                 },
                 "sampleData": {}
               },
-              "required": [
-                "name",
-                "schema"
-              ]
+              "required": ["name", "schema"]
             },
             {
               "type": "object",
@@ -628,9 +604,7 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "channelId"
-                      ]
+                      "required": ["channelId"]
                     },
                     {
                       "type": "object",
@@ -647,9 +621,7 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "username"
-                      ]
+                      "required": ["username"]
                     },
                     {
                       "type": "object",
@@ -659,9 +631,7 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "url"
-                      ]
+                      "required": ["url"]
                     },
                     {
                       "type": "object",
@@ -686,9 +656,7 @@
                           }
                         }
                       },
-                      "required": [
-                        "url"
-                      ]
+                      "required": ["url"]
                     }
                   ]
                 },
@@ -722,16 +690,10 @@
                       "type": "number"
                     }
                   },
-                  "required": [
-                    "method"
-                  ]
+                  "required": ["method"]
                 }
               },
-              "required": [
-                "provider",
-                "options",
-                "name"
-              ]
+              "required": ["provider", "options", "name"]
             }
           ]
         }
@@ -830,10 +792,7 @@
                     "title": "Props",
                     "description": "The properties of the brick react component."
                   },
-                  "required": [
-                    "title",
-                    "description"
-                  ]
+                  "required": ["title", "description"]
                 },
                 "position": {
                   "title": "Position",
@@ -872,12 +831,7 @@
                           "type": "boolean"
                         }
                       },
-                      "required": [
-                        "x",
-                        "y",
-                        "w",
-                        "h"
-                      ]
+                      "required": ["x", "y", "w", "h"]
                     },
                     "desktop": {
                       "type": "object",
@@ -911,26 +865,13 @@
                           "type": "boolean"
                         }
                       },
-                      "required": [
-                        "x",
-                        "y",
-                        "w",
-                        "h"
-                      ]
+                      "required": ["x", "y", "w", "h"]
                     }
                   },
-                  "required": [
-                    "mobile",
-                    "desktop"
-                  ]
+                  "required": ["mobile", "desktop"]
                 }
               },
-              "required": [
-                "type",
-                "id",
-                "props",
-                "position"
-              ]
+              "required": ["type", "id", "props", "position"]
             }
           },
           "tags": {
@@ -940,17 +881,9 @@
             }
           }
         },
-        "required": [
-          "label",
-          "path",
-          "bricks"
-        ]
+        "required": ["label", "path", "bricks"]
       }
     }
   },
-  "required": [
-    "manifest",
-    "themes",
-    "pages"
-  ]
+  "required": ["manifest", "themes", "pages"]
 }

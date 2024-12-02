@@ -4,8 +4,7 @@
   "type": "module",
   "files": [
     "dist",
-    "env.d.ts",
-    "custom-attrs.d.ts"
+    "env.d.ts"
   ],
   "sideEffects": false,
   "exports": {
@@ -28,7 +27,6 @@
       "require": "./env.d.ts",
       "import": "./env.d.ts"
     },
-    "./custom-attrs.d.ts": "./custom-attrs.d.ts",
     "./*": {
       "types": "./dist/shared/*.d.ts",
       "import": "./dist/shared/*.js"

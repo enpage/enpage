@@ -3,7 +3,7 @@ import fetchFacebookPostDatasource from "../fetcher";
 import { UnauthorizedError } from "~/shared/errors";
 import type { MetaOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
 import type { MetaOptions } from "~/shared/datasources/external/meta/options";
-import type { DatasourceFetcherParams } from "~/shared/datasources";
+import type { DatasourceFetcherParams } from "~/shared/datasources/fetcher";
 
 // Mock the fetch function
 global.fetch = vi.fn();
@@ -38,10 +38,15 @@ describe("fetchFacebookPostDatasource", () => {
       json: () => Promise.resolve(mockResponse),
     });
 
+    // @ts-ignore
     const result = await fetchFacebookPostDatasource({
       options: { limit: 10 },
       oauth: { config: { accessToken: "test-token" } },
-      pageConfig: {},
+      // @ts-ignore
+      pageConfig: {
+        id: "me",
+        siteId: "123",
+      },
     } as DatasourceFetcherParams<MetaOAuthConfig, MetaOptions>);
 
     expect(result).toEqual(mockResponse);
@@ -57,6 +62,7 @@ describe("fetchFacebookPostDatasource", () => {
     });
 
     await expect(
+      // @ts-ignore
       fetchFacebookPostDatasource({
         options: { limit: 10 },
         oauth: { config: { accessToken: "invalid-token" } },
@@ -74,6 +80,7 @@ describe("fetchFacebookPostDatasource", () => {
     });
 
     await expect(
+      // @ts-ignore
       fetchFacebookPostDatasource({
         options: { limit: 10 },
         oauth: { config: { accessToken: "test-token" } },

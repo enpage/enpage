@@ -1,5 +1,5 @@
-import { getNewSiteConfig, type GenericPageConfig } from "@upstart.gg/sdk/shared/page";
-import * as testEnpageConfig from "~/test-config";
+import { getNewSiteConfig } from "@upstart.gg/sdk/shared/page";
+import testEnpageConfig from "~/test-config";
 import { EditorWrapper } from "~/editor/components/EditorWrapper";
 import { ClientOnly } from "~/shared/utils/client-only";
 import Editor from "~/editor/components/Editor";
