@@ -50,20 +50,14 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "method"
-              ]
+              "required": ["method"]
             },
             "sampleData": {
               "title": "Sample data",
               "description": "Sample data for the datasource. Should match the declared schema."
             }
           },
-          "required": [
-            "provider",
-            "name",
-            "schema"
-          ]
+          "required": ["provider", "name", "schema"]
         },
         {
           "type": "object",
@@ -132,9 +126,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "channelId"
-                  ]
+                  "required": ["channelId"]
                 },
                 {
                   "type": "object",
@@ -157,9 +149,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "username"
-                  ]
+                  "required": ["username"]
                 },
                 {
                   "type": "object",
@@ -172,9 +162,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "url"
-                  ]
+                  "required": ["url"]
                 },
                 {
                   "type": "object",
@@ -212,9 +200,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "url"
-                  ]
+                  "required": ["url"]
                 }
               ]
             },
@@ -253,16 +239,10 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "method"
-              ]
+              "required": ["method"]
             }
           },
-          "required": [
-            "provider",
-            "options",
-            "name"
-          ]
+          "required": ["provider", "options", "name"]
         }
       ]
     }

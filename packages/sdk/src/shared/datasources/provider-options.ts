@@ -1,4 +1,4 @@
-import { Type, type Static, type TObject, type TSchema } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 
 export const providerOptions = Type.Object({
   refreshInterval: Type.Optional(Type.Number()),

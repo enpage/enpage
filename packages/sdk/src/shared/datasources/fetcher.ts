@@ -1,5 +1,5 @@
 import type { GenericPageContext } from "../page";
-import type { ProviderOptions } from "./types";
+import type { ProviderOptions } from "./provider-options";
 
 export type DatasourceFetcherParams<
   OAuthProps = unknown,
