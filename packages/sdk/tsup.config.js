@@ -75,6 +75,7 @@ export default defineConfig((options) => {
     {
       entry: [
         "src/shared/page.ts",
+        "src/shared/errors.ts",
         "src/shared/attributes.ts",
         "src/shared/bricks",
         "src/shared/bricks.ts",
