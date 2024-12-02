@@ -105,6 +105,8 @@ const brickTypeSchema = Type.Union(
     Type.Literal("social-links"),
     Type.Literal("text"),
     Type.Literal("video"),
+    Type.Literal("html-element"),
+    Type.String(),
   ],
   {
     title: "Brick type",
@@ -118,7 +120,8 @@ export const brickSchema = Type.Object({
     title: "ID",
     description: "A unique identifier for the brick.",
   }),
-  props: Type.Object(
+  props: Type.Record(
+    Type.String(),
     Type.Any({
       title: "Props",
       description: "The properties of the brick react component.",

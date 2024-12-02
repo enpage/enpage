@@ -30,7 +30,7 @@ import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from
 import { defaults as countdownDefaults, manifest as countdownManifest } from "./countdown.manifest";
 
 import type { Static } from "@sinclair/typebox";
-import type { BrickManifest } from "~/shared/brick-manifest";
+import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
 
 export const manifests: Record<string, BrickManifest> = {
   [heroDefaults.type]: heroManifest,

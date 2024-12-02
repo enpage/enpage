@@ -4,20 +4,21 @@ import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createContext, useContext, useEffect } from "react";
 import { temporal } from "zundo";
-import type { ResponsiveMode } from "~/shared/responsive";
-import invariant from "~/shared/utils/invariant";
-import type { Brick, BrickPosition } from "~/shared/bricks";
-import type { Theme } from "~/shared/theme";
-import type { AttributesResolved } from "~/shared/attributes";
-import { generateId } from "~/shared/bricks";
+import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
+import invariant from "@upstart.gg/sdk/shared/utils/invariant";
+import type { Brick, BrickPosition } from "@upstart.gg/sdk/shared/bricks";
+import type { Theme } from "@upstart.gg/sdk/shared/theme";
+import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
+import type { AttributesResolved } from "@upstart.gg/sdk/shared/attributes";
+import { generateId } from "@upstart.gg/sdk/shared/bricks";
+import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
 import type { TObject } from "@sinclair/typebox";
-import type { GenericPageConfig } from "~/shared/page";
+import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
-import type { ColorAdjustment } from "~/shared/themes/color-system";
+import type { ColorAdjustment } from "@upstart.gg/sdk/shared/themes/color-system";
 import { adjustMobileLayout } from "~/shared/utils/layout-utils";
 import { isEqual } from "lodash-es";
-import type { BrickManifest } from "../brick-manifest";
 
 export interface EditorStateProps {
   /**
@@ -253,11 +254,11 @@ export const createDraftStore = (
   initProps: Partial<DraftStateProps> & {
     attr: DraftStateProps["attr"];
     attrSchema: DraftStateProps["attrSchema"];
-    theme: DraftStateProps["theme"];
   },
 ) => {
-  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attrSchema" | "theme"> = {
+  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attrSchema"> = {
     bricks: [],
+    theme: themes[1],
     data: {},
     mode: "local",
   };
@@ -485,10 +486,10 @@ export const useDraft = () => {
   return useStore(ctx);
 };
 
-// export const useBricks = () => {
-//   const ctx = useDraftStoreContext();
-//   return useStore(ctx, (state) => state.bricks);
-// };
+export const useBricks = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.bricks);
+};
 
 export const useGetBrick = () => {
   const ctx = useDraftStoreContext();

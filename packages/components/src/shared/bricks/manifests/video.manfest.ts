@@ -1,8 +1,8 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps } from "../props/common";
-import { defineBrickManifest } from "~/shared/brick-manifest";
-import { LAYOUT_COLS } from "~/shared/layout-constants";
+import { defineBrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
+import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
   type: "video",
