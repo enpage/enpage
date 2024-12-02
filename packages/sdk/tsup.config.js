@@ -75,6 +75,8 @@ export default defineConfig((options) => {
       entry: [
         "src/shared/page.ts",
         "src/shared/attributes.ts",
+        "src/shared/bricks.ts",
+        "src/shared/datasources.ts",
         "src/shared/themes",
         "src/shared/analytics",
         "src/shared/datasources/external/meta/oauth/config.ts",
