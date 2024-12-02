@@ -1,10 +1,48 @@
 import { defineAttributes, resolveAttributes, type AttributesResolved } from "./attributes";
 import { brickSchema, type Brick } from "./bricks";
-import type { TemplateConfig, ResolvedTemplateConfig } from "./template";
 import invariant from "./utils/invariant";
-import type { Theme } from "./theme";
+import { themeSchema, type Theme } from "./theme";
 import { Type, type Static } from "@sinclair/typebox";
-import type { DatasourcesMap, DatasourcesResolved } from "./datasources/types";
+import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from "./datasources/types";
+import { manifestSchema, type TemplateManifest } from "./manifest";
+
+export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
+  return {
+    attributes: defineAttributes(config.attributes || {}),
+    manifest: config.manifest,
+    pages: config.pages.map((p) => ({
+      ...p,
+      tags: p.tags ?? [],
+    })),
+    themes: config.themes,
+    ...(config.datasources ? { datasources: config.datasources } : {}),
+  };
+}
+
+export type TemplateConfig = {
+  /**
+   * The template manifest and settings
+   */
+  manifest: TemplateManifest;
+  /**
+   * The attributes declared for the template
+   */
+  attributes?: ReturnType<typeof defineAttributes>;
+  /**
+   * The datasources declared for the template
+   */
+  datasources?: DatasourcesMap;
+  /**
+   * The Pages
+   */
+  pages: TemplatePage[];
+  /**
+   * The themes declared by the site.
+   */
+  themes: Theme[];
+};
+
+export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConfig, "attributes">>;
 
 export type PagesMapEntry = {
   id: string;
@@ -144,3 +182,16 @@ export const definedTemplatePage = Type.Composite([
 ]);
 
 export type DefinedTemplatePage = Static<typeof definedTemplatePage>;
+
+export const templateSchema = Type.Object(
+  {
+    manifest: manifestSchema,
+    themes: Type.Array(themeSchema),
+    datasources: Type.Optional(datasourcesMap),
+    pages: Type.Array(definedTemplatePage),
+  },
+  {
+    title: "Template schema",
+    description: "The template configuration schema",
+  },
+);

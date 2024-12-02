@@ -73,12 +73,13 @@ export default defineConfig((options) => {
     },
     {
       entry: [
-        "src/shared/template.ts",
+        "src/shared/page.ts",
         "src/shared/attributes.ts",
         "src/shared/themes",
         "src/shared/analytics",
-        "src/shared/datasources/internal",
-        "src/shared/datasources/external",
+        "src/shared/datasources/external/meta/oauth/config.ts",
+        "src/shared/datasources/external/tiktok/oauth/config.ts",
+        "src/shared/datasources/external/youtube/oauth/config.ts",
         "src/shared/env.ts",
         ...ignored,
       ],
