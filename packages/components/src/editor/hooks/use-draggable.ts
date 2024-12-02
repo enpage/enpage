@@ -4,7 +4,8 @@ import type { RestrictOptions } from "@interactjs/modifiers/restrict/pointer";
 import type { DraggableOptions } from "@interactjs/actions/drag/plugin";
 import type { ResizableOptions } from "@interactjs/actions/resize/plugin";
 import { useGetBrick, usePreviewMode, useSelectedGroup } from "./use-editor";
-import type { Brick, BrickConstraints } from "@upstart.gg/sdk/shared/bricks";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
+import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
 import { defaults } from "~/shared/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 
