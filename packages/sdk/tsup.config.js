@@ -85,7 +85,7 @@ export default defineConfig((options) => {
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
-      splitting: false,
+      // splitting: false,
       dts: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       clean: !options.watch,
