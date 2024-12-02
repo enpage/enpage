@@ -5,7 +5,7 @@ import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
 
 // define your datasources
-export const datasources = defineDataSources({
+const datasources = defineDataSources({
   links: {
     provider: "generic",
     name: "Links",
@@ -191,7 +191,7 @@ const themes = [
 ];
 
 // define your attributes
-export const attributes = defineAttributes({
+const attributes = defineAttributes({
   mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
@@ -209,6 +209,7 @@ export default defineConfig({
     },
   ],
   themes,
+  datasources,
   manifest: {
     author: "John Doe",
     name: "Example Template",
