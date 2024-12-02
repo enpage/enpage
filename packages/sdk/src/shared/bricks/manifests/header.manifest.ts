@@ -2,14 +2,14 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "map",
+  type: "header",
   kind: "widget",
-  title: "Map",
-  description: "A map element with a location",
+  title: "Header",
+  description: "A header with logo and navigation",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -29,16 +29,14 @@ export const manifest = defineBrickManifest({
   // svg icon for the "card" brick
   icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
     <!-- Main container -->
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+    <rect x="3" y="11" width="18" height="8" rx="2" ry="2"></rect>
 
-    <!-- Map fold lines (even thinner) -->
-    <path d="M3 9 L21 9" stroke-width="0.3"></path>
-    <path d="M9 3 L9 21" stroke-width="0.3"></path>
-    <path d="M15 3 L15 21" stroke-width="0.3"></path>
-    <path d="M3 15 L21 15" stroke-width="0.3"></path>
+    <!-- Logo area (rectangular) -->
+    <rect x="5" y="13" width="6" height="3" rx="1"></rect>
 
-    <!-- Location pin (teardrop shape) -->
-    <path d="M12 5 C10.3431 5 9 6.34315 9 8 C9 9.3124 9.84285 10.4274 11 10.8229 L12 13 L13 10.8229 C14.1571 10.4274 15 9.3124 15 8 C15 6.34315 13.6569 5 12 5Z"></path>
+    <!-- Navigation menu items (right-aligned, horizontal) -->
+    <line x1="13" y1="14" x2="15" y2="14"></line>
+    <line x1="17" y1="14" x2="19" y2="14"></line>
 </svg>
   `,
   props: Type.Composite([

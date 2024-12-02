@@ -2,14 +2,14 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "header",
+  type: "image-wall",
   kind: "widget",
-  title: "Header",
-  description: "A header with logo and navigation",
+  title: "Images wall",
+  description: "An image collection",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -26,17 +26,15 @@ export const manifest = defineBrickManifest({
     mobile: 3,
     desktop: 3,
   },
-  // svg icon for the "card" brick
   icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
     <!-- Main container -->
-    <rect x="3" y="11" width="18" height="8" rx="2" ry="2"></rect>
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
-    <!-- Logo area (rectangular) -->
-    <rect x="5" y="13" width="6" height="3" rx="1"></rect>
-
-    <!-- Navigation menu items (right-aligned, horizontal) -->
-    <line x1="13" y1="14" x2="15" y2="14"></line>
-    <line x1="17" y1="14" x2="19" y2="14"></line>
+    <!-- Image rectangles in masonry layout -->
+    <rect x="5" y="5" width="6" height="5" rx="1"></rect>
+    <rect x="13" y="5" width="6" height="7" rx="1"></rect>
+    <rect x="5" y="12" width="6" height="7" rx="1"></rect>
+    <rect x="13" y="14" width="6" height="5" rx="1"></rect>
 </svg>
   `,
   props: Type.Composite([

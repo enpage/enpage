@@ -165,7 +165,7 @@ export function getNewSiteConfig(
   return { site, pages };
 }
 
-const templatePageSchema = Type.Object({
+export const templatePageSchema = Type.Object({
   label: Type.String(),
   path: Type.String(),
   bricks: Type.Array(brickSchema),
@@ -188,6 +188,7 @@ export const templateSchema = Type.Object(
     manifest: manifestSchema,
     themes: Type.Array(themeSchema),
     datasources: Type.Optional(datasourcesMap),
+    attributes: Type.Optional(defineAttributes({})),
     pages: Type.Array(definedTemplatePage),
   },
   {
@@ -195,3 +196,5 @@ export const templateSchema = Type.Object(
     description: "The template configuration schema",
   },
 );
+
+export type Template = Static<typeof templateSchema>;

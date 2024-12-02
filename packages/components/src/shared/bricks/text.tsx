@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import { memoizeWithout } from "../utils/memoize-without";
 import { useEditableText } from "~/shared/hooks/use-editable-text";
 import { useBrickStyle } from "../hooks/use-brick-style";
-import { manifest, type Manifest } from "./manifests/text.manifest";
+import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/text.manifest";
 
 /**
  * Text brick

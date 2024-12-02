@@ -29,6 +29,7 @@ const borderWidth = Type.Union(
     Type.Literal("border-8", { title: "XL" }),
   ],
   {
+    $id: "borderWidth",
     default: "border-0",
     title: "Border width",
     "ui:field": "enum",
@@ -38,6 +39,7 @@ const borderWidth = Type.Union(
 );
 
 const borderColor = Type.String({
+  $id: "borderColor",
   default: "transparent",
   title: "Border color",
   "ui:field": "color",
@@ -52,6 +54,7 @@ const borderStyle = Type.Union(
     Type.Literal("border-dotted", { title: "Dotted" }),
   ],
   {
+    $id: "borderStyle",
     default: "border-solid",
     title: "Border style",
     description: "The brick border style",
@@ -71,6 +74,7 @@ const borderRadius = Type.Union(
     Type.Literal("rounded-full", { title: "Full" }),
   ],
   {
+    $id: "borderRadius",
     default: "rounded-none",
     title: "Rounding",
     description: "Corners rounding",
@@ -89,6 +93,7 @@ const padding = Type.Union(
     Type.Literal("p-16", { title: "XL" }),
   ],
   {
+    $id: "padding",
     default: "p-2",
     title: "Padding",
     description: "Space between the content and the border",
@@ -123,6 +128,7 @@ const margin = Type.Union(
 );
 
 const backgroundColor = Type.String({
+  $id: "backgroundColor",
   default: "transparent",
   title: "Background color",
   "ui:field": "color",
@@ -132,6 +138,7 @@ const backgroundColor = Type.String({
 
 const opacity = Type.Optional(
   Type.Number({
+    $id: "opacity",
     minimum: 0.1,
     maximum: 1,
     multipleOf: 0.1,
@@ -152,6 +159,7 @@ const shadow = Type.Union(
     Type.Literal("shadow-2xl", { title: "2XL" }),
   ],
   {
+    $id: "shadow",
     default: "shadow-none",
     title: "Shadow",
     description: "Shadow",
@@ -184,6 +192,7 @@ const textAlign = Type.Optional(
       Type.Literal("text-justify", { title: "Justify", description: "Justify align" }),
     ],
     {
+      $id: "textAlign",
       default: "text-left",
       title: "Text alignment",
       description: "The text alignment",
@@ -208,6 +217,7 @@ const fontSize = Type.Union(
     Type.Literal("text-7xl", { title: "7XL" }),
   ],
   {
+    $id: "fontSize",
     default: "text-base",
     title: "Font size",
     "ui:field": "enum",
@@ -225,6 +235,7 @@ const fontWeight = Type.Union(
     Type.Literal("font-extrabold", { title: "5" }),
   ],
   {
+    $id: "fontWeight",
     default: "font-normal",
     title: "Font weight",
     description: "The text font weight",
@@ -235,6 +246,7 @@ const fontWeight = Type.Union(
 );
 
 const color = Type.String({
+  $id: "color",
   default: "transparent",
   title: "Text color",
   "ui:field": "color",

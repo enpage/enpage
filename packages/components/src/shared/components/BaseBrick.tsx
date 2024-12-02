@@ -27,10 +27,9 @@ const BaseBrick = ({
   if (!BrickModule) {
     return null;
   }
-  const { wrapper, ...rest } = brick.props;
   return (
     <Suspense>
-      <BrickModule id={brick.id} {...rest} {...otherProps} editable={editable} />
+      <BrickModule {...brick.props} {...otherProps} editable={editable} />
     </Suspense>
   );
 };

@@ -2,14 +2,14 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "footer",
+  type: "countdown",
   kind: "widget",
-  title: "Footer",
-  description: "A footer with links and social media icons",
+  title: "Countdown",
+  description: "A countdown timer",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -28,21 +28,33 @@ export const manifest = defineBrickManifest({
   },
   // svg icon for the "card" brick
   icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Main container -->
-    <rect x="3" y="12" width="18" height="8" rx="2" ry="2"></rect>
+    <!-- Main container (centered) -->
+    <rect x="2" y="6" width="20" height="12" rx="1" ry="1"></rect>
 
-    <!-- First column: single line aligned with top -->
-    <line x1="6" y1="14.5" x2="8" y2="14.5"></line>
+    <!-- Left digit -->
+    <path d="M4 9 L4 15"></path>
+    <path d="M4 9 L7 9"></path>
+    <path d="M4 12 L7 12"></path>
+    <path d="M4 15 L7 15"></path>
+    <path d="M7 9 L7 15"></path>
 
-    <!-- Middle column: three lines -->
-    <line x1="11" y1="14.5" x2="13" y2="14.5"></line>
-    <line x1="11" y1="16" x2="13" y2="16"></line>
-    <line x1="11" y1="17.5" x2="13" y2="17.5"></line>
+    <!-- Second digit -->
+    <path d="M9 9 L9 15"></path>
+    <path d="M9 9 L12 9"></path>
+    <path d="M9 12 L12 12"></path>
+    <path d="M9 15 L12 15"></path>
+    <path d="M12 9 L12 15"></path>
 
-    <!-- Last column: three lines -->
-    <line x1="16" y1="14.5" x2="18" y2="14.5"></line>
-    <line x1="16" y1="16" x2="18" y2="16"></line>
-    <line x1="16" y1="17.5" x2="18" y2="17.5"></line>
+    <!-- Colon (tiny) -->
+    <circle cx="15" cy="10.5" r="0.15"></circle>
+    <circle cx="15" cy="13.5" r="0.15"></circle>
+
+    <!-- Third digit -->
+    <path d="M17 9 L17 15"></path>
+    <path d="M17 9 L20 9"></path>
+    <path d="M17 12 L20 12"></path>
+    <path d="M17 15 L20 15"></path>
+    <path d="M20 9 L20 15"></path>
 </svg>
   `,
   props: Type.Composite([

@@ -11,7 +11,6 @@ import type { ElementColor } from "./themes/color-system";
 
 // KEEP IT
 type EnumOption = {
-  // name: string;
   title?: string;
   description?: string;
   value: string;

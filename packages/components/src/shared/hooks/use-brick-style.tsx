@@ -1,6 +1,6 @@
 import { tx, apply, css } from "@upstart.gg/style-system/twind";
-import type { commonStyleProps, textStyleProps } from "../bricks/props/style-props";
-import type { commonProps } from "../bricks/props/common";
+import type { commonStyleProps, textStyleProps } from "@upstart.gg/sdk/bricks/props/style-props";
+import type { commonProps } from "@upstart.gg/sdk/bricks/props/common";
 import type { Static } from "@sinclair/typebox";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { propToStyle } from "@upstart.gg/sdk/shared/themes/color-system";
@@ -16,12 +16,12 @@ export function useBrickStyle(
     Partial<Static<typeof commonProps>>,
 ) {
   return tx([
-    apply(props.className),
-    props.padding,
-    props.color && `text-${props.color}`,
-    props.fontSize && `text-${props.fontSize}`,
-    props.fontWeight && `font-${props.fontWeight}`,
-    props.textAlign && `text-${props.textAlign}`,
+    props.className && apply(props.className),
+    props.padding ? (props.padding as string) : null,
+    props.color ? `text-${props.color}` : null,
+    props.fontSize ? `text-${props.fontSize}` : null,
+    props.fontWeight ? `font-${props.fontWeight}` : null,
+    props.textAlign ? `text-${props.textAlign}` : null,
   ]);
 }
 
@@ -62,19 +62,19 @@ export function useBrickWrapperStyle({
       }),
 
     // Border
-    propToStyle(brick.props.borderColor as string, "borderColor"),
-    brick.props.borderRadius as string,
-    brick.props.borderStyle as string,
-    brick.props.borderWidth as string,
+    "borderColor" in brick.props && propToStyle(brick.props.borderColor as string, "borderColor"),
+    "borderRadius" in brick.props && (brick.props.borderRadius as string),
+    "borderStyle" in brick.props && (brick.props.borderStyle as string),
+    "borderWidth" in brick.props && (brick.props.borderWidth as string),
 
     // Background
-    propToStyle(brick.props.backgroundColor as string, "background"),
+    "backgroundColor" in brick.props && propToStyle(brick.props.backgroundColor as string, "background"),
 
     // Opacity
-    propToStyle(brick.props.opacity as number | undefined, "opacity"),
+    "opacity" in brick.props && propToStyle(brick.props.opacity as number | undefined, "opacity"),
 
     // shadow
-    brick.props.shadow as string,
+    "shadow" in brick.props && (brick.props.shadow as string),
 
     // z-index
     (brick.props.z as string) && `z-[${brick.props.z}]`,

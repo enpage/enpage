@@ -1,6 +1,6 @@
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { useDraft, useEditor } from "../hooks/use-editor";
-import { manifests } from "~/shared/bricks/manifests/all-manifests";
+import { manifests } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
 import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@upstart.gg/style-system/system";

@@ -2,15 +2,14 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
-// get filename from esm import.meta
 export const manifest = defineBrickManifest({
-  type: "button",
-  title: "Button",
+  type: "icon",
+  title: "Icon",
   kind: "brick",
-  description: "A button with text and optional icon",
+  description: "An icon with optional text",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -30,12 +29,10 @@ export const manifest = defineBrickManifest({
   icon: `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
     <!-- Main container -->
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
-    <!-- Button container -->
-    <rect x="4" y="11" width="16" height="6" rx="2"></rect>
-
-    <!-- Text line inside button -->
-    <line x1="9" y1="14" x2="15" y2="14"></line>
+    <!-- Diamond shape -->
+    <path d="M7 12 L12 7 L17 12 L12 17 Z"></path>
 </svg>
   `,
   props: Type.Composite([

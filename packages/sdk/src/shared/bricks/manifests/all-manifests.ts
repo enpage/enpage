@@ -3,7 +3,7 @@ import { defaults as heroDefaults, manifest as heroManifest } from "./hero.manif
 // image
 import { defaults as imageDefaults, manifest as imageManifest } from "./image.manifest";
 // video
-import { defaults as videoDefaults, manifest as videoManifest } from "./video.manfest";
+import { defaults as videoDefaults, manifest as videoManifest } from "./video.manifest";
 // text
 import { defaults as textDefaults, manifest as textManifest } from "./text.manifest";
 // widget card

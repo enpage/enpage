@@ -1,6 +1,3 @@
-/**
- * @see https://automaticcss.com/docs/palette-setup/
- */
 import { Type, type Static } from "@sinclair/typebox";
 
 export const themeSchema = Type.Object(
@@ -187,3 +184,5 @@ export const themeSchema = Type.Object(
 );
 
 export type Theme = Static<typeof themeSchema>;
+export const themeArray = Type.Array(themeSchema);
+export type ThemeArray = Static<typeof themeArray>;

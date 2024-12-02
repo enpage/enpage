@@ -6,7 +6,7 @@ import type { ResizableOptions } from "@interactjs/actions/resize/plugin";
 import { useGetBrick, usePreviewMode, useSelectedGroup } from "./use-editor";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
-import { defaults } from "~/shared/bricks/manifests/all-manifests";
+import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 
 interface DragCallbacks {
@@ -387,7 +387,7 @@ export const useEditablePage = (
                 minWidth: defaults[type].minWidth,
                 maxWidth: defaults[type].maxWidth,
               };
-              dropCallbacks.onDrop?.(event, pos.grid, { type, constraints });
+              dropCallbacks.onDrop?.(event, pos.grid, { type: type as Brick["type"], constraints });
             }
           },
         })
@@ -410,7 +410,7 @@ export const useEditablePage = (
               minWidth: defaults[type].minWidth,
               maxWidth: defaults[type].maxWidth,
             };
-            dropCallbacks.onDropMove?.(event, pos.grid, { type, constraints });
+            dropCallbacks.onDropMove?.(event, pos.grid, { type: type as Brick["type"], constraints });
           }
         });
     }

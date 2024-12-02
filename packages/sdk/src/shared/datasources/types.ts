@@ -1,11 +1,4 @@
 import { Type, type Static, type TObject, type TSchema } from "@sinclair/typebox";
-// import { youtubeListSchema } from "./external/youtube/list/schema";
-// import { facebookPostSchema } from "./external/facebook/posts/schema";
-// import { instagramFeedSchema } from "./external/instagram/feed/schema";
-// import { mastodonStatusArraySchema } from "./external/mastodon/status/schema";
-// import { rssSchema } from "./external/rss/schema";
-// import { threadsMediaSchema } from "./external/threads/media/schema";
-// import { tiktokVideoResponseSchema } from "./external/tiktok/video/schema";
 import { youtubeListOptions } from "./external/youtube/list/options";
 import { metaOptions } from "./external/meta/options";
 import { mastodonCommonOptions } from "./external/mastodon/options";
@@ -25,12 +18,6 @@ export const providersSchema = Type.Union([
 ]);
 
 export type DatasourceProvider = Static<typeof providersSchema>;
-
-export const providerOptions = Type.Object({
-  refreshInterval: Type.Optional(Type.Number()),
-});
-
-export type ProviderOptions = Static<typeof providerOptions>;
 
 const providersChoices = Type.Union([
   Type.Object({
@@ -70,14 +57,20 @@ const providersChoices = Type.Union([
 const datasourceProviderManifest = Type.Composite([
   providersChoices,
   Type.Object({
-    name: Type.String(),
-    description: Type.Optional(Type.String()),
+    name: Type.String({ title: "Name of the datasource", comment: "For example, 'My data'" }),
+    description: Type.Optional(Type.String({ title: "Description of the datasource" })),
     sampleData: Type.Optional(Type.Any()),
     refresh: Type.Optional(
-      Type.Object({
-        method: Type.Union([Type.Literal("interval"), Type.Literal("manual"), Type.Literal("live")]),
-        interval: Type.Optional(Type.Number()),
-      }),
+      Type.Object(
+        {
+          method: Type.Union([Type.Literal("interval"), Type.Literal("manual"), Type.Literal("live")]),
+          interval: Type.Optional(Type.Number()),
+        },
+        {
+          title: "Refresh options",
+          description: "Options to refresh the datasource",
+        },
+      ),
     ),
   }),
 ]);
@@ -85,17 +78,31 @@ const datasourceProviderManifest = Type.Composite([
 export type DatasourceProviderManifest = Static<typeof datasourceProviderManifest>;
 
 const datasourceGenericManifest = Type.Object({
-  provider: Type.Literal("generic"),
-  name: Type.String(),
-  description: Type.Optional(Type.String()),
-  schema: Type.Object({}, { additionalProperties: true }),
+  provider: Type.Literal("generic", {
+    title: "Generic",
+    description: "Generic datasource is saved locally in Upstart.",
+  }),
+  name: Type.String({ title: "Name of the datasource", comment: "For example, 'My data'" }),
+  description: Type.Optional(Type.String({ title: "Description of the datasource" })),
+  schema: Type.Object({}, { additionalProperties: true, title: "JSON schema of the datasource fields." }),
   refresh: Type.Optional(
-    Type.Object({
-      method: Type.Union([Type.Literal("interval"), Type.Literal("manual")]),
-      interval: Type.Optional(Type.Number()),
+    Type.Object(
+      {
+        method: Type.Union([Type.Literal("interval"), Type.Literal("manual")]),
+        interval: Type.Optional(Type.Number()),
+      },
+      {
+        title: "Refresh options",
+        description: "Options to refresh the datasource",
+      },
+    ),
+  ),
+  sampleData: Type.Optional(
+    Type.Any({
+      title: "Sample data",
+      description: "Sample data for the datasource. Should match the declared schema.",
     }),
   ),
-  sampleData: Type.Optional(Type.Any()),
 });
 
 export type DatasourceGenericManifest = Static<typeof datasourceGenericManifest>;
@@ -103,6 +110,7 @@ export type DatasourceGenericManifest = Static<typeof datasourceGenericManifest>
 export const datasourcesMap = Type.Record(
   Type.String(),
   Type.Union([datasourceGenericManifest, datasourceProviderManifest]),
+  { title: "Datasources map", description: "The map of datasources available in the system" },
 );
 
 export type DatasourcesMap = Static<typeof datasourcesMap>;

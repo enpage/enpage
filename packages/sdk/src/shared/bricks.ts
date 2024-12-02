@@ -3,6 +3,40 @@ import { customAlphabet } from "nanoid";
 import { LAYOUT_COLS } from "./layout-constants";
 import type { ResponsiveMode } from "./responsive";
 
+/*
+    Type.Literal("button"),
+    Type.Literal("card"),
+    Type.Literal("carousel"),
+    Type.Literal("countdown"),
+    Type.Literal("footer"),
+    Type.Literal("form"),
+    Type.Literal("header"),
+    Type.Literal("hero"),
+    Type.Literal("icon"),
+    Type.Literal("image"),
+    Type.Literal("images-wall"),
+    Type.Literal("map"),
+    Type.Literal("social-links"),
+    Type.Literal("text"),
+    Type.Literal("video"),
+    Type.Literal("html-element"),
+    */
+import { manifest as buttonManifest } from "./bricks/manifests/button.manifest";
+import { manifest as cardManifest } from "./bricks/manifests/card.manifest";
+import { manifest as carouselManifest } from "./bricks/manifests/carousel.manifest";
+import { manifest as countdownManifest } from "./bricks/manifests/countdown.manifest";
+import { manifest as footerManifest } from "./bricks/manifests/footer.manifest";
+import { manifest as formManifest } from "./bricks/manifests/form.manifest";
+import { manifest as headerManifest } from "./bricks/manifests/header.manifest";
+import { manifest as heroManifest } from "./bricks/manifests/hero.manifest";
+import { manifest as iconManifest } from "./bricks/manifests/icon.manifest";
+import { manifest as imageManifest } from "./bricks/manifests/image.manifest";
+import { manifest as imagesWallManifest } from "./bricks/manifests/images-wall.manifest";
+import { manifest as mapManifest } from "./bricks/manifests/map.manifest";
+import { manifest as socialLinksManifest } from "./bricks/manifests/social-links.manifest";
+import { manifest as textManifest } from "./bricks/manifests/text.manifest";
+import { manifest as videoManifest } from "./bricks/manifests/video.manifest";
+
 /**
  * Generates a unique identifier for bricks.
  */
@@ -88,59 +122,92 @@ const definedBrickPositionSchema = Type.Object({
 
 export type DefinedBrickPosition = Static<typeof definedBrickPositionSchema>;
 
-const brickTypeSchema = Type.Union(
-  [
-    Type.Literal("button"),
-    Type.Literal("card"),
-    Type.Literal("carousel"),
-    Type.Literal("countdown"),
-    Type.Literal("footer"),
-    Type.Literal("form"),
-    Type.Literal("header"),
-    Type.Literal("hero"),
-    Type.Literal("icon"),
-    Type.Literal("image"),
-    Type.Literal("images-wall"),
-    Type.Literal("map"),
-    Type.Literal("social-links"),
-    Type.Literal("text"),
-    Type.Literal("video"),
-    Type.Literal("html-element"),
-    Type.String(),
-  ],
-  {
-    title: "Brick type",
-    description: "The type of the brick. A brick is an element in the layout.",
-  },
-);
-
-export const brickSchema = Type.Object({
-  type: brickTypeSchema,
-  id: Type.String({
-    title: "ID",
-    description: "A unique identifier for the brick.",
-  }),
-  props: Type.Record(
-    Type.String(),
-    Type.Any({
-      title: "Props",
-      description: "The properties of the brick react component.",
+export const brickSchema = Type.Composite([
+  Type.Union([
+    Type.Object({
+      type: Type.Literal("button"),
+      props: buttonManifest.properties.props,
     }),
-  ),
-  position: Type.Object(
-    {
-      mobile: brickPositionSchema,
-      desktop: brickPositionSchema,
-    },
-    {
-      title: "Position",
-      description: "The position of the brick in the layout.",
-    },
-  ),
-});
+    Type.Object({
+      type: Type.Literal("card"),
+      props: cardManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("carousel"),
+      props: carouselManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("countdown"),
+      props: countdownManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("footer"),
+      props: footerManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("form"),
+      props: formManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("header"),
+      props: headerManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("hero"),
+      props: heroManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("icon"),
+      props: iconManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("image"),
+      props: imageManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("images-wall"),
+      props: imagesWallManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("map"),
+      props: mapManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("social-links"),
+      props: socialLinksManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("text"),
+      props: textManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("video"),
+      props: videoManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("html-element"),
+      props: Type.Record(Type.String(), Type.Any()),
+    }),
+  ]),
+  Type.Object({
+    id: Type.String({
+      title: "ID",
+      description: "A unique identifier for the brick.",
+    }),
+    position: Type.Object(
+      {
+        mobile: brickPositionSchema,
+        desktop: brickPositionSchema,
+      },
+      {
+        title: "Position",
+        description: "The position of the brick in the layout.",
+      },
+    ),
+  }),
+]);
 
 export type Brick = Static<typeof brickSchema>;
-
 export type BricksLayout = Brick[];
 export type ResponsivePosition = Brick["position"];
 
