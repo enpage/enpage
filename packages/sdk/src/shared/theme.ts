@@ -1,4 +1,4 @@
-import { Type, type Static } from "@sinclair/typebox";
+import { type TObject, Type, type Static } from "@sinclair/typebox";
 
 export const themeSchema = Type.Object(
   {
@@ -62,8 +62,9 @@ export const themeSchema = Type.Object(
           Type.Literal("didone", { title: "Didone" }),
           Type.Literal("handwritten", { title: "Handwritten" }),
           Type.String({
-            title: "Custom font name",
-            description: "A custom font declared in the customFonts property.",
+            title: "Custom font",
+            description: "The custom font name from teh customFonts array",
+            "ui:option-hidden": true,
           }),
         ],
         {
@@ -90,8 +91,9 @@ export const themeSchema = Type.Object(
           Type.Literal("didone", { title: "Didone" }),
           Type.Literal("handwritten", { title: "Handwritten" }),
           Type.String({
-            title: "Custom font name",
-            description: "A custom font declared in the customFonts property.",
+            title: "Custom font",
+            description: "The custom font name from teh customFonts array",
+            "ui:option-hidden": true,
           }),
         ],
         {
@@ -182,6 +184,35 @@ export const themeSchema = Type.Object(
     $id: "Theme",
   },
 );
+
+/**
+ * Process the theme schema and potentialy modify the typography entries byt adding custom fonts defined in the theme to the accepted union.
+ */
+export function getProcessedThemeSchema(schema: typeof themeSchema, theme: Theme): TObject {
+  if (!theme.customFonts?.length) {
+    return schema;
+  }
+  return {
+    ...schema,
+    properties: {
+      ...schema.properties,
+      typography: {
+        ...schema.properties.typography,
+        properties: {
+          ...schema.properties.typography.properties,
+          body: Type.Union([
+            ...theme.customFonts.map((font) => Type.Literal(font.name, { title: font.name })),
+            ...schema.properties.typography.properties.body.anyOf,
+          ]),
+          heading: Type.Union([
+            ...theme.customFonts.map((font) => Type.Literal(font.name, { title: font.name })),
+            ...schema.properties.typography.properties.heading.anyOf,
+          ]),
+        },
+      },
+    },
+  };
+}
 
 export type Theme = Static<typeof themeSchema>;
 export const themeArray = Type.Array(themeSchema);

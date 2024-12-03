@@ -20,7 +20,6 @@ export const themes: Theme[] = [
     name: "Vivid",
     tags: ["bold", "energetic", "vibrant", "creative", "modern", "gradient", "startup"],
     description: "Bold and expressive design with dynamic color combinations",
-
     colors: {
       primary: "#8b5cf6",
       secondary: "#ec4899",

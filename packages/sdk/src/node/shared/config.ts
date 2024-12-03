@@ -1,5 +1,4 @@
 import { manifestSchema } from "~/shared/manifest";
-import { defineAttributes } from "~/shared/attributes";
 import fs from "node:fs";
 import { readFile } from "node:fs/promises";
 import fg from "fast-glob";

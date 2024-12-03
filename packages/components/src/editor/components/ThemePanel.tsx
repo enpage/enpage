@@ -9,17 +9,18 @@ import {
   Text,
 } from "@upstart.gg/style-system/system";
 import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
-import { forwardRef, useState, type ComponentProps } from "react";
+import { forwardRef, useState, type ComponentProps, useMemo } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
 import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
 import { tx } from "@upstart.gg/style-system/twind";
-import { type Theme, themeSchema } from "@upstart.gg/sdk/shared/theme";
+import { type Theme, themeSchema, getProcessedThemeSchema } from "@upstart.gg/sdk/shared/theme";
 import { useDraft } from "~/editor/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import type { ColorType } from "@upstart.gg/sdk/shared/themes/color-system";
+import type { TUnion } from "@sinclair/typebox";
 
 export default function ThemePanel() {
   const draft = useDraft();
@@ -27,6 +28,12 @@ export default function ThemePanel() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThemes, setGeneratedThemes] = useState<Theme[]>([]);
   const [genListRef] = useAutoAnimate(/* optional config */);
+  const themeSchemaProcessed = useMemo(
+    () => getProcessedThemeSchema(themeSchema, draft.theme),
+    [draft.theme],
+  );
+
+  console.log({ themeSchemaProcessed });
 
   const generateTheme = async () => {
     if (!themeDescription) {
@@ -151,11 +158,11 @@ export default function ThemePanel() {
                   <div key={fontType}>
                     <label className="font-medium">
                       {/* @ts-ignore */}
-                      {themeSchema.properties.typography.properties[fontType].title}
+                      {themeSchemaProcessed.properties.typography.properties[fontType].title}
                     </label>
                     <Text color="gray" as="p" size="2" className="mb-1">
                       {/* @ts-ignore */}
-                      {themeSchema.properties.typography.properties[fontType].description}
+                      {themeSchemaProcessed.properties.typography.properties[fontType].description}
                     </Text>
                     <Select.Root
                       defaultValue={font as string}
@@ -173,11 +180,16 @@ export default function ThemePanel() {
                       <Select.Trigger className="!w-full !capitalize">{font}</Select.Trigger>
                       <Select.Content>
                         <Select.Group>
-                          {themeSchema.properties.typography.properties.body.anyOf.map((item) => (
-                            <Select.Item key={item.const} value={item.const}>
-                              <span className={`font-${item.const}`}>{item.title}</span>
-                            </Select.Item>
-                          ))}
+                          {
+                            //  @ts-ignore
+                            (themeSchemaProcessed.properties.typography.properties[fontType] as TUnion).anyOf //  @ts-ignore
+                              .filter((item) => !item["ui:option-hidden"])
+                              .map((item) => (
+                                <Select.Item key={item.const} value={item.const}>
+                                  <span className={`font-${item.const}`}>{item.title}</span>
+                                </Select.Item>
+                              ))
+                          }
                         </Select.Group>
                       </Select.Content>
                     </Select.Root>
@@ -185,9 +197,11 @@ export default function ThemePanel() {
                 ))}
             </div>
           </fieldset>
+          {/*
           <fieldset>
             <pre className="text-xs">{JSON.stringify(draft.theme, null, 1)}</pre>
           </fieldset>
+          */}
         </div>
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="list">

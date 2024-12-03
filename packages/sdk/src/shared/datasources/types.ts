@@ -1,9 +1,16 @@
 import { Type, type Static, type TObject, type TSchema } from "@sinclair/typebox";
 import { youtubeListOptions } from "./external/youtube/list/options";
+import { youtubeListSchema } from "./external/youtube/list/schema";
 import { metaOptions } from "./external/meta/options";
 import { mastodonCommonOptions } from "./external/mastodon/options";
+import { mastodonStatusArraySchema } from "./external/mastodon/status/schema";
+import { facebookPostSchema } from "./external/facebook/posts/schema";
+import { instagramFeedSchema } from "./external/instagram/feed/schema";
+import { threadsMediaSchema } from "./external/threads/media/schema";
+import { tiktokVideoResponseSchema } from "./external/tiktok/video/schema";
 import { httpJsonOptions } from "./external/json/options";
 import { rssOptions } from "./external/rss/options";
+import { rssSchema } from "./external/rss/schema";
 import { tiktokVideoOptions } from "./external/tiktok/video/options";
 
 export const providersSchema = Type.Union([
@@ -23,30 +30,49 @@ const providersChoices = Type.Union([
   Type.Object({
     provider: Type.Literal("youtube-list"),
     options: youtubeListOptions,
+    // schema: youtubeListSchema,
   }),
   Type.Object({
-    provider: Type.Union([
-      Type.Literal("facebook-posts"),
-      Type.Literal("instagram-feed"),
-      Type.Literal("threads-media"),
-    ]),
+    provider: Type.Literal("facebook-posts"),
     options: metaOptions,
+    // schema: facebookPostSchema,
+  }),
+  Type.Object({
+    provider: Type.Literal("instragram-feed"),
+    options: metaOptions,
+    // schema: instagramFeedSchema,
+  }),
+  Type.Object({
+    provider: Type.Literal("threads-media"),
+    options: metaOptions,
+    // schema: threadsMediaSchema,
   }),
   Type.Object({
     provider: Type.Literal("mastodon-status"),
     options: mastodonCommonOptions,
+    // schema: mastodonStatusArraySchema,
   }),
   Type.Object({
     provider: Type.Literal("rss"),
     options: rssOptions,
+    // schema: rssSchema,
   }),
   Type.Object({
     provider: Type.Literal("tiktok-video"),
     options: tiktokVideoOptions,
+    // schema: tiktokVideoResponseSchema,
   }),
   Type.Object({
     provider: Type.Literal("json"),
     options: httpJsonOptions,
+    schema: Type.Union([
+      Type.Array(Type.Object({}, { additionalProperties: true })),
+      Type.Object({}, { additionalProperties: true }),
+    ]),
+  }),
+  Type.Object({
+    provider: Type.Literal("generic"),
+    options: Type.Any(),
     schema: Type.Union([
       Type.Array(Type.Object({}, { additionalProperties: true })),
       Type.Object({}, { additionalProperties: true }),
@@ -84,7 +110,7 @@ const datasourceGenericManifest = Type.Object({
   }),
   name: Type.String({ title: "Name of the datasource", comment: "For example, 'My data'" }),
   description: Type.Optional(Type.String({ title: "Description of the datasource" })),
-  schema: Type.Object({}, { additionalProperties: true, title: "JSON schema of the datasource fields." }),
+  schema: Type.Any({}),
   refresh: Type.Optional(
     Type.Object(
       {
@@ -116,5 +142,5 @@ export const datasourcesMap = Type.Record(
 export type DatasourcesMap = Static<typeof datasourcesMap>;
 
 export type DatasourcesResolved<T extends DatasourcesMap> = {
-  data: T["schema"];
+  [K in keyof T]: unknown;
 };
