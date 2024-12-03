@@ -2,14 +2,16 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { commonStyleProps } from "../props/style-props";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
+import { TypeCompiler } from "@sinclair/typebox/compiler";
 
+// get filename from esm import.meta
 export const manifest = defineBrickManifest({
-  type: "social-links",
-  kind: "widget",
-  title: "Social links",
-  description: "A list of social media links",
+  type: "button",
+  title: "Button",
+  kind: "brick",
+  description: "A button with text and optional icon",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -26,22 +28,15 @@ export const manifest = defineBrickManifest({
     mobile: 3,
     desktop: 3,
   },
-  icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  icon: `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
     <!-- Main container -->
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
 
-    <!-- Dots and social info -->
-    <circle cx="8" cy="8" r="1" fill="currentColor"></circle>
-    <line x1="11" y1="7" x2="16" y2="7"></line>
-    <line x1="11" y1="9" x2="13" y2="9" stroke-width="0.5"></line>
+    <!-- Button container -->
+    <rect x="4" y="11" width="16" height="6" rx="2"></rect>
 
-    <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
-    <line x1="11" y1="11" x2="16" y2="11"></line>
-    <line x1="11" y1="13" x2="13.5" y2="13" stroke-width="0.5"></line>
-
-    <circle cx="8" cy="16" r="1" fill="currentColor"></circle>
-    <line x1="11" y1="15" x2="16" y2="15"></line>
-    <line x1="11" y1="17" x2="13" y2="17" stroke-width="0.5"></line>
+    <!-- Text line inside button -->
+    <line x1="9" y1="14" x2="15" y2="14"></line>
 </svg>
   `,
   props: Type.Composite([

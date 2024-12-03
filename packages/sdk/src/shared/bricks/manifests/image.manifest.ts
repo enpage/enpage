@@ -1,16 +1,15 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
-import { forwardRef, type ComponentProps } from "react";
-import { tx, apply } from "@upstart.gg/style-system/twind";
 import { commonProps } from "../props/common";
-import { defineBrickManifest } from "@upstart.gg/sdk/shared/bricks";
-import { LAYOUT_COLS } from "@upstart.gg/sdk/shared/layout-constants";
+import { commonStyleProps } from "../props/style-props";
+import { defineBrickManifest } from "~/shared/brick-manifest";
+import { LAYOUT_COLS } from "~/shared/layout-constants";
 
 export const manifest = defineBrickManifest({
-  type: "video",
+  type: "image",
   kind: "brick",
-  title: "Video",
-  description: "Youtube video",
+  title: "Image",
+  description: "An image brick",
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -27,42 +26,32 @@ export const manifest = defineBrickManifest({
     mobile: 3,
     desktop: 3,
   },
-  // svg icon for "video" block
+  // svg icon for "image" block
   icon: `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect
-    x="5" y="15"
-    width="90" height="70"
-    rx="20" ry="20"
-    fill="transparent"
-    stroke="currentColor"
-    stroke-width="4"
-  />
-  <path
-    d="M35 30 L35 70 L75 50 Z"
-    fill="transparent"
-    stroke="currentColor"
-    stroke-width="4"
-    stroke-linejoin="round"
-  />
-</svg>
-
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+      <polyline points="21 15 16 10 5 21"></polyline>
+    </svg>
   `,
   props: Type.Composite([
     Type.Object({
       src: Type.String({
         default: "https://placehold.co/400x200",
         title: "File",
-        description: "The image file",
         "ui:field": "file",
+        "ui:accept": "image/*",
+        "ui:show-img-search": true,
+        "ui:allow-url": true,
       }),
       alt: Type.String({
-        title: "Alt Text",
-        description: "Alternative text for the image",
+        title: "Alternate Text",
+        description: "Alternative text for the image. Recommended for screen readers and SEO.",
         "ui:placeholder": "Your image description",
       }),
     }),
     commonProps,
+    commonStyleProps,
   ]),
 });
 

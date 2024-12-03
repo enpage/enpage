@@ -1,9 +1,48 @@
-import type { DatasourceManifestMap, DatasourceResolved } from "./datasources";
 import { defineAttributes, resolveAttributes, type AttributesResolved } from "./attributes";
-import type { Brick } from "./bricks";
-import type { TemplateConfig, ResolvedTemplateConfig } from "./template-config";
+import { brickSchema, type Brick } from "./bricks";
 import invariant from "./utils/invariant";
-import type { Theme } from "./theme";
+import { themeSchema, type Theme } from "./theme";
+import { type TProperties, Type, type Static } from "@sinclair/typebox";
+import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from "./datasources/types";
+import { manifestSchema, type TemplateManifest } from "./manifest";
+
+export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
+  return {
+    attributes: config.attributes ?? {},
+    manifest: config.manifest,
+    pages: config.pages.map((p) => ({
+      ...p,
+      tags: p.tags ?? [],
+    })),
+    themes: config.themes,
+    ...(config.datasources ? { datasources: config.datasources } : {}),
+  };
+}
+
+export type TemplateConfig = {
+  /**
+   * The template manifest and settings
+   */
+  manifest: TemplateManifest;
+  /**
+   * The attributes declared for the template
+   */
+  attributes: ReturnType<typeof defineAttributes>;
+  /**
+   * The datasources declared for the template
+   */
+  datasources?: DatasourcesMap;
+  /**
+   * The Pages
+   */
+  pages: TemplatePage[];
+  /**
+   * The themes declared by the site.
+   */
+  themes: Theme[];
+};
+
+export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConfig, "attributes">>;
 
 export type PagesMapEntry = {
   id: string;
@@ -16,7 +55,7 @@ export type PagesMapEntry = {
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
 export type PageConfig<
-  D extends DatasourceManifestMap,
+  D extends DatasourcesMap,
   A extends ResolvedTemplateConfig["attributes"],
   B extends Brick[],
 > = {
@@ -50,7 +89,7 @@ export type PageConfig<
    * Resolved static data sources for the page.
    * Undefined if no data sources are defined.
    */
-  data?: D extends DatasourceManifestMap ? DatasourceResolved<D> : undefined;
+  data?: D extends DatasourcesMap ? DatasourcesResolved<D> : undefined;
 
   /**
    * Page attributes.
@@ -65,25 +104,16 @@ export type PageConfig<
   theme: Theme;
 };
 
-export type GenericPageConfig = PageConfig<
-  DatasourceManifestMap,
-  ResolvedTemplateConfig["attributes"],
-  Brick[]
->;
-
+export type GenericPageConfig = PageConfig<DatasourcesMap, ResolvedTemplateConfig["attributes"], Brick[]>;
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
 export function getPageConfig(
   templateConfig: TemplateConfig,
   options: Pick<GenericPageConfig, "id" | "siteId" | "label" | "hostname">,
   path = "/",
-) {
+): GenericPageConfig {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigFromTemplateConfig: No bricks found for path ${path}`);
-
-  if (!templateConfig.attributes) {
-    templateConfig.attributes = defineAttributes({});
-  }
 
   return {
     ...options,
@@ -131,20 +161,36 @@ export function getNewSiteConfig(
   return { site, pages };
 }
 
-export type TemplatePage = {
-  label: string;
-  path: string;
-  bricks: Brick[];
-  tags: string[];
-};
+export const templatePageSchema = Type.Object({
+  label: Type.String(),
+  path: Type.String(),
+  bricks: Type.Array(brickSchema),
+  tags: Type.Array(Type.String()),
+});
 
-type DefinedTemplatePage = Omit<TemplatePage, "tags"> & {
-  tags?: string[];
-};
+export type TemplatePage = Static<typeof templatePageSchema>;
 
-export function definePages(pages: DefinedTemplatePage[]): TemplatePage[] {
-  return pages.map((p) => ({
-    ...p,
-    tags: p.tags ?? [],
-  }));
-}
+export const definedTemplatePage = Type.Composite([
+  Type.Omit(templatePageSchema, ["tags"]),
+  Type.Object({
+    tags: Type.Optional(Type.Array(Type.String())),
+  }),
+]);
+
+export type DefinedTemplatePage = Static<typeof definedTemplatePage>;
+
+export const templateSchema = Type.Object(
+  {
+    manifest: manifestSchema,
+    themes: Type.Array(themeSchema),
+    datasources: Type.Optional(datasourcesMap),
+    attributes: Type.Optional(defineAttributes({})),
+    pages: Type.Array(definedTemplatePage),
+  },
+  {
+    title: "Template schema",
+    description: "The template configuration schema",
+  },
+);
+
+export type Template = Static<typeof templateSchema>;

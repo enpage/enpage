@@ -1,10 +1,11 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { providerOptions } from "~/shared/datasources/types";
+import { providerOptions } from "~/shared/datasources/provider-options";
 
 export const tiktokVideoOptions = Type.Composite([
   providerOptions,
   Type.Object({
-    maxCount: Type.Number(),
+    maxCount: Type.Optional(Type.Number()),
+    refreshInterval: Type.Optional(Type.Number()),
   }),
 ]);
 

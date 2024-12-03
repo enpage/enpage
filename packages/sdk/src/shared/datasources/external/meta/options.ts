@@ -1,5 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
-import { providerOptions } from "../../types";
+import { providerOptions } from "../../provider-options";
 
 export const metaOptions = Type.Composite([
   providerOptions,

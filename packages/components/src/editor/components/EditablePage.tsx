@@ -5,12 +5,12 @@ import BrickWrapper from "./EditableBrick";
 import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
-import { canDropOnLayout } from "@upstart.gg/sdk/shared/utils/layout-utils";
 import Selecto from "react-selecto";
 import { useEditablePage } from "~/editor/hooks/use-draggable";
 import { debounce } from "lodash-es";
-import { defaults } from "~/shared/bricks/manifests/all-manifests";
+import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
+import { canDropOnLayout } from "~/shared/utils/layout-utils";
 
 export default function EditablePage() {
   const editor = useEditor();

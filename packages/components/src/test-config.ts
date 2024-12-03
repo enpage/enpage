@@ -1,14 +1,13 @@
 // @ts-check
 import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
-import { defineManifest } from "@upstart.gg/sdk/manifest";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
-import { definePages } from "@upstart.gg/sdk/page";
-import { defineThemes } from "@upstart.gg/sdk/theme";
+import { defineConfig } from "@upstart.gg/sdk/page";
 
 // define your datasources
-export const datasources = defineDataSources({
+const datasources = defineDataSources({
   links: {
+    provider: "generic",
     name: "Links",
     schema: ds.Array(
       ds.Object({
@@ -43,7 +42,7 @@ export const datasources = defineDataSources({
     provider: "facebook-posts",
     options: {
       limit: 5,
-      nextRefreshDelay: 60 * 60 * 1000,
+      refreshInterval: 60 * 60 * 1000,
     },
   },
   videos: {
@@ -55,22 +54,6 @@ export const datasources = defineDataSources({
     description: "List of videos from a Youtube playlist",
     name: "My Videos",
   },
-});
-
-// define your attributes
-export const attributes = defineAttributes({
-  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
-  testBoolTrue: attr.boolean("Test Bool True", true),
-  customerId: attr.string("Customer ID"),
-  testUrl: attr.url("Test URL", "https://enpage.co"),
-});
-
-// various settings
-export const manifest = defineManifest({
-  author: "John Doe",
-  name: "Example Template",
-  description: "Description of the template",
-  homepage: "https://enpage.co",
 });
 
 const homePageBricks = defineBricks([
@@ -137,7 +120,6 @@ const homePageBricks = defineBricks([
           x: 0,
           w: "full",
           h: 3,
-          minW: 7,
         },
       },
     },
@@ -149,13 +131,11 @@ const homePageBricks = defineBricks([
       position: {
         mobile: {
           x: "third",
-          y: 4,
           w: "full",
           h: 3,
         },
         desktop: {
           x: "third",
-          y: 4,
           w: "third",
           h: 3,
         },
@@ -172,7 +152,6 @@ const homePageBricks = defineBricks([
         },
         desktop: {
           x: "twoThird",
-          y: 4,
           w: "third",
           h: 3,
         },
@@ -181,38 +160,60 @@ const homePageBricks = defineBricks([
   ]),
 ]);
 
-export const pages = definePages([
+const themes = [
   {
-    label: "Home",
-    path: "/",
-    bricks: homePageBricks,
-  },
-]);
+    id: "aurora",
+    name: "Aurora",
+    description: "Vibrant gradients with ethereal color transitions",
+    tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
 
-export const themes = defineThemes({
-  id: "aurora",
-  name: "Aurora",
-  description: "Vibrant gradients with ethereal color transitions",
-  tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
+    colors: {
+      primary: "#7c3aed", // Purple
+      secondary: "#2dd4bf", // Teal
+      // Cyan
+      accent: "#ec4899", // Pink
+      neutral: "#4b5563", // Grey
+    },
+    typography: {
+      base: 16,
+      heading: "neo-grotesque",
+      body: "geometric-humanist",
+    },
+    customFonts: [
+      {
+        name: "Cabinet Grotesk",
+        src: "https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&display=swap",
+        weight: "700",
+        display: "swap",
+      },
+    ],
+  },
+];
 
-  colors: {
-    primary: "#7c3aed", // Purple
-    secondary: "#2dd4bf", // Teal
-    // Cyan
-    accent: "#ec4899", // Pink
-    neutral: "#4b5563", // Grey
-  },
-  typography: {
-    base: 16,
-    heading: "neo-grotesque",
-    body: "geometric-humanist",
-  },
-  customFonts: [
+// define your attributes
+const attributes = defineAttributes({
+  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
+  testBoolTrue: attr.boolean("Test Bool True", true),
+  customerId: attr.string("Customer ID"),
+  testUrl: attr.url("Test URL", "https://enpage.co"),
+});
+
+export default defineConfig({
+  attributes,
+  pages: [
     {
-      name: "Cabinet Grotesk",
-      src: "https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&display=swap",
-      weight: "700",
-      display: "swap",
+      label: "Home",
+      path: "/",
+      bricks: homePageBricks,
+      tags: [],
     },
   ],
+  themes,
+  datasources,
+  manifest: {
+    author: "John Doe",
+    name: "Example Template",
+    description: "Description of the template",
+    homepage: "https://enpage.co",
+  },
 });

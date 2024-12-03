@@ -2,7 +2,7 @@ import { Value } from "@sinclair/typebox/value";
 import { forwardRef, type ComponentProps } from "react";
 import { tx, apply } from "@upstart.gg/style-system/twind";
 import { useBrickStyle } from "../hooks/use-brick-style";
-import { manifest, type Manifest } from "./manifests/image.manifest";
+import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/image.manifest";
 
 const Image = forwardRef<HTMLImageElement, Manifest["props"] & ComponentProps<"img">>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };

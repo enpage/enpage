@@ -4,8 +4,7 @@
   "type": "module",
   "files": [
     "dist",
-    "env.d.ts",
-    "custom-attrs.d.ts"
+    "env.d.ts"
   ],
   "sideEffects": false,
   "exports": {
@@ -28,7 +27,6 @@
       "require": "./env.d.ts",
       "import": "./env.d.ts"
     },
-    "./custom-attrs.d.ts": "./custom-attrs.d.ts",
     "./*": {
       "types": "./dist/shared/*.d.ts",
       "import": "./dist/shared/*.js"
@@ -45,11 +43,6 @@
     "@radix-ui/react-toggle-group": "1.1.0",
     "@radix-ui/themes": "3.1.4",
     "@sinclair/typebox": "0.33.7",
-    "@tiptap/extension-code": "2.8.0",
-    "@tiptap/extension-text-align": "2.8.0",
-    "@tiptap/pm": "2.8.0",
-    "@tiptap/react": "2.8.0",
-    "@tiptap/starter-kit": "2.8.0",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "chalk": "5.3.0",
@@ -114,7 +107,8 @@
     "tsup": "8.2.4"
   },
   "scripts": {
-    "build": "NODE_OPTIONS='--max-old-space-size=12384' tsup --clean",
+    "build": "tsup",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap",
     "dev": "NODE_OPTIONS='--max-old-space-size=12384' tsup --watch",
     "sizetest": "pnpm build && du -sh dist",
     "lint": "biome check --write . && tsc --noEmit",

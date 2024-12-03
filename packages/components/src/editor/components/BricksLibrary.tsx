@@ -1,6 +1,6 @@
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { useDraft, useEditor } from "../hooks/use-editor";
-import { manifests } from "~/shared/bricks/manifests/all-manifests";
+import { manifests } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
 import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@upstart.gg/style-system/system";
@@ -8,7 +8,7 @@ import { BsStars } from "react-icons/bs";
 import { TbDragDrop } from "react-icons/tb";
 import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";
 import { forwardRef, useEffect, useRef, useState } from "react";
-import type { BrickManifest } from "@upstart.gg/sdk/shared/bricks";
+import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
 import type { Static } from "@sinclair/typebox";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import interact from "interactjs";

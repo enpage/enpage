@@ -3,7 +3,7 @@ import { defaults as heroDefaults, manifest as heroManifest } from "./hero.manif
 // image
 import { defaults as imageDefaults, manifest as imageManifest } from "./image.manifest";
 // video
-import { defaults as videoDefaults, manifest as videoManifest } from "./video.manfest";
+import { defaults as videoDefaults, manifest as videoManifest } from "./video.manifest";
 // text
 import { defaults as textDefaults, manifest as textManifest } from "./text.manifest";
 // widget card
@@ -29,8 +29,8 @@ import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from
 // widget countdown
 import { defaults as countdownDefaults, manifest as countdownManifest } from "./countdown.manifest";
 
-import type { BrickManifest } from "@upstart.gg/sdk/shared/bricks";
 import type { Static } from "@sinclair/typebox";
+import type { BrickManifest } from "../../brick-manifest";
 
 export const manifests: Record<string, BrickManifest> = {
   [heroDefaults.type]: heroManifest,

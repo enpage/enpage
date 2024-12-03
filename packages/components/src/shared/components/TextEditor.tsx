@@ -14,7 +14,7 @@ import {
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import { useEditor } from "../hooks/use-editor";
+import { useEditor } from "~/editor/hooks/use-editor";
 
 const extensions = [
   StarterKit,

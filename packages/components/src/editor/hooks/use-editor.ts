@@ -10,13 +10,14 @@ import type { Brick, BrickPosition } from "@upstart.gg/sdk/shared/bricks";
 import type { Theme } from "@upstart.gg/sdk/shared/theme";
 import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
 import type { AttributesResolved } from "@upstart.gg/sdk/shared/attributes";
-import { generateId, type BrickManifest } from "@upstart.gg/sdk/shared/bricks";
+import { generateId } from "@upstart.gg/sdk/shared/bricks";
+import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
 import type { TObject } from "@sinclair/typebox";
 import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
 export { type Immer } from "immer";
 import type { Static } from "@sinclair/typebox";
 import type { ColorAdjustment } from "@upstart.gg/sdk/shared/themes/color-system";
-import { adjustMobileLayout } from "@upstart.gg/sdk/shared/utils/layout-utils";
+import { adjustMobileLayout } from "~/shared/utils/layout-utils";
 import { isEqual } from "lodash-es";
 
 export interface EditorStateProps {

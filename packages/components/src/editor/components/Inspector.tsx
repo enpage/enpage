@@ -11,7 +11,7 @@ import { tx } from "@upstart.gg/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import { jsonFormClass } from "./json-form/form-class";
 import { Tabs } from "@upstart.gg/style-system/system";
-import { manifests, defaults } from "~/shared/bricks/manifests/all-manifests";
+import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";

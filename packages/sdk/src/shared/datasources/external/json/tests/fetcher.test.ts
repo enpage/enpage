@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import fetchHttpJSON from "../fetcher";
 import type { HttpJsonOptions } from "../options";
-import type { DatasourceFetcherParams } from "../../../types";
+import type { DatasourceFetcherParams } from "~/shared/datasources/fetcher";
 
 // Mock the fetch function
 global.fetch = vi.fn();

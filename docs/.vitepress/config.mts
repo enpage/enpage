@@ -2,15 +2,15 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Enpage Developer Docs",
+  title: "Upstart Developer Docs",
   description:
-    "Enpage documentation for designers and developers to help them creating amazing one page websites",
+    "Upstart documentation for designers and developers to help them creating amazing one page websites",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: {
       dark: "/enpage-dark.svg",
       light: "/enpage.svg",
-      alt: "Enpage Developer Documentation",
+      alt: "Upstart Developer Documentation",
     },
     siteTitle: false,
     nav: [
@@ -18,13 +18,13 @@ export default defineConfig({
       { text: "Quick start", link: "/getting-started" },
       { text: "Help", link: "/help" },
       { text: "Publish your template", link: "/publishing" },
-      { text: "Enpage.co", link: "https://enpage.co" },
+      { text: "Upstart.gg", link: "https://upstart.co" },
     ],
     sidebar: [
       {
         text: "Introduction",
         items: [
-          { text: "What is Enpage?", link: "/what-is-enpage" },
+          { text: "What is Upstart?", link: "/what-is-upstart" },
           { text: "Getting Started", link: "/getting-started" },
         ],
       },

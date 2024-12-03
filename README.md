@@ -1,25 +1,25 @@
 <p align="center">
-    <img alt="Enpage SDK" src="https://raw.githubusercontent.com/enpage/enpage/main/docs/public/enpage.svg" width="437">
+    <img alt="Upstart SDK" src="https://raw.githubusercontent.com/enpage/enpage/main/docs/public/upstart.svg" width="437">
 </p>
 
-# Enpage SDK
+# Upstart SDK
 
-The Enpage SDK encompasses the  core functionality for the Enpage templates.
+The Upstart SDK encompasses the  core functionality for the Upstart templates.
 Based on standard web technologies (HTML, CSS, JS), it provides a set of components, utilities, and tools to assist you
 in creating templates that are responsive, accessible, and easy to customize and use.
 
-## Get your Enpage website
+## Get your Upstart website
 
-Visit [https://enpage.co](https://enpage.co) to try the Upstart Editor and create your own website for free.
+Visit [https://upstart.gg](https://upstart.co) to try the Upstart Editor and create your own website for free.
 
 
-## Develop templates for Enpage
+## Develop templates for Upstart
 
-Please visit the documentation at [https://developers.enpage.co](https://developers.enpage.co)
+Please visit the documentation at [https://developers.upstart.co](https://developers.upstart.co)
 
 ## Contributing
 
-Visit https://developers.enpage.co/contribute.html for more information on how to contribute to the Enpage SDK.
+Visit https://developers.upstart.co/contribute.html for more information on how to contribute to the Upstart SDK.
 
 
 ### SDK Development
@@ -44,9 +44,9 @@ This project is licensed under the AGPL License v3 - see the [LICENSE](./LICENSE
 ### FAQ
 
 <details>
-<summary>Can I use the Enpage SDK in a proprietary website?</summary>
+<summary>Can I use the Upstart SDK in a proprietary website?</summary>
 
-While the Enpage SDK is licensed under the GNU Affero General Public License (AGPL),
+While the Upstart SDK is licensed under the GNU Affero General Public License (AGPL),
  users can still build proprietary websites using it. However, there are some key considerations:
 
 1. The AGPL doesn't restrict the use of the library in proprietary websites.

@@ -1,5 +1,4 @@
-import type { TemplateConfig } from "~/shared/template-config";
-import { templateManifestSchema } from "~/shared/manifest";
+import { manifestSchema } from "~/shared/manifest";
 import { defineAttributes } from "~/shared/attributes";
 import fs from "node:fs";
 import { readFile } from "node:fs/promises";
@@ -7,6 +6,7 @@ import fg from "fast-glob";
 import { type Logger, logger as defaultLogger } from "./logger";
 import { fromError } from "zod-validation-error";
 import { basename, dirname, extname } from "node:path";
+import type { TemplateConfig } from "~/shared/page";
 
 export async function loadConfigFromJsFile(
   configPath: string,
@@ -53,22 +53,15 @@ export function loadConfigFromManifestFile(manifestPath: string, logger: Logger)
 
 export function validateTemplateConfig(config: TemplateConfig, logger: Logger) {
   for (const key in config.datasources) {
-    if (
-      !(config.datasources[key].provider || config.datasources[key].provider === "json") &&
-      !config.datasources[key].sampleData
-    ) {
+    if (config.datasources[key].provider === "json" && !config.datasources[key].sampleData) {
       logger.error(
         `🔴 Error: Datasource "${key}" is missing sample data - nothing will be rendered during development! Please check your enpage.config.js file and add a "sampleData" key to your ${key} datasource.`,
       );
-      process.exit(1);
+      throw new Error(`Missing sample data for datasource "${key}"`);
     }
   }
 
-  if (!config.attributes) {
-    config.attributes = defineAttributes({});
-  }
-
-  const validated = templateManifestSchema.safeParse(config.manifest);
+  const validated = manifestSchema.safeParse(config.manifest);
   if (!validated.success) {
     logger.error(`🔴 Error: template manifest is invalid. Check your call to defineManifest().\n`);
     const err = fromError(validated.error);

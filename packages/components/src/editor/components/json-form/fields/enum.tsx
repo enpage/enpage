@@ -17,7 +17,11 @@ const EnumField: React.FC<FieldProps> = (props) => {
   const draft = useDraft();
   const brick = draft.getBrick(context.brickId);
 
-  if (name === "borderStyle" && brick?.props.borderWidth === "border-0") {
+  if (!brick) {
+    return null;
+  }
+
+  if (name === "borderStyle" && "borderWidth" in brick.props && brick.props.borderWidth === "border-0") {
     return null;
   }
 

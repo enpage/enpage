@@ -1,13 +1,13 @@
 import type { TiktokVideoOptions } from "./options";
 import { type TiktokVideoResponseSchema, tiktokVideoResponseSchema } from "./schema";
-import type { TiktokOAuthConfig } from "../oauth/config";
-import type { DatasourceFetcher } from "~/shared/datasources/types";
 import { UnauthorizedError } from "~/shared/errors";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { TiktokFullOAuthConfig } from "../oauth/config";
+import type { DatasourceFetcher } from "~/shared/datasources/fetcher";
 
 const fetchTiktokVideoDatasource: DatasourceFetcher<
   TiktokVideoResponseSchema,
-  TiktokOAuthConfig,
+  TiktokFullOAuthConfig,
   TiktokVideoOptions
 > = async ({ options, oauth }) => {
   const params = new URLSearchParams({
@@ -16,7 +16,7 @@ const fetchTiktokVideoDatasource: DatasourceFetcher<
   });
 
   const url = `https://open.tiktokapis.com/v2/video/list/?${params.toString()}`;
-  const { nextRefreshDelay, ...body } = options;
+  const { refreshInterval, ...body } = options;
   const response = await fetch(url, {
     method: "POST",
     headers: {

@@ -1,14 +1,14 @@
 import { facebookPostSchema, type FacebookPostSchema } from "./schema";
-import type { MetaOAuthConfig } from "~/shared/datasources/external/meta/oauth/config";
-import type { DatasourceFetcher } from "~/shared/datasources/types";
+import type { MetaFullOAuthConfig } from "../../meta/oauth/config";
 import { UnauthorizedError } from "~/shared/errors";
-import type { MetaOptions } from "~/shared/datasources/external/meta/options";
-import { stringifyObjectValues } from "~/shared/datasources/utils";
+import type { MetaOptions } from "../../meta/options";
+import { stringifyObjectValues } from "../../../utils";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
+import type { DatasourceFetcher } from "~/shared/datasources/fetcher";
 
 const fetchFacebookPostDatasource: DatasourceFetcher<
   FacebookPostSchema,
-  MetaOAuthConfig,
+  MetaFullOAuthConfig,
   MetaOptions
 > = async ({ options, oauth }) => {
   const params = new URLSearchParams({

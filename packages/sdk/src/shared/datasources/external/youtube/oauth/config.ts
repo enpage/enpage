@@ -1,13 +1,15 @@
-import type { OAuthConfig } from "~/shared/datasources/types";
+import { Type, type Static } from "@sinclair/typebox";
+import { buildOAuthConfigSchema } from "~/shared/oauth";
 
-export interface YoutubeOAuthConfig {
-  accessToken: string;
-  expiresIn: number;
-  openId: string;
-  refreshExpiresIn: number;
-  refreshToken: string;
-  scope: string;
-  tokenType: string;
-}
+const youtubeOAuthConfig = Type.Object({
+  accessToken: Type.String(),
+  expiresIn: Type.Number(),
+  openId: Type.String(),
+  refreshExpiresIn: Type.Number(),
+  refreshToken: Type.String(),
+  scope: Type.String(),
+  tokenType: Type.String(),
+});
 
-export type YoutubekFullOAuthConfig = OAuthConfig<YoutubeOAuthConfig>;
+const youtubeFullOAuthConfig = buildOAuthConfigSchema(youtubeOAuthConfig);
+export type YoutubeFullOAuthConfig = Static<typeof youtubeFullOAuthConfig>;

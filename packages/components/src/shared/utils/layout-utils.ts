@@ -1,6 +1,7 @@
-import { LAYOUT_COLS } from "../layout-constants";
-import type { Brick, BrickConstraints } from "../bricks";
-import type { ResponsiveMode } from "../responsive";
+import { LAYOUT_COLS } from "@upstart.gg/sdk/layout-constants";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
+import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
+import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
 
 const defaultsPreferred = {
   mobile: {

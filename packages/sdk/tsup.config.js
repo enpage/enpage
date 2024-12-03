@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { defineConfig } from "tsup";
 
 const bannerText = readFileSync("../../banner.txt", "utf-8");
@@ -53,10 +54,11 @@ export default defineConfig((options) => {
     {
       entry: ["src/node", ...ignored],
       outDir: "dist/node",
-      target: "node20.10",
+      target: "node22.11",
       format: ["esm"],
       dts: false,
-      clean: !options.watch,
+      // clean: !options.watch,
+      clean: false,
       minify: !options.watch,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
@@ -64,7 +66,7 @@ export default defineConfig((options) => {
       splitting: false,
       external,
       // Force bundling of lodash-es for the CLI
-      noExternal: ["lodash-es"],
+      // noExternal: ["lodash-es"],
       esbuildOptions(input) {
         input.banner = banner;
       },
@@ -72,23 +74,49 @@ export default defineConfig((options) => {
       removeNodeProtocol: false,
     },
     {
-      entry: ["src/shared", ...ignored],
+      entry: [
+        "src/shared/page.ts",
+        "src/shared/errors.ts",
+        "src/shared/attributes.ts",
+        "src/shared/bricks",
+        "src/shared/bricks.ts",
+        "src/shared/brick-manifest.ts",
+        "src/shared/datasources.ts",
+        "src/shared/layout-constants.ts",
+        "src/shared/utils/invariant.ts",
+        "src/shared/themes",
+        "src/shared/theme.ts",
+        "src/shared/responsive.ts",
+        "src/shared/analytics",
+        "src/shared/datasources/external/meta/oauth/config.ts",
+        "src/shared/datasources/external/tiktok/oauth/config.ts",
+        "src/shared/datasources/external/youtube/oauth/config.ts",
+        "src/shared/env.ts",
+        ...ignored,
+      ],
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
-      dts: {
-        compilerOptions: {
-          exclude: ignored,
-        },
-      },
+      dts: false,
+      // splitting: false,
+      // dts: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
-      clean: !options.watch,
+      // clean: !options.watch,
+      clean: false,
       minify: !options.watch,
       sourcemap: options.watch ? "inline" : false,
-      splitting: false,
       external,
       esbuildOptions(input) {
         input.banner = banner;
+      },
+      onSuccess: async () => {
+        console.time("Types build time");
+        execSync("pnpm build:types", {
+          stdio: "inherit",
+          // @ts-ignore
+          cwd: import.meta.dirname,
+        });
+        console.timeEnd("Types build time");
       },
       loader,
       removeNodeProtocol: false,
