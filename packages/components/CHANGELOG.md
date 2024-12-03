@@ -1,5 +1,15 @@
 # @upstart.gg/components
 
+## 0.0.68
+
+### Patch Changes
+
+- [#250](https://github.com/enpage/enpage/pull/250) [`a44cfdc`](https://github.com/enpage/enpage/commit/a44cfdc347f65c6caa12b0b7e4f037a2afef9540) Thanks [@mattallty](https://github.com/mattallty)! - Move things around and specify JSON Schema types
+
+- Updated dependencies [[`a44cfdc`](https://github.com/enpage/enpage/commit/a44cfdc347f65c6caa12b0b7e4f037a2afef9540)]:
+  - @upstart.gg/style-system@0.0.31
+  - @upstart.gg/sdk@0.0.68
+
 ## 0.0.67
 
 ### Patch Changes
