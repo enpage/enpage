@@ -5,7 +5,6 @@ import Inspect from "vite-plugin-inspect";
 import bundlesize from "vite-plugin-bundlesize";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   envPrefix: ["PUBLIC_"],
   base: "./",
@@ -34,7 +33,6 @@ export default defineConfig({
     port: +(process.env.PORT ?? 3008),
   },
   resolve: {
-    // preserveSymlinks: true,
     alias: {
       lodash: "lodash-es",
     },
@@ -65,14 +63,7 @@ export default defineConfig({
         "lodash",
       ],
       output: {
-        // globals: {
-        //   react: "react",
-        //   "react-dom": "ReactDOM",
-        //   "react/jsx-runtime": "react/jsx-runtime",
-        // },
-        // Put chunk files at <output>/chunks
         chunkFileNames: "chunks/[name].[hash].js",
-        // Put chunk styles at <output>/assets
         assetFileNames: "assets/[name][extname]",
         entryFileNames: "[name].js",
       },

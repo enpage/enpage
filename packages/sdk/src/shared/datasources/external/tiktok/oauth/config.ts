@@ -1,4 +1,4 @@
-import { Type, type Static } from "@sinclair/typebox";
+import { Type, type StaticDecode, type Static } from "@sinclair/typebox";
 import { buildOAuthConfigSchema } from "~/shared/oauth";
 
 const tiktokOAuthConfig = Type.Object({
@@ -11,5 +11,7 @@ const tiktokOAuthConfig = Type.Object({
   tokenType: Type.String(),
 });
 
+export type TiktokOAuthConfig = Static<typeof tiktokOAuthConfig>;
+
 const tiktokFullOAuthConfig = buildOAuthConfigSchema(tiktokOAuthConfig);
-export type TiktokFullOAuthConfig = Static<typeof tiktokFullOAuthConfig>;
+export type TiktokFullOAuthConfig = StaticDecode<typeof tiktokFullOAuthConfig>;

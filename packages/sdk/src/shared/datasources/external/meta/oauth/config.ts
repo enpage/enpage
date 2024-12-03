@@ -1,4 +1,4 @@
-import { Type, type Static } from "@sinclair/typebox";
+import { Type, type Static, type StaticDecode } from "@sinclair/typebox";
 import { buildOAuthConfigSchema } from "~/shared/oauth";
 
 const metaOAuthConfig = Type.Object({
@@ -13,4 +13,4 @@ const metaOAuthConfig = Type.Object({
 export type MetaOAuthConfig = Static<typeof metaOAuthConfig>;
 
 const metaFullOAuthConfig = buildOAuthConfigSchema(metaOAuthConfig);
-export type MetaFullOAuthConfig = Static<typeof metaFullOAuthConfig>;
+export type MetaFullOAuthConfig = StaticDecode<typeof metaFullOAuthConfig>;

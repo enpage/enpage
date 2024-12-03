@@ -69,7 +69,7 @@ export default function Toolbar() {
         }}
       >
         <VscSettings className="h-7 w-auto" />
-        <span className={tooltipCls}>Settings</span>
+        <span className={tx(tooltipCls)}>Settings</span>
       </button>
       <button
         type="button"
@@ -79,7 +79,7 @@ export default function Toolbar() {
         }}
       >
         <PiPalette className="h-7 w-auto" />
-        <span className={tooltipCls}>Color theme</span>
+        <span className={tx(tooltipCls)}>Color theme</span>
       </button>
       <div className={tx("flex-1", "border-t-gray-200 dark:border-t-dark-500")} />
     </nav>

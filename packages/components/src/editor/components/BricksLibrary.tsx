@@ -114,8 +114,6 @@ export default function BlocksLibrary() {
     editor.setDraggingBrick(brick);
   };
 
-  console.log({ manifests });
-
   return (
     <Tabs.Root defaultValue="library">
       <Tabs.List className="sticky top-0 z-50">

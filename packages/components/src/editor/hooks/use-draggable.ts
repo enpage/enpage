@@ -237,10 +237,7 @@ export const useEditablePage = (
           move: (event: Interact.InteractEvent) => {
             const target = event.target as HTMLElement;
             target.classList.add("moving");
-
             const elements = selectedGroup ? selectedGroup.map(getBrickRef) : [target];
-            console.log("drag move", elements);
-
             elements.forEach((element) => {
               if (!element) return;
               const position = getPosition(element, event);
