@@ -2,13 +2,13 @@ import { defineAttributes, resolveAttributes, type AttributesResolved } from "./
 import { brickSchema, type Brick } from "./bricks";
 import invariant from "./utils/invariant";
 import { themeSchema, type Theme } from "./theme";
-import { Type, type Static } from "@sinclair/typebox";
+import { type TProperties, Type, type Static } from "@sinclair/typebox";
 import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from "./datasources/types";
 import { manifestSchema, type TemplateManifest } from "./manifest";
 
 export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
   return {
-    attributes: defineAttributes(config.attributes || {}),
+    attributes: config.attributes ?? {},
     manifest: config.manifest,
     pages: config.pages.map((p) => ({
       ...p,
@@ -27,7 +27,7 @@ export type TemplateConfig = {
   /**
    * The attributes declared for the template
    */
-  attributes?: ReturnType<typeof defineAttributes>;
+  attributes: ReturnType<typeof defineAttributes>;
   /**
    * The datasources declared for the template
    */
@@ -114,10 +114,6 @@ export function getPageConfig(
 ): GenericPageConfig {
   const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
   invariant(bricks, `createPageConfigFromTemplateConfig: No bricks found for path ${path}`);
-
-  if (!templateConfig.attributes) {
-    templateConfig.attributes = defineAttributes({});
-  }
 
   return {
     ...options,

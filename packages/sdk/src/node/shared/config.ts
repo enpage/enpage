@@ -61,10 +61,6 @@ export function validateTemplateConfig(config: TemplateConfig, logger: Logger) {
     }
   }
 
-  if (!config.attributes) {
-    config.attributes = defineAttributes({});
-  }
-
   const validated = manifestSchema.safeParse(config.manifest);
   if (!validated.success) {
     logger.error(`🔴 Error: template manifest is invalid. Check your call to defineManifest().\n`);
