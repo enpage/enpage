@@ -107,8 +107,8 @@
     "tsup": "8.2.4"
   },
   "scripts": {
-    "build": "NODE_OPTIONS='--max-old-space-size=12384' tsup --clean",
-    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap --outDir dist",
+    "build": "tsup",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap",
     "dev": "NODE_OPTIONS='--max-old-space-size=12384' tsup --watch",
     "sizetest": "pnpm build && du -sh dist",
     "lint": "biome check --write . && tsc --noEmit",

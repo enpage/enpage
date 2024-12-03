@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { defineConfig } from "tsup";
 
 const bannerText = readFileSync("../../banner.txt", "utf-8");
@@ -96,8 +97,9 @@ export default defineConfig((options) => {
       outDir: "dist/shared",
       target: "es2020",
       format: ["esm"],
+      dts: false,
       // splitting: false,
-      dts: true,
+      // dts: true,
       metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
       // clean: !options.watch,
       clean: false,
@@ -106,6 +108,15 @@ export default defineConfig((options) => {
       external,
       esbuildOptions(input) {
         input.banner = banner;
+      },
+      onSuccess: async () => {
+        console.time("Types build time");
+        execSync("pnpm build:types", {
+          stdio: "inherit",
+          // @ts-ignore
+          cwd: import.meta.dirname,
+        });
+        console.timeEnd("Types build time");
       },
       loader,
       removeNodeProtocol: false,
