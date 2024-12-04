@@ -33,8 +33,6 @@ export default function ThemePanel() {
     [draft.theme],
   );
 
-  console.log({ themeSchemaProcessed });
-
   const generateTheme = async () => {
     if (!themeDescription) {
       return;
@@ -61,7 +59,7 @@ export default function ThemePanel() {
 
   return (
     <Tabs.Root defaultValue="current">
-      <div className="bg-white dark:bg-dark-800">
+      <div className={tx("bg-white dark:bg-dark-800")}>
         <Tabs.List className="sticky top-0 z-50">
           <Tabs.Trigger value="current" className="!flex-1">
             Current

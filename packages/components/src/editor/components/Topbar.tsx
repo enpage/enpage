@@ -217,8 +217,6 @@ export default function TopBar() {
             className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}
             onClick={() => {
               setShowSaveAlert(true);
-              // editor.setShowAnonymousSaveAlert(true);
-              // window.location.href = "/sign-up/?from=editor";
             }}
           >
             <IoIosSave className={tx("h-5 w-auto")} />
