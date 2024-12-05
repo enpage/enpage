@@ -29,7 +29,7 @@ function isProd() {
   } else if (typeof process !== "undefined" && typeof process.env !== "undefined") {
     return process.env.NODE_ENV === "production";
   }
-  return true;
+  return false;
 }
 
 // export default install(config, isProd());

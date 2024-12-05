@@ -60,7 +60,7 @@ export default defineConfig((options) => {
       // clean: !options.watch,
       clean: false,
       minify: !options.watch,
-      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      metafile: !!process.env.ANALYSE_BUNDLE,
       sourcemap: options.watch ? "inline" : false,
       // Important: force splitting to false to avoid issues with dynamic imports and __dirname resolutions
       splitting: false,
@@ -101,7 +101,8 @@ export default defineConfig((options) => {
       dts: false,
       // splitting: false,
       // dts: true,
-      metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      // metafile: process.env.CI || process.env.ANALYSE_BUNDLE,
+      metafile: !!process.env.ANALYSE_BUNDLE,
       // clean: !options.watch,
       clean: false,
       minify: !options.watch,
