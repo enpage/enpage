@@ -37,6 +37,18 @@ export default defineConfig({
     ],
     // ["family-", ({ $$ }) => ({ fontFamily: `var(--font-${$$})` })],
 
+    [
+      "h-dvh",
+      {
+        height: "100dvh",
+      },
+    ],
+    [
+      "w-dvw",
+      {
+        width: "100dvw",
+      },
+    ],
     ["bg-neutral-", ({ $$ }) => ({ backgroundColor: `var(--color-neutral-${$$})` })],
     ["bg-accent-", ({ $$ }) => ({ backgroundColor: `var(--color-accent-${$$})` })],
     ["bg-primary-", ({ $$ }) => ({ backgroundColor: `var(--color-primary-${$$})` })],
