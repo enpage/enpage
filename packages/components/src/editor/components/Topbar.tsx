@@ -90,7 +90,7 @@ export default function TopBar() {
           }}
           className={tx(baseCls, "flex-shrink-0")}
         >
-          <img src={logo} alt="Upstart" className={tx("h-[56%] w-auto")} />
+          <img src={logo} alt="Upstart" className={tx("h-8 w-auto")} />
         </button>
 
         <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
