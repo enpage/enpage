@@ -44,7 +44,7 @@ export function EditorWrapper({
     }),
   ).current;
 
-  const { isDarkMode } = useDarkMode();
+  const { isDarkMode } = useDarkMode({ initializeWithValue: false });
 
   useEffect(onReady, []);
 
