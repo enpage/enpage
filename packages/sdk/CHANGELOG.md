@@ -1,5 +1,14 @@
 # @upstart.gg/sdk
 
+## 0.0.70
+
+### Patch Changes
+
+- [#255](https://github.com/enpage/enpage/pull/255) [`f6873d7`](https://github.com/enpage/enpage/commit/f6873d79b4bfdd7e1241a8f54ac332525e4820cd) Thanks [@mattallty](https://github.com/mattallty)! - Update deps
+
+- Updated dependencies [[`f6873d7`](https://github.com/enpage/enpage/commit/f6873d79b4bfdd7e1241a8f54ac332525e4820cd)]:
+  - @upstart.gg/style-system@0.0.32
+
 ## 0.0.69
 
 ### Patch Changes
