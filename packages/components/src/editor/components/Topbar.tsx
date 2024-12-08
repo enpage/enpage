@@ -214,7 +214,7 @@ export default function TopBar() {
         ) : (
           <button
             type="button"
-            className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}
+            className={tx(btnClass, rocketBtn, "px-4")}
             onClick={() => {
               setShowSaveAlert(true);
             }}

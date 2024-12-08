@@ -10,6 +10,7 @@ import { modularScale } from "polished";
 
 export default defineConfig({
   darkMode: "media",
+  hash: false,
   presets: [
     presetAutoprefix(),
     presetTailwind({ disablePreflight: false }),

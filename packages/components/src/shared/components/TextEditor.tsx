@@ -41,6 +41,7 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
     extensions,
     content: initialContent,
     onUpdate,
+    immediatelyRender: false,
     // autofocus: false,
     editable,
     editorProps: {

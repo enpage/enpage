@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup -w"
+    "dev": "tsup --watch"
   },
   "exports": {
     "./*.css": {
