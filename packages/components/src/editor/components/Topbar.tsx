@@ -90,7 +90,7 @@ export default function TopBar() {
           }}
           className={tx(baseCls, "flex-shrink-0")}
         >
-          <img src={logo} alt="Upstart" className={tx("h-[56%] w-auto")} />
+          <img src={logo} alt="Upstart" className={tx("h-8 w-auto")} />
         </button>
 
         <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
@@ -214,11 +214,9 @@ export default function TopBar() {
         ) : (
           <button
             type="button"
-            className={tx(btnClass, rocketBtn, btnWithArrow, "px-4")}
+            className={tx(btnClass, rocketBtn, "px-4")}
             onClick={() => {
               setShowSaveAlert(true);
-              // editor.setShowAnonymousSaveAlert(true);
-              // window.location.href = "/sign-up/?from=editor";
             }}
           >
             <IoIosSave className={tx("h-5 w-auto")} />

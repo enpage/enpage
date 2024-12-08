@@ -24,8 +24,8 @@
   "dependencies": {
     "@upstart.gg/sdk": "workspace:*",
     "@upstart.gg/style-system": "workspace:*",
-    "react": "18.3.0-canary-3d9b20132-20240124",
-    "react-dom": "18.3.0-canary-3d9b20132-20240124",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "tailwindcss": "3.4.10"
   },
   "author": "Matthias Etienne",

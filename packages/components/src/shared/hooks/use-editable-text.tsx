@@ -1,5 +1,4 @@
 import { useCallback, lazy, Suspense } from "react";
-import DOMPurify from "dompurify";
 import type { EditorEvents } from "@tiptap/react";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDraft } from "~/editor/hooks/use-editor";
@@ -14,14 +13,10 @@ export function useEditableText(brickId: string, initialContext: string, enabled
   const onUpdateHandler = useCallback(enabled ? createTextEditorUpdateHandler(brickId) : noop, []);
   return enabled ? (
     <Suspense fallback={null}>
-      <TextEditorAsync
-        initialContent={DOMPurify.sanitize(content)}
-        onUpdate={onUpdateHandler}
-        brickId={brickId}
-      />
+      <TextEditorAsync initialContent={content} onUpdate={onUpdateHandler} brickId={brickId} />
     </Suspense>
   ) : (
-    DOMPurify.sanitize(content)
+    content
   );
 }
 

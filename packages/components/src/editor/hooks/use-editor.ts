@@ -263,8 +263,6 @@ export const createDraftStore = (
     mode: "local",
   };
 
-  console.log("Creating draft store with", initProps);
-
   return createStore<DraftState>()(
     subscribeWithSelector(
       temporal(

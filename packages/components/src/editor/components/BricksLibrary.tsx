@@ -116,19 +116,19 @@ export default function BlocksLibrary() {
 
   return (
     <Tabs.Root defaultValue="library">
-      <Tabs.List className="sticky top-0 z-50">
-        <Tabs.Trigger value="library" className="!flex-1">
+      <Tabs.List className={tx("sticky top-0 z-50")}>
+        <Tabs.Trigger value="library" className={tx("!flex-1")}>
           Library
         </Tabs.Trigger>
-        <Tabs.Trigger value="ai" className="!flex-1">
-          Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
+        <Tabs.Trigger value="ai" className={tx("!flex-1")}>
+          Upstart AI <BsStars className={tx("ml-1 w-4 h-4 text-upstart-600")} />
         </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content value="library">
         {shouldDisplayLibraryCallout && (
           <Callout.Root size="1">
             <Callout.Icon>
-              <TbDragDrop className="w-8 h-8 mt-3 stroke-1" />
+              <TbDragDrop className={tx("w-8 h-8 mt-3 stroke-1")} />
             </Callout.Icon>
             <Callout.Text>Drag and drop blocks to add them to your page.</Callout.Text>
           </Callout.Root>
@@ -137,11 +137,15 @@ export default function BlocksLibrary() {
         <div
           className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
         >
-          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
+          <h3
+            className={tx(
+              "text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]",
+            )}
+          >
             Base bricks
           </h3>
           <div
-            className="grid gap-1 p-1.5"
+            className={tx("grid gap-1 p-1.5")}
             style={{
               gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
             }}
@@ -161,11 +165,15 @@ export default function BlocksLibrary() {
         <div
           className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
         >
-          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]">
+          <h3
+            className={tx(
+              "text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999]",
+            )}
+          >
             Widgets
           </h3>
           <div
-            className="grid gap-1 p-1.5"
+            className={tx("grid gap-1 p-1.5")}
             style={{
               gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
             }}
@@ -183,10 +191,10 @@ export default function BlocksLibrary() {
           </div>
         </div>
       </Tabs.Content>
-      <ScrollablePanelTab tab="ai" className="p-2">
+      <ScrollablePanelTab tab="ai" className={tx("p-2")}>
         <Callout.Root size="1">
           <Callout.Icon>
-            <WiStars className="w-8 h-8 mt-3" />
+            <WiStars className={tx("w-8 h-8 mt-3")} />
           </Callout.Icon>
           <Callout.Text>Tell AI what you want and it will generate a brick for you!</Callout.Text>
         </Callout.Root>
@@ -194,7 +202,7 @@ export default function BlocksLibrary() {
           onInput={(e) => {
             setBrickPrompt(e.currentTarget.value);
           }}
-          className="w-full my-2 h-24"
+          className={tx("w-full my-2 h-24")}
           size="2"
           placeholder="Add an image of delivery guy"
           spellCheck={false}
@@ -202,11 +210,11 @@ export default function BlocksLibrary() {
         <Button
           size="2"
           disabled={brickPrompt.length < 10 || isGenerating}
-          className="block !w-full"
+          className={tx("block !w-full")}
           onClick={generateBrick}
         >
           <Spinner loading={isGenerating}>
-            <BsStars className="w-4 h-4" />
+            <BsStars className={tx("w-4 h-4")} />
           </Spinner>
           {isGenerating ? "Generating themes" : "Generate a brick"}
         </Button>
@@ -228,9 +236,9 @@ const DraggableBrick = forwardRef<HTMLButtonElement, DraggableBrickProps>(({ bri
       data-brick-preferred-w={brick.preferredWidth}
       data-brick-preferred-h={brick.preferredHeight}
       type="button"
-      className="rounded border border-transparent hover:border-upstart-600
-          bg-white dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none
-          pointer-events-auto transition draggable-brick [&:is(.clone)]:(opacity-80 !bg-white)"
+      className={tx(
+        "rounded border border-transparent hover:border-upstart-600 bg-white dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none pointer-events-auto transition draggable-brick [&:is(.clone)]:(opacity-80 !bg-white)",
+      )}
     >
       <div
         className={tx(
@@ -238,11 +246,13 @@ const DraggableBrick = forwardRef<HTMLButtonElement, DraggableBrickProps>(({ bri
         )}
       >
         <span
-          className="w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block"
+          className={tx(
+            "w-7 h-7 text-upstart-600 dark:text-upstart-400 [&>svg]:w-auto [&>svg]:h-7 inline-block",
+          )}
           // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
           dangerouslySetInnerHTML={{ __html: brick.icon }}
         />
-        <span className="whitespace-nowrap text-xs">{brick.title}</span>
+        <span className={tx("whitespace-nowrap text-xs")}>{brick.title}</span>
       </div>
     </button>
   );
