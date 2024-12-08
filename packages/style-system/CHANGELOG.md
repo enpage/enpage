@@ -1,5 +1,11 @@
 # @upstart.gg/style-system
 
+## 0.0.32
+
+### Patch Changes
+
+- [#255](https://github.com/enpage/enpage/pull/255) [`f6873d7`](https://github.com/enpage/enpage/commit/f6873d79b4bfdd7e1241a8f54ac332525e4820cd) Thanks [@mattallty](https://github.com/mattallty)! - Update deps
+
 ## 0.0.31
 
 ### Patch Changes
