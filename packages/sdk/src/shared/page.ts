@@ -51,14 +51,7 @@ export type PagesMapEntry = {
   tags: string[];
 };
 
-/**
- * The Page config represents the page configuration (datasources, attributes, etc)
- */
-export type PageConfig<
-  D extends DatasourcesMap,
-  A extends ResolvedTemplateConfig["attributes"],
-  B extends Brick[],
-> = {
+export type PageInfo = {
   /**
    * The page id.
    */
@@ -81,6 +74,16 @@ export type PageConfig<
    * Map of all pages in the site.
    */
   pagesMap: PagesMapEntry[];
+};
+
+/**
+ * The Page config represents the page configuration (datasources, attributes, etc)
+ */
+export type PageConfig<
+  D extends DatasourcesMap,
+  A extends ResolvedTemplateConfig["attributes"],
+  B extends Brick[],
+> = PageInfo & {
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
