@@ -26,13 +26,7 @@ export interface EditorStateProps {
    * It is used when the user is not logged in yet or does not have an account yet
    */
   mode: "local" | "remote";
-  enabled: boolean;
   pageConfig: GenericPageConfig;
-
-  /**
-   * The brick manifest that is being dragged from the library
-   */
-  draggingBrick?: Static<BrickManifest>;
   previewMode: ResponsiveMode;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
@@ -49,7 +43,6 @@ export interface EditorStateProps {
 }
 
 export interface EditorState extends EditorStateProps {
-  setDraggingBrick: (draggingBrick?: EditorStateProps["draggingBrick"]) => void;
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
@@ -71,7 +64,6 @@ export const createEditorStore = (
   initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig },
 ) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
-    enabled: true,
     previewMode: "desktop",
     mode: "local",
     colorAdjustment: "default",
@@ -141,11 +133,6 @@ export const createEditorStore = (
                 }
               }),
 
-            setDraggingBrick: (draggingBrick) =>
-              set((state) => {
-                state.draggingBrick = draggingBrick;
-              }),
-
             setSelectedGroup: (group) =>
               set((state) => {
                 state.selectedGroup = group;
@@ -183,15 +170,9 @@ export const createEditorStore = (
               Object.fromEntries(
                 Object.entries(state).filter(
                   ([key]) =>
-                    ![
-                      "enabled",
-                      "mode",
-                      "selectedBrick",
-                      "panel",
-                      "isEditingTextForBrickId",
-                      "draggingBrick",
-                      "shouldShowGrid",
-                    ].includes(key),
+                    !["mode", "selectedBrick", "panel", "isEditingTextForBrickId", "shouldShowGrid"].includes(
+                      key,
+                    ),
                 ),
               ),
           },
@@ -242,7 +223,6 @@ export interface DraftState extends DraftStateProps {
   setDirty: (dirty: boolean) => void;
   setVersion(version: string): void;
   adjustMobileLayout(): void;
-  // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
 /**
@@ -447,11 +427,6 @@ export const useDraftUndoManager = () => {
 export const useEditor = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx);
-};
-
-export const useEditorEnabled = () => {
-  const ctx = useEditorStoreContext();
-  return useStore(ctx, (state) => state.enabled);
 };
 
 export const usePagesInfo = () => {
