@@ -164,6 +164,8 @@ export function getNewSiteConfig(
   return { site, pages };
 }
 
+export type NewSiteConfig = ReturnType<typeof getNewSiteConfig>;
+
 export const templatePageSchema = Type.Object({
   label: Type.String(),
   path: Type.String(),

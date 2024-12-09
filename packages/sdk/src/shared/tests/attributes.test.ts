@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { attr, defineAttributes } from "../attributes";
+import { attr, defineAttributes, resolveAttributes } from "../attributes";
 
 describe("Attributes test suite", () => {
   describe("defineAttributes", () => {
@@ -22,6 +22,18 @@ describe("Attributes test suite", () => {
       expect(attributes.properties).toHaveProperty("age");
       expect(attributes.properties).toHaveProperty("isStudent");
       expect(attributes.properties).toHaveProperty("createdAt");
+    });
+  });
+  describe("resolveAttributes", () => {
+    it("should resolve attributes with default values", () => {
+      const attributes = defineAttributes({
+        mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
+        testBoolTrue: attr.boolean("Test Bool True", true),
+        customerId: attr.string("Customer ID"),
+        testUrl: attr.url("Test URL", "https://enpage.co"),
+      });
+
+      expect(resolveAttributes(attributes)).toBeTruthy();
     });
   });
 });
