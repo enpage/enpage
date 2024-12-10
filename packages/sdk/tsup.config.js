@@ -85,6 +85,7 @@ export default defineConfig((options) => {
         "src/shared/layout-constants.ts",
         "src/shared/utils/invariant.ts",
         "src/shared/oauth.ts",
+        "src/shared/ajv.ts",
         "src/shared/themes",
         "src/shared/theme.ts",
         "src/shared/responsive.ts",

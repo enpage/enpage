@@ -50,6 +50,7 @@ export default defineConfig({
       },
       formats: ["es"],
     },
+    cssMinify: false,
     rollupOptions: {
       external: [
         "react-icons",

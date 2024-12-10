@@ -11,6 +11,7 @@ import {
   useEditorMode,
   usePageVersion,
   useLastSaved,
+  useDraft,
 } from "~/editor/hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
@@ -23,6 +24,7 @@ import { formatDistance } from "date-fns";
 
 export default function TopBar() {
   const editor = useEditor();
+  const draft = useDraft();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
   const lastSaved = useLastSaved();
@@ -33,11 +35,8 @@ export default function TopBar() {
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
 
   const publish = useCallback(() => {
-    post(
-      `/sites/${editor.pageConfig.siteId}/pages/${editor.pageConfig.id}/versions/${pageVersion}/publish`,
-      {},
-    );
-  }, [editor.pageConfig, pageVersion]);
+    post(`/sites/${draft.pageInfo.siteId}/pages/${draft.pageInfo.id}/versions/${pageVersion}/publish`, {});
+  }, [draft.pageInfo, pageVersion]);
 
   const switchPreviewMode = useCallback(() => {
     editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
@@ -171,9 +170,9 @@ export default function TopBar() {
               ...pages.map((page) => ({
                 label: page.label,
                 type: "checkbox" as const,
-                checked: editor.pageConfig.id === page.id,
+                checked: draft.pageInfo.id === page.id,
                 onClick: () => {
-                  window.location.href = `/sites/${editor.pageConfig.siteId}/pages/${page.id}/edit`;
+                  window.location.href = `/sites/${draft.pageInfo.siteId}/pages/${page.id}/edit`;
                 },
               })),
             ]}

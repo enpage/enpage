@@ -11,10 +11,11 @@ export function usePageStyle({
 }: { attributes: AttributesResolved; editable?: boolean; previewMode?: ResponsiveMode }) {
   return tx(
     "grid group/page mx-auto w-full page-container relative",
-    isStandardColor(attributes.$backgroundColor) && css({ backgroundColor: attributes.$backgroundColor }),
-    isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor }),
-    !isStandardColor(attributes.$backgroundColor) && attributes.$backgroundColor,
-    !isStandardColor(attributes.$textColor) && attributes.$textColor,
+    isStandardColor(attributes.$backgroundColor) &&
+      css({ backgroundColor: attributes.$backgroundColor as string }),
+    isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor as string }),
+    !isStandardColor(attributes.$backgroundColor) && (attributes.$backgroundColor as string),
+    !isStandardColor(attributes.$textColor) && (attributes.$textColor as string),
     // mobile grid
     `@mobile:(
       grid-cols-${LAYOUT_COLS.mobile}

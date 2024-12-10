@@ -1,4 +1,5 @@
-import type { TObject, TProperties } from "@sinclair/typebox";
+import type { TProperties } from "@sinclair/typebox";
+import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
 
 interface PropertyWithMetadata {
   key: string;
@@ -8,17 +9,20 @@ interface PropertyWithMetadata {
   "ui:hidden"?: boolean;
 }
 
-export function sortJsonSchemaProperties<T extends TObject>(schema: T): T {
+export function sortJsonSchemaProperties(schema: AnySchemaObject): AnySchemaObject {
   const properties = schema.properties || {};
 
   // Extract property metadata
-  const propertiesMetadata: PropertyWithMetadata[] = Object.entries(properties).map(([key, property]) => ({
-    key,
-    order: property["ui:order"],
-    group: property["ui:group"],
-    groupOrder: property["ui:group:order"],
-    "ui:hidden": property["ui:hidden"],
-  }));
+  const propertiesMetadata: PropertyWithMetadata[] = Object.entries(properties).map(
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    ([key, property]: [string, any]) => ({
+      key,
+      order: property["ui:order"],
+      group: property["ui:group"],
+      groupOrder: property["ui:group:order"],
+      "ui:hidden": property["ui:hidden"],
+    }),
+  );
 
   // Group properties
   const groupedProperties: { [key: string]: PropertyWithMetadata[] } = {};
