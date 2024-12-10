@@ -1,10 +1,18 @@
-import { defineAttributes, resolveAttributes, type AttributesResolved } from "./attributes";
+import {
+  type Attributes,
+  defineAttributes,
+  resolveAttributes,
+  type AttributesResolved,
+  defaultAttributesSchema,
+} from "./attributes";
 import { brickSchema, type Brick } from "./bricks";
 import invariant from "./utils/invariant";
 import { themeSchema, type Theme } from "./theme";
-import { type TProperties, Type, type Static } from "@sinclair/typebox";
+import { type TProperties, Type, type Static, TSchema, type TObject } from "@sinclair/typebox";
 import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from "./datasources/types";
 import { manifestSchema, type TemplateManifest } from "./manifest";
+import { ajv } from "./ajv";
+import type { JSONSchemaType } from "ajv";
 
 export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
   return {
@@ -27,7 +35,7 @@ export type TemplateConfig = {
   /**
    * The attributes declared for the template
    */
-  attributes: ReturnType<typeof defineAttributes>;
+  attributes: JSONSchemaType<Attributes>;
   /**
    * The datasources declared for the template
    */
@@ -110,7 +118,7 @@ export type PageConfig<
 export type GenericPageConfig = PageConfig<DatasourcesMap, ResolvedTemplateConfig["attributes"], Brick[]>;
 export type GenericPageContext = Omit<GenericPageConfig, "attributes">;
 
-export function getPageConfig(
+export function getNewPageConfig(
   templateConfig: TemplateConfig,
   options: Pick<GenericPageConfig, "id" | "siteId" | "label" | "hostname">,
   path = "/",
@@ -154,7 +162,7 @@ export function getNewSiteConfig(
   };
 
   const pages = templateConfig.pages.map((p) =>
-    getPageConfig(
+    getNewPageConfig(
       templateConfig,
       { siteId: site.id, id: crypto.randomUUID(), label: p.label, hostname },
       p.path,
@@ -189,7 +197,7 @@ export const templateSchema = Type.Object(
     manifest: manifestSchema,
     themes: Type.Array(themeSchema),
     datasources: Type.Optional(datasourcesMap),
-    attributes: Type.Optional(defineAttributes({})),
+    attributes: Type.Optional(defaultAttributesSchema),
     pages: Type.Array(definedTemplatePage),
   },
   {

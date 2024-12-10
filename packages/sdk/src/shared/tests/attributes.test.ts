@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { attr, defineAttributes, resolveAttributes } from "../attributes";
+import { attr, type Attributes, defineAttributes, resolveAttributes } from "../attributes";
+import { typeboxSchemaToJSONSchema } from "../utils/schema";
 
 describe("Attributes test suite", () => {
   describe("defineAttributes", () => {
@@ -32,7 +33,6 @@ describe("Attributes test suite", () => {
         customerId: attr.string("Customer ID"),
         testUrl: attr.url("Test URL", "https://enpage.co"),
       });
-
       expect(resolveAttributes(attributes)).toBeTruthy();
     });
   });

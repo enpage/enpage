@@ -15,6 +15,8 @@ import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manife
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";
+import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
+import { Attributes } from "@upstart.gg/sdk/shared/attributes";
 
 export default function Inspector() {
   const editor = useEditor();
@@ -107,7 +109,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   const manifest = manifests[brick.type];
 
   if (manifest) {
-    const uiSchema = createUiSchema(manifest.properties.props);
+    const uiSchema = createUiSchema(manifest.properties.props as AnySchemaObject);
     return (
       <Form
         key={`inspector-${brick.id}`}
