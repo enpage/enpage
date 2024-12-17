@@ -241,7 +241,7 @@ export default function TopBar() {
               </AlertDialog.Cancel>
               <AlertDialog.Action
                 onClick={() => {
-                  window.location.href = "/sign-up/?from=editor";
+                  window.location.href = "/sign-up/?next=/dashboard/first-site-setup";
                 }}
               >
                 <Button variant="solid" color="violet">

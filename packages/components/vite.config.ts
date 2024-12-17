@@ -16,6 +16,7 @@ export default defineConfig({
       include: [
         "src/editor/components/Editor.tsx",
         "src/editor/components/EditorWrapper.tsx",
+        "src/editor/hooks/use-editor.ts",
         "src/shared/components/Page.tsx",
         "src/shared/components/Brick.tsx",
         "src/test-config.ts",
@@ -46,6 +47,7 @@ export default defineConfig({
         EditorWrapper: "src/editor/components/EditorWrapper.tsx",
         Page: "src/shared/components/Page.tsx",
         Brick: "src/shared/components/Brick.tsx",
+        "use-editor": "src/editor/hooks/use-editor.ts",
         "test-config": "src/test-config.ts",
       },
       formats: ["es"],

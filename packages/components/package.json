@@ -9,7 +9,7 @@
     },
     "./editor/*": {
       "import": "./dist/*.js",
-      "types": "./dist/types/editor/components/*.d.ts"
+      "types": "./dist/types/editor/*.d.ts"
     },
     "./test-config": {
       "import": "./dist/test-config.js",

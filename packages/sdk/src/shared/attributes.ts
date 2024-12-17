@@ -41,14 +41,7 @@ export function defineAttributes(attrs: TProperties) {
       );
     }
   }
-  return typeboxSchemaToJSONSchema<Attributes>(
-    Type.Object(
-      { ...defaultAttributes, ...attrs },
-      {
-        $id: "attributes",
-      },
-    ),
-  );
+  return typeboxSchemaToJSONSchema<Attributes>(Type.Object({ ...defaultAttributes, ...attrs }));
 }
 
 export type AttributesSchema = ReturnType<typeof defineAttributes>;
