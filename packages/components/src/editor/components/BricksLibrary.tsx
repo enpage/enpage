@@ -63,7 +63,6 @@ export default function BlocksLibrary() {
           event.target.cloneElement = clone;
 
           document.body.appendChild(clone);
-          // editor.setDraggingBrick(brick);
         },
         move: (event: Interact.InteractEvent) => {
           // @ts-ignore
@@ -106,12 +105,6 @@ export default function BlocksLibrary() {
     setIsGenerating(true);
     // todo...
     setIsGenerating(false);
-  };
-
-  const onDragStart = (brick: Static<BrickManifest>, e: React.DragEvent<HTMLButtonElement>) => {
-    // firefox needs this to allow dragging
-    e.dataTransfer.setData("text/plain", "");
-    editor.setDraggingBrick(brick);
   };
 
   return (

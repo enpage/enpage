@@ -18,7 +18,6 @@ import "@upstart.gg/style-system/react-resizable.css";
 
 export type EditorWrapperProps = {
   mode?: "local" | "remote";
-  enabled?: boolean;
   pageConfig: GenericPageConfig;
   onReady?: () => void;
 };
@@ -28,19 +27,27 @@ export type EditorWrapperProps = {
  * If no children are provided, the default Page component will be rendered, but not within the Editor.
  */
 export function EditorWrapper({
-  enabled = true,
   pageConfig,
   mode,
   children,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ enabled, pageConfig, mode })).current;
+  const editorStore = useRef(createEditorStore({ mode })).current;
   const draftStore = useRef(
     createDraftStore({
+      pageInfo: {
+        id: pageConfig.id,
+        siteId: pageConfig.siteId,
+        hostname: pageConfig.hostname,
+        label: pageConfig.label,
+        pagesMap: pageConfig.pagesMap,
+        path: pageConfig.path,
+      },
       bricks: pageConfig.bricks,
       attr: pageConfig.attr,
-      attrSchema: pageConfig.attributes,
+      attributes: pageConfig.attributes,
       data: pageConfig.data,
+      theme: pageConfig.theme,
     }),
   ).current;
 

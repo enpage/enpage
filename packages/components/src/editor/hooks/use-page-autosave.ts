@@ -5,7 +5,7 @@ import {
   useBricksSubscribe,
   useDraft,
   useEditorMode,
-  usePageConfig,
+  usePageInfo,
   usePagePathSubscribe,
   useThemeSubscribe,
 } from "./use-editor";
@@ -21,7 +21,7 @@ type UpdatePageParams = Parameters<typeof updatePage>;
 export function usePageAutoSave() {
   const draft = useDraft();
   const editorMode = useEditorMode();
-  const pageConfig = usePageConfig();
+  const pageConfig = usePageInfo();
   const doUpdatePage = useDebounceCallback(
     editorMode === "remote"
       ? (...args: UpdatePageParams) => {
