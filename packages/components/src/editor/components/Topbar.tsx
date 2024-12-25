@@ -35,8 +35,8 @@ export default function TopBar() {
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
 
   const publish = useCallback(() => {
-    post(`/sites/${draft.pageInfo.siteId}/pages/${draft.pageInfo.id}/versions/${pageVersion}/publish`, {});
-  }, [draft.pageInfo, pageVersion]);
+    post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
+  }, [draft.siteId, draft.id, pageVersion]);
 
   const switchPreviewMode = useCallback(() => {
     editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
@@ -67,6 +67,8 @@ export default function TopBar() {
   group-hover:block group-hover:opacity-100 group-hover:translate-y-0 text-nowrap whitespace-nowrap pointer-events-none`;
 
   const arrowClass = "h-4 w-4 opacity-60 -ml-0.5";
+
+  console.log({ pages });
 
   return (
     <>
@@ -161,29 +163,36 @@ export default function TopBar() {
           <span className={tx(tooltipCls)}>Switch View</span>
         </button>
 
-        {editorMode === "remote" && (
-          <TopbarMenu
-            items={[
-              { label: "New page" },
-              { label: "Duplicate page" },
-              { type: "separator" },
-              ...pages.map((page) => ({
-                label: page.label,
-                type: "checkbox" as const,
-                checked: draft.pageInfo.id === page.id,
-                onClick: () => {
-                  window.location.href = `/sites/${draft.pageInfo.siteId}/pages/${page.id}/edit`;
-                },
-              })),
-            ]}
-          >
-            <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
-              <VscCopy className="h-7 w-auto" />
-              <span className={tx(tooltipCls)}>Pages</span>
-              <RiArrowDownSLine className={tx(arrowClass)} />
-            </button>
-          </TopbarMenu>
-        )}
+        <TopbarMenu
+          items={[
+            ...(editorMode === "remote"
+              ? [{ label: "New page" }, { label: "Duplicate page" }, { type: "separator" as const }]
+              : []),
+
+            { type: "label", label: "Switch page" },
+
+            ...pages.map((page) => ({
+              label: page.label,
+              type: "checkbox" as const,
+              checked: draft.id === page.id || draft.path === page.path,
+              onClick: () => {
+                if (editorMode === "remote") {
+                  window.location.href = `/editor/sites/${draft.siteId}/pages/${page.id}/edit`;
+                } else {
+                  const currentURL = new URL(window.location.href);
+                  currentURL.searchParams.set("p", page.id);
+                  window.location.href = currentURL.href;
+                }
+              },
+            })),
+          ]}
+        >
+          <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
+            <VscCopy className="h-7 w-auto" />
+            <span className={tx(tooltipCls)}>Pages</span>
+            <RiArrowDownSLine className={tx(arrowClass)} />
+          </button>
+        </TopbarMenu>
 
         <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
@@ -274,8 +283,12 @@ type TopbarMenuCheckbox = {
 type TopbarMenuSeparator = {
   type: "separator";
 };
+type TopbarMenuLabel = {
+  type: "label";
+  label: string;
+};
 
-type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuCheckbox)[];
+type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuLabel | TopbarMenuCheckbox)[];
 
 /**
  */
@@ -287,6 +300,8 @@ function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems }>) {
         {props.items.map((item, index) =>
           item.type === "separator" ? (
             <div key={index} className="my-1.5 h-px bg-black/10" />
+          ) : item.type === "label" ? (
+            <DropdownMenu.Label key={item.label}>{item.label}</DropdownMenu.Label>
           ) : item.type === "checkbox" ? (
             <DropdownMenu.CheckboxItem key={item.label} checked={item.checked}>
               <button

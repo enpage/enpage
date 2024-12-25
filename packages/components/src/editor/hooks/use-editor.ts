@@ -180,12 +180,19 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
 type EditorStore = ReturnType<typeof createEditorStore>;
 
 export interface DraftStateProps {
+  id: string;
+  path: string;
+  label: string;
   bricks: Brick[];
   data: Record<string, unknown>;
   attr: GenericPageConfig["attr"];
   attributes: GenericPageConfig["attributes"];
   theme: GenericPageConfig["theme"];
-  pageInfo: Pick<GenericPageConfig, "path" | "pagesMap" | "id" | "siteId" | "label" | "hostname">;
+  siteId: GenericPageConfig["siteId"];
+  siteLabel: GenericPageConfig["siteLabel"];
+  siteAttributes: GenericPageConfig["siteAttributes"];
+  pagesMap: GenericPageConfig["pagesMap"];
+  hostname: GenericPageConfig["hostname"];
   previewTheme?: Theme;
   version?: string;
   lastSaved?: Date;
@@ -226,13 +233,33 @@ export interface DraftState extends DraftStateProps {
  */
 export const createDraftStore = (
   initProps: Partial<DraftStateProps> & {
+    id: DraftStateProps["id"];
+    path: DraftStateProps["path"];
+    label: DraftStateProps["label"];
     attr: DraftStateProps["attr"];
     attributes: DraftStateProps["attributes"];
-    pageInfo: DraftStateProps["pageInfo"];
+    siteLabel: DraftStateProps["siteLabel"];
+    siteId: DraftStateProps["siteId"];
+    siteAttributes: DraftStateProps["siteAttributes"];
+    hostname: DraftStateProps["hostname"];
+    pagesMap: DraftStateProps["pagesMap"];
     theme: DraftStateProps["theme"];
   },
 ) => {
-  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attributes" | "pageInfo" | "theme"> = {
+  const DEFAULT_PROPS: Omit<
+    DraftStateProps,
+    | "attr"
+    | "attributes"
+    | "siteLabel"
+    | "pagesMap"
+    | "theme"
+    | "id"
+    | "path"
+    | "label"
+    | "hostname"
+    | "siteId"
+    | "siteAttributes"
+  > = {
     bricks: [],
     data: {},
     mode: "local",
@@ -425,7 +452,7 @@ export const useEditor = () => {
 
 export const usePagesInfo = () => {
   const ctx = useDraftStoreContext();
-  return useStore(ctx, (state) => state.pageInfo.pagesMap);
+  return useStore(ctx, (state) => state.pagesMap);
 };
 
 export const usePreviewMode = () => {
@@ -485,7 +512,15 @@ export const useAttributesSchema = () => {
 
 export const usePageInfo = () => {
   const ctx = useDraftStoreContext();
-  return useStore(ctx, (state) => state.pageInfo);
+  return useStore(ctx, (state) => ({
+    id: state.id,
+    path: state.path,
+    label: state.label,
+    siteLabel: state.siteLabel,
+    siteId: state.siteId,
+    siteAttributes: state.siteAttributes,
+    hostname: state.hostname,
+  }));
 };
 
 export const useTheme = () => {
@@ -517,11 +552,11 @@ export const useThemeSubscribe = (callback: (theme: DraftState["theme"]) => void
   }, []);
 };
 
-export const usePagePathSubscribe = (callback: (path: DraftState["pageInfo"]["path"]) => void) => {
+export const usePagePathSubscribe = (callback: (path: DraftState["path"]) => void) => {
   const ctx = useDraftStoreContext();
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return ctx.subscribe((state) => state.pageInfo.path, callback);
+    return ctx.subscribe((state) => state.path, callback);
   }, []);
 };
 

@@ -35,14 +35,14 @@ export function EditorWrapper({
   const editorStore = useRef(createEditorStore({ mode })).current;
   const draftStore = useRef(
     createDraftStore({
-      pageInfo: {
-        id: pageConfig.id,
-        siteId: pageConfig.siteId,
-        hostname: pageConfig.hostname,
-        label: pageConfig.label,
-        pagesMap: pageConfig.pagesMap,
-        path: pageConfig.path,
-      },
+      siteId: pageConfig.siteId,
+      hostname: pageConfig.hostname,
+      pagesMap: pageConfig.pagesMap,
+      siteAttributes: pageConfig.siteAttributes,
+      siteLabel: pageConfig.siteLabel,
+      id: pageConfig.id,
+      path: pageConfig.path,
+      label: pageConfig.label,
       bricks: pageConfig.bricks,
       attr: pageConfig.attr,
       attributes: pageConfig.attributes,
