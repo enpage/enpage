@@ -163,36 +163,39 @@ export default function TopBar() {
           <span className={tx(tooltipCls)}>Switch View</span>
         </button>
 
-        <TopbarMenu
-          items={[
-            ...(editorMode === "remote"
-              ? [{ label: "New page" }, { label: "Duplicate page" }, { type: "separator" as const }]
-              : []),
+        {(editorMode === "remote" || (editorMode === "local" && pages.length > 1)) && (
+          <TopbarMenu
+            items={[
+              ...(editorMode === "remote"
+                ? [{ label: "New page" }, { label: "Duplicate page" }, { type: "separator" as const }]
+                : []),
 
-            { type: "label", label: "Switch page" },
-
-            ...pages.map((page) => ({
-              label: page.label,
-              type: "checkbox" as const,
-              checked: draft.id === page.id || draft.path === page.path,
-              onClick: () => {
-                if (editorMode === "remote") {
-                  window.location.href = `/editor/sites/${draft.siteId}/pages/${page.id}/edit`;
-                } else {
-                  const currentURL = new URL(window.location.href);
-                  currentURL.searchParams.set("p", page.id);
-                  window.location.href = currentURL.href;
-                }
-              },
-            })),
-          ]}
-        >
-          <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
-            <VscCopy className="h-7 w-auto" />
-            <span className={tx(tooltipCls)}>Pages</span>
-            <RiArrowDownSLine className={tx(arrowClass)} />
-          </button>
-        </TopbarMenu>
+              ...(pages.length > 1 ? [{ type: "label", label: "Switch page" } as const] : []),
+              ...(pages.length > 1
+                ? pages.map((page) => ({
+                    label: page.label,
+                    type: "checkbox" as const,
+                    checked: draft.id === page.id || draft.path === page.path,
+                    onClick: () => {
+                      if (editorMode === "remote") {
+                        window.location.href = `/editor/sites/${draft.siteId}/pages/${page.id}/edit`;
+                      } else {
+                        const currentURL = new URL(window.location.href);
+                        currentURL.searchParams.set("p", page.id);
+                        window.location.href = currentURL.href;
+                      }
+                    },
+                  }))
+                : []),
+            ]}
+          >
+            <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
+              <VscCopy className="h-7 w-auto" />
+              <span className={tx(tooltipCls)}>Pages</span>
+              <RiArrowDownSLine className={tx(arrowClass)} />
+            </button>
+          </TopbarMenu>
+        )}
 
         <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 

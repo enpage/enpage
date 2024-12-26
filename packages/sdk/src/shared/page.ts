@@ -13,10 +13,13 @@ import { type TProperties, Type, type Static, TSchema, type TObject } from "@sin
 import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from "./datasources/types";
 import { manifestSchema, type TemplateManifest } from "./manifest";
 import type { JSONSchemaType } from "ajv";
+import { customAlphabet } from "nanoid";
 
-export function defineConfig(config: TemplateConfig): ResolvedTemplateConfig {
+const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 7);
+
+export function defineConfig(config: TemplateConfig): TemplateConfig {
   return {
-    attributes: config.attributes ?? {},
+    attributes: config.attributes,
     manifest: config.manifest,
     pages: config.pages.map((p) => ({
       ...p,
@@ -50,8 +53,6 @@ export type TemplateConfig = {
   themes: Theme[];
 };
 
-export type ResolvedTemplateConfig = TemplateConfig & Required<Pick<TemplateConfig, "attributes">>;
-
 export type PagesMapEntry = {
   id: string;
   label: string;
@@ -74,7 +75,7 @@ export type PageInfo = {
   label: string;
 };
 
-export type SiteConfig = {
+export type SiteInfo = {
   siteId: string;
   /**
    * Map of all pages in the site.
@@ -97,10 +98,10 @@ export type SiteConfig = {
  */
 export type PageConfig<
   D extends DatasourcesMap,
-  A extends ResolvedTemplateConfig["attributes"],
+  A extends TemplateConfig["attributes"],
   B extends Brick[],
 > = PageInfo &
-  SiteConfig & {
+  SiteInfo & {
     /**
      * Data sources manifests for the page. Undefined if no data sources are defined.
      */
@@ -124,7 +125,7 @@ export type PageConfig<
     theme: Theme;
   };
 
-export type GenericPageConfig = PageConfig<DatasourcesMap, ResolvedTemplateConfig["attributes"], Brick[]>;
+export type GenericPageConfig = PageConfig<DatasourcesMap, TemplateConfig["attributes"], Brick[]>;
 export type GenericPageContext = Omit<GenericPageConfig, "attributes" | "siteAttributes">;
 
 export function getNewPageConfig(
@@ -164,14 +165,14 @@ export function getNewPageConfig(
 /**
  * Creates the necessary config for a new site based on the given template.
  * Returns an object with property "site" and "pages", which should be used to create the site and pages in db.
- * A temporary hostname is generated for the site, corresponding to the site id.
+ * A temporary hostname is generated for the site.
  */
 export function getNewSiteConfig(
   templateConfig: TemplateConfig,
   options: Pick<GenericPageConfig, "label"> = { label: "New site" },
 ) {
   const siteId = crypto.randomUUID();
-  const hostname = `${siteId}.upstart.gg`;
+  const hostname = `${nanoid()}.upstart.gg`;
 
   const site = {
     id: siteId,
@@ -193,7 +194,7 @@ export function getNewSiteConfig(
   return { site, pages };
 }
 
-export type NewSiteConfig = ReturnType<typeof getNewSiteConfig>;
+export type SiteConfig = ReturnType<typeof getNewSiteConfig>;
 
 export const templatePageSchema = Type.Object({
   label: Type.String(),

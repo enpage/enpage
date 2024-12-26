@@ -197,6 +197,7 @@ export interface DraftStateProps {
   version?: string;
   lastSaved?: Date;
   dirty?: boolean;
+  lastLoaded?: Date;
   /**
    * When local, the editor does not fetch data from the server or save data to the server
    * It is used when the user is not logged in yet or does not have an account yet
@@ -222,6 +223,7 @@ export interface DraftState extends DraftStateProps {
   updateAttributes: (attr: AttributesResolved) => void;
   setLastSaved: (date: Date) => void;
   setDirty: (dirty: boolean) => void;
+  setLastLoaded: () => void;
   setVersion(version: string): void;
   adjustMobileLayout(): void;
 }
@@ -272,6 +274,12 @@ export const createDraftStore = (
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
+            setLastLoaded: () =>
+              set((state) => {
+                state.lastLoaded = new Date();
+              }),
+
             setBricks: (bricks) =>
               set((state) => {
                 state.bricks = bricks;
@@ -388,8 +396,15 @@ export const createDraftStore = (
               }),
           })),
           {
-            name: "draft-state",
+            name: `draft-state-${initProps.id}`,
             skipHydration: initProps.mode === "remote",
+            // Add this to force storage on initialization
+            onRehydrateStorage: () => (state) => {
+              if (state) {
+                // Optional: Perform any initialization after rehydration
+                console.log("Draft State has been rehydrated");
+              }
+            },
             partialize: (state) =>
               Object.fromEntries(
                 Object.entries(state).filter(
