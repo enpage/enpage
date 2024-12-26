@@ -5,7 +5,7 @@ import {
   createEditorStore,
 } from "../hooks/use-editor";
 import { useEffect, useRef, type PropsWithChildren } from "react";
-import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
+import type { GenericPageConfig, SiteConfig } from "@upstart.gg/sdk/shared/page";
 import { Theme } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDarkMode } from "usehooks-ts";
@@ -19,6 +19,7 @@ import "@upstart.gg/style-system/react-resizable.css";
 export type EditorWrapperProps = {
   mode?: "local" | "remote";
   pageConfig: GenericPageConfig;
+  siteConfig: SiteConfig;
   onReady?: () => void;
 };
 
@@ -28,6 +29,7 @@ export type EditorWrapperProps = {
  */
 export function EditorWrapper({
   pageConfig,
+  siteConfig,
   mode,
   children,
   onReady = () => {},
@@ -35,11 +37,11 @@ export function EditorWrapper({
   const editorStore = useRef(createEditorStore({ mode })).current;
   const draftStore = useRef(
     createDraftStore({
-      siteId: pageConfig.siteId,
-      hostname: pageConfig.hostname,
-      pagesMap: pageConfig.pagesMap,
-      siteAttributes: pageConfig.siteAttributes,
-      siteLabel: pageConfig.siteLabel,
+      siteId: siteConfig.id,
+      hostname: siteConfig.hostname,
+      pagesMap: siteConfig.pagesMap,
+      siteAttributes: siteConfig.attributes,
+      siteLabel: siteConfig.label,
       id: pageConfig.id,
       path: pageConfig.path,
       label: pageConfig.label,
@@ -47,7 +49,7 @@ export function EditorWrapper({
       attr: pageConfig.attr,
       attributes: pageConfig.attributes,
       data: pageConfig.data,
-      theme: pageConfig.theme,
+      theme: siteConfig.theme,
     }),
   ).current;
 

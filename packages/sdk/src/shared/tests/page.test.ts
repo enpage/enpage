@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getNewSiteConfig, type TemplateConfig } from "../page";
+import { getNewSiteConfig } from "../page";
 import testConfig from "./test-config";
 
 describe("Page test suite", () => {

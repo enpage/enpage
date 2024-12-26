@@ -1,15 +1,13 @@
 import {
   type Attributes,
-  defineAttributes,
   resolveAttributes,
   type AttributesResolved,
   defaultAttributesSchema,
-  attr,
 } from "./attributes";
 import { brickSchema, type Brick } from "./bricks";
 import invariant from "./utils/invariant";
 import { themeSchema, type Theme } from "./theme";
-import { type TProperties, Type, type Static, TSchema, type TObject } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from "./datasources/types";
 import { manifestSchema, type TemplateManifest } from "./manifest";
 import type { JSONSchemaType } from "ajv";
@@ -100,67 +98,63 @@ export type PageConfig<
   D extends DatasourcesMap,
   A extends TemplateConfig["attributes"],
   B extends Brick[],
-> = PageInfo &
-  SiteInfo & {
-    /**
-     * Data sources manifests for the page. Undefined if no data sources are defined.
-     */
-    datasources?: D;
-    /**
-     * Resolved static data sources for the page.
-     * Undefined if no data sources are defined.
-     */
-    data?: D extends DatasourcesMap ? DatasourcesResolved<D> : undefined;
+> = PageInfo & {
+  /**
+   * Data sources manifests for the page. Undefined if no data sources are defined.
+   */
+  datasources?: D;
+  /**
+   * Resolved static data sources for the page.
+   * Undefined if no data sources are defined.
+   */
+  data?: D extends DatasourcesMap ? DatasourcesResolved<D> : undefined;
 
-    /**
-     * Site+Page attributes.
-     */
-    attributes: A;
-    /**
-     * Resolved attributes for the page.
-     */
-    attr: AttributesResolved;
-    bricks: B;
+  /**
+   * Site+Page attributes.
+   */
+  attributes: A;
+  /**
+   * Resolved attributes for the page.
+   */
+  attr: AttributesResolved;
+  bricks: B;
 
-    theme: Theme;
-  };
+  tags: string[];
+
+  // theme: Theme;
+};
 
 export type GenericPageConfig = PageConfig<DatasourcesMap, TemplateConfig["attributes"], Brick[]>;
 export type GenericPageContext = Omit<GenericPageConfig, "attributes" | "siteAttributes">;
 
-export function getNewPageConfig(
-  templateConfig: TemplateConfig,
-  options: Pick<GenericPageConfig, "id" | "label"> & { siteId: string; siteLabel: string; hostname: string },
-  path = "/",
-): GenericPageConfig {
-  const bricks = templateConfig.pages.find((p) => p.path === path)?.bricks;
-  invariant(bricks, `createPageConfigFromTemplateConfig: No bricks found for path ${path}`);
+export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): GenericPageConfig {
+  const pageConfig = templateConfig.pages.find((p) => p.path === path);
+  invariant(pageConfig, `createPageConfigFromTemplateConfig: No page config found for path ${path}`);
+
+  const bricks = pageConfig.bricks;
+  const attr = resolveAttributes(templateConfig.attributes);
 
   return {
-    ...options,
-    siteId: options.siteId,
-    label: options.siteLabel,
-    hostname: options.hostname,
-
-    pagesMap: templateConfig.pages.map((p) => ({
-      id: crypto.randomUUID(),
-      label: p.label,
-      path: p.path,
-      tags: p.tags,
-    })),
-
+    id: crypto.randomUUID(),
+    label: pageConfig.label,
+    tags: pageConfig.tags,
     path,
-    datasources: templateConfig.datasources,
-
-    attr: resolveAttributes(templateConfig.attributes),
+    attr,
     bricks,
-    theme: templateConfig.themes[0],
-
-    // for now, we just copy the site attributes to the page attributes
-    siteAttributes: templateConfig.attributes,
     attributes: templateConfig.attributes,
   } satisfies GenericPageConfig;
 }
+
+export type SiteConfig = {
+  id: string;
+  label: string;
+  hostname: string;
+  attributes: JSONSchemaType<Attributes>;
+  datasources?: DatasourcesMap;
+  themes: Theme[];
+  theme: Theme;
+  pagesMap: PagesMapEntry[];
+};
 
 /**
  * Creates the necessary config for a new site based on the given template.
@@ -169,32 +163,32 @@ export function getNewPageConfig(
  */
 export function getNewSiteConfig(
   templateConfig: TemplateConfig,
-  options: Pick<GenericPageConfig, "label"> = { label: "New site" },
+  options: { label: string } = { label: "New site" },
 ) {
-  const siteId = crypto.randomUUID();
+  const id = crypto.randomUUID();
   const hostname = `${nanoid()}.upstart.gg`;
+  const pages = templateConfig.pages.map((p) => getNewPageConfig(templateConfig, p.path));
 
   const site = {
-    id: siteId,
+    id,
     label: options.label,
     hostname,
     attributes: templateConfig.attributes,
     datasources: templateConfig.datasources,
     themes: templateConfig.themes,
-  };
-
-  const pages = templateConfig.pages.map((p) =>
-    getNewPageConfig(
-      templateConfig,
-      { siteId: site.id, siteLabel: site.label, id: crypto.randomUUID(), label: p.label, hostname },
-      p.path,
-    ),
-  );
+    theme: templateConfig.themes[0],
+    pagesMap: pages.map((p) => ({
+      id: crypto.randomUUID(),
+      label: p.label,
+      path: p.path,
+      tags: p.tags,
+    })),
+  } satisfies SiteConfig;
 
   return { site, pages };
 }
 
-export type SiteConfig = ReturnType<typeof getNewSiteConfig>;
+export type SiteAndPagesConfig = ReturnType<typeof getNewSiteConfig>;
 
 export const templatePageSchema = Type.Object({
   label: Type.String(),

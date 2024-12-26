@@ -68,8 +68,6 @@ export default function TopBar() {
 
   const arrowClass = "h-4 w-4 opacity-60 -ml-0.5";
 
-  console.log({ pages });
-
   return (
     <>
       <nav

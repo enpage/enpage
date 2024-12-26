@@ -192,7 +192,7 @@ const themes = [
 
 // define your attributes
 const attributes = defineAttributes({
-  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
+  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", { $id: "mainButtonUrl" }),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
   testUrl: attr.url("Test URL", "https://enpage.co"),

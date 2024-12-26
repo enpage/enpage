@@ -305,7 +305,7 @@ export function resolveAttributes(
 ): AttributesResolved {
   const validate = ajv.compile(attributesSchema);
   const data = { ...initialData };
-  const valid = validate({});
+  const valid = validate(data);
   if (!valid) {
     throw new Error(`Invalid attributes: ${validate.errors}`);
   }
