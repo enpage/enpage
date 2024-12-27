@@ -120,12 +120,9 @@ export type PageConfig<
   bricks: B;
 
   tags: string[];
-
-  // theme: Theme;
 };
 
 export type GenericPageConfig = PageConfig<DatasourcesMap, TemplateConfig["attributes"], Brick[]>;
-export type GenericPageContext = Omit<GenericPageConfig, "attributes" | "siteAttributes">;
 
 export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): GenericPageConfig {
   const pageConfig = templateConfig.pages.find((p) => p.path === path);
@@ -154,6 +151,14 @@ export type SiteConfig = {
   themes: Theme[];
   theme: Theme;
   pagesMap: PagesMapEntry[];
+};
+
+export type GenericPageContext = Omit<GenericPageConfig, "attributes"> & {
+  siteId: SiteConfig["id"];
+  siteLabel: SiteConfig["label"];
+  hostname: SiteConfig["hostname"];
+  theme: SiteConfig["theme"];
+  pagesMap: SiteConfig["pagesMap"];
 };
 
 /**
