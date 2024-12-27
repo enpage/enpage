@@ -1,8 +1,10 @@
-import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
+import type { PageInfo, SiteInfo } from "@upstart.gg/sdk/shared/page";
 import { patch } from "./base-api";
 
-export function updatePage(payload: Record<string, unknown>, pageConfig: GenericPageConfig) {
-  return patch(`/sites/${pageConfig.siteId}/pages/${pageConfig.id}/versions/latest`, payload)
+type UpdatePageParams = Pick<PageInfo & SiteInfo, "siteId" | "id">;
+
+export function updatePage(payload: Record<string, unknown>, info: UpdatePageParams) {
+  return patch(`/sites/${info.siteId}/pages/${info.id}/versions/latest`, payload)
     .then((res) => {
       console.log("Page version saved");
       console.log(res);

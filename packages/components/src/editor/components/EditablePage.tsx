@@ -27,6 +27,12 @@ export default function EditablePage() {
     w: number;
   }>(null);
 
+  // on page load, set last loaded property so that the store is saved to local storage
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    draft.setLastLoaded();
+  }, []);
+
   useEditablePage(".brick", pageRef, {
     dragOptions: {
       enabled: editor.previewMode === "desktop",

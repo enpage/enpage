@@ -5,9 +5,14 @@ import {
   type SchemaOptions,
   type ObjectOptions,
   type TProperties,
+  type TObject,
+  type Static,
 } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import type { ElementColor } from "./themes/color-system";
+import type { JSONSchemaType } from "ajv";
+import { ajv } from "./ajv";
+import { typeboxSchemaToJSONSchema } from "./utils/schema";
 
 // KEEP IT
 type EnumOption = {
@@ -36,15 +41,10 @@ export function defineAttributes(attrs: TProperties) {
       );
     }
   }
-  return Type.Object(
-    { ...defaultAttributes, ...attrs },
-    {
-      $id: "attributes",
-    },
-  );
+  return typeboxSchemaToJSONSchema<Attributes>(Type.Object({ ...defaultAttributes, ...attrs }));
 }
 
-export type Attributes = ReturnType<typeof defineAttributes>;
+export type AttributesSchema = ReturnType<typeof defineAttributes>;
 
 export const attr = {
   /**
@@ -296,8 +296,20 @@ const defaultAttributes = {
   }),
 };
 
-export function resolveAttributes(attributes: Attributes) {
-  return Value.Create(attributes);
+export const defaultAttributesSchema = Type.Object(defaultAttributes);
+export type Attributes = Static<typeof defaultAttributesSchema>;
+
+export function resolveAttributes(
+  attributesSchema: JSONSchemaType<Attributes>,
+  initialData: Record<string, unknown> = {},
+): AttributesResolved {
+  const validate = ajv.compile(attributesSchema);
+  const data = { ...initialData };
+  const valid = validate(data);
+  if (!valid) {
+    throw new Error(`Invalid attributes: ${validate.errors}`);
+  }
+  return data;
 }
 
-export type AttributesResolved = ReturnType<typeof resolveAttributes>;
+export type AttributesResolved = Record<string, unknown>;

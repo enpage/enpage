@@ -18,6 +18,7 @@ describe("rssFetcher", () => {
         url: feeds[0],
       },
       oauth: null,
+      // @ts-ignore
       pageConfig: {} as GenericPageConfig,
     });
 

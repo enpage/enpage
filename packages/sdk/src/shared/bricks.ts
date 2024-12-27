@@ -2,25 +2,6 @@ import { Type, type Static } from "@sinclair/typebox";
 import { customAlphabet } from "nanoid";
 import { LAYOUT_COLS } from "./layout-constants";
 import type { ResponsiveMode } from "./responsive";
-
-/*
-    Type.Literal("button"),
-    Type.Literal("card"),
-    Type.Literal("carousel"),
-    Type.Literal("countdown"),
-    Type.Literal("footer"),
-    Type.Literal("form"),
-    Type.Literal("header"),
-    Type.Literal("hero"),
-    Type.Literal("icon"),
-    Type.Literal("image"),
-    Type.Literal("images-wall"),
-    Type.Literal("map"),
-    Type.Literal("social-links"),
-    Type.Literal("text"),
-    Type.Literal("video"),
-    Type.Literal("html-element"),
-    */
 import { manifest as buttonManifest } from "./bricks/manifests/button.manifest";
 import { manifest as cardManifest } from "./bricks/manifests/card.manifest";
 import { manifest as carouselManifest } from "./bricks/manifests/carousel.manifest";

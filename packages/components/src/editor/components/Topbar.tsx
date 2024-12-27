@@ -11,6 +11,7 @@ import {
   useEditorMode,
   usePageVersion,
   useLastSaved,
+  useDraft,
 } from "~/editor/hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
@@ -23,6 +24,7 @@ import { formatDistance } from "date-fns";
 
 export default function TopBar() {
   const editor = useEditor();
+  const draft = useDraft();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
   const lastSaved = useLastSaved();
@@ -33,11 +35,8 @@ export default function TopBar() {
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
 
   const publish = useCallback(() => {
-    post(
-      `/sites/${editor.pageConfig.siteId}/pages/${editor.pageConfig.id}/versions/${pageVersion}/publish`,
-      {},
-    );
-  }, [editor.pageConfig, pageVersion]);
+    post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
+  }, [draft.siteId, draft.id, pageVersion]);
 
   const switchPreviewMode = useCallback(() => {
     editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
@@ -162,20 +161,30 @@ export default function TopBar() {
           <span className={tx(tooltipCls)}>Switch View</span>
         </button>
 
-        {editorMode === "remote" && (
+        {(editorMode === "remote" || (editorMode === "local" && pages.length > 1)) && (
           <TopbarMenu
             items={[
-              { label: "New page" },
-              { label: "Duplicate page" },
-              { type: "separator" },
-              ...pages.map((page) => ({
-                label: page.label,
-                type: "checkbox" as const,
-                checked: editor.pageConfig.id === page.id,
-                onClick: () => {
-                  window.location.href = `/sites/${editor.pageConfig.siteId}/pages/${page.id}/edit`;
-                },
-              })),
+              ...(editorMode === "remote"
+                ? [{ label: "New page" }, { label: "Duplicate page" }, { type: "separator" as const }]
+                : []),
+
+              ...(pages.length > 1 ? [{ type: "label", label: "Switch page" } as const] : []),
+              ...(pages.length > 1
+                ? pages.map((page) => ({
+                    label: page.label,
+                    type: "checkbox" as const,
+                    checked: draft.id === page.id || draft.path === page.path,
+                    onClick: () => {
+                      if (editorMode === "remote") {
+                        window.location.href = `/editor/sites/${draft.siteId}/pages/${page.id}/edit`;
+                      } else {
+                        const currentURL = new URL(window.location.href);
+                        currentURL.searchParams.set("p", page.id);
+                        window.location.href = currentURL.href;
+                      }
+                    },
+                  }))
+                : []),
             ]}
           >
             <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
@@ -242,7 +251,7 @@ export default function TopBar() {
               </AlertDialog.Cancel>
               <AlertDialog.Action
                 onClick={() => {
-                  window.location.href = "/sign-up/?from=editor";
+                  window.location.href = "/sign-up/?next=/dashboard/first-site-setup";
                 }}
               >
                 <Button variant="solid" color="violet">
@@ -275,8 +284,12 @@ type TopbarMenuCheckbox = {
 type TopbarMenuSeparator = {
   type: "separator";
 };
+type TopbarMenuLabel = {
+  type: "label";
+  label: string;
+};
 
-type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuCheckbox)[];
+type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuLabel | TopbarMenuCheckbox)[];
 
 /**
  */
@@ -288,6 +301,8 @@ function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems }>) {
         {props.items.map((item, index) =>
           item.type === "separator" ? (
             <div key={index} className="my-1.5 h-px bg-black/10" />
+          ) : item.type === "label" ? (
+            <DropdownMenu.Label key={item.label}>{item.label}</DropdownMenu.Label>
           ) : item.type === "checkbox" ? (
             <DropdownMenu.CheckboxItem key={item.label} checked={item.checked}>
               <button

@@ -1,8 +1,7 @@
-// @ts-check
-import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
-import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
-import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
-import { defineConfig } from "@upstart.gg/sdk/page";
+import { defineDataSources, ds } from "../datasources";
+import { defineAttributes, attr } from "../attributes";
+import { defineBricks, createRow } from "../bricks";
+import { defineConfig } from "../page";
 
 // define your datasources
 const datasources = defineDataSources({
@@ -192,7 +191,7 @@ const themes = [
 
 // define your attributes
 const attributes = defineAttributes({
-  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", { $id: "mainButtonUrl" }),
+  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com"),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
   testUrl: attr.url("Test URL", "https://enpage.co"),
@@ -205,13 +204,7 @@ export default defineConfig({
       label: "Home",
       path: "/",
       bricks: homePageBricks,
-      tags: ["nav"],
-    },
-    {
-      label: "About",
-      path: "/about",
-      bricks: [],
-      tags: ["nav"],
+      tags: [],
     },
   ],
   themes,

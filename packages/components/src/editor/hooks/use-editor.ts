@@ -1,5 +1,5 @@
 import { createStore, useStore } from "zustand";
-import { debounce } from "lodash-es";
+import { debounce, isEqual } from "lodash-es";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createContext, useContext, useEffect } from "react";
@@ -8,17 +8,12 @@ import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 import type { Brick, BrickPosition } from "@upstart.gg/sdk/shared/bricks";
 import type { Theme } from "@upstart.gg/sdk/shared/theme";
-import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
 import type { AttributesResolved } from "@upstart.gg/sdk/shared/attributes";
 import { generateId } from "@upstart.gg/sdk/shared/bricks";
-import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
-import type { TObject } from "@sinclair/typebox";
-import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
+import type { GenericPageConfig, SiteConfig } from "@upstart.gg/sdk/shared/page";
 export { type Immer } from "immer";
-import type { Static } from "@sinclair/typebox";
 import type { ColorAdjustment } from "@upstart.gg/sdk/shared/themes/color-system";
 import { adjustMobileLayout } from "~/shared/utils/layout-utils";
-import { isEqual } from "lodash-es";
 
 export interface EditorStateProps {
   /**
@@ -26,13 +21,7 @@ export interface EditorStateProps {
    * It is used when the user is not logged in yet or does not have an account yet
    */
   mode: "local" | "remote";
-  enabled: boolean;
-  pageConfig: GenericPageConfig;
-
-  /**
-   * The brick manifest that is being dragged from the library
-   */
-  draggingBrick?: Static<BrickManifest>;
+  // pageConfig: GenericPageConfig;
   previewMode: ResponsiveMode;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
@@ -49,7 +38,6 @@ export interface EditorStateProps {
 }
 
 export interface EditorState extends EditorStateProps {
-  setDraggingBrick: (draggingBrick?: EditorStateProps["draggingBrick"]) => void;
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
@@ -67,11 +55,8 @@ export interface EditorState extends EditorStateProps {
   hideModal: () => void;
 }
 
-export const createEditorStore = (
-  initProps: Partial<EditorStateProps> & { pageConfig: GenericPageConfig },
-) => {
+export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
-    enabled: true,
     previewMode: "desktop",
     mode: "local",
     colorAdjustment: "default",
@@ -141,11 +126,6 @@ export const createEditorStore = (
                 }
               }),
 
-            setDraggingBrick: (draggingBrick) =>
-              set((state) => {
-                state.draggingBrick = draggingBrick;
-              }),
-
             setSelectedGroup: (group) =>
               set((state) => {
                 state.selectedGroup = group;
@@ -177,21 +157,15 @@ export const createEditorStore = (
               }),
           })),
           {
-            name: `editor-state-${initProps.pageConfig.id}`,
+            name: `editor-state`,
             skipHydration: initProps.mode === "remote",
             partialize: (state) =>
               Object.fromEntries(
                 Object.entries(state).filter(
                   ([key]) =>
-                    ![
-                      "enabled",
-                      "mode",
-                      "selectedBrick",
-                      "panel",
-                      "isEditingTextForBrickId",
-                      "draggingBrick",
-                      "shouldShowGrid",
-                    ].includes(key),
+                    !["mode", "selectedBrick", "panel", "isEditingTextForBrickId", "shouldShowGrid"].includes(
+                      key,
+                    ),
                 ),
               ),
           },
@@ -206,15 +180,24 @@ export const createEditorStore = (
 type EditorStore = ReturnType<typeof createEditorStore>;
 
 export interface DraftStateProps {
+  id: string;
+  path: string;
+  label: string;
   bricks: Brick[];
   data: Record<string, unknown>;
-  attr: AttributesResolved;
-  attrSchema: TObject;
-  theme: Theme;
+  attr: GenericPageConfig["attr"];
+  attributes: GenericPageConfig["attributes"];
+  theme: SiteConfig["theme"];
+  siteId: SiteConfig["id"];
+  siteLabel: SiteConfig["label"];
+  siteAttributes: SiteConfig["attributes"];
+  pagesMap: SiteConfig["pagesMap"];
+  hostname: SiteConfig["hostname"];
   previewTheme?: Theme;
   version?: string;
   lastSaved?: Date;
   dirty?: boolean;
+  lastLoaded?: Date;
   /**
    * When local, the editor does not fetch data from the server or save data to the server
    * It is used when the user is not logged in yet or does not have an account yet
@@ -240,9 +223,9 @@ export interface DraftState extends DraftStateProps {
   updateAttributes: (attr: AttributesResolved) => void;
   setLastSaved: (date: Date) => void;
   setDirty: (dirty: boolean) => void;
+  setLastLoaded: () => void;
   setVersion(version: string): void;
   adjustMobileLayout(): void;
-  // setContainerBricks: (id: string, bricks: BricksContainer[]) => void;
 }
 
 /**
@@ -252,13 +235,34 @@ export interface DraftState extends DraftStateProps {
  */
 export const createDraftStore = (
   initProps: Partial<DraftStateProps> & {
+    id: DraftStateProps["id"];
+    path: DraftStateProps["path"];
+    label: DraftStateProps["label"];
     attr: DraftStateProps["attr"];
-    attrSchema: DraftStateProps["attrSchema"];
+    attributes: DraftStateProps["attributes"];
+    siteLabel: DraftStateProps["siteLabel"];
+    siteId: DraftStateProps["siteId"];
+    siteAttributes: DraftStateProps["siteAttributes"];
+    hostname: DraftStateProps["hostname"];
+    pagesMap: DraftStateProps["pagesMap"];
+    theme: DraftStateProps["theme"];
   },
 ) => {
-  const DEFAULT_PROPS: Omit<DraftStateProps, "attr" | "attrSchema"> = {
+  const DEFAULT_PROPS: Omit<
+    DraftStateProps,
+    | "attr"
+    | "attributes"
+    | "siteLabel"
+    | "pagesMap"
+    | "theme"
+    | "id"
+    | "path"
+    | "label"
+    | "hostname"
+    | "siteId"
+    | "siteAttributes"
+  > = {
     bricks: [],
-    theme: themes[1],
     data: {},
     mode: "local",
   };
@@ -270,6 +274,11 @@ export const createDraftStore = (
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
+            setLastLoaded: () =>
+              set((state) => {
+                state.lastLoaded = new Date();
+              }),
 
             setBricks: (bricks) =>
               set((state) => {
@@ -387,12 +396,19 @@ export const createDraftStore = (
               }),
           })),
           {
-            name: "draft-state",
+            name: `draft-state-${initProps.id}`,
             skipHydration: initProps.mode === "remote",
+            // Add this to force storage on initialization
+            onRehydrateStorage: () => (state) => {
+              if (state) {
+                // Optional: Perform any initialization after rehydration
+                console.log("Draft State has been rehydrated");
+              }
+            },
             partialize: (state) =>
               Object.fromEntries(
                 Object.entries(state).filter(
-                  ([key]) => !["previewTheme", "attrSchema", "lastSaved"].includes(key),
+                  ([key]) => !["previewTheme", "attributes", "lastSaved"].includes(key),
                 ),
               ),
           },
@@ -404,7 +420,7 @@ export const createDraftStore = (
           partialize: (state) =>
             Object.fromEntries(
               Object.entries(state).filter(
-                ([key]) => !["previewTheme", "attrSchema", "lastSaved"].includes(key),
+                ([key]) => !["previewTheme", "attributes", "lastSaved"].includes(key),
               ),
             ) as DraftState,
           handleSet: (handleSet) =>
@@ -449,14 +465,9 @@ export const useEditor = () => {
   return useStore(ctx);
 };
 
-export const useEditorEnabled = () => {
-  const ctx = useEditorStoreContext();
-  return useStore(ctx, (state) => state.enabled);
-};
-
 export const usePagesInfo = () => {
-  const ctx = useEditorStoreContext();
-  return useStore(ctx, (state) => state.pageConfig.pagesMap);
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.pagesMap);
 };
 
 export const usePreviewMode = () => {
@@ -511,12 +522,20 @@ export const useAttributes = () => {
 
 export const useAttributesSchema = () => {
   const ctx = useDraftStoreContext();
-  return useStore(ctx, (state) => state.attrSchema);
+  return useStore(ctx, (state) => state.attributes);
 };
 
-export const usePageConfig = () => {
-  const ctx = useEditorStoreContext();
-  return useStore(ctx, (state) => state.pageConfig);
+export const usePageInfo = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => ({
+    id: state.id,
+    path: state.path,
+    label: state.label,
+    siteLabel: state.siteLabel,
+    siteId: state.siteId,
+    siteAttributes: state.siteAttributes,
+    hostname: state.hostname,
+  }));
 };
 
 export const useTheme = () => {
@@ -548,11 +567,11 @@ export const useThemeSubscribe = (callback: (theme: DraftState["theme"]) => void
   }, []);
 };
 
-export const usePagePathSubscribe = (callback: (path: EditorState["pageConfig"]["path"]) => void) => {
-  const ctx = useEditorStoreContext();
+export const usePagePathSubscribe = (callback: (path: DraftState["path"]) => void) => {
+  const ctx = useDraftStoreContext();
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return ctx.subscribe((state) => state.pageConfig.path, callback);
+    return ctx.subscribe((state) => state.path, callback);
   }, []);
 };
 

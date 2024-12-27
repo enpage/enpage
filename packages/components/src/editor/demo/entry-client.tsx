@@ -3,17 +3,15 @@ import { hydrateRoot } from "react-dom/client";
 import App from "./App";
 import { setupTwindReact } from "@upstart.gg/style-system/twind";
 
-// setupTwindReact();
-
 const hydrate = () =>
   startTransition(() => {
+    setupTwindReact();
     hydrateRoot(
       document.getElementById("root") as HTMLElement,
       <StrictMode>
         <App />
       </StrictMode>,
     );
-    setupTwindReact();
   });
 
 if (typeof requestIdleCallback === "function") {

@@ -9,6 +9,7 @@ import { jsonFormClass } from "./json-form/form-class";
 import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import { Spinner } from "@upstart.gg/style-system/system";
 import { lazy, Suspense, useEffect, useState } from "react";
+import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 
 import "./json-form/json-form.css";
 

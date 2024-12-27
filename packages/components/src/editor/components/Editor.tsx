@@ -90,14 +90,16 @@ export default function Editor({ mode = "local", ...props }: EditorProps) {
           previewMode === "mobile" && "bg-gray-300",
           previewMode === "desktop" &&
             isStandardColor(attributes.$backgroundColor) &&
-            css({ backgroundColor: attributes.$backgroundColor }),
+            css({ backgroundColor: attributes.$backgroundColor as string }),
           previewMode === "desktop" &&
             isStandardColor(attributes.$textColor) &&
-            css({ color: attributes.$textColor }),
+            css({ color: attributes.$textColor as string }),
           previewMode === "desktop" &&
             !isStandardColor(attributes.$backgroundColor) &&
-            attributes.$backgroundColor,
-          previewMode === "desktop" && !isStandardColor(attributes.$textColor) && attributes.$textColor,
+            (attributes.$backgroundColor as string),
+          previewMode === "desktop" &&
+            !isStandardColor(attributes.$textColor) &&
+            (attributes.$textColor as string),
         )}
       >
         <DeviceFrame>

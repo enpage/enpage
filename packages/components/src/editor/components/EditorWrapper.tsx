@@ -5,7 +5,7 @@ import {
   createEditorStore,
 } from "../hooks/use-editor";
 import { useEffect, useRef, type PropsWithChildren } from "react";
-import type { GenericPageConfig } from "@upstart.gg/sdk/shared/page";
+import type { GenericPageConfig, SiteConfig } from "@upstart.gg/sdk/shared/page";
 import { Theme } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDarkMode } from "usehooks-ts";
@@ -18,8 +18,8 @@ import "@upstart.gg/style-system/react-resizable.css";
 
 export type EditorWrapperProps = {
   mode?: "local" | "remote";
-  enabled?: boolean;
   pageConfig: GenericPageConfig;
+  siteConfig: SiteConfig;
   onReady?: () => void;
 };
 
@@ -28,19 +28,28 @@ export type EditorWrapperProps = {
  * If no children are provided, the default Page component will be rendered, but not within the Editor.
  */
 export function EditorWrapper({
-  enabled = true,
   pageConfig,
+  siteConfig,
   mode,
   children,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ enabled, pageConfig, mode })).current;
+  const editorStore = useRef(createEditorStore({ mode })).current;
   const draftStore = useRef(
     createDraftStore({
+      siteId: siteConfig.id,
+      hostname: siteConfig.hostname,
+      pagesMap: siteConfig.pagesMap,
+      siteAttributes: siteConfig.attributes,
+      siteLabel: siteConfig.label,
+      id: pageConfig.id,
+      path: pageConfig.path,
+      label: pageConfig.label,
       bricks: pageConfig.bricks,
       attr: pageConfig.attr,
-      attrSchema: pageConfig.attributes,
+      attributes: pageConfig.attributes,
       data: pageConfig.data,
+      theme: siteConfig.theme,
     }),
   ).current;
 

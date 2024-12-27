@@ -6,9 +6,10 @@ import Editor from "~/editor/components/Editor";
 
 export default function App() {
   const siteConfig = getNewSiteConfig(testEnpageConfig);
+
   return (
     <ClientOnly>
-      <EditorWrapper pageConfig={siteConfig.pages[0]} mode="local">
+      <EditorWrapper pageConfig={siteConfig.pages[0]} siteConfig={siteConfig.site} mode="local">
         <Editor />
       </EditorWrapper>
     </ClientOnly>
