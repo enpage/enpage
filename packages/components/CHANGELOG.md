@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.71
+
+### Patch Changes
+
+- [#257](https://github.com/enpage/enpage/pull/257) [`4c154fc`](https://github.com/enpage/enpage/commit/4c154fcec20adb1d62540e8e845b62723f210de8) Thanks [@mattallty](https://github.com/mattallty)! - Use react@18.3.0-canary-3d9b20132-20240124
+
+- Updated dependencies [[`4c154fc`](https://github.com/enpage/enpage/commit/4c154fcec20adb1d62540e8e845b62723f210de8)]:
+  - @upstart.gg/sdk@0.0.71
+
 ## 0.0.70
 
 ### Patch Changes
