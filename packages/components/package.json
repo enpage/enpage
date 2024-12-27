@@ -60,7 +60,7 @@
     "immer": "10.1.1",
     "interactjs": "1.10.27",
     "lodash-es": "4.17.21",
-    "nanoid": "5.0.8",
+    "nanoid": "5.0.9",
     "react": "18.3.0-canary-3d9b20132-20240124",
     "react-dom": "18.3.0-canary-3d9b20132-20240124",
     "react-hotkeys-hook": "4.6.1",
