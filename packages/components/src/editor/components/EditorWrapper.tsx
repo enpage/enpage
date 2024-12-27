@@ -35,12 +35,13 @@ export function EditorWrapper({
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
   const editorStore = useRef(createEditorStore({ mode })).current;
+
+  console.log("EditorWrapper", { pageConfig, siteConfig });
   const draftStore = useRef(
     createDraftStore({
       siteId: siteConfig.id,
       hostname: siteConfig.hostname,
       pagesMap: siteConfig.pagesMap,
-      siteAttributes: siteConfig.attributes,
       siteLabel: siteConfig.label,
       id: pageConfig.id,
       path: pageConfig.path,

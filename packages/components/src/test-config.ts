@@ -191,7 +191,7 @@ const themes = [
 ];
 
 // define your attributes
-const attributes = defineAttributes({
+const siteAttributes = defineAttributes({
   mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", { $id: "mainButtonUrl" }),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
@@ -199,7 +199,7 @@ const attributes = defineAttributes({
 });
 
 export default defineConfig({
-  attributes,
+  attributes: siteAttributes,
   pages: [
     {
       label: "Home",
@@ -210,7 +210,7 @@ export default defineConfig({
     {
       label: "About",
       path: "/about",
-      bricks: [],
+      bricks: homePageBricks,
       tags: ["nav"],
     },
   ],

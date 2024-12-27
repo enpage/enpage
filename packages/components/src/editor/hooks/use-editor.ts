@@ -190,7 +190,6 @@ export interface DraftStateProps {
   theme: SiteConfig["theme"];
   siteId: SiteConfig["id"];
   siteLabel: SiteConfig["label"];
-  siteAttributes: SiteConfig["attributes"];
   pagesMap: SiteConfig["pagesMap"];
   hostname: SiteConfig["hostname"];
   previewTheme?: Theme;
@@ -242,7 +241,6 @@ export const createDraftStore = (
     attributes: DraftStateProps["attributes"];
     siteLabel: DraftStateProps["siteLabel"];
     siteId: DraftStateProps["siteId"];
-    siteAttributes: DraftStateProps["siteAttributes"];
     hostname: DraftStateProps["hostname"];
     pagesMap: DraftStateProps["pagesMap"];
     theme: DraftStateProps["theme"];
@@ -260,7 +258,6 @@ export const createDraftStore = (
     | "label"
     | "hostname"
     | "siteId"
-    | "siteAttributes"
   > = {
     bricks: [],
     data: {},
@@ -533,7 +530,6 @@ export const usePageInfo = () => {
     label: state.label,
     siteLabel: state.siteLabel,
     siteId: state.siteId,
-    siteAttributes: state.siteAttributes,
     hostname: state.hostname,
   }));
 };

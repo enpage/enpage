@@ -312,4 +312,4 @@ export function resolveAttributes(
   return data;
 }
 
-export type AttributesResolved = Record<string, unknown>;
+export type AttributesResolved = Attributes & Record<string, unknown>;
