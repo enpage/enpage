@@ -1,5 +1,6 @@
 // @ts-check
-import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
+import { Type as ds } from "@sinclair/typebox";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
