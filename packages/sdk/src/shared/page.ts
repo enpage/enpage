@@ -1,9 +1,4 @@
-import {
-  type Attributes,
-  resolveAttributes,
-  type AttributesResolved,
-  defaultAttributesSchema,
-} from "./attributes";
+import { type Attributes, resolveAttributes, defaultAttributesSchema } from "./attributes";
 import { brickSchema, type Brick } from "./bricks";
 import invariant from "./utils/invariant";
 import { themeSchema, type Theme } from "./theme";
@@ -91,7 +86,7 @@ export type PageConfig<D extends DatasourcesMap, B extends Brick[]> = PageInfo &
   /**
    * Resolved attributes for the page.
    */
-  attr: AttributesResolved;
+  attr: Attributes;
   bricks: B;
 
   tags: string[];

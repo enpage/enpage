@@ -35,8 +35,6 @@ export function EditorWrapper({
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
   const editorStore = useRef(createEditorStore({ mode })).current;
-
-  console.log("EditorWrapper", { pageConfig, siteConfig });
   const draftStore = useRef(
     createDraftStore({
       siteId: siteConfig.id,

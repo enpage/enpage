@@ -4943,7 +4943,6 @@ export function resolveAttributes(attributes: Attributes) {
   return Value.Create(attributes);
 }
 
-export type AttributesResolved = ReturnType<typeof resolveAttributes>;
 
 ```
 

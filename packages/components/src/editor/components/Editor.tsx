@@ -1,4 +1,11 @@
-import { useDraft, useEditor, useAttributes, usePreviewMode } from "../hooks/use-editor";
+import {
+  useDraft,
+  useEditor,
+  useAttributes,
+  usePreviewMode,
+  type DraftState,
+  type usePageInfo,
+} from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
@@ -7,10 +14,11 @@ import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
 import { Button } from "@upstart.gg/style-system/system";
 import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
-import { usePageAutoSave } from "~/editor/hooks/use-page-autosave";
+import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
+  onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
 const ThemePanel = lazy(() => import("./ThemePanel"));
@@ -18,13 +26,14 @@ const SettingsPanel = lazy(() => import("./SettingsPanel"));
 const Inspector = lazy(() => import("./Inspector"));
 const BlocksLibrary = lazy(() => import("./BricksLibrary"));
 
-export default function Editor({ mode = "local", ...props }: EditorProps) {
+export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
   const previewMode = usePreviewMode();
   const attributes = useAttributes();
 
   usePageAutoSave();
+  useOnDraftChange(onDraftChange);
 
   useEffect(() => {
     const themeUsed = draft.previewTheme ?? draft.theme;
