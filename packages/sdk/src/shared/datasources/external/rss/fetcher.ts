@@ -3,9 +3,11 @@ import { parseFeed } from "htmlparser2";
 import { type RssSchema, rssSchema } from "./schema";
 import { ajv, serializeAjvErrors } from "~/shared/ajv";
 import type { DatasourceFetcher } from "../../fetcher";
+import { createPlaceholderReplacer, placeholderRx } from "../../utils";
 
-const fetchRss: DatasourceFetcher<RssSchema, null, RssOptions> = async ({ options }) => {
-  const { url } = options;
+const fetchRss: DatasourceFetcher<RssSchema, null, RssOptions> = async ({ options, attr }) => {
+  const replacer = createPlaceholderReplacer(attr);
+  const url = options.url.replace(placeholderRx, replacer);
   const content = await (await fetch(url)).text();
   const feed = parseFeed(content);
 
