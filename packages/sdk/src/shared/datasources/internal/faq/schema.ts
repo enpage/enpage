@@ -1,6 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 
-export const faq = Type.Array(
+export const faqSchema = Type.Array(
   Type.Object({
     question: Type.String({
       description: "Question",
@@ -14,7 +14,11 @@ export const faq = Type.Array(
       }),
     ),
     tags: Type.Optional(Type.Array(Type.String(), { description: "Tags" })),
+    order: Type.Optional(Type.Number({ description: "Order number in the list" })),
   }),
+  {
+    description: "Schema representing a collection of frequently asked questions (FAQ)",
+  },
 );
 
-export type Faq = Static<typeof faq>;
+export type FaqSchema = Static<typeof faqSchema>;

@@ -4,13 +4,13 @@ A template is described using a specific JSON schema, see below.
 
 Pseudo template:
 
-```jsonc filename=theme.json
+```jsonc filename=template.json
 {
   // Manifest info
   "manifest": {
     // ...
   },
-  // Themes for the template
+  // Themes for the template (the first theme is applied by default)
   "themes": [
     // ...
   ],
@@ -21,10 +21,14 @@ Pseudo template:
   "attributes": {
     // ...
   },
-  // Optional datasources schema
+  // Optional datasources
   "datasources": {
     // ...
-  }
+  },
+  // Optional datarecords
+  "datarecords": {
+    // ...
+  },
 }
 ```
 
@@ -289,7 +293,7 @@ export type ThemeArray = Static<typeof themeArray>;
 ### `pages`
 
 A template must provide at least one page for the website. Each page has a name, a path, and an array of bricks.
-Bricks are predefined elements available. Each brick can have specific props.
+Bricks are predefined elements available ofr the user to use. Think of it as react components. Each brick can have specific props.
 Here is the JSON schema for `pages`.
 
 ```json
