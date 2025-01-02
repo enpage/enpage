@@ -8,7 +8,7 @@ import { defineConfig } from "@upstart.gg/sdk/page";
 // define your datasources
 const datasources = defineDataSources({
   links: {
-    provider: "generic",
+    provider: "internal-links",
     name: "Links",
     schema: ds.Array(
       ds.Object({

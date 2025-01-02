@@ -19,7 +19,7 @@ describe("rssFetcher", () => {
       },
       oauth: null,
       // @ts-ignore
-      pageConfig: {} as GenericPageConfig,
+      attr: {} as GenericPageConfig,
     });
 
     expect(feed.title).toBeTypeOf("string");
