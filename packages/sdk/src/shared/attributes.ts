@@ -41,7 +41,8 @@ export function defineAttributes(attrs: TProperties) {
   return typeboxSchemaToJSONSchema<Attributes>(Type.Object({ ...defaultAttributes, ...attrs }));
 }
 
-export type AttributesSchema = ReturnType<typeof defineAttributes>;
+export type { JSONSchemaType };
+export type AttributesSchema = JSONSchemaType<Attributes>;
 
 export const attr = {
   /**
