@@ -42,7 +42,7 @@ describe("fetchHttpJSON", () => {
         url: "https://api.example.com/{{dataType}}",
         headers: { "X-API-Key": "{{apiKey}}" },
       },
-      pageConfig: { dataType: "users", apiKey: "secret-key" },
+      attr: { dataType: "users", apiKey: "secret-key" },
       env: {},
       oauth: null,
     } as unknown as DatasourceFetcherParams<null, HttpJsonOptions>);
