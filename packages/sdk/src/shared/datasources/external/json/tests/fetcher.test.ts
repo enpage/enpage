@@ -21,7 +21,7 @@ describe("fetchHttpJSON", () => {
 
     const result = await fetchHttpJSON({
       options: { url: "https://api.example.com/data" },
-      pageConfig: {},
+      attr: {},
       oauth: null,
     } as DatasourceFetcherParams<null, HttpJsonOptions>);
 
@@ -42,7 +42,7 @@ describe("fetchHttpJSON", () => {
         url: "https://api.example.com/{{dataType}}",
         headers: { "X-API-Key": "{{apiKey}}" },
       },
-      pageConfig: { dataType: "users", apiKey: "secret-key" },
+      attr: { dataType: "users", apiKey: "secret-key" },
       env: {},
       oauth: null,
     } as unknown as DatasourceFetcherParams<null, HttpJsonOptions>);
@@ -62,7 +62,7 @@ describe("fetchHttpJSON", () => {
     await expect(
       fetchHttpJSON({
         options: { url: "https://api.example.com/notfound" },
-        pageConfig: {},
+        attr: {},
         oauth: null,
       } as DatasourceFetcherParams<null, HttpJsonOptions>),
     ).rejects.toThrow("fetchHttpJSON Error: Response status: 404");

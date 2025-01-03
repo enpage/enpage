@@ -8,7 +8,7 @@ import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 import type { Brick, BrickPosition } from "@upstart.gg/sdk/shared/bricks";
 import type { Theme } from "@upstart.gg/sdk/shared/theme";
-import type { AttributesResolved } from "@upstart.gg/sdk/shared/attributes";
+import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 import { generateId } from "@upstart.gg/sdk/shared/bricks";
 import type { GenericPageConfig, SiteConfig } from "@upstart.gg/sdk/shared/page";
 export { type Immer } from "immer";
@@ -190,7 +190,6 @@ export interface DraftStateProps {
   theme: SiteConfig["theme"];
   siteId: SiteConfig["id"];
   siteLabel: SiteConfig["label"];
-  siteAttributes: SiteConfig["attributes"];
   pagesMap: SiteConfig["pagesMap"];
   hostname: SiteConfig["hostname"];
   previewTheme?: Theme;
@@ -220,7 +219,7 @@ export interface DraftState extends DraftStateProps {
   setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
   cancelPreviewTheme: () => void;
-  updateAttributes: (attr: AttributesResolved) => void;
+  updateAttributes: (attr: Attributes) => void;
   setLastSaved: (date: Date) => void;
   setDirty: (dirty: boolean) => void;
   setLastLoaded: () => void;
@@ -242,7 +241,6 @@ export const createDraftStore = (
     attributes: DraftStateProps["attributes"];
     siteLabel: DraftStateProps["siteLabel"];
     siteId: DraftStateProps["siteId"];
-    siteAttributes: DraftStateProps["siteAttributes"];
     hostname: DraftStateProps["hostname"];
     pagesMap: DraftStateProps["pagesMap"];
     theme: DraftStateProps["theme"];
@@ -260,7 +258,6 @@ export const createDraftStore = (
     | "label"
     | "hostname"
     | "siteId"
-    | "siteAttributes"
   > = {
     bricks: [],
     data: {},
@@ -533,7 +530,6 @@ export const usePageInfo = () => {
     label: state.label,
     siteLabel: state.siteLabel,
     siteId: state.siteId,
-    siteAttributes: state.siteAttributes,
     hostname: state.hostname,
   }));
 };

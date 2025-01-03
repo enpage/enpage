@@ -8,6 +8,7 @@ import {
   usePageInfo,
   usePagePathSubscribe,
   useThemeSubscribe,
+  type DraftState,
 } from "./use-editor";
 
 const AUTO_SAVE_MIN_INTERVAL = 3000; // Auto save every N seconds
@@ -58,4 +59,17 @@ export function usePageAutoSave() {
     draft.setDirty(true);
     doUpdatePage({ theme }, pageConfig);
   });
+}
+
+export function useOnDraftChange(
+  onChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void,
+) {
+  if (!onChange) return;
+  const draft = useDraft();
+  const pageConfig = usePageInfo();
+  const triggerOnChange = useDebounceCallback(() => onChange(draft, pageConfig), AUTO_SAVE_MIN_INTERVAL);
+  useBricksSubscribe(triggerOnChange);
+  useAttributesSubscribe(triggerOnChange);
+  usePagePathSubscribe(triggerOnChange);
+  useThemeSubscribe(triggerOnChange);
 }

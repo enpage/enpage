@@ -1,7 +1,9 @@
-import type { PageInfo, SiteInfo } from "@upstart.gg/sdk/shared/page";
 import { patch } from "./base-api";
 
-type UpdatePageParams = Pick<PageInfo & SiteInfo, "siteId" | "id">;
+type UpdatePageParams = {
+  id: string;
+  siteId: string;
+};
 
 export function updatePage(payload: Record<string, unknown>, info: UpdatePageParams) {
   return patch(`/sites/${info.siteId}/pages/${info.id}/versions/latest`, payload)

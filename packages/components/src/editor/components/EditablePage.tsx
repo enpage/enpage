@@ -160,7 +160,7 @@ export default function EditablePage() {
     };
     document.addEventListener("click", listener, false);
     return () => {
-      document.removeEventListener("click", listener);
+      document.removeEventListener("click", listener, false);
     };
   }, []);
 

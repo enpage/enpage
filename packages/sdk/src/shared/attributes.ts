@@ -5,16 +5,13 @@ import {
   type SchemaOptions,
   type ObjectOptions,
   type TProperties,
-  type TObject,
   type Static,
 } from "@sinclair/typebox";
-import { Value } from "@sinclair/typebox/value";
 import type { ElementColor } from "./themes/color-system";
 import type { JSONSchemaType } from "ajv";
 import { ajv } from "./ajv";
 import { typeboxSchemaToJSONSchema } from "./utils/schema";
 
-// KEEP IT
 type EnumOption = {
   title?: string;
   description?: string;
@@ -44,7 +41,8 @@ export function defineAttributes(attrs: TProperties) {
   return typeboxSchemaToJSONSchema<Attributes>(Type.Object({ ...defaultAttributes, ...attrs }));
 }
 
-export type AttributesSchema = ReturnType<typeof defineAttributes>;
+export type { JSONSchemaType };
+export type AttributesSchema = JSONSchemaType<Attributes>;
 
 export const attr = {
   /**
@@ -297,12 +295,12 @@ const defaultAttributes = {
 };
 
 export const defaultAttributesSchema = Type.Object(defaultAttributes);
-export type Attributes = Static<typeof defaultAttributesSchema>;
+export type Attributes = Static<typeof defaultAttributesSchema> & Record<string, unknown>;
 
 export function resolveAttributes(
   attributesSchema: JSONSchemaType<Attributes>,
   initialData: Record<string, unknown> = {},
-): AttributesResolved {
+): Attributes {
   const validate = ajv.compile(attributesSchema);
   const data = { ...initialData };
   const valid = validate(data);
@@ -311,5 +309,3 @@ export function resolveAttributes(
   }
   return data;
 }
-
-export type AttributesResolved = Record<string, unknown>;

@@ -1,9 +1,4 @@
-import {
-  type Attributes,
-  resolveAttributes,
-  type AttributesResolved,
-  defaultAttributesSchema,
-} from "./attributes";
+import { type Attributes, resolveAttributes, defaultAttributesSchema } from "./attributes";
 import { brickSchema, type Brick } from "./bricks";
 import invariant from "./utils/invariant";
 import { themeSchema, type Theme } from "./theme";
@@ -19,10 +14,7 @@ export function defineConfig(config: TemplateConfig): TemplateConfig {
   return {
     attributes: config.attributes,
     manifest: config.manifest,
-    pages: config.pages.map((p) => ({
-      ...p,
-      tags: p.tags ?? [],
-    })),
+    pages: config.pages,
     themes: config.themes,
     ...(config.datasources ? { datasources: config.datasources } : {}),
   };
@@ -73,32 +65,10 @@ export type PageInfo = {
   label: string;
 };
 
-export type SiteInfo = {
-  siteId: string;
-  /**
-   * Map of all pages in the site.
-   */
-  pagesMap: PagesMapEntry[];
-  /**
-   * Hostname of the site
-   */
-  hostname: string;
-  /**
-   * Label of the site
-   */
-  siteLabel: string;
-
-  siteAttributes: JSONSchemaType<Attributes>;
-};
-
 /**
  * The Page config represents the page configuration (datasources, attributes, etc)
  */
-export type PageConfig<
-  D extends DatasourcesMap,
-  A extends TemplateConfig["attributes"],
-  B extends Brick[],
-> = PageInfo & {
+export type PageConfig<D extends DatasourcesMap, B extends Brick[]> = PageInfo & {
   /**
    * Data sources manifests for the page. Undefined if no data sources are defined.
    */
@@ -110,26 +80,26 @@ export type PageConfig<
   data?: D extends DatasourcesMap ? DatasourcesResolved<D> : undefined;
 
   /**
-   * Site+Page attributes.
+   * Page attributes. (can ovveride site attributes)
    */
-  attributes: A;
+  attributes: JSONSchemaType<Attributes>;
   /**
    * Resolved attributes for the page.
    */
-  attr: AttributesResolved;
+  attr: Attributes;
   bricks: B;
 
   tags: string[];
 };
 
-export type GenericPageConfig = PageConfig<DatasourcesMap, TemplateConfig["attributes"], Brick[]>;
+export type GenericPageConfig = PageConfig<DatasourcesMap, Brick[]>;
 
 export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): GenericPageConfig {
   const pageConfig = templateConfig.pages.find((p) => p.path === path);
   invariant(pageConfig, `createPageConfigFromTemplateConfig: No page config found for path ${path}`);
 
   const bricks = pageConfig.bricks;
-  const attr = resolveAttributes(templateConfig.attributes);
+  const attr = resolveAttributes(pageConfig.attributes ?? templateConfig.attributes);
 
   return {
     id: crypto.randomUUID(),
@@ -138,7 +108,7 @@ export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): Ge
     path,
     attr,
     bricks,
-    attributes: templateConfig.attributes,
+    attributes: pageConfig.attributes ?? templateConfig.attributes,
   } satisfies GenericPageConfig;
 }
 
@@ -183,7 +153,7 @@ export function getNewSiteConfig(
     themes: templateConfig.themes,
     theme: templateConfig.themes[0],
     pagesMap: pages.map((p) => ({
-      id: crypto.randomUUID(),
+      id: p.id,
       label: p.label,
       path: p.path,
       tags: p.tags,
@@ -202,7 +172,9 @@ export const templatePageSchema = Type.Object({
   tags: Type.Array(Type.String()),
 });
 
-export type TemplatePage = Static<typeof templatePageSchema>;
+export type TemplatePage = Static<typeof templatePageSchema> & {
+  attributes?: JSONSchemaType<Attributes>;
+};
 
 export const definedTemplatePage = Type.Composite([
   Type.Omit(templatePageSchema, ["tags"]),
@@ -218,6 +190,7 @@ export const templateSchema = Type.Object(
     manifest: manifestSchema,
     themes: Type.Array(themeSchema),
     datasources: Type.Optional(datasourcesMap),
+    // Those are site-level attributes
     attributes: Type.Optional(defaultAttributesSchema),
     pages: Type.Array(definedTemplatePage),
   },

@@ -1,4 +1,5 @@
-import { defineDataSources, ds } from "../datasources";
+import { Type as ds } from "@sinclair/typebox";
+import { defineDataSources } from "../datasources";
 import { defineAttributes, attr } from "../attributes";
 import { defineBricks, createRow } from "../bricks";
 import { defineConfig } from "../page";
@@ -6,7 +7,7 @@ import { defineConfig } from "../page";
 // define your datasources
 const datasources = defineDataSources({
   links: {
-    provider: "generic",
+    provider: "custom",
     name: "Links",
     schema: ds.Array(
       ds.Object({

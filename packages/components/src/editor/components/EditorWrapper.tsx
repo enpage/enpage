@@ -40,7 +40,6 @@ export function EditorWrapper({
       siteId: siteConfig.id,
       hostname: siteConfig.hostname,
       pagesMap: siteConfig.pagesMap,
-      siteAttributes: siteConfig.attributes,
       siteLabel: siteConfig.label,
       id: pageConfig.id,
       path: pageConfig.path,

@@ -1,13 +1,12 @@
 import type { DatasourceFetcher } from "../../fetcher";
+import { createPlaceholderReplacer, placeholderRx } from "../../utils";
 import type { HttpJsonOptions } from "./options";
-import { get } from "lodash-es";
 
 /**
  * For this fetcher, validation is done outside of the fetcher.
  */
-const fetchHttpJSON: DatasourceFetcher<unknown, null, HttpJsonOptions> = async ({ options, pageConfig }) => {
-  const placeholderRx = /{{(.+?)}}/g;
-  const replacer = createPlaceholderReplacer(pageConfig);
+const fetchHttpJSON: DatasourceFetcher<unknown, null, HttpJsonOptions> = async ({ options, attr }) => {
+  const replacer = createPlaceholderReplacer(attr);
   const url = options.url.replace(placeholderRx, replacer);
   const headers: Record<string, string> = {};
 
@@ -27,10 +26,3 @@ const fetchHttpJSON: DatasourceFetcher<unknown, null, HttpJsonOptions> = async (
 };
 
 export default fetchHttpJSON;
-
-function createPlaceholderReplacer(pageConfig: Record<string, unknown>) {
-  return function replacePlaceholders(_: unknown, p1: string) {
-    const varName = (p1 as string).trim();
-    return String(get(pageConfig, varName)) ?? "";
-  };
-}

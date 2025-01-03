@@ -1,4 +1,4 @@
-import type { GenericPageContext } from "../page";
+import type { Attributes } from "../attributes";
 import type { ProviderOptions } from "./provider-options";
 
 export type DatasourceFetcherParams<
@@ -6,7 +6,7 @@ export type DatasourceFetcherParams<
   Opts extends Record<string, unknown> = ProviderOptions,
 > = {
   options: Opts;
-  pageConfig: GenericPageContext;
+  attr: Attributes;
   oauth: OAuthProps;
 };
 

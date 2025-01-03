@@ -1,5 +1,6 @@
 // @ts-check
-import { defineDataSources, ds } from "@upstart.gg/sdk/datasources";
+import { Type as ds } from "@sinclair/typebox";
+import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
@@ -7,7 +8,7 @@ import { defineConfig } from "@upstart.gg/sdk/page";
 // define your datasources
 const datasources = defineDataSources({
   links: {
-    provider: "generic",
+    provider: "internal-links",
     name: "Links",
     schema: ds.Array(
       ds.Object({
@@ -191,7 +192,7 @@ const themes = [
 ];
 
 // define your attributes
-const attributes = defineAttributes({
+const siteAttributes = defineAttributes({
   mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", { $id: "mainButtonUrl" }),
   testBoolTrue: attr.boolean("Test Bool True", true),
   customerId: attr.string("Customer ID"),
@@ -199,7 +200,7 @@ const attributes = defineAttributes({
 });
 
 export default defineConfig({
-  attributes,
+  attributes: siteAttributes,
   pages: [
     {
       label: "Home",
@@ -210,7 +211,7 @@ export default defineConfig({
     {
       label: "About",
       path: "/about",
-      bricks: [],
+      bricks: homePageBricks,
       tags: ["nav"],
     },
   ],
