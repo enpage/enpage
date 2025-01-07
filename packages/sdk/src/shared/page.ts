@@ -125,7 +125,6 @@ export type SiteConfig = {
 
 export type GenericPageContext = Omit<GenericPageConfig, "attributes"> & {
   siteId: SiteConfig["id"];
-  siteLabel: SiteConfig["label"];
   hostname: SiteConfig["hostname"];
   theme: SiteConfig["theme"];
   pagesMap: SiteConfig["pagesMap"];
