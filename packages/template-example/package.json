@@ -1,6 +1,6 @@
 {
   "name": "@upstart.gg/template-example",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "description": "Enpage template example",
   "type": "module",
   "exports": {

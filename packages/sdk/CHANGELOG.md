@@ -1,5 +1,11 @@
 # @upstart.gg/sdk
 
+## 0.0.75
+
+### Patch Changes
+
+- [#267](https://github.com/enpage/enpage/pull/267) [`9d7a8a7`](https://github.com/enpage/enpage/commit/9d7a8a78ee01096300e09538db531330374011d2) Thanks [@mattallty](https://github.com/mattallty)! - document types
+
 ## 0.0.74
 
 ## 0.0.73
