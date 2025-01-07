@@ -154,6 +154,6 @@ export const datasourcesMap = Type.Record(
 
 export type DatasourcesMap = Static<typeof datasourcesMap>;
 
-export type DatasourcesResolved<T extends DatasourcesMap> = {
+export type DatasourcesResolved<T extends DatasourcesMap = DatasourcesMap> = {
   [K in keyof T]: unknown;
 };
