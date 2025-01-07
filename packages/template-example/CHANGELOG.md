@@ -1,5 +1,12 @@
 # @upstart.gg/template-example
 
+## 0.0.76
+
+### Patch Changes
+
+- Updated dependencies [[`8d52a73`](https://github.com/enpage/enpage/commit/8d52a73b571fc7f04d1b514ad0ebb48a610e0625)]:
+  - @upstart.gg/sdk@0.0.76
+
 ## 0.0.75
 
 ### Patch Changes
