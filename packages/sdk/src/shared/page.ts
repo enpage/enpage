@@ -82,11 +82,11 @@ export type PageConfig<D extends DatasourcesMap, B extends Brick[]> = PageInfo &
   /**
    * Page attributes. (can ovveride site attributes)
    */
-  attributes: JSONSchemaType<Attributes>;
+  attributes?: JSONSchemaType<Attributes>;
   /**
    * Resolved attributes for the page.
    */
-  attr: Attributes;
+  attr?: Attributes;
   bricks: B;
 
   tags: string[];
@@ -99,16 +99,16 @@ export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): Ge
   invariant(pageConfig, `createPageConfigFromTemplateConfig: No page config found for path ${path}`);
 
   const bricks = pageConfig.bricks;
-  const attr = resolveAttributes(pageConfig.attributes ?? templateConfig.attributes);
 
   return {
     id: crypto.randomUUID(),
     label: pageConfig.label,
     tags: pageConfig.tags,
     path,
-    attr,
     bricks,
-    attributes: pageConfig.attributes ?? templateConfig.attributes,
+    ...(pageConfig.attributes
+      ? { attributes: pageConfig.attributes, attr: resolveAttributes(pageConfig.attributes) }
+      : {}),
   } satisfies GenericPageConfig;
 }
 
@@ -117,17 +117,23 @@ export type SiteConfig = {
   label: string;
   hostname: string;
   attributes: JSONSchemaType<Attributes>;
+  attr: Attributes;
   datasources?: DatasourcesMap;
   themes: Theme[];
   theme: Theme;
   pagesMap: PagesMapEntry[];
 };
 
-export type GenericPageContext = Omit<GenericPageConfig, "attributes"> & {
+/*
+The page context has always attributes and attr as it inherits attributes and attr from the site.
+*/
+export type GenericPageContext = Omit<GenericPageConfig, "attr" | "attributes"> & {
   siteId: SiteConfig["id"];
   hostname: SiteConfig["hostname"];
   theme: SiteConfig["theme"];
   pagesMap: SiteConfig["pagesMap"];
+  attributes: JSONSchemaType<Attributes>;
+  attr: Attributes;
 };
 
 /**
@@ -148,6 +154,7 @@ export function getNewSiteConfig(
     label: options.label,
     hostname,
     attributes: templateConfig.attributes,
+    attr: resolveAttributes(templateConfig.attributes),
     datasources: templateConfig.datasources,
     themes: templateConfig.themes,
     theme: templateConfig.themes[0],
