@@ -112,6 +112,9 @@ export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): Ge
   } satisfies GenericPageConfig;
 }
 
+/**
+ * Site config has always attributes and attr.
+ */
 export type SiteConfig = {
   id: string;
   label: string;
