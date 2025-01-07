@@ -186,7 +186,8 @@ export interface DraftStateProps {
   bricks: Brick[];
   data: Record<string, unknown>;
   attr: GenericPageContext["attr"];
-  attributes: GenericPageContext["attributes"];
+  attributes: GenericPageConfig["attributes"];
+  siteAttributes: SiteConfig["attributes"];
   theme: SiteConfig["theme"];
   siteId: SiteConfig["id"];
   siteLabel: SiteConfig["label"];
@@ -239,6 +240,7 @@ export const createDraftStore = (
     label: DraftStateProps["label"];
     attr: DraftStateProps["attr"];
     attributes: DraftStateProps["attributes"];
+    siteAttributes: DraftStateProps["siteAttributes"];
     siteLabel: DraftStateProps["siteLabel"];
     siteId: DraftStateProps["siteId"];
     hostname: DraftStateProps["hostname"];
@@ -251,6 +253,7 @@ export const createDraftStore = (
     | "attr"
     | "attributes"
     | "siteLabel"
+    | "siteAttributes"
     | "pagesMap"
     | "theme"
     | "id"
@@ -519,7 +522,7 @@ export const useAttributes = () => {
 
 export const useAttributesSchema = () => {
   const ctx = useDraftStoreContext();
-  return useStore(ctx, (state) => state.attributes);
+  return useStore(ctx, (state) => state.attributes ?? state.siteAttributes);
 };
 
 export const usePageInfo = () => {
