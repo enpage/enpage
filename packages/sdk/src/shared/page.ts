@@ -127,15 +127,14 @@ export type SiteConfig = {
   pagesMap: PagesMapEntry[];
 };
 
-/*
-The page context has always attributes and attr as it inherits attributes and attr from the site.
-*/
+/**
+ * Page context has attr but not attributes declaration, as they are not needed to render the page.
+ */
 export type GenericPageContext = Omit<GenericPageConfig, "attr" | "attributes"> & {
   siteId: SiteConfig["id"];
   hostname: SiteConfig["hostname"];
   theme: SiteConfig["theme"];
   pagesMap: SiteConfig["pagesMap"];
-  attributes: JSONSchemaType<Attributes>;
   attr: Attributes;
 };
 
