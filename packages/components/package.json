@@ -7,9 +7,13 @@
       "import": "./dist/*.js",
       "types": "./dist/types/shared/components/*.d.ts"
     },
-    "./editor/*": {
+    "./editor/components/*": {
       "import": "./dist/*.js",
-      "types": "./dist/types/editor/*.d.ts"
+      "types": "./dist/types/editor/components/*.d.ts"
+    },
+    "./editor/hooks/*": {
+      "import": "./dist/*.js",
+      "types": "./dist/types/editor/hooks/*.d.ts"
     },
     "./test-config": {
       "import": "./dist/test-config.js",
