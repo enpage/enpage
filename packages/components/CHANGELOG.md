@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.74
+
+### Patch Changes
+
+- [#265](https://github.com/enpage/enpage/pull/265) [`292fc45`](https://github.com/enpage/enpage/commit/292fc4575dce9fc295f02d138e0a4ed319b15699) Thanks [@mattallty](https://github.com/mattallty)! - Fix editor exports
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.74
+
 ## 0.0.73
 
 ### Patch Changes
