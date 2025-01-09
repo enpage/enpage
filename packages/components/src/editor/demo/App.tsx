@@ -4,6 +4,8 @@ import { EditorWrapper } from "~/editor/components/EditorWrapper";
 import { ClientOnly } from "~/shared/utils/client-only";
 import Editor from "~/editor/components/Editor";
 
+import "@upstart.gg/components/dist/assets/style.css";
+
 export default function App() {
   const siteConfig = getNewSiteConfig(testEnpageConfig);
 

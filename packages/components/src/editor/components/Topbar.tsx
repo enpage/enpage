@@ -33,6 +33,7 @@ export default function TopBar() {
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
+  const currentPageLabel = pages.find((page) => page.id === draft.id)?.label;
 
   const publish = useCallback(() => {
     post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
@@ -189,7 +190,11 @@ export default function TopBar() {
           >
             <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
               <VscCopy className="h-7 w-auto" />
-              <span className={tx(tooltipCls)}>Pages</span>
+              <span className={tx(tooltipCls)}>Switch page</span>
+              <div className="flex flex-col gap-1 ml-2 mr-3 justify-start items-start">
+                <span className="text-sm inline-block">Page</span>
+                <span className="text-base inline-block -mt-2 font-semibold">{currentPageLabel}</span>
+              </div>
               <RiArrowDownSLine className={tx(arrowClass)} />
             </button>
           </TopbarMenu>
