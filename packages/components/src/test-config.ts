@@ -1,5 +1,5 @@
 // @ts-check
-import { Type as ds } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
@@ -10,11 +10,11 @@ const datasources = defineDataSources({
   links: {
     provider: "internal-links",
     name: "Links",
-    schema: ds.Array(
-      ds.Object({
-        title: ds.String(),
-        url: ds.String({ format: "uri", pattern: "^https?://" }),
-        icon: ds.Optional(ds.String()),
+    schema: Type.Array(
+      Type.Object({
+        title: Type.String(),
+        url: Type.String({ format: "uri", pattern: "^https?://" }),
+        icon: Type.Optional(Type.String()),
       }),
     ),
     sampleData: [
@@ -29,12 +29,13 @@ const datasources = defineDataSources({
     options: {
       url: "https://jsonplaceholder.typicode.com/todos?userId=1",
     },
-    schema: ds.Array(
-      ds.Object({
-        id: ds.Number(),
-        userId: ds.Number(),
-        title: ds.String(),
-        completed: ds.Boolean(),
+    schema: Type.Array(
+      Type.Object({
+        id: Type.Number(),
+        userId: Type.Number(),
+        title: Type.String(),
+        description: Type.Optional(Type.String()),
+        completed: Type.Boolean(),
       }),
     ),
   },

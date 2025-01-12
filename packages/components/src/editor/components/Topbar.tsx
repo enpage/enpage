@@ -35,9 +35,12 @@ export default function TopBar() {
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
   const currentPageLabel = pages.find((page) => page.id === draft.id)?.label;
 
-  const publish = useCallback(() => {
-    post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
-  }, [draft.siteId, draft.id, pageVersion]);
+  const publish = useCallback(
+    (wholeSite = false) => {
+      post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
+    },
+    [draft.siteId, draft.id, pageVersion],
+  );
 
   const switchPreviewMode = useCallback(() => {
     editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
@@ -190,9 +193,8 @@ export default function TopBar() {
           >
             <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
               <VscCopy className="h-7 w-auto" />
-              <span className={tx(tooltipCls)}>Switch page</span>
               <div className="flex flex-col gap-1 ml-2 mr-3 justify-start items-start">
-                <span className="text-sm inline-block">Page</span>
+                <span className="text-xs inline-block">Page</span>
                 <span className="text-base inline-block -mt-2 font-semibold">{currentPageLabel}</span>
               </div>
               <RiArrowDownSLine className={tx(arrowClass)} />
@@ -215,7 +217,8 @@ export default function TopBar() {
         {editorMode === "remote" ? (
           <TopbarMenu
             items={[
-              { label: "Publish on web", onClick: publish },
+              { label: "Publish this page", onClick: () => publish() },
+              { label: "Publish the whole site", onClick: () => publish(true) },
               { label: "Schedule publish", shortcut: "⌘⇧D" },
             ]}
           >

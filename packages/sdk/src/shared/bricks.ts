@@ -17,6 +17,7 @@ import { manifest as mapManifest } from "./bricks/manifests/map.manifest";
 import { manifest as socialLinksManifest } from "./bricks/manifests/social-links.manifest";
 import { manifest as textManifest } from "./bricks/manifests/text.manifest";
 import { manifest as videoManifest } from "./bricks/manifests/video.manifest";
+import { manifest as loopManifest } from "./bricks/manifests/loop.manifest";
 
 /**
  * Generates a unique identifier for bricks.
@@ -168,6 +169,10 @@ export const brickSchema = Type.Composite([
     Type.Object({
       type: Type.Literal("html-element"),
       props: Type.Record(Type.String(), Type.Any()),
+    }),
+    Type.Object({
+      type: Type.Literal("loop"),
+      props: loopManifest.properties.props,
     }),
   ]),
   Type.Object({

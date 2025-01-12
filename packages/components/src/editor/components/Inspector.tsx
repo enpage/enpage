@@ -16,7 +16,6 @@ import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";
 import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
-import { Attributes } from "@upstart.gg/sdk/shared/attributes";
 
 export default function Inspector() {
   const editor = useEditor();

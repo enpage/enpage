@@ -77,7 +77,7 @@ export default function ThemePanel() {
           <Callout.Icon>
             <WiStars className="w-8 h-8 mt-3" />
           </Callout.Icon>
-          <Callout.Text>
+          <Callout.Text size="1">
             Tell us about your website / page purpose and color preferences, and our AI will generate
             personalized themes for you!
           </Callout.Text>
@@ -110,7 +110,7 @@ export default function ThemePanel() {
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="current" className="p-2">
         <Callout.Root size="1">
-          <Callout.Text className={tx("text-balance")}>
+          <Callout.Text size="1" className={tx("text-balance")}>
             Customize your theme colors and typography to match your brand. Please note that theme is applied
             to your entire site, not only the current page.
           </Callout.Text>

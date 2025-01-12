@@ -28,7 +28,7 @@ export interface EditorStateProps {
   selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
   shouldShowGrid?: boolean;
-  panel?: "library" | "inspector" | "theme" | "settings";
+  panel?: "library" | "inspector" | "theme" | "settings" | "data";
   modal?: "image-search" | "datasources";
   panelPosition: "left" | "right";
   /**

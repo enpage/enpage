@@ -18,6 +18,11 @@ export const commonProps = Type.Object({
       "ui:widget": "hidden",
     }),
   ),
+  datasourceId: Type.Optional(
+    Type.String({
+      title: "Data Source",
+    }),
+  ),
 });
 
 export const content = Type.String({

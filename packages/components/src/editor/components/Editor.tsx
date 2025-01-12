@@ -15,16 +15,17 @@ import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
 import { Button } from "@upstart.gg/style-system/system";
 import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
+import DataPanel from "./PanelData";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
   onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
-const ThemePanel = lazy(() => import("./ThemePanel"));
-const SettingsPanel = lazy(() => import("./SettingsPanel"));
+const ThemePanel = lazy(() => import("./PanelTheme"));
+const SettingsPanel = lazy(() => import("./PanelSettings"));
 const Inspector = lazy(() => import("./Inspector"));
-const BlocksLibrary = lazy(() => import("./BricksLibrary"));
+const BlocksLibrary = lazy(() => import("./PanelLibrary"));
 
 export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -161,6 +162,11 @@ function Panel({ className, ...props }: PanelProps) {
       {editor.panel === "settings" && (
         <Suspense>
           <SettingsPanel />
+        </Suspense>
+      )}
+      {editor.panel === "data" && (
+        <Suspense>
+          <DataPanel />
         </Suspense>
       )}
       {/* {editor.modal === "image-search" && <ModalSearchImage />} */}
