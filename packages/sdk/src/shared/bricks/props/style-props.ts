@@ -245,7 +245,7 @@ const fontWeight = Type.Union(
   },
 );
 
-const color = Type.String({
+export const color = Type.String({
   $id: "color",
   default: "transparent",
   title: "Text color",

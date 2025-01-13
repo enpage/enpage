@@ -13,7 +13,7 @@ import { jsonFormClass } from "./json-form/form-class";
 import { Tabs } from "@upstart.gg/style-system/system";
 import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
-import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
+import { ObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";
 import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
 
@@ -93,8 +93,6 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   const brickDefaults = defaults[brick.type];
   const [state, setState] = useState({ ...brickDefaults.props, ...brick.props });
 
-  console.log("element state", state);
-
   const onChange = (data: IChangeEvent, id?: string) => {
     if (!id) {
       // ignore changes that don't have an id
@@ -109,6 +107,8 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
 
   if (manifest) {
     const uiSchema = createUiSchema(manifest.properties.props as AnySchemaObject);
+
+    console.log({ uiSchema });
     return (
       <Form
         key={`inspector-${brick.id}`}
@@ -117,11 +117,11 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
         formData={state}
         schema={manifest.properties.props}
         formContext={{ brickId: brick.id }}
+        templates={{ ObjectFieldTemplate }}
         validator={validator}
         uiSchema={uiSchema}
         onChange={onChange}
         fields={customFields}
-        templates={{ ObjectFieldTemplate: CustomObjectFieldTemplate }}
         onSubmit={(e) => console.log("onSubmit", e)}
         onError={(e) => console.log("onError", e)}
       />

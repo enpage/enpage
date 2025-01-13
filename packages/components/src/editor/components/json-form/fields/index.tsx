@@ -6,6 +6,7 @@ import ColorField from "./color";
 import SliderField from "./slider";
 import SwitchField from "./switch";
 import PathField from "./path";
+import ObjectField from "./object";
 
 export const customFields: RegistryFieldsType = {
   enum: EnumField,
@@ -15,4 +16,5 @@ export const customFields: RegistryFieldsType = {
   slider: SliderField,
   switch: SwitchField,
   path: PathField,
+  // ObjectField: ObjectField,
 };

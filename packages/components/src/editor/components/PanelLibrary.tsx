@@ -21,7 +21,7 @@ const tabContentScrollClass = css({
   },
 });
 
-export default function BlocksLibrary() {
+export default function PanelLibrary() {
   const { shouldDisplay: shouldDisplayLibraryCallout } = useCalloutViewCounter("blocks-library");
   const [brickPrompt, setBrickPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);

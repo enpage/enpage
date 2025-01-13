@@ -128,6 +128,32 @@ const homePageBricks = defineBricks([
   ]),
   ...createRow([
     {
+      type: "card",
+      props: {
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+        justify: "text-center",
+        format: "html",
+        title: "Card title",
+        body: "Card body",
+        footer: "Card footer",
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: "full",
+          h: 8,
+        },
+        desktop: {
+          x: 0,
+          w: "full",
+          h: 3,
+        },
+      },
+    },
+  ]),
+  ...createRow([
+    {
       type: "text",
       props: { content: "Something" },
       position: {

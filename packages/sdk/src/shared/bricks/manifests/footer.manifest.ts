@@ -1,7 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
-import { commonStyleProps } from "../props/style-props";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
 
@@ -45,29 +44,7 @@ export const manifest = defineBrickManifest({
     <line x1="16" y1="17.5" x2="18" y2="17.5"></line>
 </svg>
   `,
-  props: Type.Composite([
-    contentAwareProps,
-    commonProps,
-    commonStyleProps,
-    Type.Object({
-      heroFontSize: Type.Union(
-        [
-          Type.Literal("font-size-hero-1", { title: "1" }),
-          Type.Literal("font-size-hero-2", { title: "2" }),
-          Type.Literal("font-size-hero-3", { title: "3" }),
-          Type.Literal("font-size-hero-4", { title: "4" }),
-          Type.Literal("font-size-hero-5", { title: "5" }),
-        ],
-        {
-          default: "font-size-hero-3",
-          title: "Font size",
-          "ui:field": "enum",
-          "ui:display": "button-group",
-          "ui:group": "border",
-        },
-      ),
-    }),
-  ]),
+  props: Type.Composite([contentAwareProps, commonProps]),
 });
 
 export type Manifest = Static<typeof manifest>;

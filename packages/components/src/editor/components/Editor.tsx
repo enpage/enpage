@@ -22,10 +22,10 @@ type EditorProps = ComponentProps<"div"> & {
   onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
-const ThemePanel = lazy(() => import("./PanelTheme"));
+const PanelTheme = lazy(() => import("./PanelTheme"));
 const SettingsPanel = lazy(() => import("./PanelSettings"));
-const Inspector = lazy(() => import("./Inspector"));
-const BlocksLibrary = lazy(() => import("./PanelLibrary"));
+const PanelInspector = lazy(() => import("./PanelInspector"));
+const PanelLibrary = lazy(() => import("./PanelLibrary"));
 
 export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -146,17 +146,17 @@ function Panel({ className, ...props }: PanelProps) {
     >
       {editor.previewMode === "desktop" && editor.panel === "library" && (
         <Suspense>
-          <BlocksLibrary />
+          <PanelLibrary />
         </Suspense>
       )}
       {editor.panel === "inspector" && (
         <Suspense>
-          <Inspector />
+          <PanelInspector />
         </Suspense>
       )}
       {editor.panel === "theme" && (
         <Suspense>
-          <ThemePanel />
+          <PanelTheme />
         </Suspense>
       )}
       {editor.panel === "settings" && (
