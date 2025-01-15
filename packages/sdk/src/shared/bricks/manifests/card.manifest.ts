@@ -46,17 +46,34 @@ export const manifest = defineBrickManifest({
     commonProps,
     commonStyleProps,
     Type.Object({
-      title: Type.Optional(
-        Type.Composite([contentAwareProps, Type.Omit(commonProps, ["datasourceId"])], { title: "Title" }),
+      title: Type.Optional(Type.Composite([contentAwareProps, commonProps], { title: "Title" })),
+      image: Type.Optional(
+        Type.Object(
+          {
+            image: Type.String({
+              title: "Image",
+              "ui:field": "file",
+              "ui:accept": "image/*",
+              "ui:show-img-search": true,
+            }),
+          },
+          { title: "Image" },
+        ),
       ),
       body: Type.Optional(
-        Type.Composite([contentAwareProps, Type.Omit(commonProps, ["datasourceId"])], {
-          title: "Body",
-        }),
+        Type.Union(
+          [
+            Type.Composite([contentAwareProps, commonProps], {
+              title: "Fixed Content",
+            }),
+            Type.String({
+              title: "Data source",
+            }),
+          ],
+          { title: "Body" },
+        ),
       ),
-      footer: Type.Optional(
-        Type.Composite([contentAwareProps, Type.Omit(commonProps, ["datasourceId"])], { title: "Footer" }),
-      ),
+      footer: Type.Optional(Type.Composite([contentAwareProps, commonProps], { title: "Footer" })),
     }),
   ]),
 });

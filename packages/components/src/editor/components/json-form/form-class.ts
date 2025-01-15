@@ -1,16 +1,19 @@
 import { tx } from "@upstart.gg/style-system/twind";
 
 export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
+  [&>.form-group:has(*)]:(!my-0)
   [&_label]:(text-sm leading-tight)
   [&_label.file-title]:(leading-5)
   [&_label.label.file-label]:(mb-0)
-  [&_.control-label]:(block mb-1)
+  [&_.control-label]:(block text-sm font-medium)
   [&_fieldset]:(flex flex-col)
-  [&_.form-group:has(*)]:(px-3 py-3.5 border-b border-gray-200 dark:border-dark-600)
+  [&_.form-group:has(*)]:(px-3)
+  [&_.form-group.field-object:has(*)]:(pt-0)
+  [&_.section-fields>div:last-child>div]:(border-none)
+  [&_.section-fields]:(flex flex-col gap-3 py-3)
   [&_.form-section_.field-object_.form-group:last-child]:(border-none)
   [&>.form-group]:(!px-0 !py-0)
-  [&_.field-object]:(border-none pb-0)
-  [&_.object-fields]:(divide-y divide-gray-200 dark:divide-dark-600)
+  [&_.field-object]:(border-none flex flex-col gap-3)
   [&_.field-description]:(mt-1 mb-1 text-xs text-gray-600 dark:text-white/50 leading-tight)
   [&.hide-help_.field-description]:(hidden)
   [&_[type="submit"]]:(bg-upstart-600 text-white py-1 px-4 block w-full rounded mt-6)

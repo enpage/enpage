@@ -91,7 +91,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
             onValueChange={onChange}
             defaultValue={currentValue}
             size="1"
-            className="w-full !max-w-full mt-1.5"
+            className="w-full !max-w-full mt-2"
             radius="full"
           >
             {options
@@ -148,7 +148,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
           {fieldTitle && <label className="control-label">{fieldTitle}</label>}
           {fieldDescription && <p className="field-description">{fieldDescription}</p>}
           <select
-            className="form-select mt-1.5"
+            className="form-select mt-2"
             value={currentValue}
             onChange={(e) => onChange(e.target.value)}
             required={required}

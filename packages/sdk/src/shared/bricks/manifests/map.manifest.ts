@@ -40,7 +40,7 @@ export const manifest = defineBrickManifest({
     <path d="M12 5 C10.3431 5 9 6.34315 9 8 C9 9.3124 9.84285 10.4274 11 10.8229 L12 13 L13 10.8229 C14.1571 10.4274 15 9.3124 15 8 C15 6.34315 13.6569 5 12 5Z"></path>
 </svg>
   `,
-  props: Type.Composite([contentAwareProps, commonProps]),
+  props: Type.Composite([commonProps]),
 });
 
 export type Manifest = Static<typeof manifest>;
