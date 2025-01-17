@@ -1,6 +1,6 @@
-import { LuPlus } from "react-icons/lu";
+import { LuPlus, LuDatabase } from "react-icons/lu";
 import { PiPalette } from "react-icons/pi";
-import { VscSettings } from "react-icons/vsc";
+import { VscSettings, VscDatabase } from "react-icons/vsc";
 import type { MouseEvent, PropsWithChildren } from "react";
 import { useEditor } from "../hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
@@ -81,6 +81,18 @@ export default function Toolbar() {
         <PiPalette className="h-7 w-auto" />
         <span className={tx(tooltipCls)}>Color theme</span>
       </button>
+
+      <button
+        type="button"
+        className={tx(btnClass, commonCls, editor.panel === "data" && "active")}
+        onClick={(e) => {
+          editor.togglePanel("data");
+        }}
+      >
+        <VscDatabase className="h-7 w-auto" />
+        <span className={tx(tooltipCls)}>Data</span>
+      </button>
+
       <div className={tx("flex-1", "border-t-gray-200 dark:border-t-dark-500")} />
     </nav>
   );

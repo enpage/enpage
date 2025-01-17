@@ -6,7 +6,7 @@ import { createUiSchema } from "./json-form/ui-schema";
 import validator from "@rjsf/validator-ajv8";
 import { customFields } from "./json-form/fields";
 import { jsonFormClass } from "./json-form/form-class";
-import { CustomObjectFieldTemplate } from "./CustomObjectFieldTemplate";
+import { ObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import { Spinner } from "@upstart.gg/style-system/system";
 import { lazy, Suspense, useEffect, useState } from "react";
 
@@ -67,8 +67,8 @@ export default function SettingsForm() {
           validator={validator}
           uiSchema={uiSchema}
           onChange={onChange}
-          fields={customFields}
-          templates={{ ObjectFieldTemplate: CustomObjectFieldTemplate }}
+          // fields={customFields}
+          templates={{ ObjectFieldTemplate }}
           onSubmit={(e) => console.log("onSubmit", e)}
           onError={(e) => console.log("onError", e)}
         />

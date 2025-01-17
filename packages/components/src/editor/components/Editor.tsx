@@ -15,16 +15,17 @@ import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
 import { Button } from "@upstart.gg/style-system/system";
 import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
+import DataPanel from "./PanelData";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
   onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
-const ThemePanel = lazy(() => import("./ThemePanel"));
-const SettingsPanel = lazy(() => import("./SettingsPanel"));
-const Inspector = lazy(() => import("./Inspector"));
-const BlocksLibrary = lazy(() => import("./BricksLibrary"));
+const PanelTheme = lazy(() => import("./PanelTheme"));
+const SettingsPanel = lazy(() => import("./PanelSettings"));
+const PanelInspector = lazy(() => import("./PanelInspector"));
+const PanelLibrary = lazy(() => import("./PanelLibrary"));
 
 export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -145,22 +146,27 @@ function Panel({ className, ...props }: PanelProps) {
     >
       {editor.previewMode === "desktop" && editor.panel === "library" && (
         <Suspense>
-          <BlocksLibrary />
+          <PanelLibrary />
         </Suspense>
       )}
       {editor.panel === "inspector" && (
         <Suspense>
-          <Inspector />
+          <PanelInspector />
         </Suspense>
       )}
       {editor.panel === "theme" && (
         <Suspense>
-          <ThemePanel />
+          <PanelTheme />
         </Suspense>
       )}
       {editor.panel === "settings" && (
         <Suspense>
           <SettingsPanel />
+        </Suspense>
+      )}
+      {editor.panel === "data" && (
+        <Suspense>
+          <DataPanel />
         </Suspense>
       )}
       {/* {editor.modal === "image-search" && <ModalSearchImage />} */}

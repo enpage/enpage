@@ -77,6 +77,6 @@ export function useBrickWrapperStyle({
     "shadow" in brick.props && (brick.props.shadow as string),
 
     // z-index
-    (brick.props.z as string) && `z-[${brick.props.z}]`,
+    // (brick.props.z as string) && `z-[${brick.props.z}]`,
   );
 }

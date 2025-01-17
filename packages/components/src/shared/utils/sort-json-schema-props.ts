@@ -1,5 +1,4 @@
-import type { TProperties } from "@sinclair/typebox";
-import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
+import type { TProperties, TSchema } from "@sinclair/typebox";
 
 interface PropertyWithMetadata {
   key: string;
@@ -9,7 +8,7 @@ interface PropertyWithMetadata {
   "ui:hidden"?: boolean;
 }
 
-export function sortJsonSchemaProperties(schema: AnySchemaObject): AnySchemaObject {
+export function sortJsonSchemaProperties(schema: TSchema): TSchema {
   const properties = schema.properties || {};
 
   // Extract property metadata
@@ -53,28 +52,6 @@ export function sortJsonSchemaProperties(schema: AnySchemaObject): AnySchemaObje
       i--;
     }
   }
-
-  // Sort properties within each group
-  // Object.values(groupedProperties).forEach((group) => {
-  //   group.sort((a, b) => {
-  //     if (a.order !== undefined && b.order !== undefined) {
-  //       return a.order - b.order;
-  //     }
-  //     if (a.order !== undefined) return -1;
-  //     if (b.order !== undefined) return 1;
-  //     return a.key.localeCompare(b.key);
-  //   });
-  // });
-
-  // // Sort ungrouped properties
-  // ungroupedProperties.sort((a, b) => {
-  //   if (a.order !== undefined && b.order !== undefined) {
-  //     return a.order - b.order;
-  //   }
-  //   if (a.order !== undefined) return -1;
-  //   if (b.order !== undefined) return 1;
-  //   return a.key.localeCompare(b.key);
-  // });
 
   // Sort groups by groupOrder
   const sortedGroups = Object.entries(groupedProperties).sort(

@@ -1,29 +1,33 @@
-import type { FieldProps } from "@rjsf/utils";
-import { Switch } from "@upstart.gg/style-system/system";
+import { tx } from "@upstart.gg/style-system/twind";
+import type { FieldProps } from "./types";
+import { Switch, Text } from "@upstart.gg/style-system/system";
 
-const SwitchField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, formData, onChange, required, name, idSchema } = props;
-
-  // Extract field-level properties
-  const fieldTitle = schema.title || uiSchema?.["ui:title"];
-  const fieldDescription = schema.description || uiSchema?.["ui:description"];
+const SwitchField: React.FC<FieldProps<boolean>> = (props) => {
+  const { onChange, required, title, description, currentValue } = props;
 
   return (
     <div className="switch-field flex items-center">
-      {fieldTitle && (
+      {/* {title && (
         <div className="flex-1">
-          <label className="control-label">
-            {fieldTitle}
-            {required ? <span className="required">*</span> : null}
-          </label>
-          {fieldDescription && <p className="field-description">{fieldDescription}</p>}
+          <label className={tx("control-label", { required })}>{title}</label>
+          {description && <p className="field-description">{description}</p>}
         </div>
+      )} */}
+      {title && (
+        <Text as="label" size="2" weight="medium">
+          {title}
+        </Text>
+      )}
+      {description && (
+        <Text as="p" color="gray" size="1">
+          {description}
+        </Text>
       )}
       <Switch
         onCheckedChange={(value) => onChange(value)}
         size="1"
         variant="soft"
-        defaultChecked={formData}
+        defaultChecked={currentValue}
       />
     </div>
   );

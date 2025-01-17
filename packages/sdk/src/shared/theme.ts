@@ -186,7 +186,7 @@ export const themeSchema = Type.Object(
 );
 
 /**
- * Process the theme schema and potentialy modify the typography entries byt adding custom fonts defined in the theme to the accepted union.
+ * Process the theme schema and potentialy modify the typography entries by adding custom fonts defined in the theme to the accepted union.
  */
 export function getProcessedThemeSchema(schema: typeof themeSchema, theme: Theme): TObject {
   if (!theme.customFonts?.length) {
@@ -200,14 +200,28 @@ export function getProcessedThemeSchema(schema: typeof themeSchema, theme: Theme
         ...schema.properties.typography,
         properties: {
           ...schema.properties.typography.properties,
-          body: Type.Union([
-            ...theme.customFonts.map((font) => Type.Literal(font.name, { title: font.name })),
-            ...schema.properties.typography.properties.body.anyOf,
-          ]),
-          heading: Type.Union([
-            ...theme.customFonts.map((font) => Type.Literal(font.name, { title: font.name })),
-            ...schema.properties.typography.properties.heading.anyOf,
-          ]),
+          body: Type.Union(
+            [
+              ...theme.customFonts.map((font) => Type.Literal(font.name, { title: font.name })),
+              ...schema.properties.typography.properties.body.anyOf,
+            ],
+            {
+              title: schema.properties.typography.properties.body.title,
+              description: schema.properties.typography.properties.body.description,
+              default: schema.properties.typography.properties.body.default,
+            },
+          ),
+          heading: Type.Union(
+            [
+              ...theme.customFonts.map((font) => Type.Literal(font.name, { title: font.name })),
+              ...schema.properties.typography.properties.heading.anyOf,
+            ],
+            {
+              title: schema.properties.typography.properties.heading.title,
+              description: schema.properties.typography.properties.heading.description,
+              default: schema.properties.typography.properties.heading.default,
+            },
+          ),
         },
       },
     },

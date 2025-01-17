@@ -1,5 +1,4 @@
 import { tx, css } from "@upstart.gg/style-system/twind";
-import { useDraft, useEditor } from "../hooks/use-editor";
 import { manifests } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
@@ -22,9 +21,7 @@ const tabContentScrollClass = css({
   },
 });
 
-export default function BlocksLibrary() {
-  const editor = useEditor();
-  const draft = useDraft();
+export default function PanelLibrary() {
   const { shouldDisplay: shouldDisplayLibraryCallout } = useCalloutViewCounter("blocks-library");
   const [brickPrompt, setBrickPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);

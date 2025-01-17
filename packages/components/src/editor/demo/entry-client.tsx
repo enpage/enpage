@@ -3,9 +3,10 @@ import { hydrateRoot } from "react-dom/client";
 import App from "./App";
 import { setupTwindReact } from "@upstart.gg/style-system/twind";
 
+setupTwindReact(false);
+
 const hydrate = () =>
   startTransition(() => {
-    setupTwindReact();
     hydrateRoot(
       document.getElementById("root") as HTMLElement,
       <StrictMode>
