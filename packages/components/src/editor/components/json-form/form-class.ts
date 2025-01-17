@@ -10,7 +10,8 @@ export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
   [&_.form-group:has(*)]:(px-3)
   [&_.form-group.field-object:has(*)]:(pt-0)
   [&_.section-fields>div:last-child>div]:(border-none)
-  [&_.section-fields]:(flex flex-col gap-3 py-3)
+  [&_.section-fields]:(flex flex-col gap-4)
+  [&_.form-section]:(pb-4 gap-3 flex flex-col)
   [&_.form-section_.field-object_.form-group:last-child]:(border-none)
   [&>.form-group]:(!px-0 !py-0)
   [&_.field-object]:(border-none flex flex-col gap-3)
@@ -24,3 +25,6 @@ export const jsonFormClass = tx`text-gray-900 dark:text-gray-50
   [&_textarea]:(w-full p-2 py-1.5 mt-1 text-sm border border-gray-300 dark:border-transparent dark:bg-dark-800 rounded-md focus:ring-1 focus:border-upstart-500 focus:ring-upstart-500)
   [&_select]:(w-full p-2 py-1.5 text-sm border border-gray-300 dark:border-transparent dark:bg-dark-800 rounded-md focus:ring-1 focus:border-upstart-500 focus:ring-upstart-500)
 `;
+
+export const fieldLabel = tx`text-sm font-medium dark:text-gray-50`;
+export const fieldDescription = tx`text-xs text-gray-500 dark:text-white/50 leading-tight`;

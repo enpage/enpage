@@ -1,7 +1,7 @@
 import Ajv, { type ErrorObject } from "ajv";
 import addFormats from "ajv-formats";
 
-export type { JSONSchemaType, AnySchemaObject } from "ajv";
+export type { JSONSchemaType, AnySchemaObject, SchemaObject, JSONType } from "ajv";
 
 export const ajv = new Ajv({
   useDefaults: true,

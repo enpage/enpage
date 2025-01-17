@@ -52,8 +52,6 @@ export const ObjectFieldTemplate = (props: ObjectFieldTemplateProps) => {
     );
   }
 
-  console.log({ groupedFields });
-
   return (
     <div className={tx("rjsf-sections", { "-mx-3": !isRoot })}>
       {title && <h2 className="text-sm bg-upstart-200 dark:bg-dark-700 px-2">{title}</h2>}

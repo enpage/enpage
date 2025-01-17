@@ -13,10 +13,8 @@ import { jsonFormClass } from "./json-form/form-class";
 import { Tabs } from "@upstart.gg/style-system/system";
 import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
-import { ObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";
 import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
-import { getFormComponents, renderForm } from "./json-form/form";
 
 export default function Inspector() {
   const editor = useEditor();
@@ -94,50 +92,37 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   const brickDefaults = defaults[brick.type];
   const [state, setState] = useState({ ...brickDefaults.props, ...brick.props });
 
-  const onChange = (data: Record<string, unknown>, id: string) => {
+  console.log("element state", state);
+
+  const onChange = (data: IChangeEvent, id?: string) => {
     if (!id) {
       // ignore changes that don't have an id
       return;
     }
+    setState(data.formData);
     console.log("changed", data.formData, id);
-    // setState(data.formData);
-    // draft.updateBrickProps(brick.id, data.formData);
+    draft.updateBrickProps(brick.id, data.formData);
   };
 
   const manifest = manifests[brick.type];
 
   if (manifest) {
-    const elements = getFormComponents({ formSchema: manifest.properties.props, formData: state, onChange });
-    console.log("ELEMENTS", elements);
-
+    const uiSchema = createUiSchema(manifest.properties.props as AnySchemaObject);
     return (
-      <form className={tx("px-3 flex flex-col gap-3", showHelp && "hide-help")}>
-        {renderForm(elements)}
-        {/* {elements.map((element, index) => (
-          <div key={index} className="form-group">
-            {"component" in element ? element.component : element.components.map((c, i) => c.component)}
-          </div>
-        ))} */}
-      </form>
+      <Form
+        key={`inspector-${brick.id}`}
+        autoComplete="off"
+        className={tx("json-form", jsonFormClass, showHelp && "hide-help")}
+        formData={state}
+        schema={manifest.properties.props}
+        formContext={{ brickId: brick.id }}
+        validator={validator}
+        uiSchema={uiSchema}
+        onChange={onChange}
+        onSubmit={(e) => console.log("onSubmit", e)}
+        onError={(e) => console.log("onError", e)}
+      />
     );
-
-    // return (
-    //   <Form
-    //     key={`inspector-${brick.id}`}
-    //     autoComplete="off"
-    //     className={tx("json-form", jsonFormClass, showHelp && "hide-help")}
-    //     formData={state}
-    //     schema={manifest.properties.props}
-    //     formContext={{ brickId: brick.id }}
-    //     templates={{ ObjectFieldTemplate }}
-    //     validator={validator}
-    //     uiSchema={uiSchema}
-    //     // onChange={onChange}
-    //     // fields={customFields}
-    //     onSubmit={(e) => console.log("onSubmit", e)}
-    //     onError={(e) => console.log("onError", e)}
-    //   />
-    // );
   }
   return <pre className="text-xs">{JSON.stringify(brick, null, 2)}</pre>;
 }

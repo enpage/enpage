@@ -1,9 +1,6 @@
 
 .json-form label {
   font-weight: 600;
-  & > .required {
-    display: none;
-  }
 }
 
 .json-form input[type="file"] {

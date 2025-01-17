@@ -84,7 +84,7 @@ const borderRadius = Type.Union(
   },
 );
 
-const padding = Type.Union(
+export const padding = Type.Union(
   [
     Type.Literal("p-0", { title: "None" }),
     Type.Literal("p-2", { title: "S" }),
@@ -127,7 +127,7 @@ const margin = Type.Union(
   },
 );
 
-const backgroundColor = Type.String({
+export const backgroundColor = Type.String({
   $id: "backgroundColor",
   default: "transparent",
   title: "Background color",
@@ -141,6 +141,7 @@ const opacity = Type.Optional(
     $id: "opacity",
     minimum: 0.1,
     maximum: 1,
+    default: 1,
     multipleOf: 0.1,
     title: "Opacity",
     description: "Global opacity",

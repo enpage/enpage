@@ -26,8 +26,16 @@ export const editable = Type.Boolean({
   "ui:widget": "hidden",
 });
 
+export const multiline = Type.Boolean({
+  title: "Multiline",
+  description: "Allow multiple lines of text",
+  default: false,
+  "ui:widget": "hidden",
+});
+
 export const contentAwareProps = Type.Object({
   content,
+  multiline,
   editable,
 });
 

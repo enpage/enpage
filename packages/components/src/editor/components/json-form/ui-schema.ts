@@ -6,7 +6,7 @@ const baseUiSchema: UiSchema = {
 };
 
 export function createUiSchema(schema: AnySchemaObject): UiSchema {
-  console.log("originak schema", schema);
+  // console.log("original schema", schema);
   const uiSchema = Object.entries(schema.properties).reduce(
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     (acc, [field, value]: [string, any]) => {
@@ -16,17 +16,18 @@ export function createUiSchema(schema: AnySchemaObject): UiSchema {
           acc[field] ??= {};
           acc[field][key] = value[key];
         } else if (key === "properties") {
-          console.log("INPROP", value, "field", field);
+          // console.log("INPROP", value, "field", field);
           const deepUi = createUiSchema(value);
           acc[field] ??= {};
           for (const deepKey in deepUi) {
             acc[field][deepKey] = deepUi[deepKey];
           }
         } else if (key === "anyOf") {
-          console.log("INPROP ANYOF", value, "field", field);
+          // console.log("INPROP ANYOF", value, "field", field);
           // Prevent rsjv to display a label as we want to format it ourselves
           acc[field] ??= {};
           acc[field]["ui:label"] = false;
+
           // console.log("branch", field, key, value[key]);
         }
       }

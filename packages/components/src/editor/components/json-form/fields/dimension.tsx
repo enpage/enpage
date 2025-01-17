@@ -1,20 +1,15 @@
-import type { FieldProps } from "@rjsf/utils";
+import type { FieldProps } from "./types";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useEffect, useState } from "react";
 
-interface DimensionOption {
-  title: string;
-  description: string;
-}
-
 const DimensionField: React.FC<FieldProps<string>> = (props) => {
   const presets = ["full", "auto", "fixed"];
-  const { schema, uiSchema, formData, onChange, required } = props;
-  const [preset, setPreset] = useState(formData === "auto" ? "auto" : formData === "100%" ? "full" : "fixed");
+  const { schema, currentValue, onChange, required, title, description } = props;
+  const [preset, setPreset] = useState(
+    currentValue === "auto" ? "auto" : currentValue === "100%" ? "full" : "fixed",
+  );
 
   // Extract field-level properties
-  const fieldTitle = schema.title || uiSchema?.["ui:title"];
-  const fieldDescription = schema.description || uiSchema?.["ui:description"];
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -29,13 +24,8 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
 
   return (
     <div className="dimension-field">
-      {fieldTitle && (
-        <label className="control-label">
-          {fieldTitle}
-          {required ? <span className="required">*</span> : null}
-        </label>
-      )}
-      {fieldDescription && <p className="field-description">{fieldDescription}</p>}
+      {title && <label className={tx("control-label", { required })}>{title}</label>}
+      {description && <p className="field-description">{description}</p>}
       <div className="flex flex-col gap-2 pt-1">
         <div className="flex divide-x divide-white dark:divide-dark-500">
           {presets.map((option) => (
@@ -59,14 +49,14 @@ const DimensionField: React.FC<FieldProps<string>> = (props) => {
               autoComplete="off"
               spellCheck="false"
               type="number"
-              defaultValue={formData}
+              defaultValue={currentValue}
               onChange={(e) => onChange(e.target.value)}
               required={required}
               className="form-input ring-upstart-600 focus:ring-transparent pr-2"
             />
             <select
               onChange={(e) => onChange(e.target.value)}
-              defaultValue={formData}
+              defaultValue={currentValue}
               className="form-select grow-0 max-w-20"
             >
               <option value="px">px</option>

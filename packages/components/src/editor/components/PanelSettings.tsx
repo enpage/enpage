@@ -67,7 +67,7 @@ export default function SettingsForm() {
           validator={validator}
           uiSchema={uiSchema}
           onChange={onChange}
-          fields={customFields}
+          // fields={customFields}
           templates={{ ObjectFieldTemplate }}
           onSubmit={(e) => console.log("onSubmit", e)}
           onError={(e) => console.log("onError", e)}
