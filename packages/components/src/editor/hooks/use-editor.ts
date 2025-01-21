@@ -23,6 +23,7 @@ export interface EditorStateProps {
   mode: "local" | "remote";
   // pageConfig: GenericPageConfig;
   previewMode: ResponsiveMode;
+  textEditMode?: "default" | "large";
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   selectedGroup?: Brick["id"][];
@@ -41,6 +42,8 @@ export interface EditorState extends EditorStateProps {
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
+  toggleTextEditMode: () => void;
+  setTextEditMode: (mode: EditorStateProps["textEditMode"]) => void;
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
@@ -70,6 +73,16 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
+            toggleTextEditMode: () =>
+              set((state) => {
+                state.textEditMode = state.textEditMode === "default" ? "large" : "default";
+              }),
+
+            setTextEditMode: (mode) =>
+              set((state) => {
+                state.textEditMode = mode;
+              }),
 
             setPreviewMode: (mode) =>
               set((state) => {
@@ -163,9 +176,14 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
               Object.fromEntries(
                 Object.entries(state).filter(
                   ([key]) =>
-                    !["mode", "selectedBrick", "panel", "isEditingTextForBrickId", "shouldShowGrid"].includes(
-                      key,
-                    ),
+                    ![
+                      "mode",
+                      "selectedBrick",
+                      "panel",
+                      "isEditingTextForBrickId",
+                      "shouldShowGrid",
+                      "textEditMode",
+                    ].includes(key),
                 ),
               ),
           },
@@ -185,6 +203,8 @@ export interface DraftStateProps {
   label: string;
   bricks: Brick[];
   data: Record<string, unknown>;
+  datasources?: SiteConfig["datasources"];
+  datarecords?: SiteConfig["datarecords"];
   attr: GenericPageContext["attr"];
   attributes: GenericPageConfig["attributes"];
   siteAttributes: SiteConfig["attributes"];
@@ -240,6 +260,8 @@ export const createDraftStore = (
     label: DraftStateProps["label"];
     attr: DraftStateProps["attr"];
     attributes: DraftStateProps["attributes"];
+    datasources?: DraftStateProps["datasources"];
+    datarecords?: DraftStateProps["datarecords"];
     siteAttributes: DraftStateProps["siteAttributes"];
     siteLabel: DraftStateProps["siteLabel"];
     siteId: DraftStateProps["siteId"];
@@ -252,6 +274,8 @@ export const createDraftStore = (
     DraftStateProps,
     | "attr"
     | "attributes"
+    | "datasources"
+    | "datarecords"
     | "siteLabel"
     | "siteAttributes"
     | "pagesMap"
@@ -523,6 +547,16 @@ export const useAttributes = () => {
 export const useAttributesSchema = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.attributes ?? state.siteAttributes);
+};
+
+export const useDatasourcesSchemas = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.datasources);
+};
+
+export const useDatarecordsSchemas = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.datarecords);
 };
 
 export const usePageInfo = () => {

@@ -4,6 +4,7 @@ import DimensionField from "./fields/dimension";
 import EnumField from "./fields/enum";
 import FileField from "./fields/file";
 import MixedContentField from "./fields/mixed-content";
+import { BorderField } from "./fields/border";
 import { PathField, StringField } from "./fields/string";
 import { NumberField, SliderField } from "./fields/number";
 import SwitchField from "./fields/switch";
@@ -12,6 +13,9 @@ import { sortJsonSchemaProperties } from "~/shared/utils/sort-json-schema-props"
 import type { FieldProps } from "./fields/types";
 import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@twind/core";
+import type { BorderSettings, EffectsSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
+import { EffectsField } from "./fields/effects";
+import type { MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -78,6 +82,35 @@ export function getFormComponents({
             ),
           };
         }
+
+        case "border": {
+          return {
+            group,
+            groupTitle,
+            component: (
+              <BorderField
+                currentValue={(formData[id] ?? commonProps.schema.default) as BorderSettings}
+                onChange={(value: BorderSettings | null) => onChange({ ...formData, [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "effects": {
+          return {
+            group,
+            groupTitle,
+            component: (
+              <EffectsField
+                currentValue={(formData[id] ?? commonProps.schema.default) as EffectsSettings}
+                onChange={(value: EffectsSettings | null) => onChange({ ...formData, [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
         case "dimension": {
           return {
             group,
@@ -122,7 +155,7 @@ export function getFormComponents({
             groupTitle,
             component: (
               <MixedContentField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
+                currentValue={(formData[id] ?? commonProps.schema.default) as MixedContent}
                 onChange={(value: unknown | null) => onChange({ ...formData, [id]: value }, id)}
                 {...commonProps}
               />

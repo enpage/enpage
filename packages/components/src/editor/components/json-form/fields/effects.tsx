@@ -1,0 +1,52 @@
+import type { FieldProps } from "./types";
+import { Text, Select, Slider } from "@upstart.gg/style-system/system";
+import type { EffectsSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
+import { fieldLabel } from "../form-class";
+
+export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
+  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
+
+  return (
+    <div className="border-field">
+      {description && (
+        <Text as="p" color="gray" size="1">
+          {description}
+        </Text>
+      )}
+      <div className="flex items-center flex-wrap gap-x-4 gap-y-1">
+        {/* shadow */}
+        <div className="flex flex-col gap-1 flex-1">
+          <label className={fieldLabel}>Shadow</label>
+          <Select.Root defaultValue={currentValue.shadow} size="1">
+            <Select.Trigger radius="large" variant="ghost" />
+            <Select.Content position="popper">
+              <Select.Group>
+                <Select.Label>Width</Select.Label>
+                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                {schema.properties.shadow.anyOf.map((item: any) => (
+                  <Select.Item key={item.const} value={item.const}>
+                    {item.title}
+                  </Select.Item>
+                ))}
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
+        </div>
+        {/* border style */}
+        <div className="flex flex-col gap-1 flex-1">
+          <label className={fieldLabel}>Opacity</label>
+          <Slider
+            className="!mt-3"
+            onValueChange={(value) => onChange({ ...currentValue, opacity: value[0] })}
+            size="1"
+            variant="soft"
+            min={schema.minimum}
+            max={schema.maximum}
+            step={schema.multipleOf ?? 1}
+            defaultValue={[currentValue.opacity ?? 1]}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -62,6 +62,7 @@ export default function SettingsForm() {
           autoComplete="off"
           className={tx("json-form overscroll-contain animate-fade-in", jsonFormClass)}
           formData={attributes}
+          // @ts-ignore
           schema={filteredAttrSchema}
           formContext={{}}
           validator={validator}

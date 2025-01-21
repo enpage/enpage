@@ -47,6 +47,17 @@ type ColorFieldRowProps = {
     }
 );
 
+export function ColorPill({ colorType, elementColorType, color, onChange }: ColorFieldRowProps) {
+  return (
+    <>
+      {colorType && <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} />}
+      {elementColorType && (
+        <ColorElementPreviewPill onChange={onChange} elementColorType={elementColorType} color={color} />
+      )}
+    </>
+  );
+}
+
 export function ColorFieldRow({
   name,
   description,

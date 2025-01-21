@@ -1,21 +1,14 @@
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 
 export const commonProps = Type.Object({
   id: Type.String({
     title: "Brick ID",
-    "ui:widget": "hidden",
+    "ui:field": "hidden",
   }),
   className: Type.String({
     default: "",
-    "ui:widget": "hidden",
+    "ui:field": "hidden",
   }),
-});
-
-export const content = Type.String({
-  default: "Click to edit",
-  title: "Content",
-  description: "The text content",
-  // "ui:widget": "hidden",
 });
 
 export const editable = Type.Boolean({
@@ -23,20 +16,53 @@ export const editable = Type.Boolean({
   description:
     "Allow editing of text content. It is automatically set by the editor, so no need to specify it manually.",
   default: false,
-  "ui:widget": "hidden",
+  "ui:field": "hidden",
 });
 
 export const multiline = Type.Boolean({
   title: "Multiline",
   description: "Allow multiple lines of text",
   default: false,
-  "ui:widget": "hidden",
+  "ui:field": "hidden",
 });
 
+export const mixedContent = Type.Intersect(
+  [
+    Type.Union([
+      Type.Object({
+        mode: Type.Literal("static"),
+        text: Type.String(),
+      }),
+      Type.Object({
+        mode: Type.Literal("dynamic"),
+        datasourceId: Type.String(),
+        datasourcePath: Type.String(),
+      }),
+    ]),
+    Type.Object({
+      multiline,
+      editable,
+    }),
+  ],
+  {
+    default: {
+      mode: "static",
+      content: "some text here",
+      multiline: false,
+      editable: false,
+    },
+    title: "Content",
+    description: "The text content",
+    "ui:field": "mixed-content",
+  },
+);
+
+export type MixedContent = Static<typeof mixedContent>;
+
 export const contentAwareProps = Type.Object({
-  content,
-  multiline,
-  editable,
+  content: mixedContent,
+  // multiline,
+  // editable,
 });
 
 export const container = Type.Object({

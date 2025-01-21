@@ -7,6 +7,7 @@ import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from ".
 import { manifestSchema, type TemplateManifest } from "./manifest";
 import type { JSONSchemaType } from "ajv";
 import { customAlphabet } from "nanoid";
+import type { DatarecordsMap } from "./datarecords/types";
 
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 7);
 
@@ -122,6 +123,7 @@ export type SiteConfig = {
   attributes: JSONSchemaType<Attributes>;
   attr: Attributes;
   datasources?: DatasourcesMap;
+  datarecords?: DatarecordsMap;
   themes: Theme[];
   theme: Theme;
   pagesMap: PagesMapEntry[];

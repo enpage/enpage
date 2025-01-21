@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 
 const groupBorder = {
   "ui:group": "border",
@@ -20,7 +20,7 @@ const groupColors = {
   "ui:group:title": "Colors",
 };
 
-const borderWidth = Type.Union(
+export const borderWidth = Type.Union(
   [
     Type.Literal("border-0", { title: "None" }),
     Type.Literal("border", { title: "S" }),
@@ -38,7 +38,7 @@ const borderWidth = Type.Union(
   },
 );
 
-const borderColor = Type.String({
+export const borderColor = Type.String({
   $id: "borderColor",
   default: "transparent",
   title: "Border color",
@@ -47,7 +47,7 @@ const borderColor = Type.String({
   ...groupBorder,
 });
 
-const borderStyle = Type.Union(
+export const borderStyle = Type.Union(
   [
     Type.Literal("border-solid", { title: "Solid" }),
     Type.Literal("border-dashed", { title: "Dashed" }),
@@ -64,7 +64,7 @@ const borderStyle = Type.Union(
   },
 );
 
-const borderRadius = Type.Union(
+export const borderRadius = Type.Union(
   [
     Type.Literal("rounded-none", { title: "None" }),
     Type.Literal("rounded-sm", { title: "S" }),
@@ -83,6 +83,31 @@ const borderRadius = Type.Union(
     ...groupBorder,
   },
 );
+
+export const borderSettings = Type.Optional(
+  Type.Object(
+    {
+      rounding: borderRadius,
+      style: borderStyle,
+      color: borderColor,
+      width: borderWidth,
+    },
+    {
+      title: "Border style",
+      "ui:field": "border",
+      "ui:group": "Border",
+      "ui:group:title": "Border",
+      default: {
+        rounding: "rounded-none",
+        style: "border-solid",
+        color: "#000000",
+        width: "border-0",
+      },
+    },
+  ),
+);
+
+export type BorderSettings = Static<typeof borderSettings>;
 
 export const padding = Type.Union(
   [
@@ -170,18 +195,39 @@ const shadow = Type.Union(
   },
 );
 
+export const effectsSettings = Type.Optional(
+  Type.Object(
+    {
+      shadow,
+      opacity,
+    },
+    {
+      title: "Effects",
+      "ui:field": "effects",
+      "ui:group": "effects",
+      "ui:group:title": "Effects",
+      default: {
+        shadow: "shadow-none",
+        opacity: 1,
+      },
+    },
+  ),
+);
+
+export type EffectsSettings = Static<typeof effectsSettings>;
+
 /**
  * No margin in common style props as bricks are usually placed in a grid
  */
 export const commonStyleProps = Type.Object({
-  borderRadius,
-  borderWidth,
-  borderColor,
-  borderStyle,
+  // borderRadius,
+  // borderWidth,
+  // borderColor,
+  // borderStyle,
+  borderSettings,
+  effectsSettings,
   padding,
   backgroundColor,
-  opacity,
-  shadow,
 });
 
 const textAlign = Type.Optional(

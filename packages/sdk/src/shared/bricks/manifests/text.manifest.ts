@@ -3,7 +3,14 @@ import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
-import { commonStyleProps } from "../props/style-props";
+import {
+  borderColor,
+  borderRadius,
+  borderSettings,
+  borderStyle,
+  borderWidth,
+  commonStyleProps,
+} from "../props/style-props";
 
 export const manifest = defineBrickManifest({
   type: "text",

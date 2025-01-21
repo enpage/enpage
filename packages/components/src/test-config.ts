@@ -84,7 +84,10 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content: "Build your launch page",
+        content: {
+          text: "Build your launch page",
+          mode: "static",
+        },
         justify: "text-center font-humanist",
       },
       // take the whole width on all devices
@@ -107,8 +110,10 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+        content: {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+          mode: "static",
+        },
         justify: "text-center",
         format: "html",
       },
@@ -130,8 +135,6 @@ const homePageBricks = defineBricks([
     {
       type: "card",
       props: {
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
         justify: "text-center",
         format: "html",
         title: "Card title",
@@ -155,7 +158,12 @@ const homePageBricks = defineBricks([
   ...createRow([
     {
       type: "text",
-      props: { content: "Something" },
+      props: {
+        content: {
+          text: "Build your launch page",
+          mode: "static",
+        },
+      },
       position: {
         mobile: {
           x: "third",
@@ -171,7 +179,12 @@ const homePageBricks = defineBricks([
     },
     {
       type: "text",
-      props: { content: "Else" },
+      props: {
+        content: {
+          text: "Build your launch page",
+          mode: "static",
+        },
+      },
       position: {
         mobile: {
           x: "twoThird",

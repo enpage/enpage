@@ -1,4 +1,5 @@
 import type { TProperties, TSchema } from "@sinclair/typebox";
+import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 
 interface PropertyWithMetadata {
   key: string;
@@ -8,7 +9,7 @@ interface PropertyWithMetadata {
   "ui:hidden"?: boolean;
 }
 
-export function sortJsonSchemaProperties(schema: TSchema): TSchema {
+export function sortJsonSchemaProperties<T extends TSchema | JSONSchemaType<Attributes>>(schema: T): T {
   const properties = schema.properties || {};
 
   // Extract property metadata

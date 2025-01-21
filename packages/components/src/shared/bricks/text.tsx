@@ -10,21 +10,30 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/text.m
  */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  return props.editable ? <EditableText ref={ref} {...props} /> : <NonEditableText ref={ref} {...props} />;
+  return props.content.editable && props.content.mode !== "dynamic" ? (
+    <EditableText ref={ref} {...props} />
+  ) : (
+    <NonEditableText ref={ref} {...props} />
+  );
 });
 
 const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
   return (
     <div ref={ref} className={className}>
-      {props.content}
+      {/* @ts-ignore */}
+      {props.content.mode === "static" ? props.content.text : "value from ds"}
     </div>
   );
 });
 
 const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
-  const content = useEditableText(props.id, props.content);
+  const content = useEditableText(
+    props.id,
+    /* @ts-ignore */
+    props.content.mode === "static" ? props.content.text : "value from ds",
+  );
   return (
     <div ref={ref} className={className}>
       {content}

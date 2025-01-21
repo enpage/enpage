@@ -153,9 +153,11 @@ export default function EditablePage() {
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
+        console.log("click out, hidding", target);
         editor.deselectBrick();
         // also deselect the library panel
         editor.hidePanel("library");
+        editor.setTextEditMode("default");
       }
     };
     document.addEventListener("click", listener, false);

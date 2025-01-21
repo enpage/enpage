@@ -48,6 +48,8 @@ export function EditorWrapper({
       attr: Object.assign({}, siteConfig.attr, pageConfig.attr),
       attributes: pageConfig.attributes,
       siteAttributes: siteConfig.attributes,
+      datasources: siteConfig.datasources,
+      datarecords: siteConfig.datarecords,
       data: pageConfig.data,
       theme: siteConfig.theme,
     }),

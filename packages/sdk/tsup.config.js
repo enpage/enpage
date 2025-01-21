@@ -83,6 +83,7 @@ export default defineConfig((options) => {
         "src/shared/brick-manifest.ts",
         "src/shared/datasources.ts",
         "src/shared/datasources/types.ts",
+        "src/shared/datasources/schemas.ts",
         "src/shared/datarecords.ts",
         "src/shared/datarecords/types.ts",
         "src/shared/layout-constants.ts",
