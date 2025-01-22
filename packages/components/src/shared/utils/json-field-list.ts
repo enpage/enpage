@@ -39,7 +39,6 @@ function getSchemaEntry({
   rootName,
   level,
 }: { schema: TSchema; rootName: string; level: number }): string | string[] {
-  console.log("getting schema entry for ", schema);
   if (schema.type === "object") {
     return getSchemaObject({ schema: schema as TObject, rootName, level });
   } else if (schema.type === "array") {

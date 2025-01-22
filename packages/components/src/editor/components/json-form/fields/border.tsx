@@ -7,8 +7,6 @@ import { ColorPill } from "./color";
 export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
 
-  console.log({ schema, currentValue });
-
   return (
     <div className="border-field">
       {description && (

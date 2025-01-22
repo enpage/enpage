@@ -38,10 +38,6 @@ export default function PanelLibrary() {
       // manualStart: true,
       listeners: {
         start: (event: Interact.InteractEvent) => {
-          const target = event.target as HTMLElement;
-          const brickType = target.dataset.brickType;
-          console.log("drag start", brickType, target.clientTop);
-
           const clone = event.target.cloneNode(true) as HTMLElement;
           clone.classList.add("clone");
 

@@ -6,6 +6,8 @@ import { TbSlash } from "react-icons/tb";
 export const StringField: React.FC<FieldProps<string>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder } = props;
 
+  console.log("in StringField", { currentValue });
+
   return (
     <div className="field field-string">
       {title && (

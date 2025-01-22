@@ -10,12 +10,15 @@ import {
   mergeAttributes,
   nodeInputRule,
 } from "@tiptap/react";
-import { Suggestion } from "@tiptap/suggestion";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
 import { Button, Callout, IconButton, Popover, Select, ToggleGroup } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useState, useRef, useEffect, useMemo } from "react";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+
 import {
   MdFormatBold,
   MdFormatAlignCenter,
@@ -90,12 +93,13 @@ export const DatasourceFieldExtension = Node.create({
 
 type Props = {
   initialContent: string;
-  onUpdate?: (e: EditorEvents["update"]) => void;
+  onUpdate: (e: EditorEvents["update"]) => void;
   enabled?: boolean;
   className?: string;
   brickId: Brick["id"];
   menuPlacement?: "above-editor" | "page";
   discrete?: boolean;
+  richText?: boolean;
 };
 
 const toolbarBtnCls =
@@ -109,6 +113,7 @@ const TextEditor = ({
   menuPlacement,
   enabled = false,
   discrete = false,
+  richText = true,
 }: Props) => {
   const mainEditor = useEditor();
   const datasources = useDatasourcesSchemas();
@@ -117,70 +122,89 @@ const TextEditor = ({
   // @ts-ignore
   const fields = getJSONSchemaFieldsList({ schemas: datasources });
 
-  const extensions = [
-    StarterKit,
-    TextAlign.configure({
-      types: ["heading", "paragraph"],
-    }),
-    // DatasourceFieldExtension,
-    Mention.configure({
-      HTMLAttributes: {
-        class: "mention",
-      },
-      suggestion: {
-        ...datasourceFieldSuggestions,
-        items: ({ query }) => {
-          return fields.filter((field) => field.toLowerCase().includes(query.toLowerCase()));
+  const extensions = richText
+    ? [
+        StarterKit,
+        TextAlign.configure({
+          types: ["heading", "paragraph"],
+        }),
+        // DatasourceFieldExtension,
+        Mention.configure({
+          HTMLAttributes: {
+            class: "mention",
+          },
+          suggestion: {
+            ...datasourceFieldSuggestions,
+            items: ({ query }) => {
+              return fields.filter((field) => field.toLowerCase().includes(query.toLowerCase()));
+            },
+          },
+          renderHTML: ({ options, node }) => {
+            // console.log("RENDER ATTRS", options, node);
+            const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+            return [
+              "span",
+              {
+                "data-type": "mention",
+                class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
+                "data-field": field,
+              },
+              `${options.suggestion.char}${field}}}`,
+            ];
+          },
+          renderText: ({ options, node }) => {
+            const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+            return `${options.suggestion.char}${field}}}`;
+          },
+        }),
+      ]
+    : [
+        Document.extend({
+          content: "block",
+        }),
+        Paragraph.configure({
+          HTMLAttributes: {
+            class: tx("whitespace-nowrap overflow-hidden [&>br]:hidden [&>*]:(inline! whitespace-nowrap!)"),
+          },
+        }).extend({
+          addAttributes() {
+            return {
+              class: tx("whitespace-nowrap overflow-hidden [&>br]:hidden [&>*]:(inline! whitespace-nowrap!)"),
+            };
+          },
+        }),
+        Text,
+      ];
+
+  const editor = useTextEditor(
+    {
+      extensions,
+      content: initialContent,
+      onUpdate,
+      immediatelyRender: true,
+      // autofocus: false,
+      editable,
+      editorProps: {
+        attributes: {
+          class: tx(
+            "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto",
+            className,
+          ),
         },
       },
-      renderHTML: ({ options, node }) => {
-        // console.log("RENDER ATTRS", options, node);
-        const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
-        return [
-          "span",
-          {
-            "data-type": "mention",
-            class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
-            "data-field": field,
-          },
-          `${options.suggestion.char}${field}}}`,
-        ];
-      },
-      renderText: ({ options, node }) => {
-        const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
-        return `${options.suggestion.char}${field}}}`;
-      },
-    }),
-  ];
-
-  const editor = useTextEditor({
-    extensions,
-    content:
-      initialContent +
-      '<div><datasource-field name="foo" /></datasource-field> <datasource-field name="bar" /></datasource-field></div>',
-    onUpdate,
-    immediatelyRender: false,
-    // autofocus: false,
-    editable,
-    editorProps: {
-      attributes: {
-        class: tx("max-w-[100%] focus:outline-none focus:border-gray-300", className),
+      onBlur(props) {
+        mainEditor.setlastTextEditPosition(props.editor.state.selection.anchor);
       },
     },
-
-    onBlur(props) {
-      mainEditor.setlastTextEditPosition(props.editor.state.selection.anchor);
-    },
-  });
+    [brickId],
+  );
 
   useEffect(() => {
     const onFocus = () => {
-      console.log("text focus");
       mainEditor.setIsEditingText(brickId);
     };
 
     const onBlur = () => {
-      console.log("text blur");
       mainEditor.setIsEditingText(false);
       setEditable(false);
     };
@@ -205,7 +229,13 @@ const TextEditor = ({
       })}
     >
       {editor && editable && menuPlacement === "above-editor" && (
-        <MenuBar brickId={brickId} editor={editor} placement={menuPlacement} discrete={discrete} />
+        <MenuBar
+          brickId={brickId}
+          editor={editor}
+          placement={menuPlacement}
+          discrete={discrete}
+          richText={richText}
+        />
       )}
       <EditorContent
         onDoubleClick={(e) => {
@@ -223,7 +253,13 @@ const TextEditor = ({
         })}
       />
       {editor && editable && menuPlacement !== "above-editor" && (
-        <MenuBar brickId={brickId} editor={editor} placement={menuPlacement} discrete={discrete} />
+        <MenuBar
+          brickId={brickId}
+          editor={editor}
+          placement={menuPlacement}
+          discrete={discrete}
+          richText={richText}
+        />
       )}
     </div>
   );
@@ -234,10 +270,12 @@ const MenuBar = ({
   brickId,
   placement,
   discrete,
+  richText,
 }: {
   editor: Editor;
   brickId: Brick["id"];
   placement: Props["menuPlacement"];
+  richText: Props["richText"];
   discrete?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -245,7 +283,7 @@ const MenuBar = ({
   let className = "";
 
   if (placement === "above-editor") {
-    className = tx("z-[900] text-gray-800 min-h-10 flex gap-1 p-1 bg-gray-100 text-sm flex flex-wrap", {
+    className = tx("z-[900] text-gray-800 flex gap-1 p-1 bg-gray-100 text-sm flex flex-wrap", {
       "border border-b-0 border-gray-300 rounded-t ": !discrete,
     });
   } else {
@@ -260,13 +298,17 @@ const MenuBar = ({
 
   return (
     <div ref={ref} className={className}>
-      <ButtonGroup>
-        <TextSizeSelect editor={editor} />
-      </ButtonGroup>
-      <TextAlignButtonGroup editor={editor} />
-      <TextStyleButtonGroup editor={editor} />
+      {richText && (
+        <>
+          <ButtonGroup>
+            <TextSizeSelect editor={editor} />
+          </ButtonGroup>
+          <TextAlignButtonGroup editor={editor} />
+          <TextStyleButtonGroup editor={editor} />
+        </>
+      )}
       <DatasourceItemButton editor={editor} />
-      <DisplayModeButton icon="enlarge" />
+      {richText && <DisplayModeButton icon="enlarge" />}
       {!discrete && (
         <>
           <span className="flex-1" />
@@ -460,7 +502,6 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
       .run();
   };
 
-  console.log({ sources });
   return (
     <Popover.Root>
       <Popover.Trigger>

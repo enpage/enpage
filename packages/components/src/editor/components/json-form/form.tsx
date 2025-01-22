@@ -34,6 +34,7 @@ export function getFormComponents({
   onChange,
   onSubmit,
   submitButtonLabel,
+  brickId,
   parents = [],
 }: {
   formSchema: TSchema;
@@ -42,6 +43,10 @@ export function getFormComponents({
   onSubmit?: (data: Record<string, unknown>) => void;
   submitButtonLabel?: string;
   parents?: string[];
+  /**
+   * Related brick id.
+   */
+  brickId: string;
 }): FormComponents {
   formSchema = sortJsonSchemaProperties(formSchema);
 
@@ -53,7 +58,7 @@ export function getFormComponents({
       const groupTitle = (field["ui:group:title"] ?? "Other") as string;
 
       const commonProps = {
-        id,
+        brickId: id,
         schema: fieldSchema as TSchema,
         formSchema,
         formData,
@@ -76,7 +81,7 @@ export function getFormComponents({
             component: (
               <ColorField
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -90,7 +95,7 @@ export function getFormComponents({
             component: (
               <BorderField
                 currentValue={(formData[id] ?? commonProps.schema.default) as BorderSettings}
-                onChange={(value: BorderSettings | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: BorderSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -104,7 +109,7 @@ export function getFormComponents({
             component: (
               <EffectsField
                 currentValue={(formData[id] ?? commonProps.schema.default) as EffectsSettings}
-                onChange={(value: EffectsSettings | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: EffectsSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -118,7 +123,7 @@ export function getFormComponents({
             component: (
               <DimensionField
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -131,7 +136,7 @@ export function getFormComponents({
             component: (
               <EnumField
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -143,7 +148,7 @@ export function getFormComponents({
             component: (
               <FileField
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -156,7 +161,7 @@ export function getFormComponents({
             component: (
               <MixedContentField
                 currentValue={(formData[id] ?? commonProps.schema.default) as MixedContent}
-                onChange={(value: unknown | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -169,7 +174,7 @@ export function getFormComponents({
             component: (
               <PathField
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -182,7 +187,7 @@ export function getFormComponents({
             component: (
               <SliderField
                 currentValue={(formData[id] ?? commonProps.schema.default) as number}
-                onChange={(value: number | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: number | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -195,7 +200,7 @@ export function getFormComponents({
             component: (
               <SwitchField
                 currentValue={(formData[id] ?? commonProps.schema.default) as boolean}
-                onChange={(value: boolean | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: boolean | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -209,7 +214,7 @@ export function getFormComponents({
             component: (
               <StringField
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -224,7 +229,7 @@ export function getFormComponents({
             component: (
               <NumberField
                 currentValue={(formData[id] ?? commonProps.schema.default) as number}
-                onChange={(value: number | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: number | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -238,6 +243,7 @@ export function getFormComponents({
             group,
             groupTitle,
             components: getFormComponents({
+              brickId,
               formSchema: field,
               formData,
               onChange,
@@ -256,7 +262,7 @@ export function getFormComponents({
               <AnyOfField
                 options={field.anyOf}
                 currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: unknown | null) => onChange({ ...formData, [id]: value }, id)}
+                onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -274,13 +280,13 @@ export function getFormComponents({
   return elements as FormComponents;
 }
 
-export function renderForm(form: FormComponents) {
+export function FormRenderer({ components, brickId }: { components: FormComponents; brickId: string }) {
   let currentGroup: string | null = null;
-  return form.map((element, index) => {
+  return components.map((element, index) => {
     const node = (
-      <Fragment key={index}>
+      <Fragment key={`${brickId}_${index}`}>
         {currentGroup !== element.group && element.groupTitle && (
-          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] -mx-3 [&:not(:first-child)]:mt-1">
+          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] -mx-3">
             {element.groupTitle}
           </h3>
         )}
@@ -295,7 +301,16 @@ export function renderForm(form: FormComponents) {
 }
 
 export function AnyOfField(props: FieldProps<unknown>) {
-  const { schema, onChange, formSchema: formContext, currentValue, title, description, options, id } = props;
+  const {
+    schema,
+    onChange,
+    formSchema: formContext,
+    currentValue,
+    title,
+    description,
+    options,
+    brickId,
+  } = props;
 
   const currentOpt = "foo";
 
@@ -320,7 +335,7 @@ export function AnyOfField(props: FieldProps<unknown>) {
           .filter((o) => !o["ui:hidden-option"])
           .map((option, index) => (
             <SegmentedControl.Item
-              key={`${id}_${index}`}
+              key={`${brickId}_${index}`}
               value={option.const}
               className={tx("[&_.rt-SegmentedControlItemLabel]:px-1")}
             >

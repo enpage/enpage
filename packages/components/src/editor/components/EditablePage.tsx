@@ -154,7 +154,7 @@ export default function EditablePage() {
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
-        console.log("click out, hidding", target);
+        console.debug("click out, hidding", event);
         editor.deselectBrick();
         // also deselect the library panel
         editor.hidePanel("library");
@@ -200,7 +200,7 @@ export default function EditablePage() {
       <div ref={pageRef} className={pageClassName}>
         {bricks
           .filter((b) => !b.position[editor.previewMode]?.hidden)
-          .map((brick) => (
+          .map((brick, index) => (
             <BrickWrapper key={`${editor.previewMode}-${brick.id}`} brick={brick}>
               <ResizeHandle direction="s" />
               <ResizeHandle direction="n" />

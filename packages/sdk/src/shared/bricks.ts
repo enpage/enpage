@@ -253,14 +253,16 @@ function mapPosition(
 }
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
-  return bricks.map((brick) => ({
-    ...brick,
-    id: `brick-${generateId()}`,
-    position: {
-      mobile: mapPosition(brick.position.mobile, "mobile"),
-      desktop: mapPosition(brick.position.desktop, "desktop"),
-    },
-  }));
+  return bricks.map((brick) => {
+    return {
+      id: `brick-${generateId()}`,
+      ...brick,
+      position: {
+        mobile: mapPosition(brick.position.mobile, "mobile"),
+        desktop: mapPosition(brick.position.desktop, "desktop"),
+      },
+    };
+  });
 }
 
 /**

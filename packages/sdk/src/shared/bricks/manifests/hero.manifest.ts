@@ -3,6 +3,7 @@ import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
+import { commonStyleProps } from "../props/style-props";
 
 export const manifest = defineBrickManifest({
   type: "hero",
@@ -32,7 +33,7 @@ export const manifest = defineBrickManifest({
   <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
 </svg>
   `,
-  props: Type.Composite([contentAwareProps, commonProps]),
+  props: Type.Composite([contentAwareProps, commonProps, commonStyleProps]),
 });
 
 export type Manifest = Static<typeof manifest>;

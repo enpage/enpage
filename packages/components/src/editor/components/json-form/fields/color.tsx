@@ -71,7 +71,7 @@ export function ColorFieldRow({
   return (
     <div className="color-field flex items-center justify-between">
       {name && (
-        <div className="flex-1 leading-none">
+        <div className="flex-1">
           <Text as="label" size="2" weight="medium">
             {name}
           </Text>

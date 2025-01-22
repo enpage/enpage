@@ -6,6 +6,8 @@ import { fieldLabel } from "../form-class";
 export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
 
+  console.log("effrects", { currentValue });
+
   return (
     <div className="border-field">
       {description && (
@@ -21,7 +23,6 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Width</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.shadow.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
@@ -40,9 +41,9 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
             onValueChange={(value) => onChange({ ...currentValue, opacity: value[0] })}
             size="1"
             variant="soft"
-            min={schema.minimum}
-            max={schema.maximum}
-            step={schema.multipleOf ?? 1}
+            min={0}
+            max={1}
+            step={0.1}
             defaultValue={[currentValue.opacity ?? 1]}
           />
         </div>

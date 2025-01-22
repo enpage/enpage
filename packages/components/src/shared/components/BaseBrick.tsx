@@ -1,5 +1,13 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import { lazy, Suspense, type ComponentProps, type ComponentType, type LazyExoticComponent } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  type ComponentProps,
+  type ComponentType,
+  type LazyExoticComponent,
+} from "react";
+import { useGetBrick } from "~/editor/hooks/use-editor";
 
 // Load all bricks in the bricks directory
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -22,11 +30,12 @@ const BaseBrick = ({
   editable,
   ...otherProps
 }: { brick: Brick; editable?: boolean } & ComponentProps<"div">) => {
-  // const BrickModule = lazy(() => import(`../bricks/${brick.type}.js`));
   const BrickModule = bricksMap[brick.type];
   if (!BrickModule) {
+    console.warn("Brick not found", brick.type);
     return null;
   }
+
   return (
     <Suspense>
       <BrickModule {...brick.props} {...otherProps} editable={editable} />

@@ -1,4 +1,5 @@
 import type { TSchema } from "@sinclair/typebox";
+import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 
 /**
  * Field props
@@ -7,7 +8,7 @@ import type { TSchema } from "@sinclair/typebox";
  * F: All form fields data type
  */
 export type FieldProps<T = unknown, F = Record<string, unknown>> = {
-  id: string;
+  brickId: Brick["id"];
   onChange: (value: T | null) => void;
   currentValue: T;
   /**

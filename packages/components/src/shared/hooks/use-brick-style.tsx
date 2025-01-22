@@ -15,7 +15,9 @@ export function useBrickStyle(
     Partial<Static<typeof textStyleProps>> &
     Partial<Static<typeof commonProps>>,
 ) {
-  return tx([
+  // This is the inner brick style. As the wrapper uses "display: flex",
+  // we use flex-1 to make the inner brick fill the space.
+  return tx("flex-1", [
     props.className && apply(props.className),
     props.padding ? (props.padding as string) : null,
     props.color ? `text-${props.color}` : null,

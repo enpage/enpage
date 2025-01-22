@@ -399,7 +399,6 @@ export const useEditablePage = (
           const type = event.relatedTarget.dataset.brickType;
 
           if (type) {
-            console.log("constraints", defaults[type]);
             const constraints: BrickConstraints = {
               preferredHeight: defaults[type].preferredHeight,
               preferredWidth: defaults[type].preferredWidth,

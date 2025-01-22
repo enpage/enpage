@@ -11,7 +11,7 @@ export default function App() {
 
   return (
     <ClientOnly>
-      <EditorWrapper pageConfig={siteConfig.pages[0]} siteConfig={siteConfig.site} mode="remote">
+      <EditorWrapper pageConfig={siteConfig.pages[0]} siteConfig={siteConfig.site} mode="local">
         <Editor />
       </EditorWrapper>
     </ClientOnly>

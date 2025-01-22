@@ -4,6 +4,7 @@ import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
+import { richText } from "@upstart.gg/sdk/shared/bricks/props/common";
 
 // define your datasources
 const datasources = defineDataSources({
@@ -86,7 +87,7 @@ const homePageBricks = defineBricks([
       props: {
         content: {
           text: "Build your launch page",
-          mode: "static",
+          richText: false,
         },
         justify: "text-center font-humanist",
       },
@@ -112,7 +113,7 @@ const homePageBricks = defineBricks([
       props: {
         content: {
           text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
-          mode: "static",
+          richText: true,
         },
         justify: "text-center",
         format: "html",
@@ -161,7 +162,7 @@ const homePageBricks = defineBricks([
       props: {
         content: {
           text: "Build your launch page",
-          mode: "static",
+          richText: true,
         },
       },
       position: {
@@ -182,7 +183,6 @@ const homePageBricks = defineBricks([
       props: {
         content: {
           text: "Build your launch page",
-          mode: "static",
         },
       },
       position: {

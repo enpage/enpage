@@ -1,39 +1,38 @@
 import { Type, type Static } from "@sinclair/typebox";
 
 export const commonProps = Type.Object({
-  id: Type.String({
-    title: "Brick ID",
-    "ui:field": "hidden",
-  }),
+  // id: Type.String({
+  //   title: "Brick ID",
+  //   "ui:field": "hidden",
+  // }),
   className: Type.String({
     default: "",
     "ui:field": "hidden",
   }),
+  lastTouched: Type.Number({
+    default: 0,
+    "ui:field": "hidden",
+  }),
+  editable: Type.Boolean({
+    description: "Allow editing. It is automatically set by the editor, so no need to specify it manually.",
+    default: false,
+    "ui:field": "hidden",
+  }),
 });
 
-export const editable = Type.Boolean({
-  title: "Editable",
-  description:
-    "Allow editing of text content. It is automatically set by the editor, so no need to specify it manually.",
-  default: false,
-  "ui:field": "hidden",
-});
-
-export const multiline = Type.Boolean({
-  title: "Multiline",
-  description: "Allow multiple lines of text",
-  default: false,
+export const richText = Type.Boolean({
+  title: "Rich Text",
+  description: "Allow rich text",
+  default: true,
   "ui:field": "hidden",
 });
 
 export const mixedContent = Type.Object(
-  { multiline, editable, text: Type.String() },
+  { richText, text: Type.String() },
   {
     default: {
-      mode: "static",
-      content: "some text here",
-      multiline: false,
-      editable: false,
+      richText: true,
+      text: "some text here",
     },
     "ui:field": "mixed-content",
     "ui:group": "content",
@@ -43,9 +42,19 @@ export const mixedContent = Type.Object(
 
 export type MixedContent = Static<typeof mixedContent>;
 
-export const contentAwareProps = Type.Object({
-  content: mixedContent,
-});
+export const contentAwareProps = Type.Object(
+  {
+    content: mixedContent,
+  },
+  {
+    default: {
+      content: {
+        text: "some text here",
+        richText: true,
+      },
+    },
+  },
+);
 
 export const container = Type.Object({
   container: Type.Boolean({

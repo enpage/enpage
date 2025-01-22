@@ -6,17 +6,18 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/hero.m
 
 const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
+  const { content } = props;
+  let { text } = content;
 
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
+  if (!text.startsWith("<h")) {
+    text = `<h1>${content.text}</h1>`;
   }
 
   const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
+    // "font-size": `var(--${heroFontSize})`,
   });
 
-  return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
+  return <TextBrick {...props} content={{ ...content, text }} className={tx(sizeClass)} ref={ref} />;
 });
 
 export default Hero;

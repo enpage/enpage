@@ -40,9 +40,9 @@ export function usePageAutoSave() {
   );
 
   useBricksSubscribe(async (bricks) => {
-    console.debug("Bricks have changed, updating page version");
+    console.debug("Bricks have changed, updating page version", bricks);
     draft.setDirty(true);
-    doUpdatePage({ elements: bricks }, pageConfig);
+    doUpdatePage({ bricks }, pageConfig);
   });
   useAttributesSubscribe((attributes) => {
     console.debug("Attributes have changed, updating page version");
