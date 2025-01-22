@@ -33,6 +33,8 @@ import type { TObject, TSchema } from "@sinclair/typebox";
 import { JSONSchemaView } from "~/editor/components/json-form/SchemaView";
 import Mention from "@tiptap/extension-mention";
 import datasourceFieldSuggestions from "./datasourceFieldSuggestions";
+import { CgCloseR } from "react-icons/cg";
+import { getJSONSchemaFieldsList } from "../utils/json-field-list";
 
 function DatasourceFieldNode(props: NodeViewProps) {
   return (
@@ -86,29 +88,6 @@ export const DatasourceFieldExtension = Node.create({
   },
 });
 
-const extensions = [
-  StarterKit,
-  TextAlign.configure({
-    types: ["heading", "paragraph"],
-  }),
-  DatasourceFieldExtension,
-  Mention.configure({
-    HTMLAttributes: {
-      class: "mention",
-    },
-    suggestion: datasourceFieldSuggestions,
-    renderHTML: ({ options, node }) => {
-      console.log("RENDER ATTRS", options, node);
-      return [
-        "span",
-        { "data-type": "mention", class: tx("bg-upstart-100") },
-        `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}}}`,
-      ];
-      // return `{{${attrs.label}}}`;
-    },
-  }),
-];
-
 type Props = {
   initialContent: string;
   onUpdate?: (e: EditorEvents["update"]) => void;
@@ -116,6 +95,7 @@ type Props = {
   className?: string;
   brickId: Brick["id"];
   menuPlacement?: "above-editor" | "page";
+  discrete?: boolean;
 };
 
 const toolbarBtnCls =
@@ -128,9 +108,51 @@ const TextEditor = ({
   brickId,
   menuPlacement,
   enabled = false,
+  discrete = false,
 }: Props) => {
   const mainEditor = useEditor();
+  const datasources = useDatasourcesSchemas();
   const [editable, setEditable] = useState(enabled);
+
+  // @ts-ignore
+  const fields = getJSONSchemaFieldsList({ schemas: datasources });
+
+  const extensions = [
+    StarterKit,
+    TextAlign.configure({
+      types: ["heading", "paragraph"],
+    }),
+    // DatasourceFieldExtension,
+    Mention.configure({
+      HTMLAttributes: {
+        class: "mention",
+      },
+      suggestion: {
+        ...datasourceFieldSuggestions,
+        items: ({ query }) => {
+          return fields.filter((field) => field.toLowerCase().includes(query.toLowerCase()));
+        },
+      },
+      renderHTML: ({ options, node }) => {
+        // console.log("RENDER ATTRS", options, node);
+        const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+        return [
+          "span",
+          {
+            "data-type": "mention",
+            class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
+            "data-field": field,
+          },
+          `${options.suggestion.char}${field}}}`,
+        ];
+      },
+      renderText: ({ options, node }) => {
+        const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+        return `${options.suggestion.char}${field}}}`;
+      },
+    }),
+  ];
+
   const editor = useTextEditor({
     extensions,
     content:
@@ -142,8 +164,12 @@ const TextEditor = ({
     editable,
     editorProps: {
       attributes: {
-        class: tx("max-w-[100%] focus:outline focus:outline-offset-2", className),
+        class: tx("max-w-[100%] focus:outline-none focus:border-gray-300", className),
       },
+    },
+
+    onBlur(props) {
+      mainEditor.setlastTextEditPosition(props.editor.state.selection.anchor);
     },
   });
 
@@ -175,10 +201,11 @@ const TextEditor = ({
     <div
       className={tx({
         "fixed z-[99999] inset-[10dvw] shadow-2xl": mainEditor.textEditMode === "large",
+        "-mx-3 -mt-3 -mb-4": discrete,
       })}
     >
       {editor && editable && menuPlacement === "above-editor" && (
-        <MenuBar brickId={brickId} editor={editor} placement={menuPlacement} />
+        <MenuBar brickId={brickId} editor={editor} placement={menuPlacement} discrete={discrete} />
       )}
       <EditorContent
         onDoubleClick={(e) => {
@@ -188,43 +215,39 @@ const TextEditor = ({
             editor?.view.focus();
           }, 200);
         }}
+        autoCorrect="false"
+        spellCheck="false"
         editor={editor}
-        className={tx("outline-none", {
-          "min-h-full flex flex-col": mainEditor.textEditMode === "large",
+        className={tx("outline-none ring-0", {
+          "min-h-full flex flex-col border-0": mainEditor.textEditMode === "large",
         })}
       />
       {editor && editable && menuPlacement !== "above-editor" && (
-        <MenuBar brickId={brickId} editor={editor} placement={menuPlacement} />
+        <MenuBar brickId={brickId} editor={editor} placement={menuPlacement} discrete={discrete} />
       )}
     </div>
   );
 };
 
-const menuBarClass = tx(
-  "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-700/75 to-upstart-400/75 \
-  shadow-lg rounded-b fixed top-[59px] left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
-  // "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
-  // shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
-);
-
 const MenuBar = ({
   editor,
   brickId,
   placement,
+  discrete,
 }: {
   editor: Editor;
   brickId: Brick["id"];
   placement: Props["menuPlacement"];
+  discrete?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const mainEditor = useEditor();
   let className = "";
 
   if (placement === "above-editor") {
-    className = tx(
-      "z-[900] text-gray-800 min-h-10 flex gap-1 p-1 bg-gray-100 border border-b-0 border-gray-300 \
-      shadow-lg rounded-t text-sm transition-all duration-100 flex flex-wrap mt-3",
-    );
+    className = tx("z-[900] text-gray-800 min-h-10 flex gap-1 p-1 bg-gray-100 text-sm flex flex-wrap", {
+      "border border-b-0 border-gray-300 rounded-t ": !discrete,
+    });
   } else {
     className = tx(
       "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
@@ -243,7 +266,13 @@ const MenuBar = ({
       <TextAlignButtonGroup editor={editor} />
       <TextStyleButtonGroup editor={editor} />
       <DatasourceItemButton editor={editor} />
-      <DisplayModeButton />
+      <DisplayModeButton icon="enlarge" />
+      {!discrete && (
+        <>
+          <span className="flex-1" />
+          <DisplayModeButton icon="close" />
+        </>
+      )}
     </div>
   );
 };
@@ -288,7 +317,11 @@ function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   );
 }
 
-function DatasourceFieldPickerModal() {
+type DatasourceFieldPickerModalProps = {
+  onFieldSelect: (field: string) => void;
+};
+
+function DatasourceFieldPickerModal(props: DatasourceFieldPickerModalProps) {
   const [currentDatasourceId, setCurrentDatasourceId] = useState<string | null>(null);
   const datasources = useDatasourcesSchemas();
   const selectedSchema = useMemo(() => {
@@ -335,7 +368,7 @@ function DatasourceFieldPickerModal() {
             </Select.Content>
           </Select.Root>
         </div>
-        {selectedSchema && (
+        {currentDatasourceId && selectedSchema && (
           <>
             <div className="inline-flex gap-2 items-center">
               <span className="font-semibold inline-flex justify-center items-center bg-upstart-500 rounded-full w-6 aspect-square text-white">
@@ -344,7 +377,11 @@ function DatasourceFieldPickerModal() {
               <span className="text-sm font-medium">Select a field</span>
             </div>
             <div className="flex items-center justify-between flex-1">
-              <DatasourceFieldPicker schema={selectedSchema} />
+              <JSONSchemaView
+                schema={selectedSchema}
+                rootName={currentDatasourceId}
+                onFieldSelect={props.onFieldSelect}
+              />
             </div>
           </>
         )}
@@ -353,18 +390,18 @@ function DatasourceFieldPickerModal() {
   );
 }
 
-function DatasourceFieldPicker({ schema }: { schema: TSchema }) {
-  return (
-    <JSONSchemaView
-      schema={schema}
-      onChange={() => {
-        console.log("changed");
-      }}
-    />
-  );
-}
+// function DatasourceFieldPicker({ schema }: { schema: TSchema }) {
+//   return (
+//     <JSONSchemaView
+//       schema={schema}
+//       onChange={() => {
+//         console.log("changed");
+//       }}
+//     />
+//   );
+// }
 
-function DisplayModeButton() {
+function DisplayModeButton({ icon }: { icon: "close" | "enlarge" }) {
   const editor = useEditor();
   return (
     <IconButton
@@ -378,8 +415,14 @@ function DisplayModeButton() {
         editor.toggleTextEditMode();
       }}
     >
-      {editor.textEditMode === "default" ? (
-        <BiFullscreen className="w-4 h-4 select-none pointer-events-none" />
+      {!editor.textEditMode || editor.textEditMode === "default" ? (
+        icon === "close" ? (
+          <CgCloseR className="w-4 h-4 select-none pointer-events-none" />
+        ) : (
+          <BiFullscreen className="w-4 h-4 select-none pointer-events-none" />
+        )
+      ) : icon === "close" ? (
+        <CgCloseR className="w-4 h-4 select-none pointer-events-none" />
       ) : (
         <BiExitFullscreen className="w-4 h-4 select-none pointer-events-none" />
       )}
@@ -389,6 +432,33 @@ function DisplayModeButton() {
 
 function DatasourceItemButton({ editor }: { editor: Editor }) {
   const sources = useDatasourcesSchemas();
+  const mainEditor = useEditor();
+  // const end = editor.state.
+
+  const onFieldSelect = (field: string) => {
+    const content = [
+      {
+        type: "mention",
+        attrs: { "data-field": field, label: field },
+      },
+      {
+        type: "text",
+        text: ` `,
+      },
+    ];
+
+    const { size } = editor.view.state.doc.content;
+
+    editor
+      .chain()
+      .focus()
+      .insertContentAt(mainEditor.lastTextEditPosition ?? size, content, {
+        parseOptions: {
+          preserveWhitespace: "full",
+        },
+      })
+      .run();
+  };
 
   console.log({ sources });
   return (
@@ -399,7 +469,7 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
         </IconButton>
       </Popover.Trigger>
       <Popover.Content width="460px" side="right" align="center" size="2" maxHeight="50vh" sideOffset={50}>
-        <DatasourceFieldPickerModal />
+        <DatasourceFieldPickerModal onFieldSelect={onFieldSelect} />
       </Popover.Content>
     </Popover.Root>
   );

@@ -149,6 +149,7 @@ export default function EditablePage() {
         !target.closest('[role="dialog"]') &&
         !target.closest('[role="toolbar"]') &&
         !target.closest('[role="navigation"]') &&
+        !target.matches('[role="menuitem"]') &&
         !target.matches("html") &&
         !target.matches(".brick") &&
         !target.closest(".brick")

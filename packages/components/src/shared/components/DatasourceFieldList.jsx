@@ -6,7 +6,6 @@ export default forwardRef((props, ref) => {
 
   const selectItem = (index) => {
     const item = props.items[index];
-
     if (item) {
       props.command({ id: item });
     }
@@ -54,6 +53,7 @@ export default forwardRef((props, ref) => {
         props.items.map((item, index) => (
           <button
             type="button"
+            role="menuitem"
             className={tx(
               index === selectedIndex && "bg-upstart-200",
               "flex text-left w-full items-center px-1.5 py-0.5 rounded",

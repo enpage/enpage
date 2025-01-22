@@ -26,24 +26,8 @@ export const multiline = Type.Boolean({
   "ui:field": "hidden",
 });
 
-export const mixedContent = Type.Intersect(
-  [
-    Type.Union([
-      Type.Object({
-        mode: Type.Literal("static"),
-        text: Type.String(),
-      }),
-      Type.Object({
-        mode: Type.Literal("dynamic"),
-        datasourceId: Type.String(),
-        datasourcePath: Type.String(),
-      }),
-    ]),
-    Type.Object({
-      multiline,
-      editable,
-    }),
-  ],
+export const mixedContent = Type.Object(
+  { multiline, editable, text: Type.String() },
   {
     default: {
       mode: "static",
@@ -51,9 +35,9 @@ export const mixedContent = Type.Intersect(
       multiline: false,
       editable: false,
     },
-    title: "Content",
-    description: "The text content",
     "ui:field": "mixed-content",
+    "ui:group": "content",
+    "ui:group:title": "Content",
   },
 );
 
@@ -61,8 +45,6 @@ export type MixedContent = Static<typeof mixedContent>;
 
 export const contentAwareProps = Type.Object({
   content: mixedContent,
-  // multiline,
-  // editable,
 });
 
 export const container = Type.Object({

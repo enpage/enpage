@@ -1,44 +1,44 @@
 import { createContext, useContext, useState } from "react";
 import type { TArray, TObject, TSchema } from "@sinclair/typebox";
 import { tx } from "@twind/core";
-import { Text, Select } from "@upstart.gg/style-system/system";
+import { Text } from "@upstart.gg/style-system/system";
 
 type ChoiceContextProps = {
-  onChange: (value: string) => void;
+  onFieldSelect: (value: string) => void;
   allowArraySelection?: boolean;
 };
 
 const NestingContext = createContext(0);
 const ChoiceContext = createContext<ChoiceContextProps>({
-  onChange: () => {},
+  onFieldSelect: () => {},
 });
 
-function SchemaEntry(props: TSchema) {
+function SchemaEntry({ schema, rootName }: { schema: TSchema; rootName: string }) {
   const nestingLevel = useContext(NestingContext);
-  const { onChange } = useContext(ChoiceContext);
+  const { onFieldSelect } = useContext(ChoiceContext);
   return (
     <NestingContext.Provider value={nestingLevel + 1}>
-      <ul id={`${props.name}_level-${nestingLevel}`} className={tx("mb-1 list-[square] pl-2")}>
-        {props.type === "object" ? (
-          <SchemaObject {...(props as TObject)} />
-        ) : props.type === "array" ? (
-          <SchemaArray {...(props as TArray)} />
+      <ul id={`${schema.name}_level-${nestingLevel}`} className={tx("mb-1 list-[square] pl-2")}>
+        {schema.type === "object" ? (
+          <SchemaObject schema={schema as TObject} rootName={rootName} />
+        ) : schema.type === "array" ? (
+          <SchemaArray schema={schema as TArray} rootName={rootName} />
         ) : (
           <li>
             <Text
               size="2"
-              onClick={() => onChange(props.name)}
+              onClick={() => onFieldSelect(`${rootName}.${schema.name}`)}
               className={tx("hover:bg-upstart-200 bg-upstart-100 cursor-pointer px-1.5 py-1 rounded")}
             >
-              {props.name}
+              {schema.name}
             </Text>
-            {props.optional && (
+            {schema.optional && (
               <Text color="gray" size="1" className="ml-1">
                 (optional)
               </Text>
             )}{" "}
             <Text color="gray" size="1">
-              ({props.enum ? `"${props.enum.join('" | "')}"` : props.type})
+              ({schema.enum ? `"${schema.enum.join('" | "')}"` : schema.type})
             </Text>
           </li>
         )}
@@ -47,22 +47,22 @@ function SchemaEntry(props: TSchema) {
   );
 }
 
-function SchemaArray(props: TArray) {
-  const { items, name, required } = props;
-  const { onChange, allowArraySelection } = useContext(ChoiceContext);
+function SchemaArray({ schema, rootName }: { schema: TArray; rootName: string }) {
+  const { items, name, required } = schema;
+  const { onFieldSelect, allowArraySelection } = useContext(ChoiceContext);
   return (
     <ul className="list-[square]">
       {name && (
         <li>
           <Text size="2">
             {allowArraySelection ? (
-              <Text size="2" onClick={() => onChange(name)}>
-                {name} ARRAY name
+              <Text size="2" onClick={() => onFieldSelect(`${rootName}.${name}`)}>
+                {name}
               </Text>
             ) : (
               name
             )}
-            {props.optional && (
+            {schema.optional && (
               <Text color="gray" size="1" className="ml-1">
                 (Optional)
               </Text>
@@ -71,12 +71,18 @@ function SchemaArray(props: TArray) {
         </li>
       )}
 
-      <SchemaEntry {...items} optional={required && !required.includes(name)} />
+      <SchemaEntry
+        rootName={rootName}
+        schema={{ ...items, optional: required && !required.includes(name) }}
+      />
     </ul>
   );
 }
 
-function SchemaObject({ name, required, allOf, properties, ...rest }: TObject) {
+function SchemaObject({
+  rootName,
+  schema: { name, required, allOf, properties },
+}: { schema: TObject; rootName: string }) {
   const renderProperties = properties;
   // if (allOf) {
   //   const newProperties = allOf.reduce((acc, obj) => {
@@ -101,9 +107,8 @@ function SchemaObject({ name, required, allOf, properties, ...rest }: TObject) {
         {Object.entries(renderProperties).map(([name, value], i) => (
           <SchemaEntry
             key={`${name}-${i}`}
-            name={name}
-            optional={required && !required.includes(name)}
-            {...value}
+            schema={{ ...value, name, optional: required && !required.includes(name) }}
+            rootName={rootName}
           />
         ))}
       </ul>
@@ -113,12 +118,13 @@ function SchemaObject({ name, required, allOf, properties, ...rest }: TObject) {
 
 export function JSONSchemaView({
   schema,
-  onChange,
-}: { schema: TSchema; onChange: ChoiceContextProps["onChange"] }) {
+  onFieldSelect,
+  rootName,
+}: { rootName: string; schema: TSchema; onFieldSelect: ChoiceContextProps["onFieldSelect"] }) {
   return (
-    <ChoiceContext.Provider value={{ onChange }}>
+    <ChoiceContext.Provider value={{ onFieldSelect }}>
       <NestingContext.Provider value={0}>
-        <SchemaEntry {...schema} />
+        <SchemaEntry schema={schema} rootName={rootName} />
       </NestingContext.Provider>
     </ChoiceContext.Provider>
   );

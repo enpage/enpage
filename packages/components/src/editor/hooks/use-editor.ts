@@ -24,6 +24,7 @@ export interface EditorStateProps {
   // pageConfig: GenericPageConfig;
   previewMode: ResponsiveMode;
   textEditMode?: "default" | "large";
+  lastTextEditPosition?: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   selectedGroup?: Brick["id"][];
@@ -47,6 +48,7 @@ export interface EditorState extends EditorStateProps {
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
+  setlastTextEditPosition: (position?: number) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
   togglePanel: (panel: EditorStateProps["panel"]) => void;
   hidePanel: (panel: EditorStateProps["panel"]) => void;
@@ -74,9 +76,15 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
             ...DEFAULT_PROPS,
             ...initProps,
 
+            setlastTextEditPosition: (position) =>
+              set((state) => {
+                state.lastTextEditPosition = position;
+              }),
+
             toggleTextEditMode: () =>
               set((state) => {
-                state.textEditMode = state.textEditMode === "default" ? "large" : "default";
+                state.textEditMode =
+                  !state.textEditMode || state.textEditMode === "default" ? "large" : "default";
               }),
 
             setTextEditMode: (mode) =>

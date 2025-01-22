@@ -10,7 +10,7 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/text.m
  */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  return props.content.editable && props.content.mode !== "dynamic" ? (
+  return props.content.editable ? (
     <EditableText ref={ref} {...props} />
   ) : (
     <NonEditableText ref={ref} {...props} />
