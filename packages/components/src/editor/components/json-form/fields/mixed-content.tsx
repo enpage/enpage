@@ -6,10 +6,8 @@ import type { MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
 import TextEditor from "~/shared/components/TextEditor";
 
 const MixedContentField: React.FC<FieldProps<MixedContent>> = (props) => {
-  const { schema, formData, onChange, required, title, description, currentValue, placeholder, brickId } =
-    props;
+  const { onChange, title, currentValue, brickId } = props;
   const editor = useEditor();
-  // const [currentText, setCurrentText] = useState(currentValue.text);
 
   return (
     <div className="field field-mixed-content">

@@ -32,6 +32,7 @@ export function useBrickWrapperStyle({
   editable,
   className,
 }: { brick: Brick; editable: boolean; className?: string }) {
+  console.log("brick props", brick.props);
   return tx(
     apply(className),
     // no transition otherwise it will slow down the drag
@@ -64,10 +65,10 @@ export function useBrickWrapperStyle({
       }),
 
     // Border
-    "borderColor" in brick.props && propToStyle(brick.props.borderColor as string, "borderColor"),
-    "borderRadius" in brick.props && (brick.props.borderRadius as string),
-    "borderStyle" in brick.props && (brick.props.borderStyle as string),
-    "borderWidth" in brick.props && (brick.props.borderWidth as string),
+    "borderSettings" in brick.props && propToStyle(brick.props.borderSettings.color as string, "borderColor"),
+    "borderSettings" in brick.props && (brick.props.borderSettings.radius as string),
+    "borderSettings" in brick.props && (brick.props.borderSettings.style as string),
+    "borderSettings" in brick.props && (brick.props.borderSettings.width as string),
 
     // Background
     "backgroundColor" in brick.props && propToStyle(brick.props.backgroundColor as string, "background"),

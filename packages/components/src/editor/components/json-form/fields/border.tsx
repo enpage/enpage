@@ -7,6 +7,8 @@ import { ColorPill } from "./color";
 export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
 
+  const onSettingsChange = (newVal: Partial<BorderSettings>) => onChange({ ...currentValue, ...newVal });
+
   return (
     <div className="border-field">
       {description && (
@@ -18,7 +20,11 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
         {/* border width */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Width</label>
-          <Select.Root defaultValue={currentValue.width} size="1">
+          <Select.Root
+            defaultValue={currentValue.width}
+            size="1"
+            onValueChange={(value) => onSettingsChange({ width: value as BorderSettings["width"] })}
+          >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
@@ -36,7 +42,11 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
         {/* border style */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Style</label>
-          <Select.Root defaultValue={currentValue.style} size="1">
+          <Select.Root
+            defaultValue={currentValue.style}
+            size="1"
+            onValueChange={(value) => onSettingsChange({ style: value as BorderSettings["style"] })}
+          >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
@@ -53,16 +63,20 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
         </div>
         {/* break */}
         <div className="basis-full w-0" />
-        {/* border rounding */}
+        {/* border radius */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Rounding</label>
-          <Select.Root defaultValue={currentValue.rounding} size="1">
+          <Select.Root
+            defaultValue={currentValue.radius}
+            size="1"
+            onValueChange={(value) => onSettingsChange({ radius: value as BorderSettings["radius"] })}
+          >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
                 <Select.Label>Rounding</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                {schema.properties.rounding.anyOf.map((item: any) => (
+                {schema.properties.radius.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
                     {item.title}
                   </Select.Item>

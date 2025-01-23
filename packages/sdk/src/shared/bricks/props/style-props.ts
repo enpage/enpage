@@ -87,7 +87,7 @@ export const borderRadius = Type.Union(
 export const borderSettings = Type.Optional(
   Type.Object(
     {
-      rounding: borderRadius,
+      radius: borderRadius,
       style: borderStyle,
       color: borderColor,
       width: borderWidth,
@@ -98,7 +98,7 @@ export const borderSettings = Type.Optional(
       "ui:group": "Border",
       "ui:group:title": "Border",
       default: {
-        rounding: "rounded-none",
+        radius: "rounded-none",
         style: "border-solid",
         color: "#000000",
         width: "border-0",
