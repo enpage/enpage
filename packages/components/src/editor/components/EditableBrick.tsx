@@ -1,7 +1,7 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { forwardRef, memo, useRef, useState, type ComponentProps, type MouseEvent } from "react";
 import { tx } from "@upstart.gg/style-system/twind";
-import { useDraft, useEditor } from "../hooks/use-editor";
+import { useDraft, useEditorHelpers, usePreviewMode } from "../hooks/use-editor";
 import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
@@ -25,16 +25,17 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, children }, ref) => {
-    const editor = useEditor();
     const hasMouseMoved = useRef(false);
     const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className });
+    const previewMode = usePreviewMode();
+    const { setSelectedBrick } = useEditorHelpers();
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
       const target = e.currentTarget as HTMLElement;
       if (hasMouseMoved.current || target.matches(".react-resizable-handle") || !target.matches(".brick")) {
         return;
       }
-      editor.setSelectedBrick(brick);
+      setSelectedBrick(brick);
       hasMouseMoved.current = false;
     };
 
@@ -43,7 +44,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         id={brick.id}
         data-x="0"
         data-y="0"
-        data-position={JSON.stringify(brick.position[editor.previewMode])}
+        data-position={JSON.stringify(brick.position[previewMode])}
         style={style}
         className={wrapperClass}
         ref={ref}

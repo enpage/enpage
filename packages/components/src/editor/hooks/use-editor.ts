@@ -37,6 +37,7 @@ export interface EditorStateProps {
    * Latest used color adjustment
    */
   colorAdjustment: ColorAdjustment;
+  collidingBrick?: { brick: Brick; side: "top" | "bottom" | "left" | "right" };
 }
 
 export interface EditorState extends EditorStateProps {
@@ -57,6 +58,7 @@ export interface EditorState extends EditorStateProps {
   setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
   togglePanelPosition: () => void;
   showModal: (modal: EditorStateProps["modal"]) => void;
+  setCollidingBrick: (info: { brick: Brick; side: "top" | "bottom" | "left" | "right" } | null) => void;
   hideModal: () => void;
 }
 
@@ -75,6 +77,11 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
+            setCollidingBrick: (info) =>
+              set((state) => {
+                state.collidingBrick = info ?? undefined;
+              }),
 
             setlastTextEditPosition: (position) =>
               set((state) => {
@@ -187,6 +194,8 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                     ![
                       "mode",
                       "selectedBrick",
+                      "selectedGroup",
+                      "collidingBrick",
                       "panel",
                       "isEditingTextForBrickId",
                       "shouldShowGrid",
@@ -512,6 +521,11 @@ export const useSelectedGroup = () => {
   return useStore(ctx, (state) => state.selectedGroup);
 };
 
+export const useSelectedBrick = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.selectedBrick);
+};
+
 export const useColorAdjustment = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.colorAdjustment);
@@ -520,6 +534,11 @@ export const useColorAdjustment = () => {
 export const useEditorMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.mode);
+};
+
+export const useTextEditMode = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.textEditMode);
 };
 
 export const useDraft = () => {
@@ -560,6 +579,31 @@ export const useAttributesSchema = () => {
 export const useDatasourcesSchemas = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.datasources);
+};
+
+export const useEditorHelpers = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => ({
+    setPreviewMode: state.setPreviewMode,
+    setSettingsVisible: state.setSettingsVisible,
+    toggleSettings: state.toggleSettings,
+    toggleTextEditMode: state.toggleTextEditMode,
+    setTextEditMode: state.setTextEditMode,
+    setSelectedBrick: state.setSelectedBrick,
+    deselectBrick: state.deselectBrick,
+    setIsEditingText: state.setIsEditingText,
+    setlastTextEditPosition: state.setlastTextEditPosition,
+    setPanel: state.setPanel,
+    togglePanel: state.togglePanel,
+    hidePanel: state.hidePanel,
+    setSelectedGroup: state.setSelectedGroup,
+    setShouldShowGrid: state.setShouldShowGrid,
+    setColorAdjustment: state.setColorAdjustment,
+    togglePanelPosition: state.togglePanelPosition,
+    showModal: state.showModal,
+    hideModal: state.hideModal,
+    setCollidingBrick: state.setCollidingBrick,
+  }));
 };
 
 export const useDatarecordsSchemas = () => {

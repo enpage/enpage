@@ -12,6 +12,8 @@ import {
   usePageVersion,
   useLastSaved,
   useDraft,
+  useEditorHelpers,
+  usePreviewMode,
 } from "~/editor/hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
@@ -23,7 +25,8 @@ import { IoIosSave } from "react-icons/io";
 import { formatDistance } from "date-fns";
 
 export default function TopBar() {
-  const editor = useEditor();
+  const editorHelpers = useEditorHelpers();
+  const previewMode = usePreviewMode();
   const draft = useDraft();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
@@ -43,8 +46,8 @@ export default function TopBar() {
   );
 
   const switchPreviewMode = useCallback(() => {
-    editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
-  }, [editor.previewMode, editor.setPreviewMode]);
+    editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
+  }, [previewMode, editorHelpers.setPreviewMode]);
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
@@ -87,7 +90,7 @@ export default function TopBar() {
       >
         <button
           type="button"
-          disabled={editor.mode === "local"}
+          disabled={editorMode === "local"}
           onClick={() => {
             window.location.href = "/dashboard";
           }}
@@ -160,8 +163,8 @@ export default function TopBar() {
           <span className={tx(tooltipCls)}>Redo</span>
         </button>
         <button type="button" className={tx(btnClass, squareBtn, commonCls)} onClick={switchPreviewMode}>
-          {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
-          {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
+          {previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
+          {previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
           <span className={tx(tooltipCls)}>Switch View</span>
         </button>
 

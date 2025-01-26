@@ -44,7 +44,7 @@ export function usePageStyle({
         &::before {
           content: "";
           position: absolute;
-          opacity: 0.5;
+          opacity: 0.3;
           top: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
           left: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
           right: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
@@ -67,6 +67,11 @@ export function usePageStyle({
               transparent 80px
             );
         }
+
+        &>div {
+          outline: 2px dotted #d3daf2 !important;
+        }
+
       }
     `,
   );

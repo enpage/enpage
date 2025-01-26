@@ -32,7 +32,6 @@ export function useBrickWrapperStyle({
   editable,
   className,
 }: { brick: Brick; editable: boolean; className?: string }) {
-  console.log("brick props", brick.props);
   return tx(
     apply(className),
     // no transition otherwise it will slow down the drag

@@ -1,13 +1,5 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import {
-  lazy,
-  Suspense,
-  useEffect,
-  type ComponentProps,
-  type ComponentType,
-  type LazyExoticComponent,
-} from "react";
-import { useGetBrick } from "~/editor/hooks/use-editor";
+import { lazy, Suspense, type ComponentProps, type ComponentType, type LazyExoticComponent } from "react";
 
 // Load all bricks in the bricks directory
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

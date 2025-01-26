@@ -10,7 +10,12 @@ import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 
 interface DragCallbacks {
-  onDragMove?: (event: Interact.InteractEvent, position: { x: number; y: number }) => void;
+  onDragMove?: (
+    brick: Brick,
+    position: { x: number; y: number },
+    gridPosition: { x: number; y: number },
+    event: Interact.InteractEvent,
+  ) => void;
   onDragEnd?: (
     brickId: string,
     position: { x: number; y: number },
@@ -193,9 +198,7 @@ export const useEditablePage = (
   useEffect(() => {
     interactable.current = interact(bricksSelectorOrRef, {
       styleCursor: false,
-    });
-
-    interactable.current
+    })
       .on("dragstart", (event) => {
         event.target.style.cursor = "move";
       })
@@ -205,7 +208,7 @@ export const useEditablePage = (
 
     if (dragEnabled) {
       interactable.current.draggable({
-        hold: 50,
+        // hold: 30,
         inertia: true,
         autoScroll: true,
         modifiers: [
@@ -243,6 +246,38 @@ export const useEditablePage = (
               const position = getPosition(element, event);
               updateElementTransform(element, position.x, position.y);
             });
+
+            if (!dragCallbacks.onDragMove) {
+              return;
+            }
+
+            const brick = getBrick(target.id);
+
+            if (brick?.type) {
+              const {
+                id,
+                type,
+                position: {
+                  desktop: { w, h },
+                },
+              } = brick;
+              const constraints: BrickConstraints = {
+                preferredHeight: defaults[type].preferredHeight,
+                preferredWidth: defaults[type].preferredWidth,
+                minHeight: defaults[type].minHeight,
+                minWidth: defaults[type].minWidth,
+                maxWidth: defaults[type].maxWidth,
+              };
+              // we fire the callback for the main element only
+              dragCallbacks.onDragMove?.(
+                brick,
+                getPosition(target, event),
+                getGridPosition(target, gridConfig),
+                event,
+              );
+            } else {
+              console.log("cannot determine type of brick event.target", event.target);
+            }
           },
           end: (event: Interact.InteractEvent) => {
             const target = event.target as HTMLElement;
@@ -261,6 +296,12 @@ export const useEditablePage = (
               dragCallbacks.onDragEnd?.(element.id, position, gridPosition, event);
             });
           },
+          // mousedown: (event: Interact.InteractEvent) => {
+          //   event.currentTarget.style.cursor = "move";
+          // },
+          // mouseup: (event: Interact.InteractEvent) => {
+          //   event.currentTarget.style.cursor = "auto";
+          // },
         },
         ...dragOptions,
       });

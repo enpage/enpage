@@ -10,14 +10,12 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/text.m
  */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const newProps = { ...Value.Create(manifest).props, ...props };
-  console.log("rendering text", newProps);
   return <NonEditableText ref={ref} {...newProps} />;
   // return props.editable ? <EditableText ref={ref} {...props} /> : <NonEditableText ref={ref} {...props} />;
 });
 
 const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
-  console.log("rendering non-editable text", props);
   return (
     // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
     <div ref={ref} className={className} dangerouslySetInnerHTML={{ __html: props.content.text }} />
@@ -26,8 +24,8 @@ const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, re
 
 const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
-  const content = useEditableText(props.id, props.content.text);
-  console.log("rendering editable text", props);
+  const content = "";
+  // const content = useEditableText(props.id, props.content.text);
   return (
     <div ref={ref} className={className}>
       {content}
