@@ -2,6 +2,7 @@ import { LAYOUT_COLS } from "@upstart.gg/sdk/layout-constants";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
+import cloneDeep from "lodash-es/cloneDeep";
 
 const defaultsPreferred = {
   mobile: {
@@ -13,6 +14,17 @@ const defaultsPreferred = {
     height: LAYOUT_COLS.desktop / 3,
   },
 };
+
+function isOverflowing(element: HTMLElement) {
+  return element.scrollHeight > element.clientHeight;
+}
+
+export function adjustBrickOverflow(brickId: string) {
+  const element = document.getElementById(brickId);
+  if (element && isOverflowing(element)) {
+    element.classList.add("overflow-y-auto");
+  }
+}
 
 /**
  * Adjust the bricks "mobile" position based on the "desktop" position by:
@@ -114,7 +126,7 @@ export function canDropOnLayout(
 }
 
 type CollisionSide = "left" | "right" | "top" | "bottom";
-type CollisionInfo = { brick: Brick; side: CollisionSide };
+type Collision = { brick: Brick; sides: CollisionSide[]; distance: number };
 
 type GetDropOverGhostPositionParams = {
   /**
@@ -135,26 +147,10 @@ type GetDropOverGhostPositionParams = {
   dropPosition: { y: number; x: number };
 };
 
-// function detectCollisionSides(
-//   draggedRect: { x: number; y: number; w: number; h: number },
-//   brickOnLayout: { x: number; y: number; w: number; h: number },
-// ): CollisionSide[] {
-//   const sides: CollisionSide[] = [];
-//   const tolerance = 1; // Adjust as needed
-
-//   if (Math.abs(draggedRect.x - (brickOnLayout.x + brickOnLayout.w)) <= tolerance) sides.push("left");
-//   if (Math.abs(draggedRect.x + draggedRect.w - brickOnLayout.x) <= tolerance) sides.push("right");
-//   if (Math.abs(draggedRect.y - (brickOnLayout.y + brickOnLayout.h)) <= tolerance) sides.push("top");
-//   if (Math.abs(draggedRect.y + draggedRect.h - brickOnLayout.y) <= tolerance) sides.push("bottom");
-
-//   console.log("detecting colisions between %o and %o gives %o", draggedRect, brickOnLayout, sides);
-
-//   return sides;
-// }
-function detectCollisionSides(
+function getCollisionSides(
   draggedRect: { x: number; y: number; w: number; h: number },
   brickOnLayout: { x: number; y: number; w: number; h: number },
-): CollisionSide | null {
+): CollisionSide[] {
   if (
     !(
       draggedRect.x < brickOnLayout.x + brickOnLayout.w &&
@@ -163,25 +159,35 @@ function detectCollisionSides(
       draggedRect.y + draggedRect.h > brickOnLayout.y
     )
   ) {
-    return null;
+    return [];
   }
 
-  // Calculate overlap amounts on each side
-  const overlaps = {
-    top: Math.abs(draggedRect.y + draggedRect.h - brickOnLayout.y),
-    bottom: Math.abs(draggedRect.y - (brickOnLayout.y + brickOnLayout.h)),
-    left: Math.abs(draggedRect.x + draggedRect.w - brickOnLayout.x),
-    right: Math.abs(draggedRect.x - (brickOnLayout.x + brickOnLayout.w)),
-  };
+  const collisionSides: CollisionSide[] = [];
 
-  // Return the side with smallest overlap (closest to edge)
-  return (
-    Object.entries(overlaps).reduce(
-      (min, [side, overlap]) =>
-        !min || overlap < min.overlap ? { side: side as CollisionSide, overlap } : min,
-      null as { side: CollisionSide; overlap: number } | null,
-    )?.side || null
-  );
+  // Check each side for collision
+  if (draggedRect.y + draggedRect.h >= brickOnLayout.y && draggedRect.y < brickOnLayout.y) {
+    collisionSides.push("top");
+  }
+
+  if (
+    draggedRect.y <= brickOnLayout.y + brickOnLayout.h &&
+    draggedRect.y + draggedRect.h > brickOnLayout.y + brickOnLayout.h
+  ) {
+    collisionSides.push("bottom");
+  }
+
+  if (draggedRect.x + draggedRect.w >= brickOnLayout.x && draggedRect.x < brickOnLayout.x) {
+    collisionSides.push("left");
+  }
+
+  if (
+    draggedRect.x <= brickOnLayout.x + brickOnLayout.w &&
+    draggedRect.x + draggedRect.w > brickOnLayout.x + brickOnLayout.w
+  ) {
+    collisionSides.push("right");
+  }
+
+  return collisionSides;
 }
 
 // Helper function to check if a position is valid
@@ -213,6 +219,33 @@ function canTakeFullSpace(
   });
 }
 
+export function detectCollisions({ brick, bricks, currentBp, dropPosition }: GetDropOverGhostPositionParams) {
+  const draggedRect = {
+    x: dropPosition.x,
+    y: dropPosition.y,
+    w: brick.position[currentBp].w,
+    h: brick.position[currentBp].h,
+  };
+
+  const colisions: Collision[] = [];
+
+  bricks.forEach((b) => {
+    if (b.id === brick.id) return;
+
+    const sides = getCollisionSides(draggedRect, b.position[currentBp]);
+    if (!sides.length) return;
+
+    const distance = Math.min(
+      Math.abs(draggedRect.x - b.position[currentBp].x),
+      Math.abs(draggedRect.y - b.position[currentBp].y),
+    );
+
+    colisions.push({ brick: b, sides, distance });
+  });
+
+  return colisions;
+}
+
 export function getDropOverGhostPosition({
   brick,
   bricks,
@@ -226,23 +259,7 @@ export function getDropOverGhostPosition({
     h: brick.position[currentBp].h,
   };
 
-  let closestCollision: { brick: Brick; side: CollisionSide; distance: number } | null = null;
-
-  bricks.forEach((b) => {
-    if (b.id === brick.id) return;
-
-    const side = detectCollisionSides(draggedRect, b.position[currentBp]);
-    if (!side) return;
-
-    const distance = Math.min(
-      Math.abs(draggedRect.x - b.position[currentBp].x),
-      Math.abs(draggedRect.y - b.position[currentBp].y),
-    );
-
-    if (!closestCollision || distance < closestCollision.distance) {
-      closestCollision = { brick: b, side, distance };
-    }
-  });
+  const colisions = detectCollisions({ brick, bricks, currentBp, dropPosition });
 
   // There is a collision, mark it as forbidden
   const forbidden =
@@ -260,6 +277,6 @@ export function getDropOverGhostPosition({
   return {
     ...draggedRect,
     forbidden,
-    collision: closestCollision,
+    colisions,
   };
 }

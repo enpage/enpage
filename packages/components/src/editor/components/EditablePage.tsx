@@ -17,7 +17,7 @@ import { useEditablePage } from "~/editor/hooks/use-draggable";
 import { debounce } from "lodash-es";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
-import { canDropOnLayout, getDropOverGhostPosition } from "~/shared/utils/layout-utils";
+import { canDropOnLayout, detectCollisions, getDropOverGhostPosition } from "~/shared/utils/layout-utils";
 
 const ghostValid = tx("bg-upstart-100");
 const ghostInvalid = tx("bg-red-100");
@@ -88,14 +88,30 @@ export default function EditablePage() {
           currentBp: previewMode,
           dropPosition: gridPosition,
         });
-        console.log("%o", dropOverPos);
+        // console.log("%o", dropOverPos);
         updateDragOverGhostStyle(dropOverPos);
         // editorHelpers.setCollidingBrick(dropOverPos.collision);
       },
-      onDragEnd: (brickId, pos, gridPos) => {
+      onDragEnd: (brick, pos, gridPos) => {
         console.log("onDragEnd (%s)", previewMode, gridPos);
-        draft.updateBrickPosition(brickId, previewMode, {
-          ...draft.getBrick(brickId)!.position[previewMode],
+
+        const collisions = detectCollisions({
+          brick,
+          bricks: draft.bricks,
+          currentBp: previewMode,
+          dropPosition: gridPos,
+        });
+
+        if (collisions.length) {
+          console.warn("Collisions detected, cancelling drop");
+          // reset the selected group
+          editorHelpers.setSelectedGroup();
+          updateDragOverGhostStyle(false);
+          return;
+        }
+
+        draft.updateBrickPosition(brick.id, previewMode, {
+          ...draft.getBrick(brick.id)!.position[previewMode],
           x: gridPos.x,
           y: gridPos.y,
         });
@@ -118,7 +134,7 @@ export default function EditablePage() {
         if (position) {
           const bricksDefaults = defaults[brick.type];
           const newBrick: Brick = {
-            id: generateId(),
+            id: `brick-${generateId()}`,
             ...bricksDefaults,
             type: brick.type,
             position: {

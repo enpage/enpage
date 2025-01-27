@@ -95,14 +95,18 @@ export type PageConfig<D extends DatasourcesMap, B extends Brick[]> = PageInfo &
 
 export type GenericPageConfig = PageConfig<DatasourcesMap, Brick[]>;
 
-export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): GenericPageConfig {
+export function getNewPageConfig(
+  templateConfig: TemplateConfig,
+  path = "/",
+  useFixedId: false | string = false,
+): GenericPageConfig {
   const pageConfig = templateConfig.pages.find((p) => p.path === path);
   invariant(pageConfig, `createPageConfigFromTemplateConfig: No page config found for path ${path}`);
 
   const bricks = pageConfig.bricks;
 
   return {
-    id: crypto.randomUUID(),
+    id: typeof useFixedId === "boolean" ? crypto.randomUUID() : useFixedId,
     label: pageConfig.label,
     tags: pageConfig.tags,
     path,
@@ -148,10 +152,18 @@ export type GenericPageContext = Omit<GenericPageConfig, "attr" | "attributes"> 
 export function getNewSiteConfig(
   templateConfig: TemplateConfig,
   options: { label: string } = { label: "New site" },
+  // used for testing to avoid changing the site id on every reload
+  useFixedIds = false,
 ) {
-  const id = crypto.randomUUID();
+  const id = useFixedIds ? "00000000-0000-0000-0000-000000000001" : crypto.randomUUID();
   const hostname = `${nanoid()}.upstart.gg`;
-  const pages = templateConfig.pages.map((p) => getNewPageConfig(templateConfig, p.path));
+  const pages = templateConfig.pages.map((p, index) =>
+    getNewPageConfig(
+      templateConfig,
+      p.path,
+      useFixedIds ? `00000000-0000-0000-0000-00000000000${index}` : false,
+    ),
+  );
 
   const site = {
     id,

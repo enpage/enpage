@@ -8,6 +8,7 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
+import { detectCollisions } from "~/shared/utils/layout-utils";
 
 interface DragCallbacks {
   onDragMove?: (
@@ -17,7 +18,7 @@ interface DragCallbacks {
     event: Interact.InteractEvent,
   ) => void;
   onDragEnd?: (
-    brickId: string,
+    brick: Brick,
     position: { x: number; y: number },
     gridPosition: { x: number; y: number },
     event: Interact.InteractEvent,
@@ -261,20 +262,10 @@ export const useEditablePage = (
                   desktop: { w, h },
                 },
               } = brick;
-              const constraints: BrickConstraints = {
-                preferredHeight: defaults[type].preferredHeight,
-                preferredWidth: defaults[type].preferredWidth,
-                minHeight: defaults[type].minHeight,
-                minWidth: defaults[type].minWidth,
-                maxWidth: defaults[type].maxWidth,
-              };
+
+              const gridPosition = getGridPosition(target, gridConfig);
               // we fire the callback for the main element only
-              dragCallbacks.onDragMove?.(
-                brick,
-                getPosition(target, event),
-                getGridPosition(target, gridConfig),
-                event,
-              );
+              dragCallbacks.onDragMove?.(brick, getPosition(target, event), gridPosition, event);
             } else {
               console.log("cannot determine type of brick event.target", event.target);
             }
@@ -283,25 +274,18 @@ export const useEditablePage = (
             const target = event.target as HTMLElement;
             target.classList.remove("moving");
             const elements = selectedGroup ? selectedGroup.map(getBrickRef) : [target];
-
             elements.forEach((element) => {
               if (!element) return;
+              const brick = getBrick(element.id);
+              if (!brick) return;
               const position = getPosition(element, event);
               const gridPosition = getGridPosition(element, gridConfig);
-              // Clear transform and data attributes
               element.style.transform = "";
               element.dataset.x = "0";
               element.dataset.y = "0";
-              // call back
-              dragCallbacks.onDragEnd?.(element.id, position, gridPosition, event);
+              dragCallbacks.onDragEnd?.(brick, position, gridPosition, event);
             });
           },
-          // mousedown: (event: Interact.InteractEvent) => {
-          //   event.currentTarget.style.cursor = "move";
-          // },
-          // mouseup: (event: Interact.InteractEvent) => {
-          //   event.currentTarget.style.cursor = "auto";
-          // },
         },
         ...dragOptions,
       });
