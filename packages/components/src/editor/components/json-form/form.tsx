@@ -1,6 +1,6 @@
 import type { TSchema } from "@sinclair/typebox";
 import ColorField from "./fields/color";
-import DimensionField from "./fields/dimension";
+import { DimensionsField } from "./fields/dimensions";
 import EnumField from "./fields/enum";
 import FileField from "./fields/file";
 import MixedContentField from "./fields/mixed-content";
@@ -13,7 +13,11 @@ import { sortJsonSchemaProperties } from "~/shared/utils/sort-json-schema-props"
 import type { FieldProps } from "./fields/types";
 import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@twind/core";
-import type { BorderSettings, EffectsSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
+import type {
+  BorderSettings,
+  DimensionsSettings,
+  EffectsSettings,
+} from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
 import type { MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
 
@@ -116,14 +120,14 @@ export function getFormComponents({
           };
         }
 
-        case "dimension": {
+        case "dimensions": {
           return {
             group,
             groupTitle,
             component: (
-              <DimensionField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ [id]: value }, id)}
+              <DimensionsField
+                currentValue={(formData[id] ?? commonProps.schema.default) as DimensionsSettings}
+                onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -285,12 +289,16 @@ export function FormRenderer({ components, brickId }: { components: FormComponen
   return components.map((element, index) => {
     const node = (
       <Fragment key={`${brickId}_${index}`}>
-        {currentGroup !== element.group && element.groupTitle && (
-          <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] -mx-3">
-            {element.groupTitle}
-          </h3>
-        )}
         <div className="form-group flex flex-col gap-3">
+          {currentGroup !== element.group && element.groupTitle && (
+            <h3
+              className={tx(
+                "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
+              )}
+            >
+              {element.groupTitle}
+            </h3>
+          )}
           {"component" in element ? element.component : element.components.map((c, i) => c.component)}
         </div>
       </Fragment>

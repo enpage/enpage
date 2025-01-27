@@ -6,7 +6,7 @@ import { LAYOUT_COLS } from "~/shared/layout-constants";
 import {
   borderColor,
   borderRadius,
-  borderSettings,
+  borders,
   borderStyle,
   borderWidth,
   commonStyleProps,

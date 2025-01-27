@@ -29,11 +29,11 @@ const MixedContentField: React.FC<FieldProps<MixedContent>> = (props) => {
           menuPlacement="above-editor"
           richText={currentValue.richText}
           enabled
-          className={tx("text-sm form-textarea focus:ring-0", {
+          className={tx("form-textarea focus:ring-0 h-full", {
             "flex-1 rounded rounded-t-none border-gray-300": textEditMode === "large",
             "border-0": textEditMode !== "large",
-            "h-full": !!currentValue.richText,
-            "max-h-10": !currentValue.richText,
+            // "h-full": !!currentValue.richText,
+            // "min-h-12": !currentValue.richText,
           })}
         />
       </div>

@@ -19,7 +19,8 @@ export function useBrickStyle(
   // we use flex-1 to make the inner brick fill the space.
   return tx("flex-1", [
     props.className && apply(props.className),
-    props.padding ? (props.padding as string) : null,
+    // props.padding ? (props.padding as string) : null,
+    props.dimensions?.padding ? (props.dimensions.padding as string) : null,
     props.color ? `text-${props.color}` : null,
     props.fontSize ? `text-${props.fontSize}` : null,
     props.fontWeight ? `font-${props.fontWeight}` : null,

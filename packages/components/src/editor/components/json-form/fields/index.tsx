@@ -1,7 +1,6 @@
 import type { RegistryFieldsType } from "@rjsf/utils";
 import type EnumField from "./enum";
 import type FileField from "./file";
-import type DimensionField from "./dimension";
 import ColorField from "./color";
 import type SwitchField from "./switch";
 import type MixedContentField from "./mixed-content";

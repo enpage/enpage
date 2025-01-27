@@ -24,7 +24,6 @@ const ghostInvalid = tx("bg-red-100");
 
 export default function EditablePage() {
   const previewMode = usePreviewMode();
-  // const setSelectedGroup = useSetSelectedGroup();
   const editorHelpers = useEditorHelpers();
   const selectedBrick = useSelectedBrick();
   const draft = useDraft();
@@ -34,13 +33,6 @@ export default function EditablePage() {
   const [colWidth, setColWidth] = useState(0);
   const dragOverRef = useRef<HTMLDivElement>(null);
   const pageClassName = usePageStyle({ attributes, editable: true, previewMode });
-
-  // const [draggingOverPos, setDraggingOverPos] = useState<null | {
-  //   y: number;
-  //   x: number;
-  //   h: number;
-  //   w: number;
-  // }>(null);
 
   // on page load, set last loaded property so that the store is saved to local storage
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -65,6 +57,7 @@ export default function EditablePage() {
       }
     } else {
       dragOverRef.current?.style.setProperty("opacity", "0");
+      dragOverRef.current?.style.setProperty("display", "none");
     }
   }
 
@@ -95,6 +88,8 @@ export default function EditablePage() {
       onDragEnd: (brick, pos, gridPos) => {
         console.log("onDragEnd (%s)", previewMode, gridPos);
 
+        updateDragOverGhostStyle(false);
+
         const collisions = detectCollisions({
           brick,
           bricks: draft.bricks,
@@ -106,7 +101,6 @@ export default function EditablePage() {
           console.warn("Collisions detected, cancelling drop");
           // reset the selected group
           editorHelpers.setSelectedGroup();
-          updateDragOverGhostStyle(false);
           return;
         }
 
@@ -117,7 +111,6 @@ export default function EditablePage() {
         });
         // reset the selected group
         editorHelpers.setSelectedGroup();
-        updateDragOverGhostStyle(false);
       },
     },
     dropCallbacks: {
@@ -130,6 +123,8 @@ export default function EditablePage() {
       },
       onDrop(event, gridPosition, brick) {
         console.log("onDrop (%s)", previewMode, gridPosition, brick);
+
+        updateDragOverGhostStyle(false);
         const position = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
         if (position) {
           const bricksDefaults = defaults[brick.type];
@@ -155,6 +150,9 @@ export default function EditablePage() {
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
         console.log("onResizeEnd (%s)", previewMode, brickId, gridPos);
+
+        updateDragOverGhostStyle(false);
+
         draft.updateBrickPosition(brickId, previewMode, {
           ...draft.getBrick(brickId)!.position[previewMode],
           w: gridPos.w,

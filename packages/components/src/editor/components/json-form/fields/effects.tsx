@@ -2,11 +2,19 @@ import type { FieldProps } from "./types";
 import { Text, Select, Slider } from "@upstart.gg/style-system/system";
 import type { EffectsSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { fieldLabel } from "../form-class";
+import { useState } from "react";
 
 export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
 
   console.log("effrects", { currentValue });
+
+  const [opacity, setOpacity] = useState(currentValue.opacity);
+
+  const onOpacityChange = (value: number) => {
+    setOpacity(value);
+    onChange({ ...currentValue, opacity: value });
+  };
 
   return (
     <div className="border-field">
@@ -35,10 +43,15 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
         </div>
         {/* border style */}
         <div className="flex flex-col gap-1 flex-1">
-          <label className={fieldLabel}>Opacity</label>
+          <label className={fieldLabel}>
+            Opacity{" "}
+            <span className="text-gray-500 dark:text-gray-50 font-normal text-xs">
+              ({(opacity ?? 1) * 100}%)
+            </span>
+          </label>
           <Slider
             className="!mt-3"
-            onValueChange={(value) => onChange({ ...currentValue, opacity: value[0] })}
+            onValueChange={(value) => onOpacityChange(value[0])}
             size="1"
             variant="soft"
             min={0}

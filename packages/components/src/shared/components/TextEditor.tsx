@@ -103,7 +103,7 @@ type Props = {
 };
 
 const toolbarBtnCls =
-  "first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 leading-none data-[state=on]:(bg-upstart-500 text-white)";
+  "first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
 
 const TextEditor = ({
   initialContent,
@@ -187,7 +187,7 @@ const TextEditor = ({
       editorProps: {
         attributes: {
           class: tx(
-            "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto",
+            "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm mx-auto min-h-[46px] dark:(bg-dark-800 text-dark-100) p-2",
             className,
           ),
         },
@@ -283,9 +283,12 @@ const MenuBar = ({
   let className = "";
 
   if (placement === "above-editor") {
-    className = tx("z-[900] text-gray-800 flex gap-1 p-1 bg-gray-100 text-sm flex flex-wrap", {
-      "border border-b-0 border-gray-300 rounded-t ": !discrete,
-    });
+    className = tx(
+      "z-[900] text-gray-800 flex gap-1 p-1 bg-gray-100 dark:bg-dark-700 text-sm flex flex-wrap",
+      {
+        "border border-b-0 border-gray-300 rounded-t ": !discrete,
+      },
+    );
   } else {
     className = tx(
       "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
@@ -322,7 +325,7 @@ const MenuBar = ({
 function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 bg-white border border-gray-300 h-6"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
       type="single"
       value={editor.isActive("textAlign") ? editor.getAttributes("textAlign").alignment : undefined}
       aria-label="Text align"
@@ -450,7 +453,7 @@ function DisplayModeButton({ icon }: { icon: "close" | "enlarge" }) {
       size="1"
       color="gray"
       variant="surface"
-      className="hover:bg-upstart-100"
+      className={tx(toolbarBtnCls)}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -505,7 +508,7 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <IconButton size="1" color="gray" variant="surface" className="hover:bg-upstart-100">
+        <IconButton size="1" color="gray" variant="surface" className={tx(toolbarBtnCls)}>
           <VscDatabase className="w-4 h-4 " />
         </IconButton>
       </Popover.Trigger>
@@ -519,7 +522,7 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
 function TextStyleButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x divide-gray-300 rounded-[3px] bg-white border border-gray-300 h-6"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
       type="multiple"
       value={
         [
@@ -585,7 +588,7 @@ function TextSizeSelect({ editor }: TextSizeSelectProps) {
         }
       }}
     >
-      <Select.Trigger variant="surface" />
+      <Select.Trigger />
       <Select.Content position="popper">
         <Select.Group>
           <Select.Label>Headings</Select.Label>

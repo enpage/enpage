@@ -15,18 +15,25 @@ const groupEffects = {
   "ui:group:title": "Effects",
 };
 
+const groupDimensions = {
+  "ui:group": "dimensions",
+  "ui:group:title": "Dimensions",
+  "ui:group:order": 1,
+};
+
 const groupColors = {
   "ui:group": "colors",
   "ui:group:title": "Colors",
+  "ui:group:order": 2,
 };
 
 export const borderWidth = Type.Union(
   [
     Type.Literal("border-0", { title: "None" }),
-    Type.Literal("border", { title: "S" }),
-    Type.Literal("border-2", { title: "M" }),
-    Type.Literal("border-4", { title: "L" }),
-    Type.Literal("border-8", { title: "XL" }),
+    Type.Literal("border", { title: "Small" }),
+    Type.Literal("border-2", { title: "Medium" }),
+    Type.Literal("border-4", { title: "Large" }),
+    Type.Literal("border-8", { title: "Extra large" }),
   ],
   {
     $id: "borderWidth",
@@ -67,10 +74,10 @@ export const borderStyle = Type.Union(
 export const borderRadius = Type.Union(
   [
     Type.Literal("rounded-none", { title: "None" }),
-    Type.Literal("rounded-sm", { title: "S" }),
-    Type.Literal("rounded-md", { title: "M" }),
-    Type.Literal("rounded-lg", { title: "L" }),
-    Type.Literal("rounded-xl", { title: "XL" }),
+    Type.Literal("rounded-sm", { title: "Small" }),
+    Type.Literal("rounded-md", { title: "Medium" }),
+    Type.Literal("rounded-lg", { title: "Large" }),
+    Type.Literal("rounded-xl", { title: "Extra large" }),
     Type.Literal("rounded-full", { title: "Full" }),
   ],
   {
@@ -84,7 +91,7 @@ export const borderRadius = Type.Union(
   },
 );
 
-export const borderSettings = Type.Optional(
+export const borders = Type.Optional(
   Type.Object(
     {
       radius: borderRadius,
@@ -107,15 +114,15 @@ export const borderSettings = Type.Optional(
   ),
 );
 
-export type BorderSettings = Static<typeof borderSettings>;
+export type BorderSettings = Static<typeof borders>;
 
 export const padding = Type.Union(
   [
     Type.Literal("p-0", { title: "None" }),
-    Type.Literal("p-2", { title: "S" }),
-    Type.Literal("p-4", { title: "M" }),
-    Type.Literal("p-8", { title: "L" }),
-    Type.Literal("p-16", { title: "XL" }),
+    Type.Literal("p-2", { title: "Small" }),
+    Type.Literal("p-4", { title: "Medium" }),
+    Type.Literal("p-8", { title: "Large" }),
+    Type.Literal("p-16", { title: "Extra large" }),
   ],
   {
     $id: "padding",
@@ -127,6 +134,26 @@ export const padding = Type.Union(
     ...groupSpacing,
   },
 );
+
+export const dimensions = Type.Object(
+  {
+    height: Type.Optional(
+      Type.Union([Type.Literal("fixed", { title: "Fixed" }), Type.Literal("auto", { title: "Auto" })]),
+    ),
+    padding: Type.Optional(padding),
+  },
+  {
+    title: "Dimensions",
+    "ui:field": "dimensions",
+    ...groupDimensions,
+    default: {
+      padding: "p-2",
+      height: "fixed",
+    },
+  },
+);
+
+export type DimensionsSettings = Static<typeof dimensions>;
 
 /**
  * We don't manage margins yet (users have to move bricks over the grid to handle margins)
@@ -178,11 +205,11 @@ const opacity = Type.Optional(
 const shadow = Type.Union(
   [
     Type.Literal("shadow-none", { title: "None" }),
-    Type.Literal("shadow-sm", { title: "S" }),
-    Type.Literal("shadow-md", { title: "M" }),
-    Type.Literal("shadow-lg", { title: "L" }),
-    Type.Literal("shadow-xl", { title: "XL" }),
-    Type.Literal("shadow-2xl", { title: "2XL" }),
+    Type.Literal("shadow-sm", { title: "Small" }),
+    Type.Literal("shadow-md", { title: "Medium" }),
+    Type.Literal("shadow-lg", { title: "Large" }),
+    Type.Literal("shadow-xl", { title: "Extra large" }),
+    Type.Literal("shadow-2xl", { title: "Extra large (2x)" }),
   ],
   {
     $id: "shadow",
@@ -195,7 +222,7 @@ const shadow = Type.Union(
   },
 );
 
-export const effectsSettings = Type.Optional(
+export const effects = Type.Optional(
   Type.Object(
     {
       shadow,
@@ -214,7 +241,7 @@ export const effectsSettings = Type.Optional(
   ),
 );
 
-export type EffectsSettings = Static<typeof effectsSettings>;
+export type EffectsSettings = Static<typeof effects>;
 
 /**
  * No margin in common style props as bricks are usually placed in a grid
@@ -224,9 +251,10 @@ export const commonStyleProps = Type.Object({
   // borderWidth,
   // borderColor,
   // borderStyle,
-  borderSettings,
-  effectsSettings,
-  padding,
+  dimensions,
+  borders,
+  effects,
+  // padding,
   backgroundColor,
 });
 

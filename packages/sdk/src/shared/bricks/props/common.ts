@@ -37,6 +37,7 @@ export const mixedContent = Type.Object(
     "ui:field": "mixed-content",
     "ui:group": "content",
     "ui:group:title": "Content",
+    "ui:group:order": 3,
   },
 );
 

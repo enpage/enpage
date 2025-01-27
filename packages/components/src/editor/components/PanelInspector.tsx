@@ -67,7 +67,7 @@ export default function Inspector() {
       )}
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
-          <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:bg-dark-600 items-center font-medium text-sm capitalize flex-1 select-none">
+          <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const} (#{editor.selectedBrick.id})
             <TbHelp
               className="w-5 h-5 dark:text-white opacity-50 dark:hover:opacity-80 cursor-pointer"
@@ -103,19 +103,21 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   const manifest = manifests[brick.type];
   const formData = { ...brickDefaults.props, ...brick.props };
 
-  if (manifest) {
-    const elements = getFormComponents({
-      brickId: brick.id,
-      formSchema: manifest.properties.props,
-      formData,
-      onChange,
-    });
-
-    return (
-      <form className={tx("px-3 flex flex-col gap-3", showHelp && "hide-help")}>
-        <FormRenderer components={elements} brickId={brick.id} />
-      </form>
-    );
+  if (!manifest) {
+    console.warn(`No manifest found for brick: ${JSON.stringify(brick)}`);
+    return null;
   }
-  return <pre className="text-xs">{JSON.stringify(brick, null, 2)}</pre>;
+
+  const elements = getFormComponents({
+    brickId: brick.id,
+    formSchema: manifest.properties.props,
+    formData,
+    onChange,
+  });
+
+  return (
+    <form className={tx("px-3 flex flex-col gap-3", showHelp && "hide-help")}>
+      <FormRenderer components={elements} brickId={brick.id} />
+    </form>
+  );
 }
