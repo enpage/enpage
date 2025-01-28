@@ -65,19 +65,19 @@ export function useBrickWrapperStyle({
       }),
 
     // Border
-    "borderSettings" in brick.props && propToStyle(brick.props.borderSettings.color as string, "borderColor"),
-    "borderSettings" in brick.props && (brick.props.borderSettings.radius as string),
-    "borderSettings" in brick.props && (brick.props.borderSettings.style as string),
-    "borderSettings" in brick.props && (brick.props.borderSettings.width as string),
+    "borders" in brick.props && propToStyle(brick.props.borders.color as string, "borderColor"),
+    "borders" in brick.props && (brick.props.borders.radius as string),
+    "borders" in brick.props && (brick.props.borders.style as string),
+    "borders" in brick.props && (brick.props.borders.width as string),
 
     // Background
     "backgroundColor" in brick.props && propToStyle(brick.props.backgroundColor as string, "background"),
 
     // Opacity
-    "opacity" in brick.props && propToStyle(brick.props.opacity as number | undefined, "opacity"),
+    "effects" in brick.props && propToStyle(brick.props.effects.opacity as number | undefined, "opacity"),
 
     // shadow
-    "shadow" in brick.props && (brick.props.shadow as string),
+    "effects" in brick.props && (brick.props.effects.shadow as string),
 
     // z-index
     // (brick.props.z as string) && `z-[${brick.props.z}]`,

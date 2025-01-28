@@ -4,6 +4,7 @@ import { memoizeWithout } from "../utils/memoize-without";
 import { useEditableText } from "~/shared/hooks/use-editable-text";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/text.manifest";
+import { tx } from "@upstart.gg/style-system/twind";
 
 /**
  * Text brick
@@ -17,8 +18,12 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
 const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-    <div ref={ref} className={className} dangerouslySetInnerHTML={{ __html: props.content.text }} />
+    <div
+      ref={ref}
+      className={tx(className, "prose")}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+      dangerouslySetInnerHTML={{ __html: props.content.text }}
+    />
   );
 });
 
@@ -27,7 +32,7 @@ const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) 
   const content = "";
   // const content = useEditableText(props.id, props.content.text);
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={tx(className, "prose")}>
       {content}
     </div>
   );
