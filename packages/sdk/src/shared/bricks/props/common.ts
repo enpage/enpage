@@ -28,10 +28,9 @@ export const richText = Type.Boolean({
 });
 
 export const mixedContent = Type.Object(
-  { richText, text: Type.String() },
+  { text: Type.String(), richText: Type.Boolean() },
   {
     default: {
-      richText: true,
       text: "some text here",
     },
     "ui:field": "mixed-content",
@@ -43,6 +42,47 @@ export const mixedContent = Type.Object(
 
 export type MixedContent = Static<typeof mixedContent>;
 
+const imageProps = Type.Object(
+  {
+    src: Type.String({
+      default: "https://placehold.co/400x200",
+      title: "File",
+    }),
+    alt: Type.String({
+      title: "Alternate Text",
+      description: "Alternative text for the image. Recommended for screen readers and SEO.",
+      "ui:placeholder": "Your image description",
+    }),
+  },
+  {
+    "ui:group": "image",
+    "ui:group:title": "Image",
+    "ui:group:order": 1,
+    "ui:field": "image",
+    "ui:accept": "image/*",
+    "ui:show-img-search": true,
+    "ui:allow-url": true,
+  },
+);
+
+export type ImageProps = Static<typeof imageProps>;
+
+export const imageSettings = Type.Object(
+  {
+    image: imageProps,
+  },
+  {
+    default: {
+      image: {
+        src: "https://placehold.co/400x200",
+        alt: "my image",
+      },
+    },
+  },
+);
+
+export type ImageSettings = Static<typeof imageSettings>;
+
 export const contentAwareProps = Type.Object(
   {
     content: mixedContent,
@@ -51,7 +91,6 @@ export const contentAwareProps = Type.Object(
     default: {
       content: {
         text: "some text here",
-        richText: true,
       },
     },
   },

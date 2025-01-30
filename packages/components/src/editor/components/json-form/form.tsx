@@ -2,7 +2,7 @@ import type { TSchema } from "@sinclair/typebox";
 import ColorField from "./fields/color";
 import { DimensionsField } from "./fields/dimensions";
 import EnumField from "./fields/enum";
-import FileField from "./fields/file";
+import ImageField from "./fields/image";
 import MixedContentField from "./fields/mixed-content";
 import { BorderField } from "./fields/border";
 import { PathField, StringField } from "./fields/string";
@@ -19,7 +19,7 @@ import type {
   EffectsSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
-import type { MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
+import type { ImageProps, MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -146,13 +146,13 @@ export function getFormComponents({
             ),
           };
         }
-        case "file": {
+        case "image": {
           return {
             group,
             component: (
-              <FileField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: string | null) => onChange({ [id]: value }, id)}
+              <ImageField
+                currentValue={(formData[id] ?? commonProps.schema.default) as ImageProps}
+                onChange={(value: ImageProps | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),

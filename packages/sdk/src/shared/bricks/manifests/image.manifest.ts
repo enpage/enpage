@@ -1,6 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
-import { commonProps } from "../props/common";
+import { commonProps, imageSettings } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
 
@@ -33,24 +33,7 @@ export const manifest = defineBrickManifest({
       <polyline points="21 15 16 10 5 21"></polyline>
     </svg>
   `,
-  props: Type.Composite([
-    Type.Object({
-      src: Type.String({
-        default: "https://placehold.co/400x200",
-        title: "File",
-        "ui:field": "file",
-        "ui:accept": "image/*",
-        "ui:show-img-search": true,
-        "ui:allow-url": true,
-      }),
-      alt: Type.String({
-        title: "Alternate Text",
-        description: "Alternative text for the image. Recommended for screen readers and SEO.",
-        "ui:placeholder": "Your image description",
-      }),
-    }),
-    commonProps,
-  ]),
+  props: Type.Composite([imageSettings, commonProps]),
 });
 
 export type Manifest = Static<typeof manifest>;
