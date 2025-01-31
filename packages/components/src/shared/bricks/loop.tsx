@@ -16,4 +16,4 @@ const Loop = forwardRef<HTMLDivElement, Manifest["props"] & ComponentProps<"img"
   );
 });
 
-export default Image;
+export default Loop;
