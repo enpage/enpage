@@ -44,29 +44,7 @@ export const manifest = defineBrickManifest({
     <line x1="11" y1="17" x2="13" y2="17" stroke-width="0.5"></line>
 </svg>
   `,
-  props: Type.Composite([
-    contentAwareProps,
-    commonProps,
-    commonStyleProps,
-    Type.Object({
-      heroFontSize: Type.Union(
-        [
-          Type.Literal("font-size-hero-1", { title: "1" }),
-          Type.Literal("font-size-hero-2", { title: "2" }),
-          Type.Literal("font-size-hero-3", { title: "3" }),
-          Type.Literal("font-size-hero-4", { title: "4" }),
-          Type.Literal("font-size-hero-5", { title: "5" }),
-        ],
-        {
-          default: "font-size-hero-3",
-          title: "Font size",
-          "ui:field": "enum",
-          "ui:display": "button-group",
-          "ui:group": "border",
-        },
-      ),
-    }),
-  ]),
+  props: Type.Composite([contentAwareProps, commonProps]),
 });
 
 export type Manifest = Static<typeof manifest>;

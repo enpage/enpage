@@ -1,8 +1,15 @@
 import { css, tx } from "@upstart.gg/style-system/twind";
-import { useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { generateId, type Brick } from "@upstart.gg/sdk/shared/bricks";
 import BrickWrapper from "./EditableBrick";
-import { useAttributes, useBricks, useDraft, useEditor } from "../hooks/use-editor";
+import {
+  useAttributes,
+  useBricks,
+  useDraft,
+  useEditorHelpers,
+  usePreviewMode,
+  useSelectedBrick,
+} from "../hooks/use-editor";
 import { useHotkeys } from "react-hotkeys-hook";
 import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
 import Selecto from "react-selecto";
@@ -10,22 +17,22 @@ import { useEditablePage } from "~/editor/hooks/use-draggable";
 import { debounce } from "lodash-es";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
-import { canDropOnLayout } from "~/shared/utils/layout-utils";
+import { canDropOnLayout, detectCollisions, getDropOverGhostPosition } from "~/shared/utils/layout-utils";
+
+const ghostValid = tx("bg-upstart-100");
+const ghostInvalid = tx("bg-red-100");
 
 export default function EditablePage() {
-  const editor = useEditor();
+  const previewMode = usePreviewMode();
+  const editorHelpers = useEditorHelpers();
+  const selectedBrick = useSelectedBrick();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
   const attributes = useAttributes();
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
-  const pageClassName = usePageStyle({ attributes, editable: true, previewMode: editor.previewMode });
-  const [draggingOverPos, setDraggingOverPos] = useState<null | {
-    y: number;
-    x: number;
-    h: number;
-    w: number;
-  }>(null);
+  const dragOverRef = useRef<HTMLDivElement>(null);
+  const pageClassName = usePageStyle({ attributes, editable: true, previewMode });
 
   // on page load, set last loaded property so that the store is saved to local storage
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -33,51 +40,105 @@ export default function EditablePage() {
     draft.setLastLoaded();
   }, []);
 
+  /**
+   *  Update the ghost style based on the drop position
+   */
+  function updateDragOverGhostStyle(
+    info: ReturnType<typeof canDropOnLayout | typeof getDropOverGhostPosition>,
+  ) {
+    if (info) {
+      dragOverRef.current?.style.setProperty("opacity", "0.2");
+      dragOverRef.current?.style.setProperty("grid-column", `${info.x + 1} / span ${info.w}`);
+      dragOverRef.current?.style.setProperty("grid-row", `${info.y + 1} / span ${info.h}`);
+      dragOverRef.current?.style.setProperty("display", "block");
+      if (info.forbidden) {
+        dragOverRef.current?.classList.toggle(ghostInvalid, true);
+        dragOverRef.current?.classList.toggle(ghostValid, false);
+      } else {
+        dragOverRef.current?.classList.toggle(ghostInvalid, false);
+        dragOverRef.current?.classList.toggle(ghostValid, true);
+      }
+    } else {
+      dragOverRef.current?.style.setProperty("opacity", "0");
+      dragOverRef.current?.style.setProperty("display", "none");
+    }
+  }
+
   useEditablePage(".brick", pageRef, {
     dragOptions: {
-      enabled: editor.previewMode === "desktop",
+      enabled: previewMode === "desktop",
     },
     gridConfig: {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
       containerHorizontalPadding:
-        editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10,
+        previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10,
       containerVerticalPadding:
-        editor.previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10,
+        previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10,
     },
     dragCallbacks: {
-      onDragEnd: (brickId, pos, gridPos) => {
-        console.log("onDragEnd (%s)", editor.previewMode, gridPos);
-        draft.updateBrickPosition(brickId, editor.previewMode, {
-          ...draft.getBrick(brickId)!.position[editor.previewMode],
+      onDragMove(brick, pos, gridPosition) {
+        const dropOverPos = getDropOverGhostPosition({
+          brick,
+          bricks: draft.bricks,
+          currentBp: previewMode,
+          dropPosition: gridPosition,
+        });
+        // console.log("%o", dropOverPos);
+        updateDragOverGhostStyle(dropOverPos);
+        // editorHelpers.setCollidingBrick(dropOverPos.collision);
+      },
+      onDragEnd: (brick, pos, gridPos) => {
+        console.log("onDragEnd (%s)", previewMode, gridPos);
+
+        updateDragOverGhostStyle(false);
+
+        const collisions = detectCollisions({
+          brick,
+          bricks: draft.bricks,
+          currentBp: previewMode,
+          dropPosition: gridPos,
+        });
+
+        if (collisions.length) {
+          console.warn("Collisions detected, cancelling drop");
+          // reset the selected group
+          editorHelpers.setSelectedGroup();
+          return;
+        }
+
+        draft.updateBrickPosition(brick.id, previewMode, {
+          ...draft.getBrick(brick.id)!.position[previewMode],
           x: gridPos.x,
           y: gridPos.y,
         });
         // reset the selected group
-        editor.setSelectedGroup();
+        editorHelpers.setSelectedGroup();
       },
     },
     dropCallbacks: {
       onDropMove(event, gridPosition, brick) {
-        const canDrop = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
-        setDraggingOverPos(canDrop || null);
+        const canDrop = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
+        updateDragOverGhostStyle(canDrop);
       },
       onDropDeactivate() {
-        setDraggingOverPos(null);
+        updateDragOverGhostStyle(false);
       },
       onDrop(event, gridPosition, brick) {
-        console.log("onDrop (%s)", editor.previewMode, gridPosition, brick);
-        const position = canDropOnLayout(draft.bricks, editor.previewMode, gridPosition, brick.constraints);
+        console.log("onDrop (%s)", previewMode, gridPosition, brick);
+
+        updateDragOverGhostStyle(false);
+        const position = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
         if (position) {
           const bricksDefaults = defaults[brick.type];
           const newBrick: Brick = {
-            id: generateId(),
+            id: `brick-${generateId()}`,
             ...bricksDefaults,
             type: brick.type,
             position: {
               desktop: position,
               mobile: position,
-              [editor.previewMode]: position,
+              [previewMode]: position,
             },
           };
           draft.addBrick(newBrick);
@@ -91,17 +152,21 @@ export default function EditablePage() {
     },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
-        console.log("onResizeEnd (%s)", editor.previewMode, brickId, gridPos);
-        draft.updateBrickPosition(brickId, editor.previewMode, {
-          ...draft.getBrick(brickId)!.position[editor.previewMode],
+        console.log("onResizeEnd (%s)", previewMode, brickId, gridPos);
+
+        updateDragOverGhostStyle(false);
+
+        draft.updateBrickPosition(brickId, previewMode, {
+          ...draft.getBrick(brickId)!.position[previewMode],
           w: gridPos.w,
           h: gridPos.h,
-          // when resizing trhough the mobile view, set the manual height
+          // when resizing through the mobile view, set the manual height
           // so that the system knows that the height is not automatic
-          ...(editor.previewMode === "mobile" ? { manualHeight: gridPos.h } : {}),
+          ...(previewMode === "mobile" ? { manualHeight: gridPos.h } : {}),
         });
 
-        if (editor.previewMode === "mobile") {
+        // try to automatically adjust the mobile layout when resizing from desktop
+        if (previewMode === "desktop") {
           draft.adjustMobileLayout();
         }
       },
@@ -115,7 +180,7 @@ export default function EditablePage() {
         const containerWidth = pageRef.current.offsetWidth;
         const totalGapWidth = parseInt(attributes.$pagePaddingHorizontal as string) * 2;
         const availableWidth = containerWidth - totalGapWidth;
-        setColWidth(availableWidth / LAYOUT_COLS[editor.previewMode]);
+        setColWidth(availableWidth / LAYOUT_COLS[previewMode]);
       }
     }, 250);
 
@@ -134,7 +199,7 @@ export default function EditablePage() {
       window.removeEventListener("resize", updateCellWidth);
       observer.disconnect();
     };
-  }, [editor.previewMode, attributes.$pagePaddingHorizontal]);
+  }, [previewMode, attributes.$pagePaddingHorizontal]);
 
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -149,13 +214,17 @@ export default function EditablePage() {
         !target.closest('[role="dialog"]') &&
         !target.closest('[role="toolbar"]') &&
         !target.closest('[role="navigation"]') &&
+        !target.matches('[role="menuitem"]') &&
         !target.matches("html") &&
+        !target.matches("body") &&
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
-        editor.deselectBrick();
+        console.debug("click out, hidding", event.target);
+        editorHelpers.deselectBrick();
         // also deselect the library panel
-        editor.hidePanel("library");
+        editorHelpers.hidePanel("library");
+        editorHelpers.setTextEditMode("default");
       }
     };
     document.addEventListener("click", listener, false);
@@ -165,8 +234,8 @@ export default function EditablePage() {
   }, []);
 
   useHotkeys("esc", () => {
-    editor.deselectBrick();
-    editor.setPanel();
+    editorHelpers.deselectBrick();
+    editorHelpers.setPanel();
   });
 
   useHotkeys("mod+c", () => {
@@ -178,17 +247,17 @@ export default function EditablePage() {
   });
 
   useHotkeys(["backspace", "del"], (e) => {
-    if (editor.selectedBrick && editor.selectedBrick) {
+    if (selectedBrick) {
       e.preventDefault();
-      draft.deleteBrick(editor.selectedBrick.id);
+      draft.deleteBrick(selectedBrick.id);
     }
   });
 
   // mod+d to duplicate the selected brick
   useHotkeys("mod+d", (e) => {
     e.preventDefault();
-    if (editor.selectedBrick) {
-      draft.duplicateBrick(editor.selectedBrick.id);
+    if (selectedBrick) {
+      draft.duplicateBrick(selectedBrick.id);
     }
   });
 
@@ -196,26 +265,18 @@ export default function EditablePage() {
     <>
       <div ref={pageRef} className={pageClassName}>
         {bricks
-          .filter((b) => !b.position[editor.previewMode]?.hidden)
-          .map((brick) => (
-            <BrickWrapper key={`${editor.previewMode}-${brick.id}`} brick={brick}>
+          .filter((b) => !b.position[previewMode]?.hidden)
+          .map((brick, index) => (
+            <BrickWrapper key={`${previewMode}-${brick.id}`} brick={brick}>
               <ResizeHandle direction="s" />
               <ResizeHandle direction="n" />
               <ResizeHandle direction="w" />
               <ResizeHandle direction="e" />
             </BrickWrapper>
           ))}
-
         <div
-          className={tx(
-            "drop-indicator bg-upstart-400/50 rounded transition-all duration-300",
-            css({
-              opacity: draggingOverPos ? 1 : 0,
-              gridColumn: `${draggingOverPos?.x ?? 0} / span ${draggingOverPos?.w ?? 1}`,
-              gridRow: `${draggingOverPos?.y ?? 0} / span ${draggingOverPos?.h ?? 1}`,
-              display: draggingOverPos ? "block" : "none",
-            }),
-          )}
+          ref={dragOverRef}
+          className={tx("drop-indicator bg-upstart-50 rounded transition-all opacity-0 hidden")}
         />
       </div>
       <Selecto
@@ -226,7 +287,7 @@ export default function EditablePage() {
         selectByClick={false}
         onSelect={(e) => {
           if (e.selected.length) {
-            editor.setSelectedGroup(e.selected.map((el) => el.id));
+            editorHelpers.setSelectedGroup(e.selected.map((el) => el.id));
           }
           e.added.forEach((el) => {
             el.classList.add("selected");

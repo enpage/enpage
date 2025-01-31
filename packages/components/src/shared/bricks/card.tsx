@@ -5,17 +5,17 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/card.m
 
 const Card = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
 
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
-  }
-
-  const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
-  });
-
-  return <div>Im a card</div>;
+  return (
+    <div className="card" ref={ref}>
+      {typeof props.cardTitle?.content.text === "string" && (
+        <div className="card-title">{props.cardTitle.content.text}</div>
+      )}
+      {typeof props.cardBody?.content.text === "string" && (
+        <div className="card-body">{props.cardBody?.content.text}</div>
+      )}
+    </div>
+  );
 });
 
 export default Card;

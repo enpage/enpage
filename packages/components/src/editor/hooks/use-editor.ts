@@ -23,27 +23,33 @@ export interface EditorStateProps {
   mode: "local" | "remote";
   // pageConfig: GenericPageConfig;
   previewMode: ResponsiveMode;
+  textEditMode?: "default" | "large";
+  lastTextEditPosition?: number;
   settingsVisible?: boolean;
   selectedBrick?: Brick;
   selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
   shouldShowGrid?: boolean;
-  panel?: "library" | "inspector" | "theme" | "settings";
+  panel?: "library" | "inspector" | "theme" | "settings" | "data";
   modal?: "image-search" | "datasources";
   panelPosition: "left" | "right";
   /**
    * Latest used color adjustment
    */
   colorAdjustment: ColorAdjustment;
+  collidingBrick?: { brick: Brick; side: "top" | "bottom" | "left" | "right" };
 }
 
 export interface EditorState extends EditorStateProps {
   setPreviewMode: (mode: ResponsiveMode) => void;
   setSettingsVisible: (visible: boolean) => void;
   toggleSettings: () => void;
+  toggleTextEditMode: () => void;
+  setTextEditMode: (mode: EditorStateProps["textEditMode"]) => void;
   setSelectedBrick: (brick?: Brick) => void;
   deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
+  setlastTextEditPosition: (position?: number) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
   togglePanel: (panel: EditorStateProps["panel"]) => void;
   hidePanel: (panel: EditorStateProps["panel"]) => void;
@@ -52,6 +58,7 @@ export interface EditorState extends EditorStateProps {
   setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
   togglePanelPosition: () => void;
   showModal: (modal: EditorStateProps["modal"]) => void;
+  setCollidingBrick: (info: { brick: Brick; side: "top" | "bottom" | "left" | "right" } | null) => void;
   hideModal: () => void;
 }
 
@@ -70,6 +77,27 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
           immer((set, _get) => ({
             ...DEFAULT_PROPS,
             ...initProps,
+
+            setCollidingBrick: (info) =>
+              set((state) => {
+                state.collidingBrick = info ?? undefined;
+              }),
+
+            setlastTextEditPosition: (position) =>
+              set((state) => {
+                state.lastTextEditPosition = position;
+              }),
+
+            toggleTextEditMode: () =>
+              set((state) => {
+                state.textEditMode =
+                  !state.textEditMode || state.textEditMode === "default" ? "large" : "default";
+              }),
+
+            setTextEditMode: (mode) =>
+              set((state) => {
+                state.textEditMode = mode;
+              }),
 
             setPreviewMode: (mode) =>
               set((state) => {
@@ -163,9 +191,16 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
               Object.fromEntries(
                 Object.entries(state).filter(
                   ([key]) =>
-                    !["mode", "selectedBrick", "panel", "isEditingTextForBrickId", "shouldShowGrid"].includes(
-                      key,
-                    ),
+                    ![
+                      "mode",
+                      "selectedBrick",
+                      "selectedGroup",
+                      "collidingBrick",
+                      "panel",
+                      "isEditingTextForBrickId",
+                      "shouldShowGrid",
+                      "textEditMode",
+                    ].includes(key),
                 ),
               ),
           },
@@ -185,6 +220,8 @@ export interface DraftStateProps {
   label: string;
   bricks: Brick[];
   data: Record<string, unknown>;
+  datasources?: SiteConfig["datasources"];
+  datarecords?: SiteConfig["datarecords"];
   attr: GenericPageContext["attr"];
   attributes: GenericPageConfig["attributes"];
   siteAttributes: SiteConfig["attributes"];
@@ -220,7 +257,7 @@ export interface DraftState extends DraftStateProps {
   setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
   cancelPreviewTheme: () => void;
-  updateAttributes: (attr: Attributes) => void;
+  updateAttributes: (attr: Partial<Attributes>) => void;
   setLastSaved: (date: Date) => void;
   setDirty: (dirty: boolean) => void;
   setLastLoaded: () => void;
@@ -240,6 +277,8 @@ export const createDraftStore = (
     label: DraftStateProps["label"];
     attr: DraftStateProps["attr"];
     attributes: DraftStateProps["attributes"];
+    datasources?: DraftStateProps["datasources"];
+    datarecords?: DraftStateProps["datarecords"];
     siteAttributes: DraftStateProps["siteAttributes"];
     siteLabel: DraftStateProps["siteLabel"];
     siteId: DraftStateProps["siteId"];
@@ -252,6 +291,8 @@ export const createDraftStore = (
     DraftStateProps,
     | "attr"
     | "attributes"
+    | "datasources"
+    | "datarecords"
     | "siteLabel"
     | "siteAttributes"
     | "pagesMap"
@@ -372,7 +413,7 @@ export const createDraftStore = (
 
             updateAttributes: (attr) =>
               set((state) => {
-                state.attr = attr;
+                state.attr = { ..._get().attr, ...attr };
               }),
 
             setVersion: (version) =>
@@ -397,7 +438,9 @@ export const createDraftStore = (
           })),
           {
             name: `draft-state-${initProps.id}`,
-            skipHydration: initProps.mode === "remote",
+            // TODO: change when demo is done
+            // skipHydration: initProps.mode === "remote",
+            skipHydration: true,
             // Add this to force storage on initialization
             onRehydrateStorage: () => (state) => {
               if (state) {
@@ -480,6 +523,11 @@ export const useSelectedGroup = () => {
   return useStore(ctx, (state) => state.selectedGroup);
 };
 
+export const useSelectedBrick = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.selectedBrick);
+};
+
 export const useColorAdjustment = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.colorAdjustment);
@@ -488,6 +536,11 @@ export const useColorAdjustment = () => {
 export const useEditorMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.mode);
+};
+
+export const useTextEditMode = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.textEditMode);
 };
 
 export const useDraft = () => {
@@ -523,6 +576,41 @@ export const useAttributes = () => {
 export const useAttributesSchema = () => {
   const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.attributes ?? state.siteAttributes);
+};
+
+export const useDatasourcesSchemas = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.datasources);
+};
+
+export const useEditorHelpers = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => ({
+    setPreviewMode: state.setPreviewMode,
+    setSettingsVisible: state.setSettingsVisible,
+    toggleSettings: state.toggleSettings,
+    toggleTextEditMode: state.toggleTextEditMode,
+    setTextEditMode: state.setTextEditMode,
+    setSelectedBrick: state.setSelectedBrick,
+    deselectBrick: state.deselectBrick,
+    setIsEditingText: state.setIsEditingText,
+    setlastTextEditPosition: state.setlastTextEditPosition,
+    setPanel: state.setPanel,
+    togglePanel: state.togglePanel,
+    hidePanel: state.hidePanel,
+    setSelectedGroup: state.setSelectedGroup,
+    setShouldShowGrid: state.setShouldShowGrid,
+    setColorAdjustment: state.setColorAdjustment,
+    togglePanelPosition: state.togglePanelPosition,
+    showModal: state.showModal,
+    hideModal: state.hideModal,
+    setCollidingBrick: state.setCollidingBrick,
+  }));
+};
+
+export const useDatarecordsSchemas = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => state.datarecords);
 };
 
 export const usePageInfo = () => {

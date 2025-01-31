@@ -1,24 +1,23 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { forwardRef, memo, useRef, useState, type ComponentProps, type MouseEvent } from "react";
 import { tx } from "@upstart.gg/style-system/twind";
-import { useDraft, useEditor } from "../hooks/use-editor";
-import { isEqualWith } from "lodash-es";
+import { useDraft, useEditorHelpers, usePreviewMode } from "../hooks/use-editor";
 import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
 import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";
 
-const MemoBrickComponent = memo(BaseBrick, (prevProps, nextProps) => {
-  const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {
-    if (key === "content") {
-      // If the key is in our ignore list, consider it equal
-      return true;
-    }
-    // Otherwise, use the default comparison
-    return undefined;
-  });
-  return compared;
-});
+// const MemoBrickComponent = memo(BaseBrick, (prevProps, nextProps) => {
+//   const compared = isEqualWith(prevProps, nextProps, (objValue, othValue, key, _, __) => {
+//     if (key === "content") {
+//       // If the key is in our ignore list, consider it equal
+//       return true;
+//     }
+//     // Otherwise, use the default comparison
+//     return undefined;
+//   });
+//   return compared;
+// });
 
 type BrickWrapperProps = ComponentProps<"div"> & {
   brick: Brick;
@@ -26,17 +25,17 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, children }, ref) => {
-    const editor = useEditor();
     const hasMouseMoved = useRef(false);
     const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className });
+    const previewMode = usePreviewMode();
+    const { setSelectedBrick } = useEditorHelpers();
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
       const target = e.currentTarget as HTMLElement;
       if (hasMouseMoved.current || target.matches(".react-resizable-handle") || !target.matches(".brick")) {
         return;
       }
-      // e.stopPropagation();
-      editor.setSelectedBrick(brick);
+      setSelectedBrick(brick);
       hasMouseMoved.current = false;
     };
 
@@ -45,7 +44,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         id={brick.id}
         data-x="0"
         data-y="0"
-        data-position={JSON.stringify(brick.position[editor.previewMode])}
+        data-position={JSON.stringify(brick.position[previewMode])}
         style={style}
         className={wrapperClass}
         ref={ref}
@@ -62,7 +61,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
           hasMouseMoved.current = true;
         }}
       >
-        <MemoBrickComponent brick={brick} editable />
+        <BaseBrick brick={brick} editable />
         <BrickOptionsButton brick={brick} />
         {children} {/* Make sure to include children to add resizable handle */}
       </div>
@@ -70,8 +69,10 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   },
 );
 
-const BrickWrapperMemo = memo(BrickWrapper);
-export default BrickWrapperMemo;
+// const BrickWrapperMemo = memo(BrickWrapper);
+// export default BrickWrapperMemo;
+
+export default BrickWrapper;
 
 function BrickOptionsButton({ brick }: { brick: Brick }) {
   const [open, setOpen] = useState(false);

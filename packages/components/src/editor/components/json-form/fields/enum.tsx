@@ -1,8 +1,10 @@
-import type { FieldProps } from "@rjsf/utils";
 import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDraft } from "~/editor/hooks/use-editor";
+import type { FieldProps } from "./types";
+import { fieldDescription, fieldLabel } from "../form-class";
+import { Text, Select, Slider } from "@upstart.gg/style-system/system";
 
 interface EnumOption {
   const: string;
@@ -12,19 +14,15 @@ interface EnumOption {
   "ui:hidden-option"?: boolean;
 }
 
-const EnumField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, formData: currentValue, onChange, required, name, formContext } = props;
-  const context = formContext as { brickId: Brick["id"] };
+const EnumField: React.FC<FieldProps<string>> = (props) => {
+  const { schema, currentValue, formData, onChange, required, title, description } = props;
+  // const context = formContext as { brickId: Brick["id"] };
   const draft = useDraft();
-  const brick = draft.getBrick(context.brickId);
+  // const brick = draft.getBrick(context.brickId);
 
-  if (!brick) {
-    return null;
-  }
-
-  if (name === "borderStyle" && "borderWidth" in brick.props && brick.props.borderWidth === "border-0") {
-    return null;
-  }
+  // if (!brick) {
+  //   return null;
+  // }
 
   // Extract options from the schema
   const options: EnumOption[] =
@@ -42,21 +40,20 @@ const EnumField: React.FC<FieldProps> = (props) => {
   const displayAs: "select" | "radio" | "button-group" | "icon-group" =
     schema["ui:display"] ?? (options.length > 3 ? "select" : "button-group");
 
-  // Extract field-level properties
-  const fieldTitle = schema.title || uiSchema?.["ui:title"];
-  const fieldDescription = schema.description || uiSchema?.["ui:description"];
-
   switch (displayAs) {
     case "radio":
       return (
         <div className="enum-field">
-          {fieldTitle && (
-            <label className="control-label">
-              {fieldTitle}
-              {required ? <span className="required">*</span> : null}
-            </label>
+          {title && (
+            <Text as="label" size="2" weight="medium">
+              {title}
+            </Text>
           )}
-          {fieldDescription && <p className="field-description">{fieldDescription}</p>}
+          {description && (
+            <Text as="p" color="gray" size="1">
+              {description}
+            </Text>
+          )}
           <div className="flex flex-col gap-2 mt-1.5">
             {options
               .filter((o) => !o["ui:hidden-option"])
@@ -67,7 +64,7 @@ const EnumField: React.FC<FieldProps> = (props) => {
                       type="radio"
                       value={option.const}
                       checked={currentValue === option.const}
-                      onChange={onChange(option.const)}
+                      onChange={() => onChange(option.const)}
                       required={required}
                       className="form-radio mr-1 text-upstart-600 ring-upstart-600 focus:ring-transparent"
                     />
@@ -85,13 +82,21 @@ const EnumField: React.FC<FieldProps> = (props) => {
     case "button-group":
       return (
         <div className="enum-field">
-          {fieldTitle && <label className="control-label">{fieldTitle}</label>}
-          {fieldDescription && <p className="field-description">{fieldDescription}</p>}
+          {title && (
+            <Text as="label" size="2" weight="medium">
+              {title}
+            </Text>
+          )}
+          {description && (
+            <Text as="p" color="gray" size="1">
+              {description}
+            </Text>
+          )}
           <SegmentedControl.Root
             onValueChange={onChange}
-            defaultValue={currentValue}
+            defaultValue={currentValue as string}
             size="1"
-            className="w-full !max-w-full mt-1.5"
+            className="w-full !max-w-full mt-2"
             radius="full"
           >
             {options
@@ -112,8 +117,16 @@ const EnumField: React.FC<FieldProps> = (props) => {
     case "icon-group":
       return (
         <div className="enum-field">
-          {fieldTitle && <label className="control-label">{fieldTitle}</label>}
-          {fieldDescription && <p className="field-description">{fieldDescription}</p>}
+          {title && (
+            <Text as="label" size="2" weight="medium">
+              {title}
+            </Text>
+          )}
+          {description && (
+            <Text as="p" color="gray" size="1">
+              {description}
+            </Text>
+          )}
           <div className="flex divide-x divide-white dark:divide-dark-500">
             {options
               .filter((o) => !o["ui:hidden-option"])
@@ -144,23 +157,50 @@ const EnumField: React.FC<FieldProps> = (props) => {
 
     default:
       return (
-        <div className="enum-field">
-          {fieldTitle && <label className="control-label">{fieldTitle}</label>}
-          {fieldDescription && <p className="field-description">{fieldDescription}</p>}
-          <select
-            className="form-select mt-1.5"
-            value={currentValue}
-            onChange={(e) => onChange(e.target.value)}
-            required={required}
-          >
-            {options
-              .filter((o) => !o["ui:hidden-option"])
-              .map((option) => (
-                <option key={option.const} value={option.const}>
-                  {option.title}
-                </option>
-              ))}
-          </select>
+        // <div className="enum-field">
+        //   {title && (
+        //     <Text as="label" size="2" weight="medium">
+        //       {title}
+        //     </Text>
+        //   )}
+        //   {description && (
+        //     <Text as="p" color="gray" size="1">
+        //       {description}
+        //     </Text>
+        //   )}
+        //   <select
+        //     className="form-select mt-2"
+        //     value={currentValue}
+        //     onChange={(e) => onChange(e.target.value)}
+        //     required={required}
+        //   >
+        //     {options
+        //       .filter((o) => !o["ui:hidden-option"])
+        //       .map((option) => (
+        //         <option key={option.const} value={option.const}>
+        //           {option.title}
+        //         </option>
+        //       ))}
+        //   </select>
+        // </div>
+
+        <div className="flex flex-col gap-1 flex-1 mx-0.5">
+          <label className={fieldLabel}>{title}</label>
+          <Select.Root defaultValue={currentValue} size="1" onValueChange={(value) => onChange(value)}>
+            <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+            <Select.Content position="popper">
+              <Select.Group>
+                {options
+                  .filter((o) => !o["ui:hidden-option"])
+                  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                  .map((option: any) => (
+                    <Select.Item key={option.const} value={option.const}>
+                      {option.title}
+                    </Select.Item>
+                  ))}
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
         </div>
       );
   }

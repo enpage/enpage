@@ -1,37 +1,56 @@
-import type { FieldProps } from "@rjsf/utils";
+import type { FieldProps } from "./types";
 import { nanoid } from "nanoid";
 import { Button, Text } from "@upstart.gg/style-system/system";
 import { useEditor } from "~/editor/hooks/use-editor";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ModalSearchImage from "~/editor/components/ModalSearchImage";
+import type { ImageProps } from "@upstart.gg/sdk/shared/bricks/props/common";
 
-const FileField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, formData, onChange, required, name, id = nanoid(7), idSchema } = props;
+const ImageField: React.FC<FieldProps<ImageProps>> = (props) => {
+  const { schema, formData, onChange, required, title, description, currentValue } = props;
   const editor = useEditor();
   const [showSearch, setShowSearch] = useState(false);
+  const id = useMemo(() => nanoid(), []);
+  // const [src, setSrc] = useState<string | null>(currentValue.src);
 
-  // Extract field-level properties
-  const fieldTitle = schema.title || uiSchema?.["ui:title"];
-  const fieldDescription = schema.description || uiSchema?.["ui:description"];
+  const onPropsChange = (newVal: Partial<ImageProps>) => onChange({ ...currentValue, ...newVal });
+
+  /*
+
+Input file style:
+
+
+width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+
+  */
 
   return (
     <>
       <div className="file-field flex items-center justify-between flex-wrap gap-1">
-        {fieldTitle && (
-          <div className="flex-1">
-            <label className="file-title">
-              {fieldTitle}
-              {required ? <span className="required">*</span> : null}
-            </label>
-            {fieldDescription && <p className="field-description">{fieldDescription}</p>}
+        {title && (
+          <div className="flex items-center justify-between">
+            <Text as="label" size="2" weight="medium">
+              {title}
+            </Text>
           </div>
         )}
-        <p>
+        <div className="flex gap-1">
           <input
             id={id}
             type="file"
-            accept={uiSchema?.["ui:accept"]}
-            onChange={(e) => onChange(e.target.files)}
+            className="overflow-hidden w-[0.1px] h-[0.1px] opacity-0 absolute -z-10"
+            accept={schema["ui:accept"]}
+            onChange={(e) => {
+              const src = e.target.files?.[0]?.name;
+              if (src) {
+                onChange({ ...currentValue, src: src as string });
+              }
+            }}
             required={required}
           />
           <Button variant="soft" size="1" radius="full">
@@ -39,32 +58,28 @@ const FileField: React.FC<FieldProps> = (props) => {
               className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]"
               htmlFor={id}
             >
-              Upload
+              Upload image
             </label>
           </Button>
-        </p>
-        {uiSchema?.["ui:allow-url"] && (
-          <p>
+          {/* {schema["ui:allow-url"] && (
             <Button variant="soft" size="1" radius="full">
               <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
                 URL
               </label>
             </Button>
-          </p>
-        )}
-        {uiSchema?.["ui:show-img-search"] && (
-          <p>
+          )} */}
+          {schema["ui:show-img-search"] && (
             <Button variant="soft" size="1" radius="full" onClick={() => setShowSearch(true)}>
               <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
                 Search
               </label>
             </Button>
-          </p>
-        )}
+          )}
+        </div>
       </div>
       {formData && (
         <div className="border border-upstart-200 p-2 mt-3">
-          <img src={formData} alt={name} className="max-w-full h-auto" />
+          <img src={currentValue.src} alt={id} className="max-w-full h-auto" />
         </div>
       )}
       {showSearch && (
@@ -73,7 +88,7 @@ const FileField: React.FC<FieldProps> = (props) => {
             setShowSearch(false);
           }}
           onChoose={(url) => {
-            onChange(url);
+            onPropsChange({ src: url });
             setShowSearch(false);
           }}
         />
@@ -82,4 +97,4 @@ const FileField: React.FC<FieldProps> = (props) => {
   );
 };
 
-export default FileField;
+export default ImageField;

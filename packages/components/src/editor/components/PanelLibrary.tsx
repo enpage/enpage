@@ -1,5 +1,4 @@
 import { tx, css } from "@upstart.gg/style-system/twind";
-import { useDraft, useEditor } from "../hooks/use-editor";
 import { manifests } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
@@ -22,9 +21,7 @@ const tabContentScrollClass = css({
   },
 });
 
-export default function BlocksLibrary() {
-  const editor = useEditor();
-  const draft = useDraft();
+export default function PanelLibrary() {
   const { shouldDisplay: shouldDisplayLibraryCallout } = useCalloutViewCounter("blocks-library");
   const [brickPrompt, setBrickPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -41,10 +38,6 @@ export default function BlocksLibrary() {
       // manualStart: true,
       listeners: {
         start: (event: Interact.InteractEvent) => {
-          const target = event.target as HTMLElement;
-          const brickType = target.dataset.brickType;
-          console.log("drag start", brickType, target.clientTop);
-
           const clone = event.target.cloneNode(true) as HTMLElement;
           clone.classList.add("clone");
 
@@ -107,6 +100,8 @@ export default function BlocksLibrary() {
     setIsGenerating(false);
   };
 
+  console.log({ manifests });
+
   return (
     <Tabs.Root defaultValue="library">
       <Tabs.List className={tx("sticky top-0 z-50")}>
@@ -144,7 +139,7 @@ export default function BlocksLibrary() {
             }}
           >
             {Object.values(manifests)
-              .filter((m) => m.properties.kind.const === "brick")
+              .filter((m) => m.properties.kind.const === "brick" && !m.properties.hideInLibrary.default)
               .map((brickImport) => {
                 const brick = Value.Create(brickImport);
                 return (
@@ -172,7 +167,7 @@ export default function BlocksLibrary() {
             }}
           >
             {Object.values(manifests)
-              .filter((m) => m.properties.kind.const === "widget")
+              .filter((m) => m.properties.kind.const === "widget" && !m.properties.hideInLibrary.default)
               .map((brickImport) => {
                 const brick = Value.Create(brickImport);
                 return (

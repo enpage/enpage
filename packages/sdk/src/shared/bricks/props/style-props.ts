@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 
 const groupBorder = {
   "ui:group": "border",
@@ -15,18 +15,25 @@ const groupEffects = {
   "ui:group:title": "Effects",
 };
 
+const groupDimensions = {
+  "ui:group": "dimensions",
+  "ui:group:title": "Dimensions",
+  "ui:group:order": 1,
+};
+
 const groupColors = {
   "ui:group": "colors",
   "ui:group:title": "Colors",
+  "ui:group:order": 2,
 };
 
-const borderWidth = Type.Union(
+export const borderWidth = Type.Union(
   [
     Type.Literal("border-0", { title: "None" }),
-    Type.Literal("border", { title: "S" }),
-    Type.Literal("border-2", { title: "M" }),
-    Type.Literal("border-4", { title: "L" }),
-    Type.Literal("border-8", { title: "XL" }),
+    Type.Literal("border", { title: "Small" }),
+    Type.Literal("border-2", { title: "Medium" }),
+    Type.Literal("border-4", { title: "Large" }),
+    Type.Literal("border-8", { title: "Extra large" }),
   ],
   {
     $id: "borderWidth",
@@ -38,7 +45,7 @@ const borderWidth = Type.Union(
   },
 );
 
-const borderColor = Type.String({
+export const borderColor = Type.String({
   $id: "borderColor",
   default: "transparent",
   title: "Border color",
@@ -47,7 +54,7 @@ const borderColor = Type.String({
   ...groupBorder,
 });
 
-const borderStyle = Type.Union(
+export const borderStyle = Type.Union(
   [
     Type.Literal("border-solid", { title: "Solid" }),
     Type.Literal("border-dashed", { title: "Dashed" }),
@@ -64,13 +71,13 @@ const borderStyle = Type.Union(
   },
 );
 
-const borderRadius = Type.Union(
+export const borderRadius = Type.Union(
   [
     Type.Literal("rounded-none", { title: "None" }),
-    Type.Literal("rounded-sm", { title: "S" }),
-    Type.Literal("rounded-md", { title: "M" }),
-    Type.Literal("rounded-lg", { title: "L" }),
-    Type.Literal("rounded-xl", { title: "XL" }),
+    Type.Literal("rounded-sm", { title: "Small" }),
+    Type.Literal("rounded-md", { title: "Medium" }),
+    Type.Literal("rounded-lg", { title: "Large" }),
+    Type.Literal("rounded-xl", { title: "Extra large" }),
     Type.Literal("rounded-full", { title: "Full" }),
   ],
   {
@@ -84,13 +91,38 @@ const borderRadius = Type.Union(
   },
 );
 
-const padding = Type.Union(
+export const borders = Type.Optional(
+  Type.Object(
+    {
+      radius: borderRadius,
+      style: borderStyle,
+      color: borderColor,
+      width: borderWidth,
+    },
+    {
+      title: "Border style",
+      "ui:field": "border",
+      "ui:group": "Border",
+      "ui:group:title": "Border",
+      default: {
+        radius: "rounded-none",
+        style: "border-solid",
+        color: "#000000",
+        width: "border-0",
+      },
+    },
+  ),
+);
+
+export type BorderSettings = Static<typeof borders>;
+
+export const padding = Type.Union(
   [
     Type.Literal("p-0", { title: "None" }),
-    Type.Literal("p-2", { title: "S" }),
-    Type.Literal("p-4", { title: "M" }),
-    Type.Literal("p-8", { title: "L" }),
-    Type.Literal("p-16", { title: "XL" }),
+    Type.Literal("p-2", { title: "Small" }),
+    Type.Literal("p-4", { title: "Medium" }),
+    Type.Literal("p-8", { title: "Large" }),
+    Type.Literal("p-16", { title: "Extra large" }),
   ],
   {
     $id: "padding",
@@ -98,10 +130,30 @@ const padding = Type.Union(
     title: "Padding",
     description: "Space between the content and the border",
     "ui:field": "enum",
-    "ui:display": "button-group",
+    "ui:display": "select",
     ...groupSpacing,
   },
 );
+
+export const dimensions = Type.Object(
+  {
+    height: Type.Optional(
+      Type.Union([Type.Literal("fixed", { title: "Fixed" }), Type.Literal("auto", { title: "Auto" })]),
+    ),
+    padding: Type.Optional(padding),
+  },
+  {
+    title: "Dimensions",
+    "ui:field": "dimensions",
+    ...groupDimensions,
+    default: {
+      padding: "p-2",
+      height: "fixed",
+    },
+  },
+);
+
+export type DimensionsSettings = Static<typeof dimensions>;
 
 /**
  * We don't manage margins yet (users have to move bricks over the grid to handle margins)
@@ -127,7 +179,7 @@ const margin = Type.Union(
   },
 );
 
-const backgroundColor = Type.String({
+export const backgroundColor = Type.String({
   $id: "backgroundColor",
   default: "transparent",
   title: "Background color",
@@ -141,6 +193,7 @@ const opacity = Type.Optional(
     $id: "opacity",
     minimum: 0.1,
     maximum: 1,
+    default: 1,
     multipleOf: 0.1,
     title: "Opacity",
     description: "Global opacity",
@@ -152,11 +205,11 @@ const opacity = Type.Optional(
 const shadow = Type.Union(
   [
     Type.Literal("shadow-none", { title: "None" }),
-    Type.Literal("shadow-sm", { title: "S" }),
-    Type.Literal("shadow-md", { title: "M" }),
-    Type.Literal("shadow-lg", { title: "L" }),
-    Type.Literal("shadow-xl", { title: "XL" }),
-    Type.Literal("shadow-2xl", { title: "2XL" }),
+    Type.Literal("shadow-sm", { title: "Small" }),
+    Type.Literal("shadow-md", { title: "Medium" }),
+    Type.Literal("shadow-lg", { title: "Large" }),
+    Type.Literal("shadow-xl", { title: "Extra large" }),
+    Type.Literal("shadow-2xl", { title: "Extra large (2x)" }),
   ],
   {
     $id: "shadow",
@@ -169,18 +222,40 @@ const shadow = Type.Union(
   },
 );
 
+export const effects = Type.Optional(
+  Type.Object(
+    {
+      shadow,
+      opacity,
+    },
+    {
+      title: "Effects",
+      "ui:field": "effects",
+      "ui:group": "effects",
+      "ui:group:title": "Effects",
+      default: {
+        shadow: "shadow-none",
+        opacity: 1,
+      },
+    },
+  ),
+);
+
+export type EffectsSettings = Static<typeof effects>;
+
 /**
  * No margin in common style props as bricks are usually placed in a grid
  */
 export const commonStyleProps = Type.Object({
-  borderRadius,
-  borderWidth,
-  borderColor,
-  borderStyle,
-  padding,
+  // borderRadius,
+  // borderWidth,
+  // borderColor,
+  // borderStyle,
+  dimensions,
+  borders,
+  effects,
+  // padding,
   backgroundColor,
-  opacity,
-  shadow,
 });
 
 const textAlign = Type.Optional(
@@ -245,7 +320,7 @@ const fontWeight = Type.Union(
   },
 );
 
-const color = Type.String({
+export const color = Type.String({
   $id: "color",
   default: "transparent",
   title: "Text color",

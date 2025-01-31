@@ -5,17 +5,8 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/map.ma
 
 const WidgetMap = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
 
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
-  }
-
-  const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
-  });
-
-  return <div>Im a card</div>;
+  return <div>Im a map</div>;
 });
 
 export default WidgetMap;

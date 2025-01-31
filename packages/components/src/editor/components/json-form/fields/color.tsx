@@ -1,8 +1,6 @@
-import type { FieldProps } from "@rjsf/utils";
-import { Button, Popover, Text } from "@upstart.gg/style-system/system";
+import { Button, IconButton, Popover, Text } from "@upstart.gg/style-system/system";
 import { tx, colors, css } from "@upstart.gg/style-system/twind";
 import transSvg from "./trans.svg?url";
-import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import {
   isStandardColor,
   type ColorType,
@@ -10,25 +8,20 @@ import {
   type ElementColorType,
 } from "@upstart.gg/sdk/shared/themes/color-system";
 import BaseColorPicker, { ElementColorPicker } from "~/editor/components/ColorPicker";
+import type { FieldProps } from "./types";
+import { IoCloseOutline } from "react-icons/io5";
 
-const ColorField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, formData, onChange, required, name, idSchema, formContext } = props;
-  // if (name === "borderColor" && brick?.props.borderWidth === "border-0") {
-  //   return null;
-  // }
-
-  // Extract field-level properties
-  const fieldTitle = schema.title || uiSchema?.["ui:title"];
-  const fieldDescription = schema.description || uiSchema?.["ui:description"];
-  const elementColorType = (uiSchema?.["ui:color-type"] ??
+const ColorField: React.FC<FieldProps<string>> = (props) => {
+  const { schema, onChange, formSchema: formContext, currentValue, title, description } = props;
+  const elementColorType = (schema["ui:color-type"] ??
     "page-background") as ColorElementPreviewPillProps["elementColorType"];
 
   return (
     <ColorFieldRow
-      name={fieldTitle}
-      description={fieldDescription}
-      color={formData}
-      required={required}
+      name={title}
+      description={description}
+      color={currentValue}
+      required={schema.required}
       onChange={onChange}
       elementColorType={elementColorType}
     />
@@ -36,10 +29,11 @@ const ColorField: React.FC<FieldProps> = (props) => {
 };
 
 type ColorFieldRowProps = {
-  name: string;
+  name?: string;
   labelClassName?: string;
   description?: string;
   required?: boolean;
+  showReset?: boolean;
 } & (
   | {
       color: string;
@@ -55,6 +49,17 @@ type ColorFieldRowProps = {
     }
 );
 
+export function ColorPill({ colorType, elementColorType, color, onChange }: ColorFieldRowProps) {
+  return (
+    <>
+      {colorType && <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} />}
+      {elementColorType && (
+        <ColorElementPreviewPill onChange={onChange} elementColorType={elementColorType} color={color} />
+      )}
+    </>
+  );
+}
+
 export function ColorFieldRow({
   name,
   description,
@@ -63,26 +68,33 @@ export function ColorFieldRow({
   labelClassName,
   onChange,
   colorType,
+  showReset,
   elementColorType,
 }: ColorFieldRowProps) {
   return (
     <div className="color-field flex items-center justify-between">
       {name && (
         <div className="flex-1">
-          <label className={tx("control-label", labelClassName)}>
+          <Text as="label" size="2" weight="medium">
             {name}
-            {required ? <span className="required">*</span> : null}
-          </label>
+          </Text>
           {description && (
-            <Text as="p" color="gray" className={tx("field-description")}>
+            <Text as="p" color="gray">
               {description}
             </Text>
           )}
         </div>
       )}
-      {colorType && <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} />}
+      {colorType && (
+        <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} showReset={showReset} />
+      )}
       {elementColorType && (
-        <ColorElementPreviewPill onChange={onChange} elementColorType={elementColorType} color={color} />
+        <ColorElementPreviewPill
+          onChange={onChange}
+          elementColorType={elementColorType}
+          color={color}
+          showReset={showReset}
+        />
       )}
     </div>
   );
@@ -93,6 +105,7 @@ type ColorElementPreviewPillProps = {
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   elementColorType: ElementColorType;
+  showReset?: boolean;
   onChange: (newVal: ElementColor) => void;
 };
 
@@ -102,6 +115,7 @@ function ColorElementPreviewPill({
   elementColorType,
   side = "bottom",
   align = "center",
+  showReset,
 }: ColorElementPreviewPillProps) {
   const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
   const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
@@ -109,19 +123,32 @@ function ColorElementPreviewPill({
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <button
-          type="button"
-          data-color={color}
-          data-element-color-type={elementColorType}
-          className={tx(
-            "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            css({
-              backgroundImage: pillBgFile,
-              backgroundColor: color === "transparent" ? "transparent" : color,
-              backgroundSize,
-            }),
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            data-color={color}
+            data-element-color-type={elementColorType}
+            className={tx(
+              "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
+              css({
+                backgroundImage: pillBgFile,
+                backgroundColor: color === "transparent" ? "transparent" : color,
+                backgroundSize,
+              }),
+            )}
+          />
+          {showReset && (
+            <IconButton
+              title="Reset"
+              size="1"
+              variant="ghost"
+              color="gray"
+              onClick={() => onChange("transparent")}
+            >
+              <IoCloseOutline />
+            </IconButton>
           )}
-        />
+        </div>
       </Popover.Trigger>
       <ColorElementPopover
         elementColorType={elementColorType}
@@ -139,6 +166,7 @@ type ColorBasePreviewPillProps = {
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   colorType: ColorType;
+  showReset?: boolean;
   onChange: (newVal: string) => void;
 };
 
@@ -148,23 +176,37 @@ function ColorBasePreviewPill({
   colorType,
   side = "bottom",
   align = "center",
+  showReset,
 }: ColorBasePreviewPillProps) {
   const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
   const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <button
-          type="button"
-          className={tx(
-            "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            css({
-              backgroundImage: pillBgFile,
-              backgroundColor: color === "transparent" ? "transparent" : color,
-              backgroundSize,
-            }),
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className={tx(
+              "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
+              css({
+                backgroundImage: pillBgFile,
+                backgroundColor: color === "transparent" ? "transparent" : color,
+                backgroundSize,
+              }),
+            )}
+          />
+          {showReset && (
+            <IconButton
+              title="Reset"
+              size="1"
+              variant="ghost"
+              color="gray"
+              onClick={() => onChange("transparent")}
+            >
+              <IoCloseOutline />
+            </IconButton>
           )}
-        />
+        </div>
       </Popover.Trigger>
       <ColorBasePopover colorType={colorType} side={side} align={align} color={color} onChange={onChange} />
     </Popover.Root>
@@ -213,11 +255,11 @@ function ColorElementPopover({
   );
 }
 
-function elementColorToClassName(color: ElementColor, prefix = "bg") {
-  if (isStandardColor(color)) {
-    return `${prefix}-[${color}]`;
-  }
-  return color;
-}
+// function elementColorToClassName(color: ElementColor, prefix = "bg") {
+//   if (isStandardColor(color)) {
+//     return `${prefix}-[${color}]`;
+//   }
+//   return color;
+// }
 
 export default ColorField;

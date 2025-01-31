@@ -57,6 +57,8 @@ export default function ThemePanel() {
     setIsGenerating(false);
   };
 
+  console.log({ typo: themeSchemaProcessed.properties.typography });
+
   return (
     <Tabs.Root defaultValue="current">
       <div className={tx("bg-white dark:bg-dark-800")}>
@@ -77,7 +79,7 @@ export default function ThemePanel() {
           <Callout.Icon>
             <WiStars className="w-8 h-8 mt-3" />
           </Callout.Icon>
-          <Callout.Text>
+          <Callout.Text size="1">
             Tell us about your website / page purpose and color preferences, and our AI will generate
             personalized themes for you!
           </Callout.Text>
@@ -110,96 +112,87 @@ export default function ThemePanel() {
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="current" className="p-2">
         <Callout.Root size="1">
-          <Callout.Text className={tx("text-balance")}>
-            Customize your theme colors and typography to match your brand. Please note that theme is applied
-            to your entire site, not only the current page.
+          <Callout.Text size="1" className={tx("text-balance")}>
+            Customize your theme colors and typography to match your brand. Please note that the theme will be
+            applied to your entire site, not just the current page.
           </Callout.Text>
         </Callout.Root>
-        <div className="mt-1 flex flex-col gap-y-5">
-          <fieldset>
-            <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
-              Colors
-            </div>
-            <div className="text-sm flex flex-col gap-y-4 px-1">
-              {Object.entries(draft.theme.colors).map(([colorType, color]) => (
-                <ColorFieldRow
-                  key={colorType}
-                  /* @ts-ignore */
-                  name={themeSchema.properties.colors.properties[colorType].title}
-                  /* @ts-ignore */
-                  description={themeSchema.properties.colors.properties[colorType].description}
-                  color={color}
-                  labelClassName="font-medium"
-                  colorType={colorType as ColorType}
-                  onChange={(newColor: string) => {
-                    console.log("updating theme color %s with %s", colorType, newColor);
-                    draft.setTheme({
-                      ...draft.theme,
-                      colors: {
-                        ...draft.theme.colors,
-                        [colorType]: newColor,
-                      },
-                    });
-                  }}
-                />
+        <div className="flex flex-col">
+          <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
+            Colors
+          </div>
+          <div className="flex text-sm flex-col gap-y-4 px-1 pb-2">
+            {Object.entries(draft.theme.colors).map(([colorType, color]) => (
+              <ColorFieldRow
+                key={colorType}
+                /* @ts-ignore */
+                name={themeSchema.properties.colors.properties[colorType].title}
+                /* @ts-ignore */
+                description={themeSchema.properties.colors.properties[colorType].description}
+                color={color}
+                labelClassName="font-medium"
+                colorType={colorType as ColorType}
+                onChange={(newColor: string) => {
+                  console.log("updating theme color %s with %s", colorType, newColor);
+                  draft.setTheme({
+                    ...draft.theme,
+                    colors: {
+                      ...draft.theme.colors,
+                      [colorType]: newColor,
+                    },
+                  });
+                }}
+              />
+            ))}
+          </div>
+          <div className="font-medium text-sm my-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
+            Typography
+          </div>
+          <div className="text-sm flex flex-col gap-y-3 px-1">
+            {Object.entries(draft.theme.typography)
+              .filter((obj) => obj[0] !== "base")
+              .map(([fontType, font]) => (
+                <div key={fontType}>
+                  <label className="font-medium">
+                    {/* @ts-ignore */}
+                    {themeSchemaProcessed.properties.typography.properties[fontType].title}
+                  </label>
+                  <Text color="gray" as="p" size="1" className="mb-1">
+                    {/* @ts-ignore */}
+                    {themeSchemaProcessed.properties.typography.properties[fontType].description}
+                  </Text>
+                  <Select.Root
+                    defaultValue={font as string}
+                    size="2"
+                    onValueChange={(newFont) => {
+                      draft.setTheme({
+                        ...draft.theme,
+                        typography: {
+                          ...draft.theme.typography,
+                          [fontType]: newFont,
+                        },
+                      });
+                    }}
+                  >
+                    <Select.Trigger className="!w-full !capitalize">{font}</Select.Trigger>
+                    <Select.Content>
+                      <Select.Group>
+                        {
+                          //  @ts-ignore
+                          (themeSchemaProcessed.properties.typography.properties[fontType] as TUnion).anyOf //  @ts-ignore
+                            .filter((item) => !item["ui:option-hidden"])
+                            .map((item) => (
+                              <Select.Item key={item.const} value={item.const}>
+                                <span className={`font-${item.const}`}>{item.title}</span>
+                              </Select.Item>
+                            ))
+                        }
+                      </Select.Group>
+                    </Select.Content>
+                  </Select.Root>
+                </div>
               ))}
-            </div>
-          </fieldset>
-          <fieldset>
-            <div className="font-medium text-sm mb-2 bg-upstart-100 dark:bg-dark-600 py-1 -mx-2 px-2">
-              Typography
-            </div>
-            <div className="text-sm flex flex-col gap-y-4 px-1">
-              {Object.entries(draft.theme.typography)
-                .filter((obj) => obj[0] !== "base")
-                .map(([fontType, font]) => (
-                  <div key={fontType}>
-                    <label className="font-medium">
-                      {/* @ts-ignore */}
-                      {themeSchemaProcessed.properties.typography.properties[fontType].title}
-                    </label>
-                    <Text color="gray" as="p" size="2" className="mb-1">
-                      {/* @ts-ignore */}
-                      {themeSchemaProcessed.properties.typography.properties[fontType].description}
-                    </Text>
-                    <Select.Root
-                      defaultValue={font as string}
-                      size="2"
-                      onValueChange={(newFont) => {
-                        draft.setTheme({
-                          ...draft.theme,
-                          typography: {
-                            ...draft.theme.typography,
-                            [fontType]: newFont,
-                          },
-                        });
-                      }}
-                    >
-                      <Select.Trigger className="!w-full !capitalize">{font}</Select.Trigger>
-                      <Select.Content>
-                        <Select.Group>
-                          {
-                            //  @ts-ignore
-                            (themeSchemaProcessed.properties.typography.properties[fontType] as TUnion).anyOf //  @ts-ignore
-                              .filter((item) => !item["ui:option-hidden"])
-                              .map((item) => (
-                                <Select.Item key={item.const} value={item.const}>
-                                  <span className={`font-${item.const}`}>{item.title}</span>
-                                </Select.Item>
-                              ))
-                          }
-                        </Select.Group>
-                      </Select.Content>
-                    </Select.Root>
-                  </div>
-                ))}
-            </div>
-          </fieldset>
-          {/*
-          <fieldset>
-            <pre className="text-xs">{JSON.stringify(draft.theme, null, 1)}</pre>
-          </fieldset>
-          */}
+          </div>
         </div>
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="list">
