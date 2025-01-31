@@ -327,8 +327,6 @@ export function createRow<B extends DefinedRowBrick[]>(
   const maxDesktopHeight = Math.max(...bricks.map((brick) => brick.position.desktop?.h ?? initialY.desktop));
   const maxMobileHeight = Math.max(...bricks.map((brick) => brick.position.mobile?.h ?? initialY.mobile));
 
-  console.log({ maxDesktopHeight, maxMobileHeight });
-
   // increment the current row
   currentRowByBreakpoint.desktop += maxDesktopHeight;
   currentRowByBreakpoint.mobile += maxMobileHeight;

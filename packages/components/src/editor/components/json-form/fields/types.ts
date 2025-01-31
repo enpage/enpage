@@ -1,4 +1,5 @@
 import type { TSchema } from "@sinclair/typebox";
+import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 
 /**
@@ -18,7 +19,7 @@ export type FieldProps<T = unknown, F = Record<string, unknown>> = {
   /**
    * Full form schema
    */
-  formSchema: TSchema;
+  formSchema: JSONSchemaType<unknown>;
   /**
    * Form data
    */

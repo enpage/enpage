@@ -1,22 +1,17 @@
 import { useMemo, useState } from "react";
 import { useDraft, useEditor, useGetBrick } from "../hooks/use-editor";
 import { BsArrowBarLeft } from "react-icons/bs";
-import Form, { type IChangeEvent } from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
-import { customFields } from "./json-form/fields";
-import { TbHelp } from "react-icons/tb";
 import { useLocalStorage } from "usehooks-ts";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
-import { createUiSchema } from "./json-form/ui-schema";
-import { jsonFormClass } from "./json-form/form-class";
 import { IconButton, Tabs } from "@upstart.gg/style-system/system";
 import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
-import { ObjectFieldTemplate } from "./CustomObjectFieldTemplate";
-import "./json-form/json-form.css";
 import { getFormComponents, FormRenderer } from "./json-form/form";
 import { IoCloseOutline } from "react-icons/io5";
+import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
+
+import "./json-form/json-form.css";
 
 export default function Inspector() {
   const editor = useEditor();
@@ -122,7 +117,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
 
   const elements = getFormComponents({
     brickId: brick.id,
-    formSchema: manifest.properties.props,
+    formSchema: manifest.properties.props as unknown as JSONSchemaType<unknown>,
     formData,
     onChange,
   });

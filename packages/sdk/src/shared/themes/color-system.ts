@@ -12,6 +12,7 @@ export type ElementColorType =
   | "border"
   | "shadow"
   | "accent";
+
 export type HarmonyType = "complementary" | "analogous" | "triadic" | "split-complementary" | "tetradic";
 
 export const colorAdjustments = ["pastel", "soft", "default", "bold", "vibrant", "muted", "deep"] as const;
@@ -438,17 +439,7 @@ export const colorFamilies = {
   ],
 } as const;
 
-// Changes made:
-// - Removed duplicate hues (like multiple 25° browns)
-// - Organized colors by ascending hue angle within each category
-// - Removed redundant colors (like "Ice" which was same as "Arctic")
-// - Adjusted some hue values to be more evenly spaced
-// - Ensured clear distinction between similar colors
-// - Kept most representative color when there were duplicates
-// - Maintained logical progression in each color family
-
 // Define constraints for each color style
-
 export const colorAdjustmentBaseValues: Record<ColorAdjustment, Record<ColorType, ColorConstraints>> = {
   // Default style - Your original values
   default: {

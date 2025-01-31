@@ -2,6 +2,8 @@ import type { FieldProps } from "./types";
 import { TextField } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { TbSlash } from "react-icons/tb";
+import { fieldLabel } from "../form-class";
+import { Text, Select } from "@upstart.gg/style-system/system";
 
 export const StringField: React.FC<FieldProps<string>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder } = props;
@@ -12,8 +14,12 @@ export const StringField: React.FC<FieldProps<string>> = (props) => {
     <div className="field field-string">
       {title && (
         <div>
-          <label className={tx("control-label", { required })}>{title}</label>
-          {description && <p className="field-description">{description}</p>}
+          <label className={fieldLabel}>{title}</label>
+          {description && (
+            <Text as="p" color="gray" size="1">
+              {description}
+            </Text>
+          )}
         </div>
       )}
       <TextField.Root
@@ -37,8 +43,12 @@ export const PathField: React.FC<FieldProps<string>> = (props) => {
     <div className="field field-string">
       {title && (
         <div>
-          <label className={tx("control-label", { required })}>{title}</label>
-          {description && <p className="field-description">{description}</p>}
+          <label className={fieldLabel}>{title}</label>
+          {description && (
+            <Text as="p" color="gray" size="1">
+              {description}
+            </Text>
+          )}
         </div>
       )}
       <TextField.Root

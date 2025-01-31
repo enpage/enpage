@@ -21,7 +21,7 @@ export function usePageStyle({
         backgroundImage: `url(${attributes.$backgroundImage})`,
         //todo: make it dynamic, by using attributes
         backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
+        backgroundSize: "contain",
         backgroundPosition: "center top",
       }),
     // mobile grid

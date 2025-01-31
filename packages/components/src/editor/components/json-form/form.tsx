@@ -21,6 +21,7 @@ import type {
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
 import type { ImageProps, MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
+import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -42,7 +43,7 @@ export function getFormComponents({
   brickId,
   parents = [],
 }: {
-  formSchema: TSchema;
+  formSchema: JSONSchemaType<unknown>;
   formData: Record<string, unknown>;
   onChange: (data: Record<string, unknown>, id: string) => void;
   onSubmit?: (data: Record<string, unknown>) => void;
@@ -57,7 +58,7 @@ export function getFormComponents({
 
   const elements = Object.entries(formSchema.properties)
     .map(([fieldName, fieldSchema]) => {
-      const field = fieldSchema as TSchema;
+      const field = fieldSchema as JSONSchemaType<unknown>;
       const id = parents.length ? `${parents.join(".")}.${fieldName}` : fieldName;
       const group = (field["ui:group"] ?? "other") as string;
       const groupTitle = (field["ui:group:title"] ?? "Other") as string;

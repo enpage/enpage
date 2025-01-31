@@ -257,7 +257,7 @@ export interface DraftState extends DraftStateProps {
   setTheme: (theme: Theme) => void;
   validatePreviewTheme: () => void;
   cancelPreviewTheme: () => void;
-  updateAttributes: (attr: Attributes) => void;
+  updateAttributes: (attr: Partial<Attributes>) => void;
   setLastSaved: (date: Date) => void;
   setDirty: (dirty: boolean) => void;
   setLastLoaded: () => void;
@@ -413,7 +413,7 @@ export const createDraftStore = (
 
             updateAttributes: (attr) =>
               set((state) => {
-                state.attr = attr;
+                state.attr = { ..._get().attr, ...attr };
               }),
 
             setVersion: (version) =>

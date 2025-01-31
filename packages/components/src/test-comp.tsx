@@ -14,7 +14,7 @@ export function FirstBlock(props: any) {
           <img
             src="/astro2.jpg"
             alt="astro"
-            className="rounded-[inherit] w-48 h-auto border border-white/20"
+            className="rounded-[inherit] @mobile:w-2/3 @desktop:w-48 h-auto border border-white/20"
           />
         </div>
         <div className="flex-col gap-4 flex">
@@ -57,7 +57,7 @@ export function SecondBlock(props: any) {
           <img
             src="/astro1.jpg"
             alt="astro"
-            className="rounded-[inherit] w-48 h-auto border border-white/20"
+            className="rounded-[inherit] @mobile:w-2/3 @desktop:w-48 h-auto border border-white/20"
           />
         </div>
         <div className="flex-col gap-4 flex">

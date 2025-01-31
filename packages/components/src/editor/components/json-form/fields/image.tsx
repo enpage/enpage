@@ -58,7 +58,7 @@ width: 0.1px;
               className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]"
               htmlFor={id}
             >
-              Upload
+              Upload image
             </label>
           </Button>
           {/* {schema["ui:allow-url"] && (

@@ -46,7 +46,7 @@ const imageProps = Type.Object(
   {
     src: Type.String({
       default: "https://placehold.co/400x200",
-      title: "File",
+      title: "Image",
     }),
     alt: Type.String({
       title: "Alternate Text",

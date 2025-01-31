@@ -179,7 +179,7 @@ export const attr = {
 
 // Default attributes
 const defaultAttributes = {
-  $pageLanguage: attr.enum("Page language", "en", {
+  $pageLanguage: attr.enum("Language", "en", {
     options: [
       { value: "ar", title: "Arabic" },
       { value: "zh", title: "Chinese" },
@@ -202,7 +202,7 @@ const defaultAttributes = {
       { value: "vi", title: "Vietnamese" },
     ],
     "ui:group": "meta",
-    "ui:group:title": "Meta tags / SEO",
+    "ui:group:title": "Page Meta tags (SEO)",
   }),
 
   $pagePath: attr.string("Page path", "/", {
@@ -213,23 +213,24 @@ const defaultAttributes = {
     "ui:field": "path",
   }),
 
-  $pageTitle: attr.string("Page title", "Untitled", {
+  $pageTitle: attr.string("Title", "Untitled", {
     "ui:group": "meta",
-    "ui:group:title": "Meta tags / SEO",
+    "ui:group:title": "Page Meta tags (SEO)",
   }),
 
-  $pageDescription: attr.string("Page description", "", {
+  $pageDescription: attr.string("Description", "", {
     "ui:widget": "textarea",
     "ui:options": {
       rows: 3,
       widget: "textarea",
     },
     "ui:group": "meta",
-    "ui:group:title": "Meta tags / SEO",
+    "ui:group:title": "Page Meta tags (SEO)",
   }),
-  $pageKeywords: attr.string("Page keywords", "", {
+
+  $pageKeywords: attr.string("Keywords", "", {
     "ui:group": "meta",
-    "ui:group:title": "Meta tags / SEO",
+    "ui:group:title": "Page Meta tags (SEO)",
   }),
 
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
@@ -249,10 +250,47 @@ const defaultAttributes = {
     description: "The maximum width of the page. Desktop only.",
     displayAs: "button-group",
     "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
+    "ui:group:title": "Layout & Design",
   }),
 
-  $pagePaddingVertical: attr.enum("Page vertical spacing", "20", {
+  $pagePadding: Type.Object(
+    {
+      vertical: attr.enum("Vertical spacing", "20", {
+        options: [
+          { value: "0", title: "None" },
+          { value: "10", title: "S" },
+          { value: "20", title: "M" },
+          { value: "30", title: "L" },
+          { value: "50", title: "XL" },
+        ],
+        description: "Vertical spacing. Desktop only.",
+        displayAs: "button-group",
+        "ui:group": "layout",
+        "ui:group:title": "Page Layout & Design",
+      }),
+      horizontal: attr.enum("Horizontal spacing", "20", {
+        options: [
+          { value: "0", title: "None" },
+          { value: "10", title: "S" },
+          { value: "20", title: "M" },
+          { value: "30", title: "L" },
+          { value: "50", title: "XL" },
+        ],
+        description: "Horizontal spacing. Desktop only.",
+        displayAs: "button-group",
+        "ui:group": "layout",
+        "ui:group:title": "Page Layout & Design",
+      }),
+    },
+    {
+      default: {
+        vertical: "20",
+        horizontal: "20",
+      },
+    },
+  ),
+
+  $pagePaddingVertical: attr.enum("Vertical spacing", "20", {
     options: [
       { value: "0", title: "None" },
       { value: "10", title: "S" },
@@ -266,7 +304,7 @@ const defaultAttributes = {
     "ui:group:title": "Page Layout & Design",
   }),
 
-  $pagePaddingHorizontal: attr.enum("Page horizontal spacing", "20", {
+  $pagePaddingHorizontal: attr.enum("Horizontal spacing", "20", {
     options: [
       { value: "0", title: "None" },
       { value: "10", title: "S" },
@@ -280,13 +318,13 @@ const defaultAttributes = {
     "ui:group:title": "Page Layout & Design",
   }),
 
-  $backgroundColor: attr.color("Page background color", "#ffffff", {
+  $backgroundColor: attr.color("Background color", "#ffffff", {
     "ui:field": "color",
     "ui:group": "layout",
     "ui:group:title": "Page Layout & Design",
   }),
 
-  $backgroundImage: attr.color("Page background image", undefined, {
+  $backgroundImage: attr.color("Background image", undefined, {
     "ui:field": "image",
     "ui:group": "layout",
     "ui:group:title": "Page Layout & Design",
@@ -311,6 +349,7 @@ export function resolveAttributes(
   const data = { ...initialData };
   const valid = validate(data);
   if (!valid) {
+    console.log("invalid data attributes", data, validate.errors);
     throw new Error(`Invalid attributes: ${validate.errors}`);
   }
   return data;

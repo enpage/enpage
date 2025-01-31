@@ -282,7 +282,7 @@ const themes = [
     tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
 
     colors: {
-      primary: "#7c3aed", // Purple
+      primary: "#FF9900",
       secondary: "#2dd4bf", // Teal
       // Cyan
       accent: "#ec4899", // Pink
