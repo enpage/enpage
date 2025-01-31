@@ -12,7 +12,8 @@ import { Fragment, type ReactNode } from "react";
 import { sortJsonSchemaProperties } from "~/shared/utils/sort-json-schema-props";
 import type { FieldProps } from "./fields/types";
 import { SegmentedControl } from "@upstart.gg/style-system/system";
-import { tx } from "@twind/core";
+import { tx } from "@upstart.gg/style-system/twind";
+import get from "lodash-es/get";
 import type {
   BorderSettings,
   DimensionsSettings,
@@ -57,7 +58,7 @@ export function getFormComponents({
   const elements = Object.entries(formSchema.properties)
     .map(([fieldName, fieldSchema]) => {
       const field = fieldSchema as TSchema;
-      const id = parents.length ? `${parents.join("_")}_${fieldName}` : fieldName;
+      const id = parents.length ? `${parents.join(".")}.${fieldName}` : fieldName;
       const group = (field["ui:group"] ?? "other") as string;
       const groupTitle = (field["ui:group:title"] ?? "Other") as string;
 
@@ -79,12 +80,13 @@ export function getFormComponents({
           return null;
         }
         case "color": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
             groupTitle,
             component: (
               <ColorField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
+                currentValue={currentValue}
                 onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -93,12 +95,13 @@ export function getFormComponents({
         }
 
         case "border": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as BorderSettings;
           return {
             group,
             groupTitle,
             component: (
               <BorderField
-                currentValue={(formData[id] ?? commonProps.schema.default) as BorderSettings}
+                currentValue={currentValue}
                 onChange={(value: BorderSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -107,12 +110,13 @@ export function getFormComponents({
         }
 
         case "effects": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as EffectsSettings;
           return {
             group,
             groupTitle,
             component: (
               <EffectsField
-                currentValue={(formData[id] ?? commonProps.schema.default) as EffectsSettings}
+                currentValue={currentValue}
                 onChange={(value: EffectsSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -121,12 +125,13 @@ export function getFormComponents({
         }
 
         case "dimensions": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as DimensionsSettings;
           return {
             group,
             groupTitle,
             component: (
               <DimensionsField
-                currentValue={(formData[id] ?? commonProps.schema.default) as DimensionsSettings}
+                currentValue={currentValue}
                 onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -134,12 +139,13 @@ export function getFormComponents({
           };
         }
         case "enum": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
             groupTitle,
             component: (
               <EnumField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
+                currentValue={currentValue}
                 onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -147,11 +153,12 @@ export function getFormComponents({
           };
         }
         case "image": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as ImageProps;
           return {
             group,
             component: (
               <ImageField
-                currentValue={(formData[id] ?? commonProps.schema.default) as ImageProps}
+                currentValue={currentValue}
                 onChange={(value: ImageProps | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -159,12 +166,14 @@ export function getFormComponents({
           };
         }
         case "mixed-content": {
+          // console.log("mixed-content", { id, field, formData, commonProps });
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as MixedContent;
           return {
             group,
             groupTitle,
             component: (
               <MixedContentField
-                currentValue={(formData[id] ?? commonProps.schema.default) as MixedContent}
+                currentValue={currentValue}
                 onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -173,11 +182,12 @@ export function getFormComponents({
         }
 
         case "path": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
             component: (
               <PathField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
+                currentValue={currentValue}
                 onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -185,12 +195,13 @@ export function getFormComponents({
           };
         }
         case "slider": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as number;
           return {
             group,
             groupTitle,
             component: (
               <SliderField
-                currentValue={(formData[id] ?? commonProps.schema.default) as number}
+                currentValue={currentValue}
                 onChange={(value: number | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -199,11 +210,12 @@ export function getFormComponents({
         }
         case "boolean":
         case "switch": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as boolean;
           return {
             group,
             component: (
               <SwitchField
-                currentValue={(formData[id] ?? commonProps.schema.default) as boolean}
+                currentValue={currentValue}
                 onChange={(value: boolean | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -212,12 +224,13 @@ export function getFormComponents({
         }
 
         case "string": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
             groupTitle,
             component: (
               <StringField
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
+                currentValue={currentValue}
                 onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -227,12 +240,13 @@ export function getFormComponents({
 
         case "integer":
         case "number": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as number;
           return {
             group,
             groupTitle,
             component: (
               <NumberField
-                currentValue={(formData[id] ?? commonProps.schema.default) as number}
+                currentValue={currentValue}
                 onChange={(value: number | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
@@ -242,7 +256,7 @@ export function getFormComponents({
 
         // Complex type
         case "object": {
-          console.log("complex object", { field });
+          // console.log("complex object", { field });
           return {
             group,
             groupTitle,
@@ -273,6 +287,10 @@ export function getFormComponents({
           };
         }
 
+        // React component
+        case "Function":
+          return null;
+
         default:
           console.warn("Unknown field type", { fieldType, field });
           return null;
@@ -299,7 +317,11 @@ export function FormRenderer({ components, brickId }: { components: FormComponen
               {element.groupTitle}
             </h3>
           )}
-          {"component" in element ? element.component : element.components.map((c, i) => c.component)}
+          {"component" in element
+            ? element.component
+            : element.components.map((c, i) => (
+                <Fragment key={`${brickId}_${index}_comp_${i}`}>{c.component}</Fragment>
+              ))}
         </div>
       </Fragment>
     );

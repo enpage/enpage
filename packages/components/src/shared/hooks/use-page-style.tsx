@@ -10,12 +10,20 @@ export function usePageStyle({
   previewMode,
 }: { attributes: Attributes; editable?: boolean; previewMode?: ResponsiveMode }) {
   return tx(
-    "grid group/page mx-auto w-full page-container relative",
+    "grid group/page mx-auto page-container relative",
     isStandardColor(attributes.$backgroundColor) &&
       css({ backgroundColor: attributes.$backgroundColor as string }),
     isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor as string }),
     !isStandardColor(attributes.$backgroundColor) && (attributes.$backgroundColor as string),
     !isStandardColor(attributes.$textColor) && (attributes.$textColor as string),
+    typeof attributes.$backgroundImage === "string" &&
+      css({
+        backgroundImage: `url(${attributes.$backgroundImage})`,
+        //todo: make it dynamic, by using attributes
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center top",
+      }),
     // mobile grid
     `@mobile:(
       grid-cols-${LAYOUT_COLS.mobile}
@@ -23,7 +31,9 @@ export function usePageStyle({
       px-[10px]
       py-[10px]
       min-h-[110%]
+      h-fit
       max-w-full
+      w-full
     )`,
     // Desktop grid
     `@desktop:(
@@ -32,10 +42,11 @@ export function usePageStyle({
       px-[${attributes.$pagePaddingHorizontal}px]
       py-[${attributes.$pagePaddingVertical}px]
       w-full
-      min-h-[100dvh] h-full
+      h-fit
       ${attributes.$pageWidth}
     )`,
     editable && "transition-all duration-300",
+
     // this is the grid overlay shown when dragging
     editable &&
       previewMode &&
@@ -67,11 +78,9 @@ export function usePageStyle({
               transparent 80px
             );
         }
-
         &>div {
           outline: 2px dotted #d3daf2 !important;
         }
-
       }
     `,
   );

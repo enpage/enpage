@@ -7,8 +7,6 @@ import { useState } from "react";
 export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
 
-  console.log("effrects", { currentValue });
-
   const [opacity, setOpacity] = useState(currentValue.opacity);
 
   const onOpacityChange = (value: number) => {

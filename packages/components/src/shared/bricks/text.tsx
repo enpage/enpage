@@ -20,7 +20,7 @@ const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, re
   return (
     <div
       ref={ref}
-      className={tx(className, "prose")}
+      className={tx(className)}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
       dangerouslySetInnerHTML={{ __html: props.content.text }}
     />
@@ -32,9 +32,12 @@ const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) 
   const content = "";
   // const content = useEditableText(props.id, props.content.text);
   return (
-    <div ref={ref} className={tx(className, "prose")}>
-      {content}
-    </div>
+    <div
+      ref={ref}
+      className={tx(className)}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+      dangerouslySetInnerHTML={{ __html: props.content.text }}
+    />
   );
 });
 

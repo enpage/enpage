@@ -235,7 +235,7 @@ const defaultAttributes = {
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
-  $pageWidth: attr.enum("Page width", "max-w-screen-2xl", {
+  $pageWidth: attr.enum("Page width", "max-w-full", {
     options: [
       {
         value: "max-w-screen-lg",
@@ -282,6 +282,12 @@ const defaultAttributes = {
 
   $backgroundColor: attr.color("Page background color", "#ffffff", {
     "ui:field": "color",
+    "ui:group": "layout",
+    "ui:group:title": "Page Layout & Design",
+  }),
+
+  $backgroundImage: attr.color("Page background image", undefined, {
+    "ui:field": "image",
     "ui:group": "layout",
     "ui:group:title": "Page Layout & Design",
   }),

@@ -46,59 +46,74 @@ export const manifest = defineBrickManifest({
     commonProps,
     commonStyleProps,
     Type.Object({
-      // title: Type.Optional(
-      //   Type.Union(
-      //     [
-      //       Type.Composite([contentAwareProps, commonProps], {
-      //         title: "Static content",
-      //       }),
-      //       Type.String({
-      //         title: "Data source",
-      //       }),
-      //     ],
-      //     {
-      //       title: "Title",
-      //       // "ui:field": "mixed-content",
-      //       "ui:group": "card-title",
-      //       "ui:group:title": "Title",
-      //       "ui:group:order": 0,
-      //     },
-      //   ),
-      // ),
-      // image: Type.Optional(
-      //   Type.Object(
-      //     {
-      //       image: Type.String({
-      //         title: "Image",
-      //         "ui:field": "file",
-      //         "ui:accept": "image/*",
-      //         "ui:show-img-search": true,
-      //       }),
-      //     },
-      //     { title: "Image", "ui:group": "card-image", "ui:group:title": "Image", "ui:group:order": 0 },
-      //   ),
-      // ),
-      body: Type.Optional(
+      cardTitle: Type.Object(
+        {
+          content: Type.Object(
+            { text: Type.String(), richText: Type.Boolean() },
+            {
+              "ui:field": "mixed-content",
+              "ui:group": "card-title",
+              "ui:group:title": "Title",
+              "ui:group:order": 0,
+            },
+          ),
+          padding,
+          backgroundColor,
+        },
+        {
+          title: "Title",
+          // "ui:field": "mixed-content",
+          "ui:group": "card-title",
+          "ui:group:title": "Title",
+          "ui:group:order": 0,
+          default: {
+            content: {
+              text: "Edit my title",
+              richText: true,
+            },
+          },
+        },
+      ),
+      cardImage: Type.Optional(
         Type.Object(
           {
-            content: Type.String({
-              title: "Content",
+            image: Type.String({
+              title: "Image",
+              "ui:field": "file",
+              "ui:accept": "image/*",
+              "ui:show-img-search": true,
+            }),
+          },
+          { title: "Image", "ui:group": "card-image", "ui:group:title": "Image", "ui:group:order": 0 },
+        ),
+      ),
+      cardBody: Type.Object(
+        {
+          content: Type.Object(
+            { text: Type.String(), richText: Type.Boolean() },
+            {
               "ui:field": "mixed-content",
               "ui:group": "card-body",
               "ui:group:title": "Body",
               "ui:group:order": 0,
-            }),
-            padding,
-            backgroundColor,
+            },
+          ),
+          padding,
+          backgroundColor,
+        },
+        {
+          title: "Body",
+          // "ui:field": "mixed-content",
+          "ui:group": "card-body",
+          "ui:group:title": "Body",
+          "ui:group:order": 0,
+          default: {
+            content: {
+              text: "Edit my content",
+              richText: true,
+            },
           },
-          {
-            title: "Body",
-            // "ui:field": "mixed-content",
-            "ui:group": "card-body",
-            "ui:group:title": "Body",
-            "ui:group:order": 0,
-          },
-        ),
+        },
       ),
       // footer: Type.Optional(
       //   Type.Composite([contentAwareProps, commonProps], {

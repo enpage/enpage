@@ -8,7 +8,9 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
-import { detectCollisions } from "~/shared/utils/layout-utils";
+
+// import type { Interaction } from '@interactjs/core';
+// import type { ActionMap } from '@interactjs/core/types';
 
 interface DragCallbacks {
   onDragMove?: (
@@ -88,16 +90,48 @@ interface GridConfig {
   containerVerticalPadding: number;
 }
 
+interface SnapToGridConfig {
+  colWidth?: number;
+  rowHeight?: number;
+  paddingX?: number;
+  paddingY?: number;
+}
+
 function snapPositionToGrid({
   colWidth = 200, // Width of each column
   rowHeight = 80, // Fixed height of rows
   paddingX = 40, // Horizontal padding
   paddingY = 15, // Vertical padding
-}) {
+}: SnapToGridConfig) {
   return function (x: number, y: number) {
     return {
       x: Math.round((x - paddingX) / colWidth) * colWidth + paddingX,
       y: Math.round((y - paddingY) / rowHeight) * rowHeight + paddingY,
+    };
+  };
+}
+
+function createScrollAwareRestriction(container: HTMLElement, paddingX: number, paddingY: number) {
+  return function (
+    _x: number,
+    _y: number,
+    interaction: Interact.Interaction<keyof Interact.ActionMap>,
+  ): { top: number; left: number; bottom: number; right: number } {
+    const scroll = {
+      x: container.scrollLeft,
+      y: container.scrollTop,
+    };
+
+    const targetRect = interaction.element?.getBoundingClientRect();
+    invariant(targetRect, "Element not found in createScrollAwareRestriction()");
+    const containerRect = container.getBoundingClientRect();
+
+    // Calculate boundaries including scroll position
+    return {
+      top: paddingY,
+      left: paddingX,
+      bottom: containerRect.height + scroll.y - targetRect.height - paddingY,
+      right: containerRect.width + scroll.x - targetRect.width - paddingX,
     };
   };
 }
@@ -208,6 +242,7 @@ export const useEditablePage = (
       });
 
     if (dragEnabled) {
+      const container = document.querySelector<HTMLElement>(".page-container")!;
       interactable.current.draggable({
         // hold: 30,
         inertia: true,
@@ -226,6 +261,15 @@ export const useEditablePage = (
             relativePoints: [{ x: 0, y: 0 }],
             endOnly: true,
           }),
+          // interact.modifiers.restrict({
+          //   restriction: createScrollAwareRestriction(
+          //     container,
+          //     gridConfig.containerHorizontalPadding,
+          //     gridConfig.containerVerticalPadding,
+          //   ),
+          //   elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+          //   endOnly: true,
+          // }),
           interact.modifiers.restrict({
             restriction: "parent",
             elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
@@ -256,8 +300,6 @@ export const useEditablePage = (
 
             if (brick?.type) {
               const {
-                id,
-                type,
                 position: {
                   desktop: { w, h },
                 },
@@ -301,7 +343,6 @@ export const useEditablePage = (
           move: (event) => {
             event.stopPropagation();
             event.target.classList.add("moving");
-            // test
             let { x, y } = event.target.dataset;
             x = parseFloat(x ?? "0") + event.deltaRect.left;
             y = parseFloat(y ?? "0") + event.deltaRect.top;

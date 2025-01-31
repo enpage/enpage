@@ -18,6 +18,7 @@ import { manifest as socialLinksManifest } from "./bricks/manifests/social-links
 import { manifest as textManifest } from "./bricks/manifests/text.manifest";
 import { manifest as videoManifest } from "./bricks/manifests/video.manifest";
 import { manifest as loopManifest } from "./bricks/manifests/loop.manifest";
+import { manifest as genericComponentManifest } from "./bricks/manifests/generic-component.manifest";
 
 /**
  * Generates a unique identifier for bricks.
@@ -171,6 +172,10 @@ export const brickSchema = Type.Composite([
       props: Type.Record(Type.String(), Type.Any()),
     }),
     Type.Object({
+      type: Type.Literal("generic-component"),
+      props: genericComponentManifest.properties.props,
+    }),
+    Type.Object({
       type: Type.Literal("loop"),
       props: loopManifest.properties.props,
     }),
@@ -272,8 +277,8 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
 type DefinedRowBrick = Omit<Brick, "id" | "manifest" | "position"> & {
   // manifest?: BrickManifest;
   position: {
-    mobile?: Omit<DefinedBrickPosition, "y">;
-    desktop: Omit<DefinedBrickPosition, "y">;
+    mobile?: Omit<DefinedBrickPosition, "y"> & { forceY?: number };
+    desktop: Omit<DefinedBrickPosition, "y"> & { forceY?: number };
   };
 };
 
@@ -286,14 +291,27 @@ const currentRowByBreakpoint: Record<ResponsiveMode, number> = {
 /**
  * Creates a new row of bricks, automatically setting the `y` property to the current row.
  */
-export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[] {
+export function createRow<B extends DefinedRowBrick[]>(
+  bricks: B,
+  initialY = { desktop: 0, mobile: 0 },
+): DefinedBrick[] {
   // Get the max height of the bricks passed
   const maxDesktopHeight = Math.max(
-    ...bricks.map((brick) => Math.max(brick.position.desktop?.h ?? 0, brick.position.mobile?.h ?? 0)),
+    ...bricks.map((brick) =>
+      Math.max(
+        brick.position.desktop.forceY ?? brick.position.desktop?.h ?? initialY.desktop,
+        brick.position.mobile?.h ?? 0,
+      ),
+    ),
   );
 
   const maxMobileHeight = Math.max(
-    ...bricks.map((brick) => Math.max(brick.position.mobile?.h ?? 0, brick.position.desktop?.h ?? 0)),
+    ...bricks.map((brick) =>
+      Math.max(
+        brick.position.mobile?.forceY ?? brick.position.mobile?.h ?? initialY.mobile,
+        brick.position.desktop?.h ?? 0,
+      ),
+    ),
   );
 
   // create the row
@@ -304,13 +322,13 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
       position: {
         desktop: {
           ...brick.position.desktop,
-          y: currentRowByBreakpoint.desktop,
+          y: brick.position.desktop.forceY ?? currentRowByBreakpoint.desktop,
         },
         ...(brick.position.mobile
           ? {
               mobile: {
                 ...brick.position.mobile,
-                y: currentRowByBreakpoint.mobile,
+                y: brick.position.mobile.forceY ?? currentRowByBreakpoint.mobile,
               },
             }
           : null),

@@ -17,7 +17,7 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
         </Text>
       )}
       <div className="flex items-start flex-wrap gap-x-4 gap-y-1">
-        {/* shadow */}
+        {/* Padding */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Padding</label>
           <Select.Root
@@ -38,7 +38,7 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
             </Select.Content>
           </Select.Root>
         </div>
-        {/* border style */}
+        {/* Height */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Height</label>
           <SegmentedControl.Root

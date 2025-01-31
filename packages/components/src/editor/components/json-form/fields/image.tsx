@@ -4,7 +4,6 @@ import { Button, Text } from "@upstart.gg/style-system/system";
 import { useEditor } from "~/editor/hooks/use-editor";
 import { useMemo, useState } from "react";
 import ModalSearchImage from "~/editor/components/ModalSearchImage";
-import { tx } from "@twind/core";
 import type { ImageProps } from "@upstart.gg/sdk/shared/bricks/props/common";
 
 const ImageField: React.FC<FieldProps<ImageProps>> = (props) => {

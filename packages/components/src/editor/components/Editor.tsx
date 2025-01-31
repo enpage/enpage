@@ -71,7 +71,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
     <div
       id="editor"
       className={tx(
-        "min-h-[100dvh] max-h-[100dvh] grid relative overscroll-none",
+        "min-h-[100dvh] max-h-[100dvh] grid relative overscroll-none overflow-hidden",
         css({
           gridTemplateAreas: `"topbar topbar" "toolbar main"`,
           gridTemplateRows: "3.7rem 1fr",
@@ -87,7 +87,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div
         className={tx(
-          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto transition-colors duration-300",
+          "flex-1 flex place-content-center z-40 overscroll-none overflow-x-auto overflow-y-visible transition-colors duration-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",

@@ -130,7 +130,7 @@ export const padding = Type.Union(
     title: "Padding",
     description: "Space between the content and the border",
     "ui:field": "enum",
-    "ui:display": "button-group",
+    "ui:display": "select",
     ...groupSpacing,
   },
 );

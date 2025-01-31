@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { TArray, TObject, TSchema } from "@sinclair/typebox";
-import { tx } from "@twind/core";
+import { tx } from "@upstart.gg/style-system/twind";
 import { Text } from "@upstart.gg/style-system/system";
 
 type ChoiceContextProps = {

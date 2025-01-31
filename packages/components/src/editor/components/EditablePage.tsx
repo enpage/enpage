@@ -44,7 +44,7 @@ export default function EditablePage() {
     info: ReturnType<typeof canDropOnLayout | typeof getDropOverGhostPosition>,
   ) {
     if (info) {
-      dragOverRef.current?.style.setProperty("opacity", "1");
+      dragOverRef.current?.style.setProperty("opacity", "0.2");
       dragOverRef.current?.style.setProperty("grid-column", `${info.x + 1} / span ${info.w}`);
       dragOverRef.current?.style.setProperty("grid-row", `${info.y + 1} / span ${info.h}`);
       dragOverRef.current?.style.setProperty("display", "block");
@@ -212,10 +212,11 @@ export default function EditablePage() {
         !target.closest('[role="navigation"]') &&
         !target.matches('[role="menuitem"]') &&
         !target.matches("html") &&
+        !target.matches("body") &&
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
-        console.debug("click out, hidding", event);
+        console.debug("click out, hidding", event.target);
         editorHelpers.deselectBrick();
         // also deselect the library panel
         editorHelpers.hidePanel("library");
@@ -271,7 +272,7 @@ export default function EditablePage() {
           ))}
         <div
           ref={dragOverRef}
-          className={tx("drop-indicator bg-upstart-100 rounded transition-all opacity-0 hidden")}
+          className={tx("drop-indicator bg-upstart-50 rounded transition-all opacity-0 hidden")}
         />
       </div>
       <Selecto

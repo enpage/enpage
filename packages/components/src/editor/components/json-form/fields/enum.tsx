@@ -4,7 +4,7 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDraft } from "~/editor/hooks/use-editor";
 import type { FieldProps } from "./types";
 import { fieldDescription, fieldLabel } from "../form-class";
-import { Text } from "@upstart.gg/style-system/system";
+import { Text, Select, Slider } from "@upstart.gg/style-system/system";
 
 interface EnumOption {
   const: string;
@@ -157,31 +157,50 @@ const EnumField: React.FC<FieldProps<string>> = (props) => {
 
     default:
       return (
-        <div className="enum-field">
-          {title && (
-            <Text as="label" size="2" weight="medium">
-              {title}
-            </Text>
-          )}
-          {description && (
-            <Text as="p" color="gray" size="1">
-              {description}
-            </Text>
-          )}
-          <select
-            className="form-select mt-2"
-            value={currentValue}
-            onChange={(e) => onChange(e.target.value)}
-            required={required}
-          >
-            {options
-              .filter((o) => !o["ui:hidden-option"])
-              .map((option) => (
-                <option key={option.const} value={option.const}>
-                  {option.title}
-                </option>
-              ))}
-          </select>
+        // <div className="enum-field">
+        //   {title && (
+        //     <Text as="label" size="2" weight="medium">
+        //       {title}
+        //     </Text>
+        //   )}
+        //   {description && (
+        //     <Text as="p" color="gray" size="1">
+        //       {description}
+        //     </Text>
+        //   )}
+        //   <select
+        //     className="form-select mt-2"
+        //     value={currentValue}
+        //     onChange={(e) => onChange(e.target.value)}
+        //     required={required}
+        //   >
+        //     {options
+        //       .filter((o) => !o["ui:hidden-option"])
+        //       .map((option) => (
+        //         <option key={option.const} value={option.const}>
+        //           {option.title}
+        //         </option>
+        //       ))}
+        //   </select>
+        // </div>
+
+        <div className="flex flex-col gap-1 flex-1 mx-0.5">
+          <label className={fieldLabel}>Padding</label>
+          <Select.Root defaultValue={currentValue} size="1" onValueChange={(value) => onChange(value)}>
+            <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+            <Select.Content position="popper">
+              <Select.Group>
+                {options
+                  .filter((o) => !o["ui:hidden-option"])
+                  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                  .map((option: any) => (
+                    <Select.Item key={option.const} value={option.const}>
+                      {option.title}
+                    </Select.Item>
+                  ))}
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
         </div>
       );
   }

@@ -52,6 +52,7 @@ export default defineConfig({
       },
       formats: ["es"],
     },
+    minify: process.env.NODE_ENV === "production" && process.env.NOMINIFY !== "1",
     cssMinify: false,
     rollupOptions: {
       external: [

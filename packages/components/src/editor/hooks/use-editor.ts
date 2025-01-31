@@ -438,7 +438,9 @@ export const createDraftStore = (
           })),
           {
             name: `draft-state-${initProps.id}`,
-            skipHydration: initProps.mode === "remote",
+            // TODO: change when demo is done
+            // skipHydration: initProps.mode === "remote",
+            skipHydration: true,
             // Add this to force storage on initialization
             onRehydrateStorage: () => (state) => {
               if (state) {

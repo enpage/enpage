@@ -14,6 +14,7 @@ const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 7);
 export function defineConfig(config: TemplateConfig): TemplateConfig {
   return {
     attributes: config.attributes,
+    attr: config.attr,
     manifest: config.manifest,
     pages: config.pages,
     themes: config.themes,
@@ -30,6 +31,7 @@ export type TemplateConfig = {
    * The attributes declared for the template
    */
   attributes: JSONSchemaType<Attributes>;
+  attr?: Partial<Attributes>;
   /**
    * The datasources declared for the template
    */
@@ -112,7 +114,10 @@ export function getNewPageConfig(
     path,
     bricks,
     ...(pageConfig.attributes
-      ? { attributes: pageConfig.attributes, attr: resolveAttributes(pageConfig.attributes) }
+      ? {
+          attributes: pageConfig.attributes,
+          attr: { ...resolveAttributes(pageConfig.attributes), ...(pageConfig.attr ?? {}) },
+        }
       : {}),
   } satisfies GenericPageConfig;
 }
@@ -170,7 +175,7 @@ export function getNewSiteConfig(
     label: options.label,
     hostname,
     attributes: templateConfig.attributes,
-    attr: resolveAttributes(templateConfig.attributes),
+    attr: { ...resolveAttributes(templateConfig.attributes), ...(templateConfig.attr ?? {}) },
     datasources: templateConfig.datasources,
     themes: templateConfig.themes,
     theme: templateConfig.themes[0],
@@ -196,6 +201,7 @@ export const templatePageSchema = Type.Object({
 
 export type TemplatePage = Static<typeof templatePageSchema> & {
   attributes?: JSONSchemaType<Attributes>;
+  attr?: Partial<Attributes>;
 };
 
 export const definedTemplatePage = Type.Composite([

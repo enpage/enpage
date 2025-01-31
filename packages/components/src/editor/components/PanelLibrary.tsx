@@ -100,6 +100,8 @@ export default function PanelLibrary() {
     setIsGenerating(false);
   };
 
+  console.log({ manifests });
+
   return (
     <Tabs.Root defaultValue="library">
       <Tabs.List className={tx("sticky top-0 z-50")}>
@@ -137,7 +139,7 @@ export default function PanelLibrary() {
             }}
           >
             {Object.values(manifests)
-              .filter((m) => m.properties.kind.const === "brick")
+              .filter((m) => m.properties.kind.const === "brick" && !m.properties.hideInLibrary.default)
               .map((brickImport) => {
                 const brick = Value.Create(brickImport);
                 return (
@@ -165,7 +167,7 @@ export default function PanelLibrary() {
             }}
           >
             {Object.values(manifests)
-              .filter((m) => m.properties.kind.const === "widget")
+              .filter((m) => m.properties.kind.const === "widget" && !m.properties.hideInLibrary.default)
               .map((brickImport) => {
                 const brick = Value.Create(brickImport);
                 return (

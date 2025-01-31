@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDraft, useEditor } from "../hooks/use-editor";
+import { useMemo, useState } from "react";
+import { useDraft, useEditor, useGetBrick } from "../hooks/use-editor";
 import { BsArrowBarLeft } from "react-icons/bs";
 import Form, { type IChangeEvent } from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -91,17 +91,28 @@ export default function Inspector() {
 function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean }) {
   const brickDefaults = defaults[brick.type];
   const draft = useDraft();
+  const getBrick = useGetBrick();
+  const brickInfo = getBrick(brick.id);
+  const formData = useMemo(
+    () => ({ ...brickDefaults.props, ...(brickInfo?.props ?? {}) }),
+    [brickInfo, brickDefaults],
+  );
+
+  if (!brickInfo) {
+    console.log("No brick info found for brick: %s", brick.id);
+    return null;
+  }
 
   const onChange = (data: Record<string, unknown>, propertyChanged: string) => {
     if (!propertyChanged) {
       // ignore changes unrelated to the brick
       return;
     }
+    console.log("onChange(%s)", propertyChanged, data, brickInfo);
     draft.updateBrickProps(brick.id, { ...data, lastTouched: Date.now() });
   };
 
   const manifest = manifests[brick.type];
-  const formData = { ...brickDefaults.props, ...brick.props };
 
   if (!manifest) {
     console.warn(`No manifest found for brick: ${JSON.stringify(brick)}`);
