@@ -40,6 +40,9 @@ export default function EditablePage() {
     draft.setLastLoaded();
   }, []);
 
+  /**
+   *  Update the ghost style based on the drop position
+   */
   function updateDragOverGhostStyle(
     info: ReturnType<typeof canDropOnLayout | typeof getDropOverGhostPosition>,
   ) {
@@ -157,12 +160,13 @@ export default function EditablePage() {
           ...draft.getBrick(brickId)!.position[previewMode],
           w: gridPos.w,
           h: gridPos.h,
-          // when resizing trhough the mobile view, set the manual height
+          // when resizing through the mobile view, set the manual height
           // so that the system knows that the height is not automatic
           ...(previewMode === "mobile" ? { manualHeight: gridPos.h } : {}),
         });
 
-        if (previewMode === "mobile") {
+        // try to automatically adjust the mobile layout when resizing from desktop
+        if (previewMode === "desktop") {
           draft.adjustMobileLayout();
         }
       },

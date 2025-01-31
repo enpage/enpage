@@ -10,12 +10,13 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
 import { createUiSchema } from "./json-form/ui-schema";
 import { jsonFormClass } from "./json-form/form-class";
-import { Tabs } from "@upstart.gg/style-system/system";
+import { IconButton, Tabs } from "@upstart.gg/style-system/system";
 import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { ObjectFieldTemplate } from "./CustomObjectFieldTemplate";
 import "./json-form/json-form.css";
 import { getFormComponents, FormRenderer } from "./json-form/form";
+import { IoCloseOutline } from "react-icons/io5";
 
 export default function Inspector() {
   const editor = useEditor();
@@ -68,19 +69,19 @@ export default function Inspector() {
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
-            {manifest.properties.title.const} (#{editor.selectedBrick.id})
-            <TbHelp
-              className="w-5 h-5 dark:text-white opacity-50 dark:hover:opacity-80 cursor-pointer"
-              onClick={() => setShowHelp(!showHelp)}
-            />
+            {manifest.properties.title.const}
+            <IconButton
+              title="Reset"
+              size="1"
+              variant="ghost"
+              color="gray"
+              onClick={() => {
+                editor.deselectBrick();
+              }}
+            >
+              <IoCloseOutline />
+            </IconButton>
           </h2>
-          <button
-            type="button"
-            className="justify-self-end self-stretch p-2 hover:text-white aspect-square text-white/90 md:hidden"
-            onClick={() => editor.setSelectedBrick()}
-          >
-            <BsArrowBarLeft className="w-auto" size={22} />
-          </button>
         </div>
         <ElementInspector brick={editor.selectedBrick} showHelp={showHelp} />
       </ScrollablePanelTab>

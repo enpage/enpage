@@ -1,4 +1,4 @@
-import { Button, Popover, Text } from "@upstart.gg/style-system/system";
+import { Button, IconButton, Popover, Text } from "@upstart.gg/style-system/system";
 import { tx, colors, css } from "@upstart.gg/style-system/twind";
 import transSvg from "./trans.svg?url";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@upstart.gg/sdk/shared/themes/color-system";
 import BaseColorPicker, { ElementColorPicker } from "~/editor/components/ColorPicker";
 import type { FieldProps } from "./types";
+import { IoCloseOutline } from "react-icons/io5";
 
 const ColorField: React.FC<FieldProps<string>> = (props) => {
   const { schema, onChange, formSchema: formContext, currentValue, title, description } = props;
@@ -32,6 +33,7 @@ type ColorFieldRowProps = {
   labelClassName?: string;
   description?: string;
   required?: boolean;
+  showReset?: boolean;
 } & (
   | {
       color: string;
@@ -66,6 +68,7 @@ export function ColorFieldRow({
   labelClassName,
   onChange,
   colorType,
+  showReset,
   elementColorType,
 }: ColorFieldRowProps) {
   return (
@@ -82,9 +85,16 @@ export function ColorFieldRow({
           )}
         </div>
       )}
-      {colorType && <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} />}
+      {colorType && (
+        <ColorBasePreviewPill onChange={onChange} colorType={colorType} color={color} showReset={showReset} />
+      )}
       {elementColorType && (
-        <ColorElementPreviewPill onChange={onChange} elementColorType={elementColorType} color={color} />
+        <ColorElementPreviewPill
+          onChange={onChange}
+          elementColorType={elementColorType}
+          color={color}
+          showReset={showReset}
+        />
       )}
     </div>
   );
@@ -95,6 +105,7 @@ type ColorElementPreviewPillProps = {
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   elementColorType: ElementColorType;
+  showReset?: boolean;
   onChange: (newVal: ElementColor) => void;
 };
 
@@ -104,6 +115,7 @@ function ColorElementPreviewPill({
   elementColorType,
   side = "bottom",
   align = "center",
+  showReset,
 }: ColorElementPreviewPillProps) {
   const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
   const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
@@ -111,19 +123,32 @@ function ColorElementPreviewPill({
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <button
-          type="button"
-          data-color={color}
-          data-element-color-type={elementColorType}
-          className={tx(
-            "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            css({
-              backgroundImage: pillBgFile,
-              backgroundColor: color === "transparent" ? "transparent" : color,
-              backgroundSize,
-            }),
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            data-color={color}
+            data-element-color-type={elementColorType}
+            className={tx(
+              "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
+              css({
+                backgroundImage: pillBgFile,
+                backgroundColor: color === "transparent" ? "transparent" : color,
+                backgroundSize,
+              }),
+            )}
+          />
+          {showReset && (
+            <IconButton
+              title="Reset"
+              size="1"
+              variant="ghost"
+              color="gray"
+              onClick={() => onChange("transparent")}
+            >
+              <IoCloseOutline />
+            </IconButton>
           )}
-        />
+        </div>
       </Popover.Trigger>
       <ColorElementPopover
         elementColorType={elementColorType}
@@ -141,6 +166,7 @@ type ColorBasePreviewPillProps = {
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   colorType: ColorType;
+  showReset?: boolean;
   onChange: (newVal: string) => void;
 };
 
@@ -150,23 +176,37 @@ function ColorBasePreviewPill({
   colorType,
   side = "bottom",
   align = "center",
+  showReset,
 }: ColorBasePreviewPillProps) {
   const pillBgFile = color === "transparent" ? `url("${transSvg}")` : "none";
   const backgroundSize = color === "transparent" ? "100% 100%" : "auto";
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <button
-          type="button"
-          className={tx(
-            "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
-            css({
-              backgroundImage: pillBgFile,
-              backgroundColor: color === "transparent" ? "transparent" : color,
-              backgroundSize,
-            }),
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className={tx(
+              "rounded-full w-6 h-6 ring ring-transparent hover:ring-upstart-400 border border-gray-200",
+              css({
+                backgroundImage: pillBgFile,
+                backgroundColor: color === "transparent" ? "transparent" : color,
+                backgroundSize,
+              }),
+            )}
+          />
+          {showReset && (
+            <IconButton
+              title="Reset"
+              size="1"
+              variant="ghost"
+              color="gray"
+              onClick={() => onChange("transparent")}
+            >
+              <IoCloseOutline />
+            </IconButton>
           )}
-        />
+        </div>
       </Popover.Trigger>
       <ColorBasePopover colorType={colorType} side={side} align={align} color={color} onChange={onChange} />
     </Popover.Root>

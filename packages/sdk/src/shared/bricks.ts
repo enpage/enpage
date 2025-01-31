@@ -295,25 +295,6 @@ export function createRow<B extends DefinedRowBrick[]>(
   bricks: B,
   initialY = { desktop: 0, mobile: 0 },
 ): DefinedBrick[] {
-  // Get the max height of the bricks passed
-  const maxDesktopHeight = Math.max(
-    ...bricks.map((brick) =>
-      Math.max(
-        brick.position.desktop.forceY ?? brick.position.desktop?.h ?? initialY.desktop,
-        brick.position.mobile?.h ?? 0,
-      ),
-    ),
-  );
-
-  const maxMobileHeight = Math.max(
-    ...bricks.map((brick) =>
-      Math.max(
-        brick.position.mobile?.forceY ?? brick.position.mobile?.h ?? initialY.mobile,
-        brick.position.desktop?.h ?? 0,
-      ),
-    ),
-  );
-
   // create the row
   const created = bricks.map((brick, index) => {
     const adjusted = {
@@ -341,6 +322,12 @@ export function createRow<B extends DefinedRowBrick[]>(
 
     return adjusted;
   });
+
+  // Get the max height of the bricks passed
+  const maxDesktopHeight = Math.max(...bricks.map((brick) => brick.position.desktop?.h ?? initialY.desktop));
+  const maxMobileHeight = Math.max(...bricks.map((brick) => brick.position.mobile?.h ?? initialY.mobile));
+
+  console.log({ maxDesktopHeight, maxMobileHeight });
 
   // increment the current row
   currentRowByBreakpoint.desktop += maxDesktopHeight;

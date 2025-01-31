@@ -150,7 +150,6 @@ const homePageBricks = defineBricks([
       },
     },
   ]),
-
   ...createRow([
     {
       type: "text",
@@ -193,7 +192,8 @@ const homePageBricks = defineBricks([
         mobile: {
           x: 0,
           w: "full",
-          h: 8,
+          forceY: 98,
+          h: 1,
         },
         desktop: {
           x: 3,
