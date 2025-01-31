@@ -1,5 +1,16 @@
 # @upstart.gg/sdk
 
+## 0.0.76
+
+### Patch Changes
+
+- [#269](https://github.com/enpage/enpage/pull/269) [`8d52a73`](https://github.com/enpage/enpage/commit/8d52a73b571fc7f04d1b514ad0ebb48a610e0625) Thanks [@mattallty](https://github.com/mattallty)! - document types
+
+- [#271](https://github.com/enpage/enpage/pull/271) [`0151491`](https://github.com/enpage/enpage/commit/01514915f2fb8af3cf4179acdf74474e83fed8e3) Thanks [@mattallty](https://github.com/mattallty)! - Various improvements on the editor
+
+- Updated dependencies [[`0151491`](https://github.com/enpage/enpage/commit/01514915f2fb8af3cf4179acdf74474e83fed8e3)]:
+  - @upstart.gg/style-system@0.0.33
+
 ## 0.0.75
 
 ### Patch Changes
