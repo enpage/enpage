@@ -1,5 +1,14 @@
 # @upstart.gg/components
 
+## 0.0.77
+
+### Patch Changes
+
+- [#272](https://github.com/enpage/enpage/pull/272) [`65beefa`](https://github.com/enpage/enpage/commit/65beefa87abe03d85c97a221425e1a40ef99f0f4) Thanks [@mattallty](https://github.com/mattallty)! - Fix undefined Image const
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.77
+
 ## 0.0.76
 
 ### Patch Changes

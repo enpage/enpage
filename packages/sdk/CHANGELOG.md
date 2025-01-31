@@ -1,5 +1,7 @@
 # @upstart.gg/sdk
 
+## 0.0.77
+
 ## 0.0.76
 
 ### Patch Changes
