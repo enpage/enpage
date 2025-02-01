@@ -9,10 +9,18 @@ import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import invariant from "@upstart.gg/sdk/shared/utils/invariant";
 
+// import type { Interaction } from '@interactjs/core';
+// import type { ActionMap } from '@interactjs/core/types';
+
 interface DragCallbacks {
-  onDragMove?: (event: Interact.InteractEvent, position: { x: number; y: number }) => void;
+  onDragMove?: (
+    brick: Brick,
+    position: { x: number; y: number },
+    gridPosition: { x: number; y: number },
+    event: Interact.InteractEvent,
+  ) => void;
   onDragEnd?: (
-    brickId: string,
+    brick: Brick,
     position: { x: number; y: number },
     gridPosition: { x: number; y: number },
     event: Interact.InteractEvent,
@@ -82,16 +90,48 @@ interface GridConfig {
   containerVerticalPadding: number;
 }
 
+interface SnapToGridConfig {
+  colWidth?: number;
+  rowHeight?: number;
+  paddingX?: number;
+  paddingY?: number;
+}
+
 function snapPositionToGrid({
   colWidth = 200, // Width of each column
   rowHeight = 80, // Fixed height of rows
   paddingX = 40, // Horizontal padding
   paddingY = 15, // Vertical padding
-}) {
+}: SnapToGridConfig) {
   return function (x: number, y: number) {
     return {
       x: Math.round((x - paddingX) / colWidth) * colWidth + paddingX,
       y: Math.round((y - paddingY) / rowHeight) * rowHeight + paddingY,
+    };
+  };
+}
+
+function createScrollAwareRestriction(container: HTMLElement, paddingX: number, paddingY: number) {
+  return function (
+    _x: number,
+    _y: number,
+    interaction: Interact.Interaction<keyof Interact.ActionMap>,
+  ): { top: number; left: number; bottom: number; right: number } {
+    const scroll = {
+      x: container.scrollLeft,
+      y: container.scrollTop,
+    };
+
+    const targetRect = interaction.element?.getBoundingClientRect();
+    invariant(targetRect, "Element not found in createScrollAwareRestriction()");
+    const containerRect = container.getBoundingClientRect();
+
+    // Calculate boundaries including scroll position
+    return {
+      top: paddingY,
+      left: paddingX,
+      bottom: containerRect.height + scroll.y - targetRect.height - paddingY,
+      right: containerRect.width + scroll.x - targetRect.width - paddingX,
     };
   };
 }
@@ -193,9 +233,7 @@ export const useEditablePage = (
   useEffect(() => {
     interactable.current = interact(bricksSelectorOrRef, {
       styleCursor: false,
-    });
-
-    interactable.current
+    })
       .on("dragstart", (event) => {
         event.target.style.cursor = "move";
       })
@@ -204,8 +242,9 @@ export const useEditablePage = (
       });
 
     if (dragEnabled) {
+      const container = document.querySelector<HTMLElement>(".page-container")!;
       interactable.current.draggable({
-        hold: 50,
+        // hold: 30,
         inertia: true,
         autoScroll: true,
         modifiers: [
@@ -222,6 +261,15 @@ export const useEditablePage = (
             relativePoints: [{ x: 0, y: 0 }],
             endOnly: true,
           }),
+          // interact.modifiers.restrict({
+          //   restriction: createScrollAwareRestriction(
+          //     container,
+          //     gridConfig.containerHorizontalPadding,
+          //     gridConfig.containerVerticalPadding,
+          //   ),
+          //   elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+          //   endOnly: true,
+          // }),
           interact.modifiers.restrict({
             restriction: "parent",
             elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
@@ -243,22 +291,41 @@ export const useEditablePage = (
               const position = getPosition(element, event);
               updateElementTransform(element, position.x, position.y);
             });
+
+            if (!dragCallbacks.onDragMove) {
+              return;
+            }
+
+            const brick = getBrick(target.id);
+
+            if (brick?.type) {
+              const {
+                position: {
+                  desktop: { w, h },
+                },
+              } = brick;
+
+              const gridPosition = getGridPosition(target, gridConfig);
+              // we fire the callback for the main element only
+              dragCallbacks.onDragMove?.(brick, getPosition(target, event), gridPosition, event);
+            } else {
+              console.log("cannot determine type of brick event.target", event.target);
+            }
           },
           end: (event: Interact.InteractEvent) => {
             const target = event.target as HTMLElement;
             target.classList.remove("moving");
             const elements = selectedGroup ? selectedGroup.map(getBrickRef) : [target];
-
             elements.forEach((element) => {
               if (!element) return;
+              const brick = getBrick(element.id);
+              if (!brick) return;
               const position = getPosition(element, event);
               const gridPosition = getGridPosition(element, gridConfig);
-              // Clear transform and data attributes
               element.style.transform = "";
               element.dataset.x = "0";
               element.dataset.y = "0";
-              // call back
-              dragCallbacks.onDragEnd?.(element.id, position, gridPosition, event);
+              dragCallbacks.onDragEnd?.(brick, position, gridPosition, event);
             });
           },
         },
@@ -276,7 +343,6 @@ export const useEditablePage = (
           move: (event) => {
             event.stopPropagation();
             event.target.classList.add("moving");
-            // test
             let { x, y } = event.target.dataset;
             x = parseFloat(x ?? "0") + event.deltaRect.left;
             y = parseFloat(y ?? "0") + event.deltaRect.top;
@@ -399,7 +465,6 @@ export const useEditablePage = (
           const type = event.relatedTarget.dataset.brickType;
 
           if (type) {
-            console.log("constraints", defaults[type]);
             const constraints: BrickConstraints = {
               preferredHeight: defaults[type].preferredHeight,
               preferredWidth: defaults[type].preferredWidth,

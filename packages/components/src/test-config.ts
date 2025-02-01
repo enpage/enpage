@@ -1,20 +1,22 @@
 // @ts-check
-import { Type as ds } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
+import { richText } from "@upstart.gg/sdk/shared/bricks/props/common";
+import { FirstBlock, SecondBlock } from "./test-comp";
 
 // define your datasources
 const datasources = defineDataSources({
   links: {
     provider: "internal-links",
     name: "Links",
-    schema: ds.Array(
-      ds.Object({
-        title: ds.String(),
-        url: ds.String({ format: "uri", pattern: "^https?://" }),
-        icon: ds.Optional(ds.String()),
+    schema: Type.Array(
+      Type.Object({
+        title: Type.String(),
+        url: Type.String({ format: "uri", pattern: "^https?://" }),
+        icon: Type.Optional(Type.String()),
       }),
     ),
     sampleData: [
@@ -29,12 +31,13 @@ const datasources = defineDataSources({
     options: {
       url: "https://jsonplaceholder.typicode.com/todos?userId=1",
     },
-    schema: ds.Array(
-      ds.Object({
-        id: ds.Number(),
-        userId: ds.Number(),
-        title: ds.String(),
-        completed: ds.Boolean(),
+    schema: Type.Array(
+      Type.Object({
+        id: Type.Number(),
+        userId: Type.Number(),
+        title: Type.String(),
+        description: Type.Optional(Type.String()),
+        completed: Type.Boolean(),
       }),
     ),
   },
@@ -60,21 +63,89 @@ const datasources = defineDataSources({
 const homePageBricks = defineBricks([
   ...createRow([
     {
-      type: "image",
+      type: "hero",
       props: {
-        src: "https://cdn.upstart.gg/internal/logo/upstart.svg",
-        // className: "max-h-24",
+        content: {
+          text: "Reach the stars.<br />Book your next trip<br />to Space.",
+        },
+        className:
+          "capitalize flex font-bold text-[2.2rem] leading-[1] @desktop:text-7xl justify-center items-center text-center [text-shadow:_2px_2px_5px_rgb(0_0_0_/_40%)]",
       },
       position: {
         mobile: {
           x: 0,
           w: "full",
-          h: 3,
+          h: 10,
         },
         desktop: {
           x: 0,
+          forceY: 20,
           w: "full",
-          h: 3,
+          h: 16,
+        },
+      },
+    },
+  ]),
+  // ...createRow([
+  //   {
+  //     type: "image",
+  //     props: {
+  //       src: "/bluemoon.webp",
+  //       className: "justify-start",
+  //       // className: "max-h-24",
+  //     },
+  //     position: {
+  //       mobile: {
+  //         x: 0,
+  //         w: "full",
+  //         h: 5,
+  //       },
+  //       desktop: {
+  //         x: 0,
+  //         w: "full",
+  //         h: 12,
+  //       },
+  //     },
+  //   },
+  // ]),
+  ...createRow([
+    {
+      type: "generic-component",
+      props: {
+        render: FirstBlock,
+      },
+      position: {
+        mobile: {
+          x: 0,
+          forceY: 10,
+          w: "full",
+          h: 36,
+        },
+        desktop: {
+          x: 2,
+          forceY: 40,
+          w: 15,
+          h: 20,
+        },
+      },
+    },
+    {
+      type: "generic-component",
+      props: {
+        render: SecondBlock,
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: "full",
+          forceY: 47,
+          h: 36,
+        },
+        desktop: {
+          x: 19,
+          forceY: 40,
+          w: 15,
+          h: 20,
         },
       },
     },
@@ -83,21 +154,25 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content: "Build your launch page",
-        justify: "text-center font-humanist",
+        content: {
+          text: "&laquo; The lunar view of Earth changed my perspective forever.<br />An unforgettable experience &raquo;<br /><small>- John Doe</small>",
+          richText: true,
+        },
+        className: "text-center text-3xl italic",
+        format: "html",
       },
-      // take the whole width on all devices
       position: {
         mobile: {
           x: 0,
           w: "full",
-          h: 4,
+          forceY: 85,
+          h: 8,
         },
         desktop: {
-          x: 0,
-          y: 4,
-          w: "full",
-          h: 4,
+          x: 3,
+          w: 28,
+          h: 6,
+          forceY: 62,
         },
       },
     },
@@ -106,8 +181,10 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare justo lectus, vel placerat arcu vulputate scelerisque. Donec eget eros pellentesque, facilisis massa id, aliquam nisl. Suspendisse auctor ipsum vitae volutpat cursus. Donec vehicula urna felis, feugiat iaculis metus luctus varius. Nam sed pretium nulla.",
+        content: {
+          text: " ",
+          richText: true,
+        },
         justify: "text-center",
         format: "html",
       },
@@ -115,50 +192,86 @@ const homePageBricks = defineBricks([
         mobile: {
           x: 0,
           w: "full",
-          h: 8,
+          forceY: 98,
+          h: 1,
         },
         desktop: {
-          x: 0,
-          w: "full",
+          x: 3,
+          w: 28,
           h: 3,
+          forceY: 68,
         },
       },
     },
   ]),
-  ...createRow([
-    {
-      type: "text",
-      props: { content: "Something" },
-      position: {
-        mobile: {
-          x: "third",
-          w: "full",
-          h: 3,
-        },
-        desktop: {
-          x: "third",
-          w: "third",
-          h: 3,
-        },
-      },
-    },
-    {
-      type: "text",
-      props: { content: "Else" },
-      position: {
-        mobile: {
-          x: "twoThird",
-          w: "full",
-          h: 3,
-        },
-        desktop: {
-          x: "twoThird",
-          w: "third",
-          h: 3,
-        },
-      },
-    },
-  ]),
+  // ]),
+  // ...createRow([
+  //   {
+  //     type: "card",
+  //     props: {
+  //       // justify: "text-center",
+  //       // format: "html",
+  //       body: { content: "Card body" },
+  //       title: { content: "Card title" },
+  //       // footer: "Card footer",
+  //     },
+  //     position: {
+  //       mobile: {
+  //         x: 0,
+  //         w: "full",
+  //         h: 8,
+  //       },
+  //       desktop: {
+  //         x: 0,
+  //         w: "full",
+  //         h: 3,
+  //       },
+  //     },
+  //   },
+  // ]),
+  // ...createRow([
+  //   {
+  //     type: "text",
+  //     props: {
+  //       content: {
+  //         text: "Build your launch page",
+  //         richText: true,
+  //       },
+  //     },
+  //     position: {
+  //       mobile: {
+  //         x: "third",
+  //         w: "full",
+  //         h: 3,
+  //       },
+  //       desktop: {
+  //         x: "third",
+  //         w: "third",
+  //         h: 3,
+  //       },
+  //     },
+  //   },
+  //   {
+  //     type: "text",
+  //     props: {
+  //       content: {
+  //         text: "Build your launch page",
+  //       },
+  //     },
+  //     position: {
+  //       mobile: {
+  //         x: "twoThird",
+  //         w: "full",
+  //         h: 3,
+  //       },
+  //       desktop: {
+  //         x: "twoThird",
+  //         w: "third",
+  //         h: 3,
+  //       },
+  //     },
+  //   },
+  // ]),
 ]);
 
 const themes = [
@@ -169,7 +282,7 @@ const themes = [
     tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
 
     colors: {
-      primary: "#7c3aed", // Purple
+      primary: "#FF9900",
       secondary: "#2dd4bf", // Teal
       // Cyan
       accent: "#ec4899", // Pink
@@ -177,8 +290,8 @@ const themes = [
     },
     typography: {
       base: 16,
-      heading: "neo-grotesque",
-      body: "geometric-humanist",
+      heading: "system-ui",
+      body: "system-ui",
     },
     customFonts: [
       {
@@ -201,6 +314,11 @@ const siteAttributes = defineAttributes({
 
 export default defineConfig({
   attributes: siteAttributes,
+  attr: {
+    $textColor: "#fff",
+    $backgroundColor: "#0B1016",
+    $backgroundImage: "/earth-big.jpg",
+  },
   pages: [
     {
       label: "Home",

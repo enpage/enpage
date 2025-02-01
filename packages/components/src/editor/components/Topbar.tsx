@@ -12,6 +12,8 @@ import {
   usePageVersion,
   useLastSaved,
   useDraft,
+  useEditorHelpers,
+  usePreviewMode,
 } from "~/editor/hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
@@ -23,7 +25,8 @@ import { IoIosSave } from "react-icons/io";
 import { formatDistance } from "date-fns";
 
 export default function TopBar() {
-  const editor = useEditor();
+  const editorHelpers = useEditorHelpers();
+  const previewMode = usePreviewMode();
   const draft = useDraft();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
@@ -33,14 +36,18 @@ export default function TopBar() {
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
+  const currentPageLabel = pages.find((page) => page.id === draft.id)?.label;
 
-  const publish = useCallback(() => {
-    post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
-  }, [draft.siteId, draft.id, pageVersion]);
+  const publish = useCallback(
+    (wholeSite = false) => {
+      post(`/sites/${draft.siteId}/pages/${draft.id}/versions/${pageVersion}/publish`, {});
+    },
+    [draft.siteId, draft.id, pageVersion],
+  );
 
   const switchPreviewMode = useCallback(() => {
-    editor.setPreviewMode(editor.previewMode === "mobile" ? "desktop" : "mobile");
-  }, [editor.previewMode, editor.setPreviewMode]);
+    editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
+  }, [previewMode, editorHelpers.setPreviewMode]);
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
@@ -83,7 +90,7 @@ export default function TopBar() {
       >
         <button
           type="button"
-          disabled={editor.mode === "local"}
+          disabled={editorMode === "local"}
           onClick={() => {
             window.location.href = "/dashboard";
           }}
@@ -156,8 +163,8 @@ export default function TopBar() {
           <span className={tx(tooltipCls)}>Redo</span>
         </button>
         <button type="button" className={tx(btnClass, squareBtn, commonCls)} onClick={switchPreviewMode}>
-          {editor.previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
-          {editor.previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
+          {previewMode === "desktop" && <RxDesktop className="h-7 w-auto" />}
+          {previewMode === "mobile" && <RxMobile className="h-7 w-auto" />}
           <span className={tx(tooltipCls)}>Switch View</span>
         </button>
 
@@ -189,7 +196,10 @@ export default function TopBar() {
           >
             <button type="button" className={tx(btnClass, squareBtn, commonCls, btnWithArrow)}>
               <VscCopy className="h-7 w-auto" />
-              <span className={tx(tooltipCls)}>Pages</span>
+              <div className="flex flex-col gap-1 ml-2 mr-3 justify-start items-start">
+                <span className="text-xs inline-block">Page</span>
+                <span className="text-base inline-block -mt-2 font-semibold">{currentPageLabel}</span>
+              </div>
               <RiArrowDownSLine className={tx(arrowClass)} />
             </button>
           </TopbarMenu>
@@ -210,7 +220,8 @@ export default function TopBar() {
         {editorMode === "remote" ? (
           <TopbarMenu
             items={[
-              { label: "Publish on web", onClick: publish },
+              { label: "Publish this page", onClick: () => publish() },
+              { label: "Publish the whole site", onClick: () => publish(true) },
               { label: "Schedule publish", shortcut: "⌘⇧D" },
             ]}
           >

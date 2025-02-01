@@ -15,16 +15,17 @@ import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
 import { Button } from "@upstart.gg/style-system/system";
 import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
+import DataPanel from "./PanelData";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
   onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
-const ThemePanel = lazy(() => import("./ThemePanel"));
-const SettingsPanel = lazy(() => import("./SettingsPanel"));
-const Inspector = lazy(() => import("./Inspector"));
-const BlocksLibrary = lazy(() => import("./BricksLibrary"));
+const PanelTheme = lazy(() => import("./PanelTheme"));
+const SettingsPanel = lazy(() => import("./PanelSettings"));
+const PanelInspector = lazy(() => import("./PanelInspector"));
+const PanelLibrary = lazy(() => import("./PanelLibrary"));
 
 export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -70,7 +71,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
     <div
       id="editor"
       className={tx(
-        "min-h-[100dvh] max-h-[100dvh] grid relative overscroll-none",
+        "min-h-[100dvh] max-h-[100dvh] grid relative overscroll-none overflow-hidden",
         css({
           gridTemplateAreas: `"topbar topbar" "toolbar main"`,
           gridTemplateRows: "3.7rem 1fr",
@@ -86,7 +87,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       {draft.previewTheme && <ThemePreviewConfirmButton />}
       <div
         className={tx(
-          "flex-1 flex place-content-center z-40 overscroll-none overflow-auto transition-colors duration-300",
+          "flex-1 flex place-content-center z-40 overscroll-none overflow-x-auto overflow-y-visible transition-colors duration-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",
@@ -135,7 +136,7 @@ function Panel({ className, ...props }: PanelProps) {
       id="floating-panel"
       className={tx(
         `z-[9999] fixed top-[3.7rem] bottom-0 left-[3.7rem] flex shadow-2xl flex-col overscroll-none \
-        min-w-[300px] w-[18dvw] max-w-[18dvw] 2xl:max-w-[14dvw] transition-all duration-200 ease-in-out opacity-100
+        min-w-[300px] w-[350px] transition-all duration-200 ease-in-out opacity-100
         bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-auto`,
         {
           "-translate-x-full opacity-0": !editor.panel,
@@ -145,22 +146,27 @@ function Panel({ className, ...props }: PanelProps) {
     >
       {editor.previewMode === "desktop" && editor.panel === "library" && (
         <Suspense>
-          <BlocksLibrary />
+          <PanelLibrary />
         </Suspense>
       )}
       {editor.panel === "inspector" && (
         <Suspense>
-          <Inspector />
+          <PanelInspector />
         </Suspense>
       )}
       {editor.panel === "theme" && (
         <Suspense>
-          <ThemePanel />
+          <PanelTheme />
         </Suspense>
       )}
       {editor.panel === "settings" && (
         <Suspense>
           <SettingsPanel />
+        </Suspense>
+      )}
+      {editor.panel === "data" && (
+        <Suspense>
+          <DataPanel />
         </Suspense>
       )}
       {/* {editor.modal === "image-search" && <ModalSearchImage />} */}

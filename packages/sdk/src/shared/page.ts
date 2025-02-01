@@ -7,12 +7,14 @@ import { datasourcesMap, type DatasourcesMap, type DatasourcesResolved } from ".
 import { manifestSchema, type TemplateManifest } from "./manifest";
 import type { JSONSchemaType } from "ajv";
 import { customAlphabet } from "nanoid";
+import type { DatarecordsMap } from "./datarecords/types";
 
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 7);
 
 export function defineConfig(config: TemplateConfig): TemplateConfig {
   return {
     attributes: config.attributes,
+    attr: config.attr,
     manifest: config.manifest,
     pages: config.pages,
     themes: config.themes,
@@ -29,6 +31,7 @@ export type TemplateConfig = {
    * The attributes declared for the template
    */
   attributes: JSONSchemaType<Attributes>;
+  attr?: Partial<Attributes>;
   /**
    * The datasources declared for the template
    */
@@ -94,20 +97,27 @@ export type PageConfig<D extends DatasourcesMap, B extends Brick[]> = PageInfo &
 
 export type GenericPageConfig = PageConfig<DatasourcesMap, Brick[]>;
 
-export function getNewPageConfig(templateConfig: TemplateConfig, path = "/"): GenericPageConfig {
+export function getNewPageConfig(
+  templateConfig: TemplateConfig,
+  path = "/",
+  useFixedId: false | string = false,
+): GenericPageConfig {
   const pageConfig = templateConfig.pages.find((p) => p.path === path);
   invariant(pageConfig, `createPageConfigFromTemplateConfig: No page config found for path ${path}`);
 
   const bricks = pageConfig.bricks;
 
   return {
-    id: crypto.randomUUID(),
+    id: typeof useFixedId === "boolean" ? crypto.randomUUID() : useFixedId,
     label: pageConfig.label,
     tags: pageConfig.tags,
     path,
     bricks,
     ...(pageConfig.attributes
-      ? { attributes: pageConfig.attributes, attr: resolveAttributes(pageConfig.attributes) }
+      ? {
+          attributes: pageConfig.attributes,
+          attr: { ...resolveAttributes(pageConfig.attributes), ...(pageConfig.attr ?? {}) },
+        }
       : {}),
   } satisfies GenericPageConfig;
 }
@@ -122,6 +132,7 @@ export type SiteConfig = {
   attributes: JSONSchemaType<Attributes>;
   attr: Attributes;
   datasources?: DatasourcesMap;
+  datarecords?: DatarecordsMap;
   themes: Theme[];
   theme: Theme;
   pagesMap: PagesMapEntry[];
@@ -146,17 +157,25 @@ export type GenericPageContext = Omit<GenericPageConfig, "attr" | "attributes"> 
 export function getNewSiteConfig(
   templateConfig: TemplateConfig,
   options: { label: string } = { label: "New site" },
+  // used for testing to avoid changing the site id on every reload
+  useFixedIds = false,
 ) {
-  const id = crypto.randomUUID();
+  const id = useFixedIds ? "00000000-0000-0000-0000-000000000001" : crypto.randomUUID();
   const hostname = `${nanoid()}.upstart.gg`;
-  const pages = templateConfig.pages.map((p) => getNewPageConfig(templateConfig, p.path));
+  const pages = templateConfig.pages.map((p, index) =>
+    getNewPageConfig(
+      templateConfig,
+      p.path,
+      useFixedIds ? `00000000-0000-0000-0000-00000000000${index}` : false,
+    ),
+  );
 
   const site = {
     id,
     label: options.label,
     hostname,
     attributes: templateConfig.attributes,
-    attr: resolveAttributes(templateConfig.attributes),
+    attr: { ...resolveAttributes(templateConfig.attributes), ...(templateConfig.attr ?? {}) },
     datasources: templateConfig.datasources,
     themes: templateConfig.themes,
     theme: templateConfig.themes[0],
@@ -182,6 +201,7 @@ export const templatePageSchema = Type.Object({
 
 export type TemplatePage = Static<typeof templatePageSchema> & {
   attributes?: JSONSchemaType<Attributes>;
+  attr?: Partial<Attributes>;
 };
 
 export const definedTemplatePage = Type.Composite([

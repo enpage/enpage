@@ -13,7 +13,7 @@ import {
 } from "@twind/core";
 import config from "./twind-config.js";
 
-export { getSheet } from "@twind/core";
+export { getSheet, parse, parseValue } from "@twind/core";
 export { default as inline } from "@twind/with-react/inline";
 
 export const colors = config.theme.colors as Record<

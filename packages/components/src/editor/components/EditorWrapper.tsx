@@ -48,19 +48,25 @@ export function EditorWrapper({
       attr: Object.assign({}, siteConfig.attr, pageConfig.attr),
       attributes: pageConfig.attributes,
       siteAttributes: siteConfig.attributes,
+      datasources: siteConfig.datasources,
+      datarecords: siteConfig.datarecords,
       data: pageConfig.data,
       theme: siteConfig.theme,
     }),
   ).current;
 
-  const { isDarkMode } = useDarkMode({ initializeWithValue: false });
+  const { isDarkMode } = useDarkMode();
 
   useEffect(onReady, []);
 
   return (
     <EditorStoreContext.Provider value={editorStore} key="EditorStoreContext">
       <DraftStoreContext.Provider value={draftStore} key="DraftStoreContext">
-        <Theme accentColor="violet" className={tx("w-[100dvw]")} appearance={isDarkMode ? "dark" : "light"}>
+        <Theme
+          accentColor="violet"
+          className={tx("w-[100dvw] overflow-hidden")}
+          appearance={isDarkMode ? "dark" : "light"}
+        >
           {children}
         </Theme>
       </DraftStoreContext.Provider>

@@ -15,9 +15,12 @@ export function useBrickStyle(
     Partial<Static<typeof textStyleProps>> &
     Partial<Static<typeof commonProps>>,
 ) {
-  return tx([
+  // This is the inner brick style. As the wrapper uses "display: flex",
+  // we use flex-1 to make the inner brick fill the space.
+  return tx("flex-1", [
     props.className && apply(props.className),
-    props.padding ? (props.padding as string) : null,
+    // props.padding ? (props.padding as string) : null,
+    props.dimensions?.padding ? (props.dimensions.padding as string) : null,
     props.color ? `text-${props.color}` : null,
     props.fontSize ? `text-${props.fontSize}` : null,
     props.fontWeight ? `font-${props.fontWeight}` : null,
@@ -62,21 +65,21 @@ export function useBrickWrapperStyle({
       }),
 
     // Border
-    "borderColor" in brick.props && propToStyle(brick.props.borderColor as string, "borderColor"),
-    "borderRadius" in brick.props && (brick.props.borderRadius as string),
-    "borderStyle" in brick.props && (brick.props.borderStyle as string),
-    "borderWidth" in brick.props && (brick.props.borderWidth as string),
+    "borders" in brick.props && propToStyle(brick.props.borders.color as string, "borderColor"),
+    "borders" in brick.props && (brick.props.borders.radius as string),
+    "borders" in brick.props && (brick.props.borders.style as string),
+    "borders" in brick.props && (brick.props.borders.width as string),
 
     // Background
     "backgroundColor" in brick.props && propToStyle(brick.props.backgroundColor as string, "background"),
 
     // Opacity
-    "opacity" in brick.props && propToStyle(brick.props.opacity as number | undefined, "opacity"),
+    "effects" in brick.props && propToStyle(brick.props.effects.opacity as number | undefined, "opacity"),
 
     // shadow
-    "shadow" in brick.props && (brick.props.shadow as string),
+    "effects" in brick.props && (brick.props.effects.shadow as string),
 
     // z-index
-    (brick.props.z as string) && `z-[${brick.props.z}]`,
+    // (brick.props.z as string) && `z-[${brick.props.z}]`,
   );
 }

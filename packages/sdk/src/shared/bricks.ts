@@ -17,6 +17,8 @@ import { manifest as mapManifest } from "./bricks/manifests/map.manifest";
 import { manifest as socialLinksManifest } from "./bricks/manifests/social-links.manifest";
 import { manifest as textManifest } from "./bricks/manifests/text.manifest";
 import { manifest as videoManifest } from "./bricks/manifests/video.manifest";
+import { manifest as loopManifest } from "./bricks/manifests/loop.manifest";
+import { manifest as genericComponentManifest } from "./bricks/manifests/generic-component.manifest";
 
 /**
  * Generates a unique identifier for bricks.
@@ -169,6 +171,14 @@ export const brickSchema = Type.Composite([
       type: Type.Literal("html-element"),
       props: Type.Record(Type.String(), Type.Any()),
     }),
+    Type.Object({
+      type: Type.Literal("generic-component"),
+      props: genericComponentManifest.properties.props,
+    }),
+    Type.Object({
+      type: Type.Literal("loop"),
+      props: loopManifest.properties.props,
+    }),
   ]),
   Type.Object({
     id: Type.String({
@@ -248,14 +258,16 @@ function mapPosition(
 }
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
-  return bricks.map((brick) => ({
-    ...brick,
-    id: `brick-${generateId()}`,
-    position: {
-      mobile: mapPosition(brick.position.mobile, "mobile"),
-      desktop: mapPosition(brick.position.desktop, "desktop"),
-    },
-  }));
+  return bricks.map((brick) => {
+    return {
+      id: `brick-${generateId()}`,
+      ...brick,
+      position: {
+        mobile: mapPosition(brick.position.mobile, "mobile"),
+        desktop: mapPosition(brick.position.desktop, "desktop"),
+      },
+    };
+  });
 }
 
 /**
@@ -265,8 +277,8 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
 type DefinedRowBrick = Omit<Brick, "id" | "manifest" | "position"> & {
   // manifest?: BrickManifest;
   position: {
-    mobile?: Omit<DefinedBrickPosition, "y">;
-    desktop: Omit<DefinedBrickPosition, "y">;
+    mobile?: Omit<DefinedBrickPosition, "y"> & { forceY?: number };
+    desktop: Omit<DefinedBrickPosition, "y"> & { forceY?: number };
   };
 };
 
@@ -279,16 +291,10 @@ const currentRowByBreakpoint: Record<ResponsiveMode, number> = {
 /**
  * Creates a new row of bricks, automatically setting the `y` property to the current row.
  */
-export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[] {
-  // Get the max height of the bricks passed
-  const maxDesktopHeight = Math.max(
-    ...bricks.map((brick) => Math.max(brick.position.desktop?.h ?? 0, brick.position.mobile?.h ?? 0)),
-  );
-
-  const maxMobileHeight = Math.max(
-    ...bricks.map((brick) => Math.max(brick.position.mobile?.h ?? 0, brick.position.desktop?.h ?? 0)),
-  );
-
+export function createRow<B extends DefinedRowBrick[]>(
+  bricks: B,
+  initialY = { desktop: 0, mobile: 0 },
+): DefinedBrick[] {
   // create the row
   const created = bricks.map((brick, index) => {
     const adjusted = {
@@ -297,13 +303,13 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
       position: {
         desktop: {
           ...brick.position.desktop,
-          y: currentRowByBreakpoint.desktop,
+          y: brick.position.desktop.forceY ?? currentRowByBreakpoint.desktop,
         },
         ...(brick.position.mobile
           ? {
               mobile: {
                 ...brick.position.mobile,
-                y: currentRowByBreakpoint.mobile,
+                y: brick.position.mobile.forceY ?? currentRowByBreakpoint.mobile,
               },
             }
           : null),
@@ -316,6 +322,10 @@ export function createRow<B extends DefinedRowBrick[]>(bricks: B): DefinedBrick[
 
     return adjusted;
   });
+
+  // Get the max height of the bricks passed
+  const maxDesktopHeight = Math.max(...bricks.map((brick) => brick.position.desktop?.h ?? initialY.desktop));
+  const maxMobileHeight = Math.max(...bricks.map((brick) => brick.position.mobile?.h ?? initialY.mobile));
 
   // increment the current row
   currentRowByBreakpoint.desktop += maxDesktopHeight;

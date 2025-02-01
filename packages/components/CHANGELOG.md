@@ -1,5 +1,24 @@
 # @upstart.gg/components
 
+## 0.0.77
+
+### Patch Changes
+
+- [#272](https://github.com/enpage/enpage/pull/272) [`65beefa`](https://github.com/enpage/enpage/commit/65beefa87abe03d85c97a221425e1a40ef99f0f4) Thanks [@mattallty](https://github.com/mattallty)! - Fix undefined Image const
+
+- Updated dependencies []:
+  - @upstart.gg/sdk@0.0.77
+
+## 0.0.76
+
+### Patch Changes
+
+- [#271](https://github.com/enpage/enpage/pull/271) [`0151491`](https://github.com/enpage/enpage/commit/01514915f2fb8af3cf4179acdf74474e83fed8e3) Thanks [@mattallty](https://github.com/mattallty)! - Various improvements on the editor
+
+- Updated dependencies [[`8d52a73`](https://github.com/enpage/enpage/commit/8d52a73b571fc7f04d1b514ad0ebb48a610e0625), [`0151491`](https://github.com/enpage/enpage/commit/01514915f2fb8af3cf4179acdf74474e83fed8e3)]:
+  - @upstart.gg/sdk@0.0.76
+  - @upstart.gg/style-system@0.0.33
+
 ## 0.0.75
 
 ### Patch Changes

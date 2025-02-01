@@ -21,6 +21,7 @@ export function defineBrickManifest<
   props,
   datasource,
   datarecord,
+  hideInLibrary,
 }: {
   type: BType;
   kind: string;
@@ -50,6 +51,7 @@ export function defineBrickManifest<
   props: TObject<BProps>;
   datasource?: TObject;
   datarecord?: TObject;
+  hideInLibrary?: boolean;
 }) {
   return Type.Object({
     type: Type.Literal(type),
@@ -57,6 +59,7 @@ export function defineBrickManifest<
     title: Type.Literal(title),
     description: Type.Literal(description),
     icon: Type.Literal(icon),
+    hideInLibrary: Type.Boolean({ default: hideInLibrary ?? false }),
     preferredWidth: Type.Object(
       {
         mobile: Type.Number(),

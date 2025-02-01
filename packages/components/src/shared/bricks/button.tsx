@@ -6,17 +6,16 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/button
 
 const Button = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
-  let { content, heroFontSize } = props;
 
-  if (!content.startsWith("<h")) {
-    content = `<h1>${content}</h1>`;
-  }
+  // if (!content.startsWith("<h")) {
+  //   content = `<h1>${content}</h1>`;
+  // }
 
-  const sizeClass = css({
-    "font-size": `var(--${heroFontSize})`,
-  });
+  // const sizeClass = css({
+  //   "font-size": `var(--${heroFontSize})`,
+  // });
 
-  return <TextBrick {...props} content={content} className={tx(sizeClass)} ref={ref} />;
+  return <TextBrick {...props} ref={ref} />;
 });
 
 export default Button;

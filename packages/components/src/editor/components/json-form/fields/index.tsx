@@ -1,18 +1,22 @@
 import type { RegistryFieldsType } from "@rjsf/utils";
-import EnumField from "./enum";
-import FileField from "./file";
-import DimensionField from "./dimension";
+import type EnumField from "./enum";
+import type ImageField from "./image";
 import ColorField from "./color";
-import SliderField from "./slider";
-import SwitchField from "./switch";
-import PathField from "./path";
+import type SwitchField from "./switch";
+import type MixedContentField from "./mixed-content";
+import { type FC, ReactNode } from "react";
+import type { FieldProps } from "./types";
 
-export const customFields: RegistryFieldsType = {
-  enum: EnumField,
-  file: FileField,
-  dimension: DimensionField,
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const customFields: Record<string, FC<FieldProps<any>>> = {
+  // enum: EnumField,
+  // file: FileField,
+  // dimension: DimensionField,
   color: ColorField,
-  slider: SliderField,
-  switch: SwitchField,
-  path: PathField,
+  // slider: SliderField,
+  // switch: SwitchField,
+  // path: PathField,
+  // AnyOfField: MyAnyOfField,
+  // "mixed-content": MixedContentField,
+  // ObjectField: ObjectField,
 };

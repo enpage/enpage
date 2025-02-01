@@ -28,6 +28,10 @@ import { defaults as iconDefaults, manifest as iconManifest } from "./icon.manif
 import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from "./social-links.manifest";
 // widget countdown
 import { defaults as countdownDefaults, manifest as countdownManifest } from "./countdown.manifest";
+import {
+  defaults as genericComponentDefaults,
+  manifest as genericComponentManifest,
+} from "./generic-component.manifest";
 
 import type { Static } from "@sinclair/typebox";
 import type { BrickManifest } from "../../brick-manifest";
@@ -48,6 +52,7 @@ export const manifests: Record<string, BrickManifest> = {
   [iconDefaults.type]: iconManifest,
   [socialLinksDefaults.type]: socialLinksManifest,
   [countdownDefaults.type]: countdownManifest,
+  [genericComponentDefaults.type]: genericComponentManifest,
 };
 
 export const defaults: Record<string, Static<BrickManifest>> = {
@@ -66,4 +71,5 @@ export const defaults: Record<string, Static<BrickManifest>> = {
   [iconDefaults.type]: iconDefaults,
   [socialLinksDefaults.type]: socialLinksDefaults,
   [countdownDefaults.type]: countdownDefaults,
+  [genericComponentDefaults.type]: genericComponentDefaults,
 };

@@ -22,11 +22,12 @@ const BaseBrick = ({
   editable,
   ...otherProps
 }: { brick: Brick; editable?: boolean } & ComponentProps<"div">) => {
-  // const BrickModule = lazy(() => import(`../bricks/${brick.type}.js`));
   const BrickModule = bricksMap[brick.type];
   if (!BrickModule) {
+    console.warn("Brick not found", brick.type);
     return null;
   }
+
   return (
     <Suspense>
       <BrickModule {...brick.props} {...otherProps} editable={editable} />

@@ -1,9 +1,24 @@
-import { useEditor as useTextEditor, EditorContent, type EditorEvents, type Editor } from "@tiptap/react";
+import {
+  useEditor as useTextEditor,
+  EditorContent,
+  type EditorEvents,
+  type Editor,
+  ReactNodeViewRenderer,
+  Node,
+  NodeViewWrapper,
+  type NodeViewProps,
+  mergeAttributes,
+  nodeInputRule,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Select, ToggleGroup } from "@upstart.gg/style-system/system";
+import { Button, Callout, IconButton, Popover, Select, ToggleGroup } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+
 import {
   MdFormatBold,
   MdFormatAlignCenter,
@@ -14,51 +29,182 @@ import {
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import { useEditor } from "~/editor/hooks/use-editor";
+import { useDatasourcesSchemas, useEditor } from "~/editor/hooks/use-editor";
+import { VscDatabase } from "react-icons/vsc";
+import { BiFullscreen, BiExitFullscreen } from "react-icons/bi";
+import type { TObject, TSchema } from "@sinclair/typebox";
+import { JSONSchemaView } from "~/editor/components/json-form/SchemaView";
+import Mention from "@tiptap/extension-mention";
+import datasourceFieldSuggestions from "./datasourceFieldSuggestions";
+import { CgCloseR } from "react-icons/cg";
+import { getJSONSchemaFieldsList } from "../utils/json-field-list";
 
-const extensions = [
-  StarterKit,
-  TextAlign.configure({
-    types: ["heading", "paragraph"],
-  }),
-];
+function DatasourceFieldNode(props: NodeViewProps) {
+  return (
+    <NodeViewWrapper
+      className="datasource-field content bg-upstart-200 px-1 rounded-sm inline-block mx-0.5"
+      as={"span"}
+    >
+      {props.node.attrs.name}
+    </NodeViewWrapper>
+  );
+}
+
+const fieldsRegex = /(\{\{([^}]+)\}\})/;
+
+export const DatasourceFieldExtension = Node.create({
+  // configuration
+  name: "datasourceField",
+  group: "inline",
+  inline: true,
+  addAttributes() {
+    return {
+      name: {
+        default: "unknown",
+      },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "datasource-field",
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["datasource-field", mergeAttributes(HTMLAttributes)];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(DatasourceFieldNode, {
+      as: "span",
+    });
+  },
+  addInputRules() {
+    return [
+      nodeInputRule({
+        find: fieldsRegex,
+        type: this.type,
+        getAttributes: (match) => ({ name: match[2] }),
+      }),
+    ];
+  },
+});
 
 type Props = {
   initialContent: string;
-  onUpdate?: (e: EditorEvents["update"]) => void;
+  onUpdate: (e: EditorEvents["update"]) => void;
   enabled?: boolean;
   className?: string;
   brickId: Brick["id"];
+  menuPlacement?: "above-editor" | "page";
+  discrete?: boolean;
+  richText?: boolean;
 };
 
 const toolbarBtnCls =
-  "first:rounded-l last:rounded-r text-sm px-2 hover:[&:not([data-state=on])]:bg-upstart-100 leading-none data-[state=on]:(bg-upstart-500 text-white)";
+  "first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
 
-const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = false }: Props) => {
+const TextEditor = ({
+  initialContent,
+  onUpdate,
+  className,
+  brickId,
+  menuPlacement,
+  enabled = false,
+  discrete = false,
+  richText = true,
+}: Props) => {
   const mainEditor = useEditor();
+  const datasources = useDatasourcesSchemas();
   const [editable, setEditable] = useState(enabled);
-  const editor = useTextEditor({
-    extensions,
-    content: initialContent,
-    onUpdate,
-    immediatelyRender: false,
-    // autofocus: false,
-    editable,
-    editorProps: {
-      attributes: {
-        class: tx("max-w-[100%] focus:outline focus:outline-offset-2", className),
+
+  // @ts-ignore
+  const fields = getJSONSchemaFieldsList({ schemas: datasources });
+
+  const extensions = richText
+    ? [
+        StarterKit,
+        TextAlign.configure({
+          types: ["heading", "paragraph"],
+        }),
+        // DatasourceFieldExtension,
+        Mention.configure({
+          HTMLAttributes: {
+            class: "mention",
+          },
+          suggestion: {
+            ...datasourceFieldSuggestions,
+            items: ({ query }) => {
+              return fields.filter((field) => field.toLowerCase().includes(query.toLowerCase()));
+            },
+          },
+          renderHTML: ({ options, node }) => {
+            // console.log("RENDER ATTRS", options, node);
+            const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+            return [
+              "span",
+              {
+                "data-type": "mention",
+                class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
+                "data-field": field,
+              },
+              `${options.suggestion.char}${field}}}`,
+            ];
+          },
+          renderText: ({ options, node }) => {
+            const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+            return `${options.suggestion.char}${field}}}`;
+          },
+        }),
+      ]
+    : [
+        Document.extend({
+          content: "block",
+        }),
+        Paragraph.configure({
+          HTMLAttributes: {
+            class: tx("whitespace-nowrap overflow-hidden [&>br]:hidden [&>*]:(inline! whitespace-nowrap!)"),
+          },
+        }).extend({
+          addAttributes() {
+            return {
+              class: tx("whitespace-nowrap overflow-hidden [&>br]:hidden [&>*]:(inline! whitespace-nowrap!)"),
+            };
+          },
+        }),
+        Text,
+      ];
+
+  const editor = useTextEditor(
+    {
+      extensions,
+      content: initialContent,
+      onUpdate,
+      immediatelyRender: true,
+      // autofocus: false,
+      editable,
+      editorProps: {
+        attributes: {
+          class: tx(
+            "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm mx-auto min-h-[46px] dark:(bg-dark-800 text-dark-100) p-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),inset_0_-1px_2px_rgba(0,0,0,0.1)]",
+            className,
+          ),
+        },
+      },
+      onBlur(props) {
+        mainEditor.setlastTextEditPosition(props.editor.state.selection.anchor);
       },
     },
-  });
+    [brickId],
+  );
 
   useEffect(() => {
     const onFocus = () => {
-      console.log("text focus");
       mainEditor.setIsEditingText(brickId);
     };
 
     const onBlur = () => {
-      console.log("text blur");
       mainEditor.setIsEditingText(false);
       setEditable(false);
     };
@@ -76,7 +222,21 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
   }, [editor, mainEditor, brickId]);
 
   return (
-    <>
+    <div
+      className={tx({
+        "fixed z-[99999] inset-[10dvw] shadow-2xl": mainEditor.textEditMode === "large",
+        "-mx-3 -mt-3": discrete,
+      })}
+    >
+      {editor && editable && menuPlacement === "above-editor" && (
+        <MenuBar
+          brickId={brickId}
+          editor={editor}
+          placement={menuPlacement}
+          discrete={discrete}
+          richText={richText}
+        />
+      )}
       <EditorContent
         onDoubleClick={(e) => {
           e.preventDefault();
@@ -85,71 +245,79 @@ const TextEditor = ({ initialContent, onUpdate, className, brickId, enabled = fa
             editor?.view.focus();
           }, 200);
         }}
+        autoCorrect="false"
+        spellCheck="false"
         editor={editor}
-        className="outline-none"
+        className={tx("outline-none ring-0 ", {
+          "min-h-full flex flex-col border-0": mainEditor.textEditMode === "large",
+        })}
       />
-      {editor && editable && <MenuBar brickId={brickId} editor={editor} />}
-      {/* <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
-      {editor && (
-        <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-          <div className="bubble-menu h-10 flex gap-3 p-1 bg-upstart-300 shadow-lg rounded">
-            <div className="flex gap-1">
-              <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                className={tx(btnBase, editor.isActive("bold") && btnActive)}
-              >
-                <MdFormatBold className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={tx(btnBase, editor.isActive("italic") && btnActive)}
-              >
-                <MdOutlineFormatItalic className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                className={tx(btnBase, editor.isActive("strike") && btnActive)}
-              >
-                <MdStrikethroughS className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </BubbleMenu>
-      )} */}
-    </>
+      {editor && editable && menuPlacement !== "above-editor" && (
+        <MenuBar
+          brickId={brickId}
+          editor={editor}
+          placement={menuPlacement}
+          discrete={discrete}
+          richText={richText}
+        />
+      )}
+    </div>
   );
 };
 
-const menuBarClass = tx(
-  "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-700/75 to-upstart-400/75 \
-  shadow-lg rounded-b fixed top-[59px] left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
-  // "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
-  // shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
-);
-
-const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) => {
+const MenuBar = ({
+  editor,
+  brickId,
+  placement,
+  discrete,
+  richText,
+}: {
+  editor: Editor;
+  brickId: Brick["id"];
+  placement: Props["menuPlacement"];
+  richText: Props["richText"];
+  discrete?: boolean;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const mainEditor = useEditor();
+  let className = "";
+
+  if (placement === "above-editor") {
+    className = tx(
+      "z-[900] text-gray-800 flex gap-1 p-1 bg-gray-100 dark:bg-dark-700 text-sm flex flex-wrap",
+      {
+        "border border-b-0 border-gray-300 rounded-t ": !discrete,
+      },
+    );
+  } else {
+    className = tx(
+      "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
+      shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
+      {
+        "scale-90 opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
+      },
+    );
+  }
 
   return (
-    <div
-      ref={ref}
-      className={tx(
-        "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
-        shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
-        {
-          "scale-90 opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
-        },
+    <div ref={ref} className={className}>
+      {richText && (
+        <>
+          <ButtonGroup>
+            <TextSizeSelect editor={editor} />
+          </ButtonGroup>
+          <TextAlignButtonGroup editor={editor} />
+          <TextStyleButtonGroup editor={editor} />
+        </>
       )}
-    >
-      <ButtonGroup>
-        <TextSizeSelect editor={editor} />
-      </ButtonGroup>
-      <TextStyleButtonGroup editor={editor} />
-      <TextAlignButtonGroup editor={editor} />
+      <DatasourceItemButton editor={editor} />
+      {richText && <DisplayModeButton icon="enlarge" />}
+      {!discrete && (
+        <>
+          <span className="flex-1" />
+          <DisplayModeButton icon="close" />
+        </>
+      )}
     </div>
   );
 };
@@ -157,7 +325,7 @@ const MenuBar = ({ editor, brickId }: { editor: Editor; brickId: Brick["id"] }) 
 function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x divide-upstart-300 rounded bg-upstart-200 shadow-sm"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
       type="single"
       value={editor.isActive("textAlign") ? editor.getAttributes("textAlign").alignment : undefined}
       aria-label="Text align"
@@ -167,37 +335,194 @@ function TextAlignButtonGroup({ editor }: { editor: Editor }) {
         value="left"
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
       >
-        <MdFormatAlignLeft className="w-5 h-5" />
+        <MdFormatAlignLeft className="w-4 h-4" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="center"
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
       >
-        <MdFormatAlignCenter className="w-5 h-5" />
+        <MdFormatAlignCenter className="w-4 h-4" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="right"
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
       >
-        <MdFormatAlignRight className="w-5 h-5" />
+        <MdFormatAlignRight className="w-4 h-4" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="justify"
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
       >
-        <MdFormatAlignJustify className="w-5 h-5" />
+        <MdFormatAlignJustify className="w-4 h-4" />
       </ToggleGroup.Item>
     </ToggleGroup.Root>
+  );
+}
+
+type DatasourceFieldPickerModalProps = {
+  onFieldSelect: (field: string) => void;
+};
+
+function DatasourceFieldPickerModal(props: DatasourceFieldPickerModalProps) {
+  const [currentDatasourceId, setCurrentDatasourceId] = useState<string | null>(null);
+  const datasources = useDatasourcesSchemas();
+  const selectedSchema = useMemo(() => {
+    if (!datasources || !currentDatasourceId) return null;
+    // @ts-ignore
+    return datasources[currentDatasourceId].schema;
+  }, [currentDatasourceId, datasources]);
+
+  return (
+    <div className="bg-white min-w-80 min-h-80 flex flex-col gap-4">
+      <h3 className="text-base font-medium">Data sources fields</h3>
+      <Callout.Root>
+        <Callout.Icon>
+          <VscDatabase />
+        </Callout.Icon>
+        <Callout.Text>
+          Use dynamic data thanks to data sources! Choose a data source field you'd like to display.
+        </Callout.Text>
+      </Callout.Root>
+      <div className="flex flex-col gap-3">
+        <div className="inline-flex gap-2 items-center">
+          <span className="font-semibold inline-flex justify-center items-center bg-upstart-500 rounded-full w-6 aspect-square text-white">
+            1
+          </span>
+          <span className="text-sm font-medium">Select a data source</span>
+        </div>
+        <div className="flex flex-col gap-1 flex-1">
+          <Select.Root
+            defaultValue={currentDatasourceId ?? undefined}
+            size="2"
+            onValueChange={setCurrentDatasourceId}
+          >
+            <Select.Trigger radius="large" placeholder="Select a Data source" />
+            <Select.Content position="popper">
+              <Select.Group>
+                <Select.Label>Datasource</Select.Label>
+                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                {Object.entries(datasources ?? {}).map(([dsId, dsSchema]) => (
+                  <Select.Item key={dsId} value={dsId}>
+                    {dsSchema.name}
+                  </Select.Item>
+                ))}
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
+        </div>
+        {currentDatasourceId && selectedSchema && (
+          <>
+            <div className="inline-flex gap-2 items-center">
+              <span className="font-semibold inline-flex justify-center items-center bg-upstart-500 rounded-full w-6 aspect-square text-white">
+                2
+              </span>
+              <span className="text-sm font-medium">Select a field</span>
+            </div>
+            <div className="flex items-center justify-between flex-1">
+              <JSONSchemaView
+                schema={selectedSchema}
+                rootName={currentDatasourceId}
+                onFieldSelect={props.onFieldSelect}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// function DatasourceFieldPicker({ schema }: { schema: TSchema }) {
+//   return (
+//     <JSONSchemaView
+//       schema={schema}
+//       onChange={() => {
+//         console.log("changed");
+//       }}
+//     />
+//   );
+// }
+
+function DisplayModeButton({ icon }: { icon: "close" | "enlarge" }) {
+  const editor = useEditor();
+  return (
+    <IconButton
+      size="1"
+      color="gray"
+      variant="surface"
+      className={tx(toolbarBtnCls)}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        editor.toggleTextEditMode();
+      }}
+    >
+      {!editor.textEditMode || editor.textEditMode === "default" ? (
+        icon === "close" ? (
+          <CgCloseR className="w-4 h-4 select-none pointer-events-none" />
+        ) : (
+          <BiFullscreen className="w-4 h-4 select-none pointer-events-none" />
+        )
+      ) : icon === "close" ? (
+        <CgCloseR className="w-4 h-4 select-none pointer-events-none" />
+      ) : (
+        <BiExitFullscreen className="w-4 h-4 select-none pointer-events-none" />
+      )}
+    </IconButton>
+  );
+}
+
+function DatasourceItemButton({ editor }: { editor: Editor }) {
+  const sources = useDatasourcesSchemas();
+  const mainEditor = useEditor();
+  // const end = editor.state.
+
+  const onFieldSelect = (field: string) => {
+    const content = [
+      {
+        type: "mention",
+        attrs: { "data-field": field, label: field },
+      },
+      {
+        type: "text",
+        text: ` `,
+      },
+    ];
+
+    const { size } = editor.view.state.doc.content;
+
+    editor
+      .chain()
+      .focus()
+      .insertContentAt(mainEditor.lastTextEditPosition ?? size, content, {
+        parseOptions: {
+          preserveWhitespace: "full",
+        },
+      })
+      .run();
+  };
+
+  return (
+    <Popover.Root>
+      <Popover.Trigger>
+        <IconButton size="1" color="gray" variant="surface" className={tx(toolbarBtnCls)}>
+          <VscDatabase className="w-4 h-4 " />
+        </IconButton>
+      </Popover.Trigger>
+      <Popover.Content width="460px" side="right" align="center" size="2" maxHeight="50vh" sideOffset={50}>
+        <DatasourceFieldPickerModal onFieldSelect={onFieldSelect} />
+      </Popover.Content>
+    </Popover.Root>
   );
 }
 
 function TextStyleButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x divide-upstart-300 rounded bg-upstart-200 shadow-sm"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
       type="multiple"
       value={
         [
@@ -213,21 +538,21 @@ function TextStyleButtonGroup({ editor }: { editor: Editor }) {
         value="bold"
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
-        <MdFormatBold className="w-5 h-5" />
+        <MdFormatBold className="w-4 h-4" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="italic"
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
-        <MdOutlineFormatItalic className="w-5 h-5" />
+        <MdOutlineFormatItalic className="w-4 h-4" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="strike"
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
-        <MdStrikethroughS className="w-5 h-5" />
+        <MdStrikethroughS className="w-4 h-4" />
       </ToggleGroup.Item>
     </ToggleGroup.Root>
   );
@@ -244,6 +569,7 @@ type TextSizeSelectProps = {
 function TextSizeSelect({ editor }: TextSizeSelectProps) {
   return (
     <Select.Root
+      size="1"
       defaultValue={
         editor.isActive("heading")
           ? editor.getAttributes("heading").level?.toString()
@@ -262,7 +588,7 @@ function TextSizeSelect({ editor }: TextSizeSelectProps) {
         }
       }}
     >
-      <Select.Trigger variant="surface" color="violet" />
+      <Select.Trigger />
       <Select.Content position="popper">
         <Select.Group>
           <Select.Label>Headings</Select.Label>
