@@ -2,7 +2,6 @@ import type { FieldProps } from "@rjsf/utils";
 import { Button, Popover, Text } from "@upstart.gg/style-system/system";
 import { tx, colors, css } from "@upstart.gg/style-system/twind";
 import transSvg from "./trans.svg?url";
-import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import {
   isStandardColor,
   type ColorType,
@@ -36,7 +35,7 @@ const ColorField: React.FC<FieldProps> = (props) => {
 };
 
 type ColorFieldRowProps = {
-  name: string;
+  name?: string;
   labelClassName?: string;
   description?: string;
   required?: boolean;
