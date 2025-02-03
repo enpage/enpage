@@ -1,0 +1,92 @@
+import type { FieldProps } from "./types";
+import { nanoid } from "nanoid";
+import { Button, Text } from "@upstart.gg/style-system/system";
+import { useEditor } from "~/editor/hooks/use-editor";
+import { useMemo, useState } from "react";
+import ModalSearchImage from "~/editor/components/ModalSearchImage";
+import type { BackgroundSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
+import ColorField from "./color";
+
+const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
+  const { schema, formData, onChange, required, title, description, currentValue } = props;
+  const [showSearch, setShowSearch] = useState(false);
+  const id = useMemo(() => nanoid(), []);
+  const onPropsChange = (newVal: Partial<BackgroundSettings>) => onChange({ ...currentValue, ...newVal });
+
+  return (
+    <>
+      <div className="file-field flex items-center justify-between flex-wrap gap-1">
+        {title && (
+          <div className="flex items-center justify-between">
+            <Text as="label" size="2" weight="medium">
+              {title}
+            </Text>
+          </div>
+        )}
+        <div className="flex gap-1.5">
+          <ColorField
+            {...props}
+            currentValue={currentValue.color}
+            title={undefined}
+            onChange={(color) => {
+              onChange({ ...currentValue, color: color as string });
+            }}
+          />
+          <input
+            id={id}
+            type="file"
+            className="overflow-hidden w-[0.1px] h-[0.1px] opacity-0 absolute -z-10"
+            accept={schema["ui:accept"]}
+            onChange={(e) => {
+              const src = e.target.files?.[0]?.name;
+              if (src) {
+                onChange({ ...currentValue, image: src as string });
+              }
+            }}
+            required={required}
+          />
+          <Button variant="soft" size="1" radius="full">
+            <label
+              className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]"
+              htmlFor={id}
+            >
+              {currentValue.image ? "Replace image" : "Upload image"}
+            </label>
+          </Button>
+          {/* {schema["ui:allow-url"] && (
+            <Button variant="soft" size="1" radius="full">
+              <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
+                URL
+              </label>
+            </Button>
+          )} */}
+          {schema["ui:show-img-search"] && (
+            <Button variant="soft" size="1" radius="full" onClick={() => setShowSearch(true)}>
+              <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
+                Search
+              </label>
+            </Button>
+          )}
+        </div>
+      </div>
+      {currentValue.image && (
+        <div className="border border-upstart-200 p-1.5 self-end">
+          <img src={currentValue.image} alt={id} className="max-w-full h-auto" />
+        </div>
+      )}
+      {showSearch && (
+        <ModalSearchImage
+          onClose={() => {
+            setShowSearch(false);
+          }}
+          onChoose={(url) => {
+            onPropsChange({ image: url });
+            setShowSearch(false);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default BackgroundField;

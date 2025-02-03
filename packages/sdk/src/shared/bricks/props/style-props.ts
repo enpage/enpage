@@ -188,6 +188,30 @@ export const backgroundColor = Type.String({
   ...groupColors,
 });
 
+export const background = Type.Object(
+  {
+    color: Type.Optional(
+      Type.String({
+        default: "transparent",
+        title: "Color",
+      }),
+    ),
+    image: Type.Optional(
+      Type.String({
+        default: "https://placehold.co/400x200",
+        title: "Image",
+      }),
+    ),
+  },
+  {
+    "ui:field": "background",
+    "ui:group": "layout",
+    title: "Background",
+  },
+);
+
+export type BackgroundSettings = Static<typeof background>;
+
 const opacity = Type.Optional(
   Type.Number({
     $id: "opacity",

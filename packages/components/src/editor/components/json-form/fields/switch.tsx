@@ -6,29 +6,25 @@ const SwitchField: React.FC<FieldProps<boolean>> = (props) => {
   const { onChange, required, title, description, currentValue } = props;
 
   return (
-    <div className="switch-field flex items-center">
-      {/* {title && (
-        <div className="flex-1">
-          <label className={tx("control-label", { required })}>{title}</label>
-          {description && <p className="field-description">{description}</p>}
-        </div>
-      )} */}
-      {title && (
-        <Text as="label" size="2" weight="medium">
-          {title}
-        </Text>
-      )}
+    <div className="switch-field flex flex-col">
+      <div className="flex items-">
+        {title && (
+          <Text as="label" size="2" weight="medium" className="flex-1">
+            {title}
+          </Text>
+        )}
+        <Switch
+          onCheckedChange={(value) => onChange(value)}
+          size="2"
+          variant="soft"
+          defaultChecked={currentValue}
+        />
+      </div>
       {description && (
         <Text as="p" color="gray" size="1">
           {description}
         </Text>
       )}
-      <Switch
-        onCheckedChange={(value) => onChange(value)}
-        size="1"
-        variant="soft"
-        defaultChecked={currentValue}
-      />
     </div>
   );
 };

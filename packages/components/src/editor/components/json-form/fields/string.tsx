@@ -8,8 +8,6 @@ import { Text, Select } from "@upstart.gg/style-system/system";
 export const StringField: React.FC<FieldProps<string>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder } = props;
 
-  console.log("in StringField", { currentValue });
-
   return (
     <div className="field field-string">
       {title && (
@@ -25,7 +23,7 @@ export const StringField: React.FC<FieldProps<string>> = (props) => {
       <TextField.Root
         defaultValue={currentValue}
         onChange={(e) => onChange(e.target.value)}
-        className="!mt-1.5"
+        className="!mt-0.5"
         required={required}
         placeholder={placeholder}
       />

@@ -15,6 +15,7 @@ import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import get from "lodash-es/get";
 import type {
+  BackgroundSettings,
   BorderSettings,
   DimensionsSettings,
   EffectsSettings,
@@ -22,6 +23,8 @@ import type {
 import { EffectsField } from "./fields/effects";
 import type { ImageProps, MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
+import { PagePaddingField } from "./fields/padding";
+import BackgroundField from "./fields/background";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -88,7 +91,7 @@ export function getFormComponents({
             component: (
               <ColorField
                 currentValue={currentValue}
-                onChange={(value: string | null) => onChange({ [id]: value }, id)}
+                onChange={(value?: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -139,6 +142,39 @@ export function getFormComponents({
             ),
           };
         }
+
+        case "padding": {
+          const currentValue = (get(formData, id) ??
+            commonProps.schema.default) as Attributes["$pagePadding"];
+          return {
+            group,
+            groupTitle,
+            component: (
+              <PagePaddingField
+                currentValue={currentValue}
+                onChange={(value: Attributes["$pagePadding"] | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "background": {
+          console.log("USING BackgroundField");
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as BackgroundSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <BackgroundField
+                currentValue={currentValue}
+                onChange={(value: BackgroundSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
         case "enum": {
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {

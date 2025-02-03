@@ -306,9 +306,18 @@ const themes = [
 
 // define your attributes
 const siteAttributes = defineAttributes({
-  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", { $id: "mainButtonUrl" }),
-  testBoolTrue: attr.boolean("Test Bool True", true),
-  customerId: attr.string("Customer ID"),
+  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", {
+    "ui:group": "other",
+    "ui:group:title": "Other",
+  }),
+  testBoolTrue: attr.boolean("Test Bool True", true, {
+    "ui:group": "other",
+    "ui:group:title": "Other",
+  }),
+  customerId: attr.string("Customer ID", "", {
+    "ui:group": "other",
+    "ui:group:title": "Other",
+  }),
   testUrl: attr.url("Test URL", "https://enpage.co"),
 });
 

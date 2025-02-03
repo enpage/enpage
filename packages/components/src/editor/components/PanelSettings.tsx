@@ -56,7 +56,7 @@ export default function SettingsForm() {
   });
 
   return (
-    <div className={tx(tabContentScrollClass, "h-full overflow-y-auto overscroll-none")}>
+    <div className={tx(tabContentScrollClass, "h-full overflow-y-auto overscroll-none pb-10")}>
       <form className={tx("px-3 flex flex-col gap-3")}>
         <FormRenderer components={elements} brickId={"settings"} />
       </form>

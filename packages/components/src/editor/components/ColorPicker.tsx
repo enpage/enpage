@@ -193,7 +193,7 @@ export default BaseColorPicker;
 
 interface ElementColorPickerProps {
   elementColorType: ElementColorType;
-  initialValue: ElementColor;
+  initialValue?: ElementColor;
   onChange?: (color: ElementColor) => void;
 }
 
@@ -204,7 +204,7 @@ type ColorPillListProps =
       colors: string[];
       cols: number;
       onChange: (color: ElementColor) => void;
-      currentColor: ElementColor;
+      currentColor?: ElementColor;
     }
   | {
       type: "gradient";
@@ -212,7 +212,7 @@ type ColorPillListProps =
       colors: { from: string; to: string }[];
       cols: number;
       onChange: (color: ElementColor) => void;
-      currentColor: ElementColor;
+      currentColor?: ElementColor;
     };
 
 function ColorPillList({
@@ -228,7 +228,7 @@ function ColorPillList({
   const [gradientPair, setGradientPair] = useState<{ from: string; to: string } | null>(null);
 
   function getInitialGradientDir() {
-    const match = currentColor.match(/to-(\w+)/);
+    const match = currentColor?.match(/to-(\w+)/);
     if (match) {
       return match[1];
     }
@@ -323,7 +323,7 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
   elementColorType,
   onChange = () => {},
 }) => {
-  const defaultColorType = initialValue.includes("gradient") ? "gradient" : "solid";
+  const defaultColorType = initialValue?.includes("gradient") ? "gradient" : "solid";
   function makeCominations(colors: string[], shades: string[]) {
     return colors.flatMap((color) => shades.map((shade) => `${color}-${shade}`));
   }

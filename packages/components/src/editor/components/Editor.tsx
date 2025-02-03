@@ -23,7 +23,7 @@ type EditorProps = ComponentProps<"div"> & {
 };
 
 const PanelTheme = lazy(() => import("./PanelTheme"));
-const SettingsPanel = lazy(() => import("./PanelSettings"));
+const PanelSettings = lazy(() => import("./PanelSettings"));
 const PanelInspector = lazy(() => import("./PanelInspector"));
 const PanelLibrary = lazy(() => import("./PanelLibrary"));
 
@@ -137,7 +137,7 @@ function Panel({ className, ...props }: PanelProps) {
       className={tx(
         `z-[9999] fixed top-[3.7rem] bottom-0 left-[3.7rem] flex shadow-2xl flex-col overscroll-none \
         min-w-[300px] w-[350px] transition-all duration-200 ease-in-out opacity-100
-        bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-auto`,
+        bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-visible`,
         {
           "-translate-x-full opacity-0": !editor.panel,
         },
@@ -161,7 +161,7 @@ function Panel({ className, ...props }: PanelProps) {
       )}
       {editor.panel === "settings" && (
         <Suspense>
-          <SettingsPanel />
+          <PanelSettings />
         </Suspense>
       )}
       {editor.panel === "data" && (

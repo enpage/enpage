@@ -11,6 +11,7 @@ import type { ElementColor } from "./themes/color-system";
 import type { JSONSchemaType } from "ajv";
 import { ajv } from "./ajv";
 import { typeboxSchemaToJSONSchema } from "./utils/schema";
+import { background } from "./bricks/props/style-props";
 
 type EnumOption = {
   title?: string;
@@ -209,7 +210,6 @@ const defaultAttributes = {
     description: "The URL path of the page",
     "ui:group": "location",
     "ui:group:title": "Location",
-    "ui:group:order": 1,
     "ui:field": "path",
   }),
 
@@ -236,6 +236,47 @@ const defaultAttributes = {
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
+
+  $pagePadding: Type.Object(
+    {
+      vertical: attr.enum("Vertical spacing", "20", {
+        options: [
+          { value: "0", title: "None" },
+          { value: "10", title: "Small" },
+          { value: "20", title: "Medium" },
+          { value: "30", title: "Large" },
+          { value: "50", title: "Extra large" },
+        ],
+        description: "Desktop only.",
+        displayAs: "select",
+        "ui:group": "layout",
+        "ui:group:title": "Page Layout & Design",
+      }),
+      horizontal: attr.enum("Horizontal spacing", "20", {
+        options: [
+          { value: "0", title: "None" },
+          { value: "10", title: "Small" },
+          { value: "20", title: "Medium" },
+          { value: "30", title: "Large" },
+          { value: "50", title: "Extra large" },
+        ],
+        description: "Desktop only.",
+        displayAs: "button-group",
+        "ui:group": "layout",
+        "ui:group:title": "Page Layout & Design",
+      }),
+    },
+    {
+      default: {
+        vertical: "20",
+        horizontal: "20",
+      },
+      "ui:field": "padding",
+      "ui:group": "layout",
+      "ui:group:title": "Layout & Design",
+    },
+  ),
+
   $pageWidth: attr.enum("Page width", "max-w-full", {
     options: [
       {
@@ -248,89 +289,74 @@ const defaultAttributes = {
       { value: "max-w-full", title: "Full", description: "Takes the entire space" },
     ],
     description: "The maximum width of the page. Desktop only.",
-    displayAs: "button-group",
+    displayAs: "select",
     "ui:group": "layout",
     "ui:group:title": "Layout & Design",
   }),
 
-  $pagePadding: Type.Object(
-    {
-      vertical: attr.enum("Vertical spacing", "20", {
-        options: [
-          { value: "0", title: "None" },
-          { value: "10", title: "S" },
-          { value: "20", title: "M" },
-          { value: "30", title: "L" },
-          { value: "50", title: "XL" },
-        ],
-        description: "Vertical spacing. Desktop only.",
-        displayAs: "button-group",
-        "ui:group": "layout",
-        "ui:group:title": "Page Layout & Design",
-      }),
-      horizontal: attr.enum("Horizontal spacing", "20", {
-        options: [
-          { value: "0", title: "None" },
-          { value: "10", title: "S" },
-          { value: "20", title: "M" },
-          { value: "30", title: "L" },
-          { value: "50", title: "XL" },
-        ],
-        description: "Horizontal spacing. Desktop only.",
-        displayAs: "button-group",
-        "ui:group": "layout",
-        "ui:group:title": "Page Layout & Design",
-      }),
-    },
+  // $pagePaddingVertical: attr.enum("Vertical spacing", "20", {
+  //   options: [
+  //     { value: "0", title: "None" },
+  //     { value: "10", title: "S" },
+  //     { value: "20", title: "M" },
+  //     { value: "30", title: "L" },
+  //     { value: "50", title: "XL" },
+  //   ],
+  //   description: "Vertical spacing. Desktop only.",
+  //   displayAs: "button-group",
+  //   "ui:group": "layout",
+  //   "ui:group:title": "Page Layout & Design",
+  // }),
+
+  // $pagePaddingHorizontal: attr.enum("Horizontal spacing", "20", {
+  //   options: [
+  //     { value: "0", title: "None" },
+  //     { value: "10", title: "S" },
+  //     { value: "20", title: "M" },
+  //     { value: "30", title: "L" },
+  //     { value: "50", title: "XL" },
+  //   ],
+  //   description: "Horizontal spacing. Desktop only.",
+  //   displayAs: "button-group",
+  //   "ui:group": "layout",
+  //   "ui:group:title": "Page Layout & Design",
+  // }),
+
+  $background: Type.Composite(
+    [
+      background,
+      Type.Object(
+        {},
+        {
+          title: "Background",
+        },
+      ),
+    ],
     {
       default: {
-        vertical: "20",
-        horizontal: "20",
+        color: "#ffffff",
+        image: "https://placehold.co/400x200",
       },
+      title: "Background",
+      "ui:field": "background",
+      "ui:group": "layout",
+      "ui:group:title": "Page Layout & Design",
     },
   ),
 
-  $pagePaddingVertical: attr.enum("Vertical spacing", "20", {
-    options: [
-      { value: "0", title: "None" },
-      { value: "10", title: "S" },
-      { value: "20", title: "M" },
-      { value: "30", title: "L" },
-      { value: "50", title: "XL" },
-    ],
-    description: "Vertical spacing. Desktop only.",
-    displayAs: "button-group",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
+  // $backgroundColor: attr.color("Background color", "#ffffff", {
+  //   "ui:field": "color",
+  //   "ui:group": "layout",
+  //   "ui:group:title": "Page Layout & Design",
+  // }),
 
-  $pagePaddingHorizontal: attr.enum("Horizontal spacing", "20", {
-    options: [
-      { value: "0", title: "None" },
-      { value: "10", title: "S" },
-      { value: "20", title: "M" },
-      { value: "30", title: "L" },
-      { value: "50", title: "XL" },
-    ],
-    description: "Horizontal spacing. Desktop only.",
-    displayAs: "button-group",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
+  // $backgroundImage: attr.color("Background image", undefined, {
+  //   "ui:field": "image",
+  //   "ui:group": "layout",
+  //   "ui:group:title": "Page Layout & Design",
+  // }),
 
-  $backgroundColor: attr.color("Background color", "#ffffff", {
-    "ui:field": "color",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
-
-  $backgroundImage: attr.color("Background image", undefined, {
-    "ui:field": "image",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
-
-  $textColor: attr.color("Default text color", "#222222", {
+  $textColor: attr.color("Text color", "#222222", {
     "ui:field": "color",
     "ui:group": "layout",
     "ui:group:title": "Page Layout & Design",
@@ -346,6 +372,7 @@ export function resolveAttributes(
   initialData: Record<string, unknown> = {},
 ): Attributes {
   const validate = ajv.compile(attributesSchema);
+  console.log({ attributesSchema });
   const data = { ...initialData };
   const valid = validate(data);
   if (!valid) {
