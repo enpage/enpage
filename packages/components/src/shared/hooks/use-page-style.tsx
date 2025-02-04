@@ -3,12 +3,14 @@ import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-co
 import { isStandardColor } from "@upstart.gg/sdk/shared/themes/color-system";
 import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
+import { useTheme } from "~/editor/hooks/use-editor";
 
 export function usePageStyle({
   attributes,
   editable,
   previewMode,
 }: { attributes: Attributes; editable?: boolean; previewMode?: ResponsiveMode }) {
+  const themeUsed = useTheme();
   return tx(
     "grid group/page mx-auto page-container relative",
     isStandardColor(attributes.$backgroundColor) &&
@@ -39,12 +41,17 @@ export function usePageStyle({
     `@desktop:(
       grid-cols-${LAYOUT_COLS.desktop}
       auto-rows-[${LAYOUT_ROW_HEIGHT}px]
-      px-[${attributes.$pagePaddingHorizontal}px]
-      py-[${attributes.$pagePaddingVertical}px]
+      px-[${attributes.$pagePadding.horizontal}px]
+      py-[${attributes.$pagePadding.vertical}px]
       w-full
       h-fit
       ${attributes.$pageWidth}
     )`,
+
+    css({
+      "font-family": `var(--font-${themeUsed.typography.body})`,
+    }),
+
     editable && "transition-all duration-300",
 
     // this is the grid overlay shown when dragging
@@ -56,10 +63,10 @@ export function usePageStyle({
           content: "";
           position: absolute;
           opacity: 0.3;
-          top: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
-          left: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
-          right: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10}px;
-          bottom: ${previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10}px;
+          top: ${previewMode === "desktop" ? parseInt(attributes.$pagePadding.vertical as string) : 10}px;
+          left: ${previewMode === "desktop" ? parseInt(attributes.$pagePadding.horizontal as string) : 10}px;
+          right: ${previewMode === "desktop" ? parseInt(attributes.$pagePadding.horizontal as string) : 10}px;
+          bottom: ${previewMode === "desktop" ? parseInt(attributes.$pagePadding.vertical as string) : 10}px;
           pointer-events: none;
           background-size:
             calc(100%/${LAYOUT_COLS[previewMode]}) 100%,
