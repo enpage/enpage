@@ -21,11 +21,13 @@ type EnumOption = {
 };
 
 type AttributeOptions<T extends Record<string, unknown>> = {
+  "ui:field"?: string;
   "ui:group"?: string;
   "ui:group:title"?: string;
   "ui:group:order"?: number;
   advanced?: boolean;
   "ui:hidden"?: boolean | "if-empty";
+  "ui:scope"?: "site" | "page";
 } & T;
 
 type GeoPoint = { lat: number; lng: number; name?: string };
@@ -203,34 +205,52 @@ const defaultAttributes = {
       { value: "vi", title: "Vietnamese" },
     ],
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+  }),
+
+  $pageOgImage: attr.string("Social share image", "", {
+    description: "Image shown when page is shared on social media",
+    "ui:group": "meta",
+  }),
+
+  $robotsIndexing: attr.boolean("Allow search engines to index this site", true, {
+    description: "Disabling this will prevent search engines from indexing this site",
+    "ui:group": "seo",
+    "ui:group:title": "SEO",
+    "ui:scope": "site",
+  }),
+
+  $siteOgImage: attr.string("Social share image", "", {
+    description: "Image shown when this site is shared on social media",
+    "ui:field": "image",
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags",
+    "ui:scope": "site",
   }),
 
   $pagePath: attr.string("Page path", "/", {
     description: "The URL path of the page",
     "ui:group": "location",
     "ui:group:title": "Location",
-    "ui:field": "path",
   }),
 
   $pageTitle: attr.string("Title", "Untitled", {
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+    description: "The title of the page. Appears in the browser tab and search results.",
   }),
 
   $pageDescription: attr.string("Description", "", {
     "ui:widget": "textarea",
-    "ui:options": {
-      rows: 3,
-      widget: "textarea",
-    },
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+    description: "A short description of the page. Used by search engines.",
   }),
 
   $pageKeywords: attr.string("Keywords", "", {
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+    description: "Keywords related to the page. Used by search engines.",
   }),
 
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
@@ -281,46 +301,18 @@ const defaultAttributes = {
     options: [
       {
         value: "max-w-screen-lg",
-        title: "M",
+        title: "Medium",
         description: "Common for text-heavy content/blog posts",
       },
-      { value: "max-w-screen-xl", title: "L", description: "Usefull or some landing pages" },
-      { value: "max-w-screen-2xl", title: "XL", description: "Common width" },
-      { value: "max-w-full", title: "Full", description: "Takes the entire space" },
+      { value: "max-w-screen-xl", title: "Large", description: "Usefull or some landing pages" },
+      { value: "max-w-screen-2xl", title: "Extra large", description: "Common width" },
+      { value: "max-w-full", title: "Full width", description: "Takes the entire space" },
     ],
     description: "The maximum width of the page. Desktop only.",
     displayAs: "select",
     "ui:group": "layout",
     "ui:group:title": "Layout & Design",
   }),
-
-  // $pagePaddingVertical: attr.enum("Vertical spacing", "20", {
-  //   options: [
-  //     { value: "0", title: "None" },
-  //     { value: "10", title: "S" },
-  //     { value: "20", title: "M" },
-  //     { value: "30", title: "L" },
-  //     { value: "50", title: "XL" },
-  //   ],
-  //   description: "Vertical spacing. Desktop only.",
-  //   displayAs: "button-group",
-  //   "ui:group": "layout",
-  //   "ui:group:title": "Page Layout & Design",
-  // }),
-
-  // $pagePaddingHorizontal: attr.enum("Horizontal spacing", "20", {
-  //   options: [
-  //     { value: "0", title: "None" },
-  //     { value: "10", title: "S" },
-  //     { value: "20", title: "M" },
-  //     { value: "30", title: "L" },
-  //     { value: "50", title: "XL" },
-  //   ],
-  //   description: "Horizontal spacing. Desktop only.",
-  //   displayAs: "button-group",
-  //   "ui:group": "layout",
-  //   "ui:group:title": "Page Layout & Design",
-  // }),
 
   $background: Type.Composite(
     [
@@ -344,24 +336,35 @@ const defaultAttributes = {
     },
   ),
 
-  // $backgroundColor: attr.color("Background color", "#ffffff", {
-  //   "ui:field": "color",
-  //   "ui:group": "layout",
-  //   "ui:group:title": "Page Layout & Design",
-  // }),
-
-  // $backgroundImage: attr.color("Background image", undefined, {
-  //   "ui:field": "image",
-  //   "ui:group": "layout",
-  //   "ui:group:title": "Page Layout & Design",
-  // }),
-
   $textColor: attr.color("Text color", "#222222", {
     "ui:field": "color",
     "ui:group": "layout",
     "ui:group:title": "Page Layout & Design",
     "ui:color-type": "page-text",
   }),
+
+  $siteHeadTags: Type.Optional(
+    Type.String({
+      title: "Head tags",
+      description:
+        "Add custom tags to the <head> of your site. Useful for analytics tags, custom scripts, etc.",
+      "ui:multiline": true,
+      "ui:scope": "site",
+      "ui:group": "external-scripts",
+      "ui:group:title": "External scripts",
+    }),
+  ),
+  $siteBodyTags: Type.Optional(
+    Type.String({
+      title: "Body tags",
+      description:
+        "Add custom tags to the <body> of your site. Useful for analytics tags, custom scripts, etc.",
+      "ui:multiline": true,
+      "ui:scope": "site",
+      "ui:group": "external-scripts",
+      "ui:group:title": "External scripts",
+    }),
+  ),
 };
 
 export const defaultAttributesSchema = Type.Object(defaultAttributes);
