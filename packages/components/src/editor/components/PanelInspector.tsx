@@ -11,7 +11,7 @@ import { getFormComponents, FormRenderer } from "./json-form/form";
 import { IoCloseOutline } from "react-icons/io5";
 import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 
-import "./json-form/json-form.css";
+// import "./json-form/json-form.css";
 
 export default function Inspector() {
   const editor = useEditor();

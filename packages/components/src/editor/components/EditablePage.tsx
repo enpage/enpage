@@ -72,9 +72,9 @@ export default function EditablePage() {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
       containerHorizontalPadding:
-        previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10,
+        previewMode === "desktop" ? parseInt(attributes.$pagePadding.horizontal as string) : 10,
       containerVerticalPadding:
-        previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10,
+        previewMode === "desktop" ? parseInt(attributes.$pagePadding.vertical as string) : 10,
     },
     dragCallbacks: {
       onDragMove(brick, pos, gridPosition) {
@@ -178,7 +178,7 @@ export default function EditablePage() {
     const updateCellWidth = debounce(() => {
       if (pageRef.current) {
         const containerWidth = pageRef.current.offsetWidth;
-        const totalGapWidth = parseInt(attributes.$pagePaddingHorizontal as string) * 2;
+        const totalGapWidth = parseInt(attributes.$pagePadding.horizontal as string) * 2;
         const availableWidth = containerWidth - totalGapWidth;
         setColWidth(availableWidth / LAYOUT_COLS[previewMode]);
       }
@@ -199,7 +199,7 @@ export default function EditablePage() {
       window.removeEventListener("resize", updateCellWidth);
       observer.disconnect();
     };
-  }, [previewMode, attributes.$pagePaddingHorizontal]);
+  }, [previewMode, attributes.$pagePadding]);
 
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

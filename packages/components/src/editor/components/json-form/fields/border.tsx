@@ -22,7 +22,7 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
           <label className={fieldLabel}>Width</label>
           <Select.Root
             defaultValue={currentValue.width}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ width: value as BorderSettings["width"] })}
           >
             <Select.Trigger radius="large" variant="ghost" />
@@ -44,7 +44,7 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
           <label className={fieldLabel}>Style</label>
           <Select.Root
             defaultValue={currentValue.style}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ style: value as BorderSettings["style"] })}
           >
             <Select.Trigger radius="large" variant="ghost" />
@@ -68,7 +68,7 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
           <label className={fieldLabel}>Rounding</label>
           <Select.Root
             defaultValue={currentValue.radius}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ radius: value as BorderSettings["radius"] })}
           >
             <Select.Trigger radius="large" variant="ghost" />

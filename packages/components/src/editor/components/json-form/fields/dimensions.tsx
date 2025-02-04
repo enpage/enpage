@@ -22,7 +22,7 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
           <label className={fieldLabel}>Padding</label>
           <Select.Root
             defaultValue={currentValue.padding}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ padding: value as DimensionsSettings["padding"] })}
           >
             <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />

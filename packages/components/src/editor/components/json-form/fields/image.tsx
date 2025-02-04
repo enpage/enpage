@@ -77,9 +77,9 @@ width: 0.1px;
           )}
         </div>
       </div>
-      {formData && (
+      {currentValue.src && (
         <div className="border border-upstart-200 p-2 mt-3">
-          <img src={currentValue.src} alt={id} className="max-w-full h-auto" />
+          <img src={currentValue.src} alt="Preview" className="max-w-full h-auto" />
         </div>
       )}
       {showSearch && (

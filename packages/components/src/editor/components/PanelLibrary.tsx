@@ -11,22 +11,13 @@ import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
 import type { Static } from "@sinclair/typebox";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import interact from "interactjs";
-
-const tabContentScrollClass = css({
-  scrollbarColor: "var(--violet-4) var(--violet-2)",
-  scrollBehavior: "smooth",
-  scrollbarWidth: "thin",
-  "&:hover": {
-    scrollbarColor: "var(--violet-6) var(--violet-3)",
-  },
-});
+import { panelTabContentScrollClass } from "../utils/styles";
 
 export default function PanelLibrary() {
   const { shouldDisplay: shouldDisplayLibraryCallout } = useCalloutViewCounter("blocks-library");
   const [brickPrompt, setBrickPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const interactable = useRef<Interact.Interactable | null>(null);
-  const ghost = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     interactable.current = interact(".draggable-brick");
@@ -100,8 +91,6 @@ export default function PanelLibrary() {
     setIsGenerating(false);
   };
 
-  console.log({ manifests });
-
   return (
     <Tabs.Root defaultValue="library">
       <Tabs.List className={tx("sticky top-0 z-50")}>
@@ -123,7 +112,10 @@ export default function PanelLibrary() {
         )}
 
         <div
-          className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
+          className={tx(
+            "flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto",
+            panelTabContentScrollClass,
+          )}
         >
           <h3
             className={tx(
@@ -151,7 +143,10 @@ export default function PanelLibrary() {
           </div>
         </div>
         <div
-          className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
+          className={tx(
+            "flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto",
+            panelTabContentScrollClass,
+          )}
         >
           <h3
             className={tx(

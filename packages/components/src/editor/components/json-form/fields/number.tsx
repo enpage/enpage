@@ -19,7 +19,7 @@ export const SliderField: React.FC<FieldProps<number>> = (props) => {
         </Text>
       )}
       <Slider
-        className="!mt-3"
+        className="!mt-3 !mx-px"
         onValueChange={(value) => onChange(value[0])}
         size="1"
         variant="soft"

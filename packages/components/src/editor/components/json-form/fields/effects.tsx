@@ -25,7 +25,7 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
         {/* shadow */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Shadow</label>
-          <Select.Root defaultValue={currentValue.shadow} size="1">
+          <Select.Root defaultValue={currentValue.shadow} size="2">
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
@@ -48,7 +48,7 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
             </span>
           </label>
           <Slider
-            className="!mt-3"
+            className="!mt-3 !mx-px"
             onValueChange={(value) => onOpacityChange(value[0])}
             size="1"
             variant="soft"

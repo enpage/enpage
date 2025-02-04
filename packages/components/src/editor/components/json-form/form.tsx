@@ -29,6 +29,16 @@ import BackgroundField from "./fields/background";
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
 
+type GetFormComponentsProps = {
+  formSchema: JSONSchemaType<unknown>;
+  formData: Record<string, unknown>;
+  onChange: (data: Record<string, unknown>, id: string) => void;
+  onSubmit?: (data: Record<string, unknown>) => void;
+  submitButtonLabel?: string;
+  brickId: string;
+  filter?: (field: unknown) => boolean;
+  parents?: string[];
+};
 /**
  * Render a JSON schema form
  * @param schema the schema
@@ -44,22 +54,13 @@ export function getFormComponents({
   onSubmit,
   submitButtonLabel,
   brickId,
+  filter,
   parents = [],
-}: {
-  formSchema: JSONSchemaType<unknown>;
-  formData: Record<string, unknown>;
-  onChange: (data: Record<string, unknown>, id: string) => void;
-  onSubmit?: (data: Record<string, unknown>) => void;
-  submitButtonLabel?: string;
-  parents?: string[];
-  /**
-   * Related brick id.
-   */
-  brickId: string;
-}): FormComponents {
+}: GetFormComponentsProps): FormComponents {
   formSchema = sortJsonSchemaProperties(formSchema);
 
   const elements = Object.entries(formSchema.properties)
+    .filter(([, fieldSchema]) => (filter ? filter(fieldSchema) : true))
     .map(([fieldName, fieldSchema]) => {
       const field = fieldSchema as JSONSchemaType<unknown>;
       const id = parents.length ? `${parents.join(".")}.${fieldName}` : fieldName;
@@ -160,7 +161,6 @@ export function getFormComponents({
         }
 
         case "background": {
-          console.log("USING BackgroundField");
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as BackgroundSettings;
           return {
             group,
@@ -193,6 +193,7 @@ export function getFormComponents({
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as ImageProps;
           return {
             group,
+            groupTitle,
             component: (
               <ImageField
                 currentValue={currentValue}
@@ -222,6 +223,7 @@ export function getFormComponents({
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
+            groupTitle,
             component: (
               <PathField
                 currentValue={currentValue}
@@ -250,6 +252,7 @@ export function getFormComponents({
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as boolean;
           return {
             group,
+            groupTitle,
             component: (
               <SwitchField
                 currentValue={currentValue}
@@ -336,6 +339,8 @@ export function getFormComponents({
     // filter null values
     .filter(Boolean);
 
+  console.log("elements", elements);
+
   return elements as FormComponents;
 }
 
@@ -344,16 +349,16 @@ export function FormRenderer({ components, brickId }: { components: FormComponen
   return components.map((element, index) => {
     const node = (
       <Fragment key={`${brickId}_${index}`}>
+        {currentGroup !== element.group && element.groupTitle && (
+          <h3
+            className={tx(
+              "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
+            )}
+          >
+            {element.groupTitle}
+          </h3>
+        )}
         <div className="form-group flex flex-col gap-3">
-          {currentGroup !== element.group && element.groupTitle && (
-            <h3
-              className={tx(
-                "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
-              )}
-            >
-              {element.groupTitle}
-            </h3>
-          )}
           {"component" in element
             ? element.component
             : element.components.map((c, i) => (
