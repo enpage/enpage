@@ -56,11 +56,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
           --font-size-hero-5: clamp(6rem, 9vw, 11rem);
 
         }
-        [data-upstart-theme] {
-          .page-container {
-            font-family: var(--font-${themeUsed.typography.body});
-          }
-        }
+
     }
     `;
 
