@@ -6,11 +6,13 @@ import { useMemo, useState } from "react";
 import ModalSearchImage from "~/editor/components/ModalSearchImage";
 import type { BackgroundSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import ColorField from "./color";
+import { useUploader } from "../../UploaderContext";
 
 const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   const { schema, formData, onChange, required, title, description, currentValue } = props;
   const [showSearch, setShowSearch] = useState(false);
   const id = useMemo(() => nanoid(), []);
+  const { onImageUpload } = useUploader();
   const onPropsChange = (newVal: Partial<BackgroundSettings>) => onChange({ ...currentValue, ...newVal });
 
   return (
@@ -36,16 +38,22 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
             id={id}
             type="file"
             className="overflow-hidden w-[0.1px] h-[0.1px] opacity-0 absolute -z-10"
-            accept={schema["ui:accept"]}
+            accept={
+              schema["ui:accept"] ?? "image/png, image/jpeg, image/jpg, image/svg+xml, image/webp, image/gif"
+            }
             onChange={(e) => {
-              const src = e.target.files?.[0]?.name;
+              const file = e.target.files?.[0];
+              if (!file) return;
+              onImageUpload(file);
+              const src = file.name;
+              console.log("file", file);
               if (src) {
                 onChange({ ...currentValue, image: src as string });
               }
             }}
             required={required}
           />
-          <Button variant="soft" size="1" radius="full">
+          <Button variant="soft" size="1" radius="full" type="button">
             <label
               className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]"
               htmlFor={id}

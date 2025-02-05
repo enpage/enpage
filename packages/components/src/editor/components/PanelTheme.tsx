@@ -21,6 +21,8 @@ import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import type { ColorType } from "@upstart.gg/sdk/shared/themes/color-system";
 import type { TUnion } from "@sinclair/typebox";
+import FontPicker from "./json-form/fields/font";
+import fonts from "../utils/fonts.json";
 
 export default function ThemePanel() {
   const draft = useDraft();
@@ -161,35 +163,23 @@ export default function ThemePanel() {
                     {/* @ts-ignore */}
                     {themeSchemaProcessed.properties.typography.properties[fontType].description}
                   </Text>
-                  <Select.Root
-                    defaultValue={font as string}
-                    size="2"
-                    onValueChange={(newFont) => {
+                  <FontPicker
+                    options={fonts.map((font) => ({
+                      label: font,
+                      value: font,
+                    }))}
+                    initialValue={`${font}`}
+                    onChange={(e) => {
+                      console.log(e);
                       draft.setTheme({
                         ...draft.theme,
                         typography: {
                           ...draft.theme.typography,
-                          [fontType]: newFont,
+                          [fontType]: e,
                         },
                       });
                     }}
-                  >
-                    <Select.Trigger className="!w-full !capitalize">{font}</Select.Trigger>
-                    <Select.Content>
-                      <Select.Group>
-                        {
-                          //  @ts-ignore
-                          (themeSchemaProcessed.properties.typography.properties[fontType] as TUnion).anyOf //  @ts-ignore
-                            .filter((item) => !item["ui:option-hidden"])
-                            .map((item) => (
-                              <Select.Item key={item.const} value={item.const}>
-                                <span className={`font-${item.const}`}>{item.title}</span>
-                              </Select.Item>
-                            ))
-                        }
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
+                  />
                 </div>
               ))}
           </div>

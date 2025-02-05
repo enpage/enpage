@@ -38,6 +38,7 @@ export interface EditorStateProps {
    */
   colorAdjustment: ColorAdjustment;
   collidingBrick?: { brick: Brick; side: "top" | "bottom" | "left" | "right" };
+  onShowLogin: () => void;
 }
 
 export interface EditorState extends EditorStateProps {
@@ -60,6 +61,7 @@ export interface EditorState extends EditorStateProps {
   showModal: (modal: EditorStateProps["modal"]) => void;
   setCollidingBrick: (info: { brick: Brick; side: "top" | "bottom" | "left" | "right" } | null) => void;
   hideModal: () => void;
+  onShowLogin: () => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
@@ -68,6 +70,9 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
     mode: "local",
     colorAdjustment: "default",
     panelPosition: "left",
+    onShowLogin: () => {
+      console.warn("onShowLogin is not implemented");
+    },
   };
 
   return createStore<EditorState>()(
@@ -200,6 +205,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                       "isEditingTextForBrickId",
                       "shouldShowGrid",
                       "textEditMode",
+                      "onShowLogin",
                     ].includes(key),
                 ),
               ),
@@ -605,6 +611,7 @@ export const useEditorHelpers = () => {
     showModal: state.showModal,
     hideModal: state.hideModal,
     setCollidingBrick: state.setCollidingBrick,
+    onShowLogin: state.onShowLogin,
   }));
 };
 

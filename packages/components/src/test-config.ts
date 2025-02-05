@@ -4,8 +4,8 @@ import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
-import { richText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import { FirstBlock, SecondBlock } from "./test-comp";
+import type { Theme } from "@upstart.gg/sdk/shared/theme";
 
 // define your datasources
 const datasources = defineDataSources({
@@ -274,13 +274,12 @@ const homePageBricks = defineBricks([
   // ]),
 ]);
 
-const themes = [
+const themes: Theme[] = [
   {
     id: "aurora",
     name: "Aurora",
     description: "Vibrant gradients with ethereal color transitions",
     tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
-
     colors: {
       primary: "#FF9900",
       secondary: "#2dd4bf", // Teal
@@ -290,8 +289,8 @@ const themes = [
     },
     typography: {
       base: 16,
-      heading: "system-ui",
-      body: "system-ui",
+      heading: { type: "stack", family: "system-ui" },
+      body: { type: "stack", family: "system-ui" },
     },
     customFonts: [
       {

@@ -3,6 +3,7 @@ import { defineDataSources } from "../datasources";
 import { defineAttributes, attr } from "../attributes";
 import { defineBricks, createRow } from "../bricks";
 import { defineConfig } from "../page";
+import type { Theme } from "../theme";
 
 // define your datasources
 const datasources = defineDataSources({
@@ -160,7 +161,7 @@ const homePageBricks = defineBricks([
   ]),
 ]);
 
-const themes = [
+const themes: Theme[] = [
   {
     id: "aurora",
     name: "Aurora",
@@ -176,8 +177,8 @@ const themes = [
     },
     typography: {
       base: 16,
-      heading: "neo-grotesque",
-      body: "geometric-humanist",
+      heading: { type: "stack", family: "neo-grotesque" },
+      body: { type: "stack", family: "geometric-humanist" },
     },
     customFonts: [
       {

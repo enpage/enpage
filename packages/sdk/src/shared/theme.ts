@@ -1,5 +1,23 @@
 import { type TObject, Type, type Static } from "@sinclair/typebox";
 
+export const fontStacks = [
+  { value: "system-ui", label: "System UI" },
+  { value: "transitional", label: "Transitional" },
+  { value: "old-style", label: "Old style" },
+  { value: "humanist", label: "Humanist" },
+  { value: "geometric-humanist", label: "Geometric humanist" },
+  { value: "classical-humanist", label: "Classical humanist" },
+  { value: "neo-grotesque", label: "Neo-grotesque" },
+  { value: "monospace-slab-serif", label: "Monospace slab serif" },
+  { value: "monospace-code", label: "Monospace code" },
+  { value: "industrial", label: "Industrial" },
+  { value: "rounded-sans", label: "Rounded sans" },
+  { value: "slab-serif", label: "Slab serif" },
+  { value: "antique", label: "Antique" },
+  { value: "didone", label: "Didone" },
+  { value: "handwritten", label: "Handwritten" },
+];
+
 export const themeSchema = Type.Object(
   {
     id: Type.String({ title: "ID", description: "The unique identifier of the theme" }),
@@ -44,62 +62,44 @@ export const themeSchema = Type.Object(
         description: "The base font size in pixels. It is safe to keep it as is.",
         default: 16,
       }),
-      heading: Type.Union(
-        [
-          Type.Literal("system-ui", { title: "System UI" }),
-          Type.Literal("transitional", { title: "Transitional" }),
-          Type.Literal("old-style", { title: "Old style" }),
-          Type.Literal("humanist", { title: "Humanist" }),
-          Type.Literal("geometric-humanist", { title: "Geometric humanist" }),
-          Type.Literal("classical-humanist", { title: "Classical humanist" }),
-          Type.Literal("neo-grotesque", { title: "Neo-grotesque" }),
-          Type.Literal("monospace-slab-serif", { title: "Monospace slab serif" }),
-          Type.Literal("monospace-code", { title: "Monospace code" }),
-          Type.Literal("industrial", { title: "Industrial" }),
-          Type.Literal("rounded-sans", { title: "Rounded sans" }),
-          Type.Literal("slab-serif", { title: "Slab serif" }),
-          Type.Literal("antique", { title: "Antique" }),
-          Type.Literal("didone", { title: "Didone" }),
-          Type.Literal("handwritten", { title: "Handwritten" }),
-          Type.String({
-            title: "Custom font",
-            description: "The custom font name from teh customFonts array",
-            "ui:option-hidden": true,
-          }),
-        ],
+      heading: Type.Object(
         {
-          title: "Heading font",
+          type: Type.Union([Type.Literal("stack"), Type.Literal("theme"), Type.Literal("google")], {
+            title: "Type of font",
+            description: "The type of font. Can be a font stack, a theme font or a Google font",
+          }),
+          family: Type.String({
+            title: "Family",
+            description: "The font family (eg. the name of the font)",
+          }),
+        },
+        {
+          title: "Headings font",
           description: "Used for titles and headings.",
-          default: "system-ui",
+          default: {
+            type: "stack",
+            family: "system-ui",
+          },
         },
       ),
-      body: Type.Union(
-        [
-          Type.Literal("system-ui", { title: "System UI" }),
-          Type.Literal("transitional", { title: "Transitional" }),
-          Type.Literal("old-style", { title: "Old style" }),
-          Type.Literal("humanist", { title: "Humanist" }),
-          Type.Literal("geometric-humanist", { title: "Geometric humanist" }),
-          Type.Literal("classical-humanist", { title: "Classical humanist" }),
-          Type.Literal("neo-grotesque", { title: "Neo-grotesque" }),
-          Type.Literal("monospace-slab-serif", { title: "Monospace slab serif" }),
-          Type.Literal("monospace-code", { title: "Monospace code" }),
-          Type.Literal("industrial", { title: "Industrial" }),
-          Type.Literal("rounded-sans", { title: "Rounded sans" }),
-          Type.Literal("slab-serif", { title: "Slab serif" }),
-          Type.Literal("antique", { title: "Antique" }),
-          Type.Literal("didone", { title: "Didone" }),
-          Type.Literal("handwritten", { title: "Handwritten" }),
-          Type.String({
-            title: "Custom font",
-            description: "The custom font name from teh customFonts array",
-            "ui:option-hidden": true,
+      body: Type.Object(
+        {
+          type: Type.Union([Type.Literal("stack"), Type.Literal("theme"), Type.Literal("google")], {
+            title: "Type of font",
+            description: "The type of font. Can be a font stack, a theme font or a Google font",
           }),
-        ],
+          family: Type.String({
+            title: "Family",
+            description: "The font family (eg. the name of the font)",
+          }),
+        },
         {
           title: "Body font",
-          description: "Used for paragraphs and body text",
-          default: "system-ui",
+          description: "Used for paragraphs and body text.",
+          default: {
+            type: "stack",
+            family: "system-ui",
+          },
         },
       ),
     }),

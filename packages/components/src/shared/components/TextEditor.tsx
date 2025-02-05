@@ -189,6 +189,7 @@ const TextEditor = ({
           class: tx(
             "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm mx-auto min-h-[46px] dark:(bg-dark-800 text-dark-100) p-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),inset_0_-1px_2px_rgba(0,0,0,0.1)]",
             className,
+            mainEditor.textEditMode === "large" && "flex-1 !h-[inherit]",
           ),
         },
       },
@@ -196,7 +197,7 @@ const TextEditor = ({
         mainEditor.setlastTextEditPosition(props.editor.state.selection.anchor);
       },
     },
-    [brickId],
+    [brickId, mainEditor.textEditMode],
   );
 
   useEffect(() => {
@@ -249,7 +250,7 @@ const TextEditor = ({
         spellCheck="false"
         editor={editor}
         className={tx("outline-none ring-0 ", {
-          "min-h-full flex flex-col border-0": mainEditor.textEditMode === "large",
+          "min-h-full flex border-0": mainEditor.textEditMode === "large",
         })}
       />
       {editor && editable && menuPlacement !== "above-editor" && (

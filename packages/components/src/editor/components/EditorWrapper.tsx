@@ -9,6 +9,7 @@ import type { GenericPageConfig, SiteConfig } from "@upstart.gg/sdk/shared/page"
 import { Theme } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDarkMode } from "usehooks-ts";
+import { UploaderProvider } from "./UploaderContext";
 
 import "@radix-ui/themes/styles.css";
 import "@upstart.gg/style-system/radix.css";
@@ -20,6 +21,11 @@ export type EditorWrapperProps = {
   mode?: "local" | "remote";
   pageConfig: GenericPageConfig;
   siteConfig: SiteConfig;
+  /**
+   * Callback when an image is uploaded through the editor.
+   * The callback should return the URL of the uploaded image.
+   */
+  onImageUpload: (file: File) => Promise<string>;
   onReady?: () => void;
 };
 
@@ -31,6 +37,7 @@ export function EditorWrapper({
   pageConfig,
   siteConfig,
   mode,
+  onImageUpload,
   children,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
@@ -60,16 +67,18 @@ export function EditorWrapper({
   useEffect(onReady, []);
 
   return (
-    <EditorStoreContext.Provider value={editorStore} key="EditorStoreContext">
-      <DraftStoreContext.Provider value={draftStore} key="DraftStoreContext">
-        <Theme
-          accentColor="violet"
-          className={tx("w-[100dvw] overflow-hidden")}
-          appearance={isDarkMode ? "dark" : "light"}
-        >
-          {children}
-        </Theme>
-      </DraftStoreContext.Provider>
-    </EditorStoreContext.Provider>
+    <UploaderProvider onImageUpload={onImageUpload}>
+      <EditorStoreContext.Provider value={editorStore} key="EditorStoreContext">
+        <DraftStoreContext.Provider value={draftStore} key="DraftStoreContext">
+          <Theme
+            accentColor="violet"
+            className={tx("w-[100dvw] overflow-hidden")}
+            appearance={isDarkMode ? "dark" : "light"}
+          >
+            {children}
+          </Theme>
+        </DraftStoreContext.Provider>
+      </EditorStoreContext.Provider>
+    </UploaderProvider>
   );
 }

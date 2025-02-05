@@ -3,7 +3,7 @@ import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { type MouseEvent, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import {
   useDraftUndoManager,
   useEditor,
@@ -48,6 +48,12 @@ export default function TopBar() {
   const switchPreviewMode = useCallback(() => {
     editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
   }, [previewMode, editorHelpers.setPreviewMode]);
+
+  useEffect(() => {
+    if (showSaveAlert) {
+      editorHelpers.onShowLogin();
+    }
+  }, [showSaveAlert, editorHelpers.onShowLogin]);
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
