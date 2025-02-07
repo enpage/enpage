@@ -180,14 +180,6 @@ const themes: Theme[] = [
       heading: { type: "stack", family: "neo-grotesque" },
       body: { type: "stack", family: "geometric-humanist" },
     },
-    customFonts: [
-      {
-        name: "Cabinet Grotesk!",
-        src: "https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
 ];
 

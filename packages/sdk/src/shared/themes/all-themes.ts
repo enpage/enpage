@@ -69,14 +69,6 @@ export const themes: Theme[] = [
         family: "system-ui",
       },
     },
-    customFonts: [
-      {
-        name: "Supreme",
-        src: "https://fonts.googleapis.com/css2?family=Supreme:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "heritage",
@@ -239,14 +231,6 @@ export const themes: Theme[] = [
         family: "geometric-humanist",
       },
     },
-    customFonts: [
-      {
-        name: "Plus Jakarta Sans",
-        src: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "prime",
@@ -317,14 +301,6 @@ export const themes: Theme[] = [
         family: "geometric-humanist",
       },
     },
-    customFonts: [
-      {
-        name: "ClashDisplay",
-        src: "https://fonts.cdnfonts.com/css/clash-display",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "serene",
@@ -486,14 +462,6 @@ export const themes: Theme[] = [
         family: "humanist",
       },
     },
-    customFonts: [
-      {
-        name: "Cormorant Garamond",
-        src: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap",
-        weight: "600",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "trust",
@@ -655,14 +623,6 @@ export const themes: Theme[] = [
         family: "neo-grotesque",
       },
     },
-    customFonts: [
-      {
-        name: "GeneralSans",
-        src: "https://fonts.googleapis.com/css2?family=GeneralSans:wght@600&display=swap",
-        weight: "600",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "scale",
@@ -732,14 +692,6 @@ export const themes: Theme[] = [
         family: "system-ui",
       },
     },
-    customFonts: [
-      {
-        name: "Switzer",
-        src: "https://fonts.googleapis.com/css2?family=Switzer:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "pulse-pro",
@@ -855,14 +807,6 @@ export const themes: Theme[] = [
         family: "system-ui",
       },
     },
-    customFonts: [
-      {
-        name: "Aspekta",
-        src: "https://fonts.googleapis.com/css2?family=Aspekta:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "metric",
@@ -955,14 +899,6 @@ export const themes: Theme[] = [
         family: "neo-grotesque",
       },
     },
-    customFonts: [
-      {
-        name: "Geist",
-        src: "https://fonts.googleapis.com/css2?family=Geist:wght@600&display=swap",
-        weight: "600",
-        display: "swap",
-      },
-    ],
   },
   {
     id: "nucleus-pro",

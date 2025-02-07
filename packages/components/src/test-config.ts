@@ -291,15 +291,19 @@ const themes: Theme[] = [
       base: 16,
       heading: { type: "stack", family: "system-ui" },
       body: { type: "stack", family: "system-ui" },
+      alternatives: [
+        {
+          heading: {
+            type: "stack",
+            family: "transitional",
+          },
+          body: {
+            type: "stack",
+            family: "humanist",
+          },
+        },
+      ],
     },
-    customFonts: [
-      {
-        name: "Cabinet Grotesk!",
-        src: "https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
 ];
 

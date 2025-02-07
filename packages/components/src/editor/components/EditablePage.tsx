@@ -18,6 +18,7 @@ import { debounce } from "lodash-es";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
 import { canDropOnLayout, detectCollisions, getDropOverGhostPosition } from "~/shared/utils/layout-utils";
+import { useFontWatcher } from "../hooks/use-font-watcher";
 
 const ghostValid = tx("bg-upstart-100");
 const ghostInvalid = tx("bg-red-100");
@@ -32,7 +33,8 @@ export default function EditablePage() {
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
   const dragOverRef = useRef<HTMLDivElement>(null);
-  const pageClassName = usePageStyle({ attributes, editable: true, previewMode });
+  const typography = useFontWatcher();
+  const pageClassName = usePageStyle({ attributes, typography, editable: true, previewMode });
 
   // on page load, set last loaded property so that the store is saved to local storage
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

@@ -4,12 +4,19 @@ import { isStandardColor } from "@upstart.gg/sdk/shared/themes/color-system";
 import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 import { useTheme } from "~/editor/hooks/use-editor";
+import type { Theme } from "@upstart.gg/sdk/shared/theme";
 
 export function usePageStyle({
   attributes,
   editable,
   previewMode,
-}: { attributes: Attributes; editable?: boolean; previewMode?: ResponsiveMode }) {
+  typography,
+}: {
+  attributes: Attributes;
+  typography: Theme["typography"];
+  editable?: boolean;
+  previewMode?: ResponsiveMode;
+}) {
   const themeUsed = useTheme();
   return tx(
     "grid group/page mx-auto page-container relative",
@@ -48,9 +55,11 @@ export function usePageStyle({
       ${attributes.$pageWidth}
     )`,
 
-    css({
-      "font-family": `var(--font-${themeUsed.typography.body})`,
-    }),
+    // css({
+    //   "font-family": `var(--font-${themeUsed.typography.body})`,
+    // }),
+
+    getTypographyStyles(typography),
 
     editable && "transition-all duration-300",
 
@@ -91,4 +100,17 @@ export function usePageStyle({
       }
     `,
   );
+}
+
+function getTypographyStyles(typography: Theme["typography"]) {
+  function formatFontFamily(font: typeof typography.body) {
+    return font.type === "stack" ? `var(--font-${font.family})` : font.family;
+  }
+  return css({
+    "font-family": formatFontFamily(typography.body),
+    "font-size": `${typography.base}px`,
+    "& h1, & h2, & h3, & h4, & h5, & h6, & h7": {
+      "font-family": formatFontFamily(typography.heading),
+    },
+  });
 }

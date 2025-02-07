@@ -15,12 +15,11 @@ import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
 import { tx } from "@upstart.gg/style-system/twind";
-import { type Theme, themeSchema, getProcessedThemeSchema } from "@upstart.gg/sdk/shared/theme";
+import { type Theme, themeSchema, type FontType } from "@upstart.gg/sdk/shared/theme";
 import { useDraft } from "~/editor/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import type { ColorType } from "@upstart.gg/sdk/shared/themes/color-system";
-import type { TUnion } from "@sinclair/typebox";
 import FontPicker from "./json-form/fields/font";
 import fonts from "../utils/fonts.json";
 
@@ -30,10 +29,6 @@ export default function ThemePanel() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThemes, setGeneratedThemes] = useState<Theme[]>([]);
   const [genListRef] = useAutoAnimate(/* optional config */);
-  const themeSchemaProcessed = useMemo(
-    () => getProcessedThemeSchema(themeSchema, draft.theme),
-    [draft.theme],
-  );
 
   const generateTheme = async () => {
     if (!themeDescription) {
@@ -58,8 +53,6 @@ export default function ThemePanel() {
     }
     setIsGenerating(false);
   };
-
-  console.log({ typo: themeSchemaProcessed.properties.typography });
 
   return (
     <Tabs.Root defaultValue="current">
@@ -152,30 +145,26 @@ export default function ThemePanel() {
           </div>
           <div className="text-sm flex flex-col gap-y-3 px-1">
             {Object.entries(draft.theme.typography)
-              .filter((obj) => obj[0] !== "base")
+              .filter((obj) => obj[0] === "body" || obj[0] === "heading")
               .map(([fontType, font]) => (
                 <div key={fontType}>
                   <label className="font-medium">
                     {/* @ts-ignore */}
-                    {themeSchemaProcessed.properties.typography.properties[fontType].title}
+                    {themeSchema.properties.typography.properties[fontType].title}
                   </label>
                   <Text color="gray" as="p" size="1" className="mb-1">
                     {/* @ts-ignore */}
-                    {themeSchemaProcessed.properties.typography.properties[fontType].description}
+                    {themeSchema.properties.typography.properties[fontType].description}
                   </Text>
                   <FontPicker
-                    options={fonts.map((font) => ({
-                      label: font,
-                      value: font,
-                    }))}
-                    initialValue={`${font}`}
-                    onChange={(e) => {
-                      console.log(e);
+                    fontType={fontType as "body" | "heading"}
+                    initialValue={font as FontType}
+                    onChange={(chosen) => {
                       draft.setTheme({
                         ...draft.theme,
                         typography: {
                           ...draft.theme.typography,
-                          [fontType]: e,
+                          [fontType]: chosen,
                         },
                       });
                     }}

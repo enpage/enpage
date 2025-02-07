@@ -12,7 +12,7 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Button, Callout, IconButton, Popover, Select, ToggleGroup } from "@upstart.gg/style-system/system";
+import { Callout, IconButton, Popover, Select, ToggleGroup } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Document from "@tiptap/extension-document";
@@ -32,7 +32,6 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { useDatasourcesSchemas, useEditor } from "~/editor/hooks/use-editor";
 import { VscDatabase } from "react-icons/vsc";
 import { BiFullscreen, BiExitFullscreen } from "react-icons/bi";
-import type { TObject, TSchema } from "@sinclair/typebox";
 import { JSONSchemaView } from "~/editor/components/json-form/SchemaView";
 import Mention from "@tiptap/extension-mention";
 import datasourceFieldSuggestions from "./datasourceFieldSuggestions";
@@ -404,7 +403,6 @@ function DatasourceFieldPickerModal(props: DatasourceFieldPickerModalProps) {
             <Select.Content position="popper">
               <Select.Group>
                 <Select.Label>Datasource</Select.Label>
-                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {Object.entries(datasources ?? {}).map(([dsId, dsSchema]) => (
                   <Select.Item key={dsId} value={dsId}>
                     {dsSchema.name}
@@ -435,18 +433,6 @@ function DatasourceFieldPickerModal(props: DatasourceFieldPickerModalProps) {
     </div>
   );
 }
-
-// function DatasourceFieldPicker({ schema }: { schema: TSchema }) {
-//   return (
-//     <JSONSchemaView
-//       schema={schema}
-//       onChange={() => {
-//         console.log("changed");
-//       }}
-//     />
-//   );
-// }
-
 function DisplayModeButton({ icon }: { icon: "close" | "enlarge" }) {
   const editor = useEditor();
   return (
