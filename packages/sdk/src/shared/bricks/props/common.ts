@@ -1,10 +1,10 @@
 import { Type, type Static } from "@sinclair/typebox";
 
 export const commonProps = Type.Object({
-  // id: Type.String({
-  //   title: "Brick ID",
-  //   "ui:field": "hidden",
-  // }),
+  id: Type.String({
+    title: "Brick ID",
+    "ui:field": "hidden",
+  }),
   className: Type.String({
     default: "",
     "ui:field": "hidden",
@@ -20,27 +20,24 @@ export const commonProps = Type.Object({
   }),
 });
 
-export const richText = Type.Boolean({
-  title: "Rich Text",
-  description: "Allow rich text",
-  default: true,
-  "ui:field": "hidden",
+export const richText = Type.String({
+  default: "some text here",
+  "ui:field": "rich-text",
+  "ui:group": "content",
+  "ui:group:title": "Content",
+  "ui:group:order": 3,
 });
 
-export const mixedContent = Type.Object(
-  { text: Type.String(), richText: Type.Boolean() },
-  {
-    default: {
-      text: "some text here",
-    },
-    "ui:field": "mixed-content",
-    "ui:group": "content",
-    "ui:group:title": "Content",
-    "ui:group:order": 3,
-  },
-);
+export const richTextHero = Type.String({
+  default: "<h1>some text here</h1>",
+  "ui:field": "rich-text",
+  "ui:paragraph-mode": "hero",
+  "ui:group": "content",
+  "ui:group:title": "Content",
+  "ui:group:order": 3,
+});
 
-export type MixedContent = Static<typeof mixedContent>;
+export type RichText = Static<typeof richText>;
 
 const imageProps = Type.Object(
   {
@@ -85,16 +82,20 @@ export type ImageSettings = Static<typeof imageSettings>;
 
 export const contentAwareProps = Type.Object(
   {
-    content: mixedContent,
+    content: richText,
   },
-  {
-    default: {
-      content: {
-        text: "some text here",
-      },
-    },
-  },
+  // {
+  //   default: {
+  //     content: {
+  //       text: "some text here",
+  //     },
+  //   },
+  // },
 );
+
+export const contentAwareHeroProps = Type.Object({
+  content: richTextHero,
+});
 
 export const container = Type.Object({
   container: Type.Boolean({

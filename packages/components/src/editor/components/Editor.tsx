@@ -94,18 +94,18 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
             },
           }),
           previewMode === "mobile" && "bg-gray-300",
-          previewMode === "desktop" &&
-            isStandardColor(attributes.$backgroundColor) &&
-            css({ backgroundColor: attributes.$backgroundColor as string }),
-          previewMode === "desktop" &&
-            isStandardColor(attributes.$textColor) &&
-            css({ color: attributes.$textColor as string }),
-          previewMode === "desktop" &&
-            !isStandardColor(attributes.$backgroundColor) &&
-            (attributes.$backgroundColor as string),
-          previewMode === "desktop" &&
-            !isStandardColor(attributes.$textColor) &&
-            (attributes.$textColor as string),
+          // previewMode === "desktop" &&
+          //   isStandardColor(attributes.$background.color) &&
+          //   css({ backgroundColor: attributes.$background.color as string }),
+          // previewMode === "desktop" &&
+          //   isStandardColor(attributes.$textColor) &&
+          //   css({ color: attributes.$textColor as string }),
+          // previewMode === "desktop" &&
+          //   !isStandardColor(attributes.$background.color) &&
+          //   (attributes.$background.color as string),
+          // previewMode === "desktop" &&
+          //   !isStandardColor(attributes.$textColor) &&
+          //   (attributes.$textColor as string),
         )}
       >
         <DeviceFrame>
@@ -165,7 +165,6 @@ function Panel({ className, ...props }: PanelProps) {
           <DataPanel />
         </Suspense>
       )}
-      {/* {editor.modal === "image-search" && <ModalSearchImage />} */}
     </aside>
   );
 }

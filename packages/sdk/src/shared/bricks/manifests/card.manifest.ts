@@ -48,30 +48,23 @@ export const manifest = defineBrickManifest({
     Type.Object({
       cardTitle: Type.Object(
         {
-          content: Type.Object(
-            { text: Type.String(), richText: Type.Boolean() },
-            {
-              "ui:field": "mixed-content",
-              "ui:group": "card-title",
-              "ui:group:title": "Title",
-              "ui:group:order": 0,
-            },
-          ),
+          content: Type.String({
+            "ui:field": "rich-text",
+            "ui:group": "card-title",
+            "ui:group:title": "Title",
+            "ui:group:order": 0,
+          }),
           padding,
           backgroundColor,
         },
         {
           title: "Title",
           // "ui:field": "mixed-content",
+          "ui:field": "rich-text",
           "ui:group": "card-title",
           "ui:group:title": "Title",
           "ui:group:order": 0,
-          default: {
-            content: {
-              text: "Edit my title",
-              richText: true,
-            },
-          },
+          default: "Edit my title",
         },
       ),
       cardImage: Type.Optional(
@@ -89,29 +82,22 @@ export const manifest = defineBrickManifest({
       ),
       cardBody: Type.Object(
         {
-          content: Type.Object(
-            { text: Type.String(), richText: Type.Boolean() },
-            {
-              "ui:field": "mixed-content",
-              "ui:group": "card-body",
-              "ui:group:title": "Body",
-              "ui:group:order": 0,
-            },
-          ),
+          content: Type.String({
+            "ui:field": "rich-text",
+            "ui:group": "card-body",
+            "ui:group:title": "Body",
+            "ui:group:order": 0,
+          }),
           padding,
           backgroundColor,
         },
         {
           title: "Body",
-          // "ui:field": "mixed-content",
           "ui:group": "card-body",
           "ui:group:title": "Body",
           "ui:group:order": 0,
           default: {
-            content: {
-              text: "Edit my content",
-              richText: true,
-            },
+            content: "Edit my content",
           },
         },
       ),

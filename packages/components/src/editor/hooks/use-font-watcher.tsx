@@ -8,7 +8,6 @@ import type { Theme } from "@upstart.gg/sdk/shared/theme";
 export function useFontWatcher() {
   const theme = useTheme();
   useEffect(() => {
-    console.log("theme has changed !", theme.typography);
     buildHtmlHeadLinks();
     updateLinks(theme.typography);
   }, [theme.typography]);

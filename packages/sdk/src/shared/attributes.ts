@@ -331,6 +331,7 @@ const defaultAttributes = {
       },
       title: "Background",
       "ui:field": "background",
+      "ui:show-img-search": true,
       "ui:group": "layout",
       "ui:group:title": "Page Layout & Design",
     },
@@ -375,7 +376,6 @@ export function resolveAttributes(
   initialData: Record<string, unknown> = {},
 ): Attributes {
   const validate = ajv.compile(attributesSchema);
-  console.log({ attributesSchema });
   const data = { ...initialData };
   const valid = validate(data);
   if (!valid) {

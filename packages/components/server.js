@@ -19,7 +19,9 @@ app.use(vite.middlewares);
 
 // Local image search for testing
 app.get("/api/v1/search-images", (req, res) => {
-  console.log("params", req.query);
+  if (!process.env.UNSPLASH_ACCESS_KEY) {
+    console.error("UNSPLASH_ACCESS_KEY is not set");
+  }
   if (req.query.orientation === "all") {
     // biome-ignore lint/performance/noDelete: <explanation>
     delete req.query.orientation;

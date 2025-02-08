@@ -3,7 +3,7 @@ import ColorField from "./fields/color";
 import { DimensionsField } from "./fields/dimensions";
 import EnumField from "./fields/enum";
 import ImageField from "./fields/image";
-import MixedContentField from "./fields/mixed-content";
+import RichTextField from "./fields/rich-text";
 import { BorderField } from "./fields/border";
 import { PathField, StringField } from "./fields/string";
 import { NumberField, SliderField } from "./fields/number";
@@ -21,7 +21,7 @@ import type {
   EffectsSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
-import type { ImageProps, MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
+import type { ImageProps, RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { PagePaddingField } from "./fields/padding";
 import BackgroundField from "./fields/background";
@@ -203,14 +203,13 @@ export function getFormComponents({
             ),
           };
         }
-        case "mixed-content": {
-          // console.log("mixed-content", { id, field, formData, commonProps });
-          const currentValue = (get(formData, id) ?? commonProps.schema.default) as MixedContent;
+        case "rich-text": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as RichText;
           return {
             group,
             groupTitle,
             component: (
-              <MixedContentField
+              <RichTextField
                 currentValue={currentValue}
                 onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
@@ -339,7 +338,7 @@ export function getFormComponents({
     // filter null values
     .filter(Boolean);
 
-  console.log("elements", elements);
+  console.debug("Form elements", elements);
 
   return elements as FormComponents;
 }

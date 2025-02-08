@@ -61,7 +61,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
           hasMouseMoved.current = true;
         }}
       >
-        <BaseBrick brick={brick} editable />
+        <BaseBrick brick={brick} id={brick.id} editable />
         <BrickOptionsButton brick={brick} />
         {children} {/* Make sure to include children to add resizable handle */}
       </div>
@@ -82,19 +82,18 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
       <DropdownMenu.Trigger>
         <div className={tx("absolute right-1.5 top-1")}>
           <IconButton
-            onClickCapture={(e) => {
-              console.log("btn click", e);
-            }}
-            variant="soft"
+            type="button"
+            variant="solid"
+            color="purple"
             size="1"
             radius="small"
             className={tx(
               {
                 "!opacity-0": !open,
               },
-              "nodrag transition-all duration-300 group/button bg-upstart-600 group-hover/brick:!opacity-100 \
-              active:!opacity-100 focus:!flex focus-within:!opacity-100 !bg-upstart-200/75 \
-              hover:!bg-upstart-300 !px-0.5",
+              "nodrag transition-all duration-300 group/button group-hover/brick:!opacity-100 \
+              active:!opacity-100 focus:!flex focus-within:!opacity-100 !border-2 !border-upstart-500 !bg-transparent \
+              hover:!border-upstart-300 !px-0.5",
             )}
           >
             <BiDotsVerticalRounded className="w-6 h-6 text-upstart-500 group-hover/button:text-upstart-600" />

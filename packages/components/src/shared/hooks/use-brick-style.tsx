@@ -36,7 +36,12 @@ export function useBrickWrapperStyle({
   return tx(
     apply(className),
     // no transition otherwise it will slow down the drag
-    "brick group/brick flex relative overflow-hidden",
+    "brick group/brick flex relative",
+
+    // !!! testing commented
+    //"overflow-hidden",
+    // end test
+
     {
       "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
         editable,

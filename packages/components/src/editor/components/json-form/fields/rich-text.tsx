@@ -2,15 +2,15 @@ import type { FieldProps } from "./types";
 import { Text } from "@upstart.gg/style-system/system";
 import { useTextEditMode } from "~/editor/hooks/use-editor";
 import { tx } from "@upstart.gg/style-system/twind";
-import type { MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
+import type { RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import TextEditor from "~/shared/components/TextEditor";
 
-const MixedContentField: React.FC<FieldProps<MixedContent>> = (props) => {
+const RichTextField: React.FC<FieldProps<RichText>> = (props) => {
   const { onChange, title, currentValue, brickId } = props;
   const textEditMode = useTextEditMode();
 
   return (
-    <div className="field field-mixed-content">
+    <div className="field field-rich-text">
       {title && (
         <div className="flex items-center justify-between">
           <Text as="label" size="2" weight="medium">
@@ -21,13 +21,13 @@ const MixedContentField: React.FC<FieldProps<MixedContent>> = (props) => {
       <div className={tx("relative")}>
         <TextEditor
           onUpdate={({ editor }) => {
-            onChange({ ...currentValue, text: editor.getHTML() });
+            onChange(editor.getHTML());
           }}
+          paragraphMode={props.schema["ui:paragraph-mode"]}
           discrete={textEditMode !== "large"}
           brickId={brickId}
-          initialContent={currentValue.text}
+          initialContent={currentValue}
           menuPlacement="above-editor"
-          richText={currentValue.richText}
           enabled
           className={tx("form-textarea focus:ring-0 h-full", {
             "flex-1 rounded rounded-t-none border-gray-300": textEditMode === "large",
@@ -41,4 +41,4 @@ const MixedContentField: React.FC<FieldProps<MixedContent>> = (props) => {
   );
 };
 
-export default MixedContentField;
+export default RichTextField;

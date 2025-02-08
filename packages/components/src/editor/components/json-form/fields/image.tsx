@@ -1,33 +1,17 @@
 import type { FieldProps } from "./types";
 import { nanoid } from "nanoid";
 import { Button, Text } from "@upstart.gg/style-system/system";
-import { useEditor } from "~/editor/hooks/use-editor";
 import { useMemo, useState } from "react";
 import ModalSearchImage from "~/editor/components/ModalSearchImage";
 import type { ImageProps } from "@upstart.gg/sdk/shared/bricks/props/common";
 
 const ImageField: React.FC<FieldProps<ImageProps>> = (props) => {
   const { schema, formData, onChange, required, title, description, currentValue } = props;
-  const editor = useEditor();
   const [showSearch, setShowSearch] = useState(false);
   const id = useMemo(() => nanoid(), []);
   // const [src, setSrc] = useState<string | null>(currentValue.src);
 
   const onPropsChange = (newVal: Partial<ImageProps>) => onChange({ ...currentValue, ...newVal });
-
-  /*
-
-Input file style:
-
-
-width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-
-  */
 
   return (
     <>
@@ -69,7 +53,7 @@ width: 0.1px;
             </Button>
           )} */}
           {schema["ui:show-img-search"] && (
-            <Button variant="soft" size="1" radius="full" onClick={() => setShowSearch(true)}>
+            <Button variant="soft" size="1" radius="full" type="button" onClick={() => setShowSearch(true)}>
               <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
                 Search
               </label>
@@ -82,17 +66,16 @@ width: 0.1px;
           <img src={currentValue.src} alt="Preview" className="max-w-full h-auto" />
         </div>
       )}
-      {showSearch && (
-        <ModalSearchImage
-          onClose={() => {
-            setShowSearch(false);
-          }}
-          onChoose={(url) => {
-            onPropsChange({ src: url });
-            setShowSearch(false);
-          }}
-        />
-      )}
+      <ModalSearchImage
+        open={showSearch}
+        onClose={() => {
+          setShowSearch(false);
+        }}
+        onChoose={(url) => {
+          onPropsChange({ src: url });
+          setShowSearch(false);
+        }}
+      />
     </>
   );
 };

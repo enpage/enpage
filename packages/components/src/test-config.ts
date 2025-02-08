@@ -65,9 +65,7 @@ const homePageBricks = defineBricks([
     {
       type: "hero",
       props: {
-        content: {
-          text: "Reach the stars.<br />Book your next trip<br />to Space.",
-        },
+        content: "Reach the stars.<br />Book your next trip<br />to Space.",
         className:
           "capitalize flex font-bold text-[2.2rem] leading-[1] @desktop:text-7xl justify-center items-center text-center [text-shadow:_2px_2px_5px_rgb(0_0_0_/_40%)]",
       },
@@ -154,10 +152,8 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content: {
-          text: "&laquo; The lunar view of Earth changed my perspective forever.<br />An unforgettable experience &raquo;<br /><small>- John Doe</small>",
-          richText: true,
-        },
+        content:
+          "&laquo; The lunar view of Earth changed my perspective forever.<br />An unforgettable experience &raquo;<br /><small>- John Doe</small>",
         className: "text-center text-3xl italic",
         format: "html",
       },
@@ -181,10 +177,7 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content: {
-          text: " ",
-          richText: true,
-        },
+        content: " ",
         justify: "text-center",
         format: "html",
       },
@@ -328,8 +321,10 @@ export default defineConfig({
   attributes: siteAttributes,
   attr: {
     $textColor: "#fff",
-    $backgroundColor: "#0B1016",
-    $backgroundImage: "/earth-big.jpg",
+    $background: {
+      color: "#0B1016",
+      image: "/earth-big.jpg",
+    },
   },
   pages: [
     {

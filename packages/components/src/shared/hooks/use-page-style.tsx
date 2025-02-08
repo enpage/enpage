@@ -3,7 +3,6 @@ import { LAYOUT_COLS, LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-co
 import { isStandardColor } from "@upstart.gg/sdk/shared/themes/color-system";
 import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
-import { useTheme } from "~/editor/hooks/use-editor";
 import type { Theme } from "@upstart.gg/sdk/shared/theme";
 
 export function usePageStyle({
@@ -17,20 +16,19 @@ export function usePageStyle({
   editable?: boolean;
   previewMode?: ResponsiveMode;
 }) {
-  const themeUsed = useTheme();
   return tx(
     "grid group/page mx-auto page-container relative",
-    isStandardColor(attributes.$backgroundColor) &&
-      css({ backgroundColor: attributes.$backgroundColor as string }),
+    isStandardColor(attributes.$background.color) &&
+      css({ backgroundColor: attributes.$background.color as string }),
     isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor as string }),
-    !isStandardColor(attributes.$backgroundColor) && (attributes.$backgroundColor as string),
+    !isStandardColor(attributes.$background.color) && (attributes.$background.color as string),
     !isStandardColor(attributes.$textColor) && (attributes.$textColor as string),
-    typeof attributes.$backgroundImage === "string" &&
+    typeof attributes.$background.image === "string" &&
       css({
-        backgroundImage: `url(${attributes.$backgroundImage})`,
+        backgroundImage: `url(${attributes.$background.image})`,
         //todo: make it dynamic, by using attributes
         backgroundRepeat: "no-repeat",
-        backgroundSize: "contain",
+        backgroundSize: attributes.$background.size ?? "cover",
         backgroundPosition: "center top",
       }),
     // mobile grid
@@ -54,10 +52,6 @@ export function usePageStyle({
       h-fit
       ${attributes.$pageWidth}
     )`,
-
-    // css({
-    //   "font-family": `var(--font-${themeUsed.typography.body})`,
-    // }),
 
     getTypographyStyles(typography),
 

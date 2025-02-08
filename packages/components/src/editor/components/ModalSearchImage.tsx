@@ -33,9 +33,10 @@ type SearchResponse = Results | { error: string };
 type ModalSearchImageProps = {
   onChoose: (url: string, thumbnail?: string) => void;
   onClose: () => void;
+  open: boolean;
 };
 
-export default function ModalSearchImage({ onChoose, onClose }: ModalSearchImageProps) {
+export default function ModalSearchImage({ onChoose, onClose, open }: ModalSearchImageProps) {
   const editor = useEditor();
   const [error, setError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<Results | null>(null);
@@ -88,10 +89,10 @@ export default function ModalSearchImage({ onChoose, onClose }: ModalSearchImage
 
   return (
     <Dialog.Root
-      defaultOpen
+      open={open}
       onOpenChange={(open) => {
         if (!open) {
-          editor.hideModal();
+          // editor.hideModal();
           onClose();
         }
       }}
@@ -167,6 +168,7 @@ export default function ModalSearchImage({ onChoose, onClose }: ModalSearchImage
                   gridColumn: "1",
                 }}
                 onClick={() => {
+                  console.log("Image results", result.urls);
                   editor.hideModal();
                   onChoose?.(result.urls.regular, result.urls.thumb);
                 }}

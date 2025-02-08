@@ -1,7 +1,6 @@
 import type { FieldProps } from "./types";
 import { nanoid } from "nanoid";
 import { Button, Text } from "@upstart.gg/style-system/system";
-import { useEditor } from "~/editor/hooks/use-editor";
 import { useMemo, useState } from "react";
 import ModalSearchImage from "~/editor/components/ModalSearchImage";
 import type { BackgroundSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
@@ -14,6 +13,8 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   const id = useMemo(() => nanoid(), []);
   const { onImageUpload } = useUploader();
   const onPropsChange = (newVal: Partial<BackgroundSettings>) => onChange({ ...currentValue, ...newVal });
+
+  console.log("background schema", schema);
 
   return (
     <>
@@ -58,18 +59,12 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
               className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]"
               htmlFor={id}
             >
-              {currentValue.image ? "Replace image" : "Upload image"}
+              {currentValue.image ? "Upload new" : "Upload image"}
             </label>
           </Button>
-          {/* {schema["ui:allow-url"] && (
-            <Button variant="soft" size="1" radius="full">
-              <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
-                URL
-              </label>
-            </Button>
-          )} */}
+
           {schema["ui:show-img-search"] && (
-            <Button variant="soft" size="1" radius="full" onClick={() => setShowSearch(true)}>
+            <Button variant="soft" size="1" radius="full" type="button" onClick={() => setShowSearch(true)}>
               <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
                 Search
               </label>
@@ -82,17 +77,16 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
           <img src={currentValue.image} alt={id} className="max-w-full h-auto" />
         </div>
       )}
-      {showSearch && (
-        <ModalSearchImage
-          onClose={() => {
-            setShowSearch(false);
-          }}
-          onChoose={(url) => {
-            onPropsChange({ image: url });
-            setShowSearch(false);
-          }}
-        />
-      )}
+      <ModalSearchImage
+        open={showSearch}
+        onClose={() => {
+          setShowSearch(false);
+        }}
+        onChoose={(url) => {
+          onPropsChange({ image: url });
+          setShowSearch(false);
+        }}
+      />
     </>
   );
 };

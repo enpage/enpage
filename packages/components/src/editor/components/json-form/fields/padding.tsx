@@ -11,8 +11,6 @@ export const PagePaddingField: React.FC<FieldProps<Attributes["$pagePadding"]>> 
   const onSettingsChange = (newVal: Partial<Attributes["$pagePadding"]>) =>
     onChange({ ...currentValue, ...newVal });
 
-  console.log("schema page padding", schema);
-
   return (
     <div className="border-field">
       {description && (

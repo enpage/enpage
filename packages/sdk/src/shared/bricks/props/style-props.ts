@@ -202,10 +202,23 @@ export const background = Type.Object(
         title: "Image",
       }),
     ),
+    size: Type.Optional(
+      Type.Union(
+        [
+          Type.Literal("auto", { title: "Auto" }),
+          Type.Literal("cover", { title: "Cover" }),
+          Type.Literal("contain", { title: "Contain" }),
+        ],
+        {
+          default: "auto",
+        },
+      ),
+    ),
   },
   {
     "ui:field": "background",
     "ui:group": "layout",
+    "ui:show-img-search": true,
     title: "Background",
   },
 );
