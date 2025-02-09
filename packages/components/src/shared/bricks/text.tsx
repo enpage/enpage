@@ -34,8 +34,6 @@ const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, re
 
 const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
-  console.log("editable text props", props);
-  // const content = "";
   const content = useEditableText({
     brickId: props.id,
     initialContent: props.content,

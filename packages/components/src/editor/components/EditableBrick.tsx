@@ -42,8 +42,8 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     return (
       <div
         id={brick.id}
-        data-x="0"
-        data-y="0"
+        // data-x="0"
+        // data-y="0"
         data-position={JSON.stringify(brick.position[previewMode])}
         style={style}
         className={wrapperClass}

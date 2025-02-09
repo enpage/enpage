@@ -12,7 +12,7 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Callout, IconButton, Popover, Select, ToggleGroup } from "@upstart.gg/style-system/system";
+import { Callout, IconButton, Popover, Select, ToggleGroup, Portal } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Document from "@tiptap/extension-document";
@@ -103,7 +103,7 @@ export type TextEditorProps = {
 };
 
 const toolbarBtnCls =
-  "first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
+  "!bg-white first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
 
 const TextEditor = ({
   initialContent,
@@ -119,6 +119,7 @@ const TextEditor = ({
   const mainEditor = useEditor();
   const datasources = useDatasourcesSchemas();
   const [editable, setEditable] = useState(enabled);
+  const pageContainer = useRef<HTMLDivElement>(document.querySelector(".page-container"));
 
   // @ts-ignore
   const fields = getJSONSchemaFieldsList({ schemas: datasources });
@@ -164,7 +165,6 @@ const TextEditor = ({
     }),
   ];
 
-  console.log("editor className", className);
   const editor = useTextEditor(
     {
       extensions,
@@ -246,15 +246,17 @@ const TextEditor = ({
           "min-h-full flex border-0": mainEditor.textEditMode === "large",
         })}
       />
-      {editor && editable && menuPlacement !== "above-editor" && (
-        <MenuBar
-          brickId={brickId}
-          editor={editor}
-          placement={menuPlacement}
-          discrete={discrete}
-          inline={inline}
-          paragraphMode={paragraphMode}
-        />
+      {editor && editable && menuPlacement === "page" && (
+        <Portal container={pageContainer.current}>
+          <MenuBar
+            brickId={brickId}
+            editor={editor}
+            placement={menuPlacement}
+            discrete={discrete}
+            inline={inline}
+            paragraphMode={paragraphMode}
+          />
+        </Portal>
       )}
     </div>
   );
@@ -288,25 +290,23 @@ const MenuBar = ({
     );
   } else {
     className = tx(
-      "z-[900] text-gray-800 flex gap-3 py-1.5 bg-upstart-600/10",
+      "z-[900] text-gray-800 flex gap-3 py-1.5 bg-upstart-600/10 isolate transition-opacity duration-100",
       "fixed top-[59px] left-0 right-3 text-sm backdrop-blur justify-center",
       // "z-[900] text-gray-800 flex gap-3 p-1 bg-upstart-600/25",
       // "shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
       {
-        "scale-90 opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
+        "opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
       },
     );
   }
 
   return (
     <div ref={ref} className={tx(className)}>
-      <>
-        <ButtonGroup>
-          <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
-        </ButtonGroup>
-        <TextAlignButtonGroup editor={editor} />
-        <TextStyleButtonGroup editor={editor} />
-      </>
+      <ButtonGroup>
+        <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
+      </ButtonGroup>
+      <TextAlignButtonGroup editor={editor} />
+      <TextStyleButtonGroup editor={editor} />
       <DatasourceItemButton editor={editor} />
       {!inline && <DisplayModeButton icon="enlarge" />}
       {!discrete && inline !== true && (
@@ -322,7 +322,7 @@ const MenuBar = ({
 function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-8"
       type="single"
       value={editor.isActive("textAlign") ? editor.getAttributes("textAlign").alignment : undefined}
       aria-label="Text align"
@@ -332,28 +332,28 @@ function TextAlignButtonGroup({ editor }: { editor: Editor }) {
         value="left"
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
       >
-        <MdFormatAlignLeft className="w-4 h-4" />
+        <MdFormatAlignLeft className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="center"
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
       >
-        <MdFormatAlignCenter className="w-4 h-4" />
+        <MdFormatAlignCenter className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="right"
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
       >
-        <MdFormatAlignRight className="w-4 h-4" />
+        <MdFormatAlignRight className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="justify"
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
       >
-        <MdFormatAlignJustify className="w-4 h-4" />
+        <MdFormatAlignJustify className="w-5 h-5" />
       </ToggleGroup.Item>
     </ToggleGroup.Root>
   );
@@ -492,8 +492,8 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <IconButton size="1" color="gray" variant="surface" className={tx(toolbarBtnCls)}>
-          <VscDatabase className="w-4 h-4 " />
+        <IconButton size="2" color="gray" variant="surface" className={tx(toolbarBtnCls)}>
+          <VscDatabase className="w-5 h-5" />
         </IconButton>
       </Popover.Trigger>
       <Popover.Content width="460px" side="right" align="center" size="2" maxHeight="50vh" sideOffset={50}>
@@ -506,7 +506,7 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
 function TextStyleButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-8"
       type="multiple"
       value={
         [
@@ -522,21 +522,21 @@ function TextStyleButtonGroup({ editor }: { editor: Editor }) {
         value="bold"
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
-        <MdFormatBold className="w-4 h-4" />
+        <MdFormatBold className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="italic"
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
-        <MdOutlineFormatItalic className="w-4 h-4" />
+        <MdOutlineFormatItalic className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="strike"
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
-        <MdStrikethroughS className="w-4 h-4" />
+        <MdStrikethroughS className="w-5 h-5" />
       </ToggleGroup.Item>
     </ToggleGroup.Root>
   );
@@ -554,7 +554,7 @@ type TextSizeSelectProps = {
 function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
   return (
     <Select.Root
-      size="1"
+      size="2"
       defaultValue={
         editor.isActive("heading")
           ? editor.getAttributes("heading").level?.toString()
@@ -573,7 +573,7 @@ function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
         }
       }}
     >
-      <Select.Trigger />
+      <Select.Trigger className={tx("px-3", toolbarBtnCls)} />
       <Select.Content position="popper">
         <Select.Group>
           <Select.Label>Headings</Select.Label>

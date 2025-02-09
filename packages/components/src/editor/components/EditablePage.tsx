@@ -91,7 +91,7 @@ export default function EditablePage() {
         // editorHelpers.setCollidingBrick(dropOverPos.collision);
       },
       onDragEnd: (brick, pos, gridPos) => {
-        console.log("onDragEnd (%s)", previewMode, gridPos);
+        console.debug("onDragEnd (%s)", previewMode, gridPos);
 
         updateDragOverGhostStyle(false);
 
@@ -127,7 +127,7 @@ export default function EditablePage() {
         updateDragOverGhostStyle(false);
       },
       onDrop(event, gridPosition, brick) {
-        console.log("onDrop (%s)", previewMode, gridPosition, brick);
+        console.debug("onDrop (%s)", previewMode, gridPosition, brick);
 
         updateDragOverGhostStyle(false);
         const position = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
@@ -154,7 +154,7 @@ export default function EditablePage() {
     },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
-        console.log("onResizeEnd (%s)", previewMode, brickId, gridPos);
+        console.debug("onResizeEnd (%s)", previewMode, brickId, gridPos);
 
         updateDragOverGhostStyle(false);
 
@@ -244,7 +244,7 @@ export default function EditablePage() {
     // let the browser handle the copy event
     const sel = window.getSelection();
     if (!sel?.rangeCount) {
-      console.log("mod+c pressed");
+      console.debug("mod+c pressed");
     }
   });
 

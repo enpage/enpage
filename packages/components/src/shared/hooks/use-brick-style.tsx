@@ -19,7 +19,6 @@ export function useBrickStyle(
   // we use flex-1 to make the inner brick fill the space.
   return tx("flex-1", [
     props.className && apply(props.className),
-    // props.padding ? (props.padding as string) : null,
     props.dimensions?.padding ? (props.dimensions.padding as string) : null,
     props.color ? `text-${props.color}` : null,
     props.fontSize ? `text-${props.fontSize}` : null,
@@ -38,9 +37,7 @@ export function useBrickWrapperStyle({
     // no transition otherwise it will slow down the drag
     "brick group/brick flex relative",
 
-    // !!! testing commented
-    //"overflow-hidden",
-    // end test
+    "overflow-hidden",
 
     {
       "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
