@@ -1,11 +1,9 @@
 import type { FieldProps } from "./types";
 import { TextField, TextArea } from "@upstart.gg/style-system/system";
-import { tx } from "@upstart.gg/style-system/twind";
 import { TbSlash } from "react-icons/tb";
 import { fieldLabel } from "../form-class";
 import { Text, Select, Tooltip, IconButton } from "@upstart.gg/style-system/system";
 import { IoIosHelpCircleOutline } from "react-icons/io";
-import { useRef } from "react";
 
 export const StringField: React.FC<FieldProps<string>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
@@ -27,9 +25,6 @@ export const StringField: React.FC<FieldProps<string>> = (props) => {
                 <IoIosHelpCircleOutline className="text-upstart-400 w-4 h-4 group-hover:text-upstart-600" />
               </IconButton>
             </Tooltip>
-            // <Text as="p" color="gray" size="1">
-            //   {description}
-            // </Text>
           )}
         </div>
       )}

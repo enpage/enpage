@@ -290,8 +290,8 @@ const MenuBar = ({
     );
   } else {
     className = tx(
-      "z-[900] text-gray-800 flex gap-3 py-1.5 bg-upstart-600/10 isolate transition-opacity duration-100",
-      "fixed top-[59px] left-0 right-3 text-sm backdrop-blur justify-center",
+      "z-[800] text-gray-800 flex isolate transition-opacity duration-100",
+      "fixed top-[66px] left-0 right-0 text-sm justify-center",
       // "z-[900] text-gray-800 flex gap-3 p-1 bg-upstart-600/25",
       // "shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
       {
@@ -302,19 +302,21 @@ const MenuBar = ({
 
   return (
     <div ref={ref} className={tx(className)}>
-      <ButtonGroup>
-        <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
-      </ButtonGroup>
-      <TextAlignButtonGroup editor={editor} />
-      <TextStyleButtonGroup editor={editor} />
-      <DatasourceItemButton editor={editor} />
-      {!inline && <DisplayModeButton icon="enlarge" />}
-      {!discrete && inline !== true && (
-        <>
-          <span className="flex-1" />
-          <DisplayModeButton icon="close" />
-        </>
-      )}
+      <div className="flex gap-3 items-center bg-upstart-500 p-2 rounded-md shadow-xl backdrop-blur bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)]">
+        <ButtonGroup>
+          <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
+        </ButtonGroup>
+        <TextAlignButtonGroup editor={editor} />
+        <TextStyleButtonGroup editor={editor} />
+        <DatasourceItemButton editor={editor} />
+        {!inline && <DisplayModeButton icon="enlarge" />}
+        {!discrete && inline !== true && (
+          <>
+            <span className="flex-1" />
+            <DisplayModeButton icon="close" />
+          </>
+        )}
+      </div>
     </div>
   );
 };

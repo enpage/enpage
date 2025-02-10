@@ -102,8 +102,8 @@ export const borders = Type.Optional(
     {
       title: "Border style",
       "ui:field": "border",
-      "ui:group": "Border",
-      "ui:group:title": "Border",
+      "ui:group": "borders",
+      "ui:group:title": "Borders",
       default: {
         radius: "rounded-none",
         style: "border-solid",

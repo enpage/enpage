@@ -67,14 +67,14 @@ export default function Inspector() {
             {manifest.properties.title.const}
             <IconButton
               title="Reset"
-              size="1"
+              size="2"
               variant="ghost"
               color="gray"
               onClick={() => {
                 editor.deselectBrick();
               }}
             >
-              <IoCloseOutline />
+              <IoCloseOutline className="w-4 h-4" />
             </IconButton>
           </h2>
         </div>
