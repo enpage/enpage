@@ -22,7 +22,7 @@ export const StringField: React.FC<FieldProps<string>> = (props) => {
                 className="!p-0.5 group !cursor-help"
                 disabled
               >
-                <IoIosHelpCircleOutline className="text-upstart-400 w-4 h-4 group-hover:text-upstart-600" />
+                <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
               </IconButton>
             </Tooltip>
           )}

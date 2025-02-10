@@ -176,6 +176,7 @@ export default function TopBar() {
 
         {(editorMode === "remote" || (editorMode === "local" && pages.length > 1)) && (
           <TopbarMenu
+            id="switch-page-menu-btn"
             items={[
               ...(editorMode === "remote"
                 ? [{ label: "New page" }, { label: "Duplicate page" }, { type: "separator" as const }]
@@ -213,18 +214,21 @@ export default function TopBar() {
 
         <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
-        <div className={tx(btnClass, baseCls, "border-x border-l-upstart-400 border-r-upstart-700 px-8")}>
-          {lastSaved ? (
-            <div className={tx("text-sm")}>
-              Last saved {formatDistance(lastSaved, new Date(), { addSuffix: true })}
-            </div>
-          ) : (
-            <div className={tx("text-sm")}>No saved yet</div>
-          )}
-        </div>
+        {editorMode === "remote" && (
+          <div className={tx(btnClass, baseCls, "border-x border-l-upstart-400 border-r-upstart-700 px-8")}>
+            {lastSaved ? (
+              <div className={tx("text-sm")}>
+                Last saved {formatDistance(lastSaved, new Date(), { addSuffix: true })}
+              </div>
+            ) : (
+              <div className={tx("text-sm")}>Not saved yet</div>
+            )}
+          </div>
+        )}
 
         {editorMode === "remote" ? (
           <TopbarMenu
+            id="publish-menu-btn"
             items={[
               { label: "Publish this page", onClick: () => publish() },
               { label: "Publish the whole site", onClick: () => publish(true) },
@@ -239,6 +243,7 @@ export default function TopBar() {
           </TopbarMenu>
         ) : (
           <button
+            id="publish-menu-btn"
             type="button"
             className={tx(btnClass, rocketBtn, "px-4")}
             onClick={() => {
@@ -246,7 +251,7 @@ export default function TopBar() {
             }}
           >
             <IoIosSave className={tx("h-5 w-auto")} />
-            <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Save</span>
+            <span className={tx("font-bold px-2", css({ fontSize: "1.2rem" }))}>Save your site</span>
           </button>
         )}
       </nav>
@@ -310,10 +315,12 @@ type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuLabel |
 
 /**
  */
-function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems }>) {
+function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems; id?: string }>) {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger className="focus:outline-none">{props.children}</DropdownMenu.Trigger>
+      <DropdownMenu.Trigger className="focus:outline-none" id={props.id}>
+        {props.children}
+      </DropdownMenu.Trigger>
       <DropdownMenu.Content side="bottom">
         {props.items.map((item, index) =>
           item.type === "separator" ? (

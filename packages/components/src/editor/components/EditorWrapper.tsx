@@ -27,6 +27,16 @@ export type EditorWrapperProps = {
    */
   onImageUpload: (file: File) => Promise<string>;
   onReady?: () => void;
+
+  /**
+   * Tours that already have been displayed to the user.
+   */
+  seenTours?: string[];
+
+  /**
+   * Callback when a tour is completed.
+   */
+  onTourComplete?: (tourId: string) => void;
 };
 
 /**
@@ -39,9 +49,10 @@ export function EditorWrapper({
   mode,
   onImageUpload,
   children,
+  seenTours = [],
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ mode })).current;
+  const editorStore = useRef(createEditorStore({ mode, seenTours })).current;
   const draftStore = useRef(
     createDraftStore({
       siteId: siteConfig.id,

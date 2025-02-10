@@ -8,12 +8,8 @@ const Card = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
 
   return (
     <div className="card" ref={ref}>
-      {typeof props.cardTitle?.content.text === "string" && (
-        <div className="card-title">{props.cardTitle.content.text}</div>
-      )}
-      {typeof props.cardBody?.content.text === "string" && (
-        <div className="card-body">{props.cardBody?.content.text}</div>
-      )}
+      {props.cardTitle?.content && <div className="card-title">{props.cardTitle.content}</div>}
+      {props.cardBody?.content && <div className="card-body">{props.cardBody?.content}</div>}
     </div>
   );
 });

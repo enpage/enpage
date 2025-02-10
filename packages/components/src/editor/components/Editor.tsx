@@ -16,6 +16,7 @@ import { Button } from "@upstart.gg/style-system/system";
 import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
 import DataPanel from "./PanelData";
+import Tour from "./Tour";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
@@ -77,6 +78,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       {...props}
       ref={rootRef}
     >
+      <Tour />
       <Topbar />
       <Panel />
       <Toolbar />

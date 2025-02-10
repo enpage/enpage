@@ -270,7 +270,7 @@ const defaultAttributes = {
         description: "Desktop only.",
         displayAs: "select",
         "ui:group": "layout",
-        "ui:group:title": "Page Layout & Design",
+        "ui:group:title": "Page Layout",
       }),
       horizontal: attr.enum("Horizontal spacing", "20", {
         options: [
@@ -283,7 +283,7 @@ const defaultAttributes = {
         description: "Desktop only.",
         displayAs: "button-group",
         "ui:group": "layout",
-        "ui:group:title": "Page Layout & Design",
+        "ui:group:title": "Page Layout",
       }),
     },
     {
@@ -293,7 +293,7 @@ const defaultAttributes = {
       },
       "ui:field": "padding",
       "ui:group": "layout",
-      "ui:group:title": "Layout & Design",
+      "ui:group:title": "Layout",
     },
   ),
 
@@ -311,7 +311,7 @@ const defaultAttributes = {
     description: "The maximum width of the page. Desktop only.",
     displayAs: "select",
     "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
+    "ui:group:title": "Layout",
   }),
 
   $background: Type.Composite(
@@ -332,15 +332,16 @@ const defaultAttributes = {
       title: "Background",
       "ui:field": "background",
       "ui:show-img-search": true,
-      "ui:group": "layout",
-      "ui:group:title": "Page Layout & Design",
+      "ui:group": "background",
+      "ui:group:title": "Background",
+      "ui:group:order": 4,
     },
   ),
 
   $textColor: attr.color("Text color", "#222222", {
     "ui:field": "color",
     "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
+    "ui:group:title": "Page Layout",
     "ui:color-type": "page-text",
   }),
 

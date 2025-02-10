@@ -33,6 +33,7 @@ export interface EditorStateProps {
   panel?: "library" | "inspector" | "theme" | "settings" | "data";
   modal?: "image-search" | "datasources";
   panelPosition: "left" | "right";
+  seenTours: string[];
   /**
    * Latest used color adjustment
    */
@@ -67,6 +68,7 @@ export interface EditorState extends EditorStateProps {
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
     previewMode: "desktop",
+    seenTours: [],
     mode: "local",
     colorAdjustment: "default",
     panelPosition: "left",
@@ -206,6 +208,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                       "shouldShowGrid",
                       "textEditMode",
                       "onShowLogin",
+                      "seenTours",
                     ].includes(key),
                 ),
               ),
@@ -542,6 +545,11 @@ export const useColorAdjustment = () => {
 export const useEditorMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.mode);
+};
+
+export const useSeenTours = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.seenTours);
 };
 
 export const useTextEditMode = () => {

@@ -217,7 +217,8 @@ export const background = Type.Object(
   },
   {
     "ui:field": "background",
-    "ui:group": "layout",
+    "ui:group": "background",
+    "ui:group:title": "Background",
     "ui:show-img-search": true,
     title: "Background",
   },
@@ -292,7 +293,7 @@ export const commonStyleProps = Type.Object({
   borders,
   effects,
   // padding,
-  backgroundColor,
+  background,
 });
 
 const textAlign = Type.Optional(

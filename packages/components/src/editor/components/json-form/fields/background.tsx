@@ -78,7 +78,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
             <Text as="label" size="2" weight="medium">
               Background sizing
             </Text>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <Select.Root
                 defaultValue={currentValue.size ?? "auto"}
                 size="2"
@@ -100,20 +100,15 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
               </Select.Root>
               <Tooltip
                 content={`
-              When "Auto", the background image will be displayed in its original size. "Cover" will make the background image cover the entire element,
+              When "Auto", the background image will be displayed in its original size.
+              "Cover" will make the background image cover the entire element,
               and "Contain" will make the background image contained within the element.
               `}
                 className="!z-[10000] !text-sm"
                 align="end"
               >
-                <IconButton
-                  variant="ghost"
-                  size="1"
-                  radius="full"
-                  className="!p-0.5 group !cursor-help"
-                  disabled
-                >
-                  <IoIosHelpCircleOutline className="text-upstart-400 w-4 h-4 group-hover:text-upstart-600" />
+                <IconButton variant="ghost" size="1" radius="full" className="group !cursor-help" disabled>
+                  <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
                 </IconButton>
               </Tooltip>
             </div>
