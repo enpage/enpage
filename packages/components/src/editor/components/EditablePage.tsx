@@ -143,10 +143,15 @@ export default function EditablePage() {
               [previewMode]: position,
             },
           };
+
+          // add the new brick to the store
           draft.addBrick(newBrick);
 
           // rewrite the mobile layout based on the desktop layout
           draft.adjustMobileLayout();
+
+          // auto select the new brick
+          editorHelpers.setSelectedBrick(newBrick);
         } else {
           console.warn("Can't drop here");
         }

@@ -77,6 +77,7 @@ export default BrickWrapper;
 function BrickOptionsButton({ brick }: { brick: Brick }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
+  const editorHelpers = useEditorHelpers();
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
       <DropdownMenu.Trigger>
@@ -141,6 +142,7 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
             onClick={(e) => {
               e.stopPropagation();
               draft.deleteBrick(brick.id);
+              editorHelpers.deselectBrick(brick.id);
             }}
           >
             Delete

@@ -19,12 +19,14 @@ import type {
   BorderSettings,
   DimensionsSettings,
   EffectsSettings,
+  FlexSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
 import type { ImageProps, RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { PagePaddingField } from "./fields/padding";
 import BackgroundField from "./fields/background";
+import { FlexField } from "./fields/flex";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -138,6 +140,21 @@ export function getFormComponents({
               <DimensionsField
                 currentValue={currentValue}
                 onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "flex": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as FlexSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <FlexField
+                currentValue={currentValue}
+                onChange={(value: FlexSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),

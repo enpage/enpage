@@ -1,7 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { useDraft, useEditor, useGetBrick } from "../hooks/use-editor";
-import { BsArrowBarLeft } from "react-icons/bs";
-import { useLocalStorage } from "usehooks-ts";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
 import { IconButton, Tabs } from "@upstart.gg/style-system/system";
@@ -11,13 +9,8 @@ import { getFormComponents, FormRenderer } from "./json-form/form";
 import { IoCloseOutline } from "react-icons/io5";
 import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 
-// import "./json-form/json-form.css";
-
 export default function Inspector() {
   const editor = useEditor();
-  const [showHelp, setShowHelp] = useLocalStorage("inspector.show-help", true, {
-    initializeWithValue: true,
-  });
 
   if (!editor.selectedBrick) {
     return null;
@@ -78,13 +71,13 @@ export default function Inspector() {
             </IconButton>
           </h2>
         </div>
-        <ElementInspector brick={editor.selectedBrick} showHelp={showHelp} />
+        <ElementInspector brick={editor.selectedBrick} />
       </ScrollablePanelTab>
     </Tabs.Root>
   );
 }
 
-function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean }) {
+function ElementInspector({ brick }: { brick: Brick }) {
   const brickDefaults = defaults[brick.type];
   const draft = useDraft();
   const getBrick = useGetBrick();
@@ -123,7 +116,7 @@ function ElementInspector({ brick, showHelp }: { brick: Brick; showHelp: boolean
   });
 
   return (
-    <form className={tx("px-3 flex flex-col gap-3", showHelp && "hide-help")}>
+    <form className={tx("px-3 flex flex-col gap-3")}>
       <FormRenderer components={elements} brickId={brick.id} />
     </form>
   );

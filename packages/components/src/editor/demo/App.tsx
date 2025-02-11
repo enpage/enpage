@@ -18,7 +18,7 @@ export default function App() {
 
   return (
     <ClientOnly>
-      <InnerEditor pageConfig={siteConfig.pages[0]} siteConfig={siteConfig.site} mode="local">
+      <InnerEditor pageConfig={siteConfig.pages[0]} siteConfig={siteConfig.site} mode="local" disableTours>
         <Editor />
       </InnerEditor>
     </ClientOnly>

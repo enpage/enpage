@@ -34,6 +34,7 @@ export interface EditorStateProps {
   modal?: "image-search" | "datasources";
   panelPosition: "left" | "right";
   seenTours: string[];
+  disableTours?: boolean;
   /**
    * Latest used color adjustment
    */
@@ -209,6 +210,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                       "textEditMode",
                       "onShowLogin",
                       "seenTours",
+                      "disableTours",
                     ].includes(key),
                 ),
               ),
@@ -547,9 +549,9 @@ export const useEditorMode = () => {
   return useStore(ctx, (state) => state.mode);
 };
 
-export const useSeenTours = () => {
+export const useTours = () => {
   const ctx = useEditorStoreContext();
-  return useStore(ctx, (state) => state.seenTours);
+  return useStore(ctx, (state) => ({ seenTours: state.seenTours, disabled: state.disableTours }));
 };
 
 export const useTextEditMode = () => {

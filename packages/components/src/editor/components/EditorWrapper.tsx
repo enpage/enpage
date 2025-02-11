@@ -32,6 +32,7 @@ export type EditorWrapperProps = {
    * Tours that already have been displayed to the user.
    */
   seenTours?: string[];
+  disableTours?: boolean;
 
   /**
    * Callback when a tour is completed.
@@ -51,10 +52,11 @@ export function EditorWrapper({
   onImageUpload,
   children,
   seenTours = [],
+  disableTours,
   onShowLogin,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ mode, seenTours, onShowLogin })).current;
+  const editorStore = useRef(createEditorStore({ mode, seenTours, onShowLogin, disableTours })).current;
   const draftStore = useRef(
     createDraftStore({
       siteId: siteConfig.id,

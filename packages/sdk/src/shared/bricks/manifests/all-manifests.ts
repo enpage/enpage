@@ -6,6 +6,8 @@ import { defaults as imageDefaults, manifest as imageManifest } from "./image.ma
 import { defaults as videoDefaults, manifest as videoManifest } from "./video.manifest";
 // text
 import { defaults as textDefaults, manifest as textManifest } from "./text.manifest";
+// container
+import { defaults as containerDefaults, manifest as containerManifest } from "./container.manifest";
 // widget card
 import { defaults as cardDefaults, manifest as cardManifest } from "./card.manifest";
 // widget map
@@ -28,6 +30,7 @@ import { defaults as iconDefaults, manifest as iconManifest } from "./icon.manif
 import { defaults as socialLinksDefaults, manifest as socialLinksManifest } from "./social-links.manifest";
 // widget countdown
 import { defaults as countdownDefaults, manifest as countdownManifest } from "./countdown.manifest";
+
 import {
   defaults as genericComponentDefaults,
   manifest as genericComponentManifest,
@@ -53,6 +56,7 @@ export const manifests: Record<string, BrickManifest> = {
   [socialLinksDefaults.type]: socialLinksManifest,
   [countdownDefaults.type]: countdownManifest,
   [genericComponentDefaults.type]: genericComponentManifest,
+  [containerDefaults.type]: containerManifest,
 };
 
 export const defaults: Record<string, Static<BrickManifest>> = {
@@ -72,4 +76,5 @@ export const defaults: Record<string, Static<BrickManifest>> = {
   [socialLinksDefaults.type]: socialLinksDefaults,
   [countdownDefaults.type]: countdownDefaults,
   [genericComponentDefaults.type]: genericComponentDefaults,
+  [containerDefaults.type]: containerDefaults,
 };

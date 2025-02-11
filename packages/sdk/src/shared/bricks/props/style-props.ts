@@ -27,6 +27,12 @@ const groupColors = {
   "ui:group:order": 2,
 };
 
+const groupFlex = {
+  "ui:group": "layout",
+  "ui:group:title": "Layout",
+  "ui:group:order": 0,
+};
+
 export const borderWidth = Type.Union(
   [
     Type.Literal("border-0", { title: "None" }),
@@ -280,6 +286,81 @@ export const effects = Type.Optional(
 );
 
 export type EffectsSettings = Static<typeof effects>;
+
+export const flex = Type.Object(
+  {
+    direction: Type.Union(
+      [Type.Literal("row", { title: "Row" }), Type.Literal("column", { title: "Column" })],
+      {
+        default: "row",
+        title: "Direction",
+        description: "The direction of the container",
+        "ui:field": "enum",
+        "ui:display": "button-group",
+        "ui:group": "layout",
+      },
+    ),
+    wrap: Type.Union(
+      [Type.Literal("wrap", { title: "Wrap" }), Type.Literal("nowrap", { title: "No wrap" })],
+      {
+        default: "wrap",
+        title: "Wrap",
+        description: "Wrap items",
+        "ui:field": "enum",
+        "ui:display": "button-group",
+        "ui:group": "layout",
+      },
+    ),
+    justify: Type.Union(
+      [
+        Type.Literal("start", { title: "Start" }),
+        Type.Literal("center", { title: "Center" }),
+        Type.Literal("end", { title: "End" }),
+        Type.Literal("between", { title: "Between" }),
+        Type.Literal("around", { title: "Around" }),
+        Type.Literal("evenly", { title: "Evenly" }),
+      ],
+      {
+        default: "start",
+        title: "Justify",
+        description: "Justify content",
+        "ui:field": "enum",
+        "ui:display": "button-group",
+        "ui:group": "layout",
+      },
+    ),
+    align: Type.Union(
+      [
+        Type.Literal("start", { title: "Start" }),
+        Type.Literal("center", { title: "Center" }),
+        Type.Literal("end", { title: "End" }),
+        Type.Literal("baseline", { title: "Baseline" }),
+        Type.Literal("stretch", { title: "Stretch" }),
+      ],
+      {
+        default: "start",
+        title: "Align",
+        description: "Align items",
+        "ui:field": "enum",
+        "ui:display": "button-group",
+        "ui:group": "layout",
+      },
+    ),
+  },
+  {
+    title: "Layout",
+    "ui:field": "flex",
+    default: {
+      direction: "row",
+      wrap: "wrap",
+      justify: "start",
+      align: "start",
+    },
+    ...groupFlex,
+  },
+);
+
+export type FlexSettings = Static<typeof flex>;
 
 /**
  * No margin in common style props as bricks are usually placed in a grid
