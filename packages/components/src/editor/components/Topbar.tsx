@@ -3,10 +3,9 @@ import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
 import {
   useDraftUndoManager,
-  useEditor,
   usePagesInfo,
   useEditorMode,
   usePageVersion,
@@ -19,7 +18,7 @@ import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { DropdownMenu, TextField, Popover, AlertDialog, Button, Flex } from "@upstart.gg/style-system/system";
+import { DropdownMenu, TextField, Popover } from "@upstart.gg/style-system/system";
 import { post } from "~/editor/utils/api/base-api";
 import { IoIosSave } from "react-icons/io";
 import { formatDistance } from "date-fns";
@@ -32,7 +31,6 @@ export default function TopBar() {
   const pageVersion = usePageVersion();
   const lastSaved = useLastSaved();
   const pages = usePagesInfo();
-  const [showSaveAlert, setShowSaveAlert] = useState(false);
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
@@ -48,12 +46,6 @@ export default function TopBar() {
   const switchPreviewMode = useCallback(() => {
     editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
   }, [previewMode, editorHelpers.setPreviewMode]);
-
-  useEffect(() => {
-    if (showSaveAlert) {
-      editorHelpers.onShowLogin();
-    }
-  }, [showSaveAlert, editorHelpers.onShowLogin]);
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
@@ -247,7 +239,7 @@ export default function TopBar() {
             type="button"
             className={tx(btnClass, rocketBtn, "px-4")}
             onClick={() => {
-              setShowSaveAlert(true);
+              editorHelpers.onShowLogin();
             }}
           >
             <IoIosSave className={tx("h-5 w-auto")} />
@@ -255,35 +247,6 @@ export default function TopBar() {
           </button>
         )}
       </nav>
-      {showSaveAlert && (
-        <AlertDialog.Root defaultOpen={showSaveAlert} onOpenChange={setShowSaveAlert}>
-          <AlertDialog.Content maxWidth="480px">
-            <AlertDialog.Title>Redirecting to sign-up page</AlertDialog.Title>
-            <AlertDialog.Description size="3" className="pb-2">
-              Save your progress by creating an account.
-              <br />
-              Once registered, this page will be saved to your account where you can continue editing and
-              publish when ready.
-            </AlertDialog.Description>
-            <Flex gap="3" mt="4" justify="end">
-              <AlertDialog.Cancel>
-                <Button variant="soft" color="gray">
-                  Cancel
-                </Button>
-              </AlertDialog.Cancel>
-              <AlertDialog.Action
-                onClick={() => {
-                  window.location.href = "/sign-up/?next=/dashboard/first-site-setup";
-                }}
-              >
-                <Button variant="solid" color="violet">
-                  Sign up
-                </Button>
-              </AlertDialog.Action>
-            </Flex>
-          </AlertDialog.Content>
-        </AlertDialog.Root>
-      )}
     </>
   );
 }

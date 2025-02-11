@@ -37,6 +37,7 @@ export type EditorWrapperProps = {
    * Callback when a tour is completed.
    */
   onTourComplete?: (tourId: string) => void;
+  onShowLogin?: () => void;
 };
 
 /**
@@ -50,9 +51,10 @@ export function EditorWrapper({
   onImageUpload,
   children,
   seenTours = [],
+  onShowLogin,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ mode, seenTours })).current;
+  const editorStore = useRef(createEditorStore({ mode, seenTours, onShowLogin })).current;
   const draftStore = useRef(
     createDraftStore({
       siteId: siteConfig.id,
