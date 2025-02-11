@@ -77,6 +77,7 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
             <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
             <Select.Content position="popper">
               <Select.Group>
+                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.justify.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
                     {item.title}
@@ -98,6 +99,7 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
             <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
             <Select.Content position="popper">
               <Select.Group>
+                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.align.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
                     {item.title}

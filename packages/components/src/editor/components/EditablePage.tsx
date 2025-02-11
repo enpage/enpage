@@ -120,7 +120,7 @@ export default function EditablePage() {
     },
     dropCallbacks: {
       onDropMove(event, gridPosition, brick) {
-        const canDrop = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
+        const canDrop = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints, false);
         updateDragOverGhostStyle(canDrop);
       },
       onDropDeactivate() {

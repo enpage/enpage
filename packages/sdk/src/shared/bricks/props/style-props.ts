@@ -335,7 +335,7 @@ export const flex = Type.Object(
         Type.Literal("stretch", { title: "Stretch" }),
       ],
       {
-        default: "start",
+        default: "stretch",
         title: "Align",
         description: "Align items",
         "ui:field": "enum",

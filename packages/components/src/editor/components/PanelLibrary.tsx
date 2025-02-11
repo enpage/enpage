@@ -20,62 +20,17 @@ export default function PanelLibrary() {
   const interactable = useRef<Interact.Interactable | null>(null);
 
   useEffect(() => {
+    /**
+     * Initialize interactjs for draggable bricks from the library.
+     * The drop logic is handled in `use-draggable.ts`, not here.
+     */
     interactable.current = interact(".draggable-brick");
     interactable.current.draggable({
-      // inertia: true,
+      inertia: true,
       autoScroll: {
         enabled: false,
       },
-      // manualStart: true,
-      listeners: {
-        start: (event: Interact.InteractEvent) => {
-          const clone = event.target.cloneNode(true) as HTMLElement;
-          clone.classList.add("clone");
-
-          // Position clone at original element's position
-          const rect = event.target.getBoundingClientRect();
-          clone.id = "library-brick-ghost";
-          clone.style.left = `${rect.left}px`;
-          clone.style.top = `${rect.top}px`;
-          clone.style.position = "absolute";
-          clone.style.zIndex = "999";
-          clone.style.width = `${rect.width}px`;
-          clone.style.height = `${rect.height}px`;
-
-          // Store reference to clone
-          // @ts-ignore
-          event.target.cloneElement = clone;
-
-          document.body.appendChild(clone);
-        },
-        move: (event: Interact.InteractEvent) => {
-          // @ts-ignore
-          const clone = event.target.cloneElement as HTMLElement | null;
-          if (!clone) {
-            return;
-          }
-
-          // Get current position of clone
-          const position = {
-            x: parseFloat(clone.style.left) || 0,
-            y: parseFloat(clone.style.top) || 0,
-          };
-
-          // Update clone position
-          clone.style.left = `${position.x + event.dx}px`;
-          clone.style.top = `${position.y + event.dy}px`;
-        },
-        end(event: Interact.InteractEvent) {
-          // Remove clone when drag ends
-          // @ts-ignore
-          const clone = event.target.cloneElement as HTMLElement | null;
-          if (clone) {
-            clone.remove();
-          }
-        },
-      },
     });
-
     return () => {
       interactable.current?.unset();
       interactable.current = null;

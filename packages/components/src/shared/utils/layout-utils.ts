@@ -72,7 +72,7 @@ export function canDropOnLayout(
   currentBp: ResponsiveMode,
   dropPosition: { y: number; x: number },
   constraints: BrickConstraints,
-  checkCollisions = true,
+  checkCollisions = false,
 ): { y: number; x: number; w: number; h: number; forbidden?: boolean; parent?: Brick } | false {
   // Helper function to check if a position is valid
   function isPositionValid(
@@ -126,6 +126,9 @@ export function canDropOnLayout(
   return false;
 }
 
+/**
+ * Returns the brick at the given position
+ */
 function getBrickAtPosition(
   x: number,
   y: number,

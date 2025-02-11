@@ -179,22 +179,32 @@ const updateElementTransform = (target: HTMLElement, x: number, y: number) => {
 function getDropPosition(event: Interact.DropEvent, gridConfig: GridConfig) {
   const grid = event.target as HTMLElement;
   const gridRect = grid.getBoundingClientRect();
+
+  // Calculate position relative to grid
   const rect = {
     left: event.dragEvent.clientX - gridRect.left,
-    top: event.dragEvent.client.y - gridRect.top,
+    top: event.dragEvent.clientY - gridRect.top,
   };
+
   // Calculate grid position
-  const col = Math.round((rect.left - gridConfig.containerHorizontalPadding) / gridConfig.colWidth);
-  const row = Math.round((rect.top - gridConfig.containerVerticalPadding) / gridConfig.rowHeight);
+  const col = Math.round(
+    (rect.left - gridConfig.containerHorizontalPadding - gridConfig.colWidth / 2) / gridConfig.colWidth,
+  );
+  const row = Math.round(
+    (rect.top - gridConfig.containerVerticalPadding - gridConfig.rowHeight / 2) / gridConfig.rowHeight,
+  );
+
   return {
-    absolute: rect,
+    absolute: {
+      left: rect.left - gridConfig.colWidth / 2,
+      top: rect.top - gridConfig.rowHeight / 2,
+    },
     grid: {
       x: Math.max(1, col),
       y: Math.max(1, row),
     },
   };
 }
-
 export const useEditablePage = (
   bricksSelectorOrRef: QuerySelector,
   pageRef: RefObject<HTMLElement>,
