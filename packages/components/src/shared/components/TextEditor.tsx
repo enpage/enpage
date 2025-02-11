@@ -119,7 +119,7 @@ const TextEditor = ({
   const mainEditor = useEditor();
   const datasources = useDatasourcesSchemas();
   const [editable, setEditable] = useState(enabled);
-  const pageContainer = useRef<HTMLDivElement>(document.querySelector(".page-container"));
+  const menuContainer = useRef<HTMLDivElement>(document.querySelector("#editor"));
 
   // @ts-ignore
   const fields = getJSONSchemaFieldsList({ schemas: datasources });
@@ -247,7 +247,7 @@ const TextEditor = ({
         })}
       />
       {editor && editable && menuPlacement === "page" && (
-        <Portal container={pageContainer.current}>
+        <Portal container={menuContainer.current}>
           <MenuBar
             brickId={brickId}
             editor={editor}
