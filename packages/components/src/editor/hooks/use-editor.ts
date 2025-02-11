@@ -258,7 +258,7 @@ export interface DraftState extends DraftStateProps {
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
-  addBrick: (brick: Brick) => void;
+  addBrick: (brick: Brick, parentContainer?: Brick) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>) => void;
   updateBrickPosition: (id: string, bp: keyof Brick["position"], position: Partial<BrickPosition>) => void;
@@ -416,10 +416,17 @@ export const createDraftStore = (
                   !state.bricks[brickIndex].position[breakpoint]?.hidden;
               }),
 
-            addBrick: (brick) =>
+            addBrick: (brick, parentContainer) =>
               set((state) => {
-                console.log("Adding brick", brick);
-                state.bricks.push(brick);
+                if (!parentContainer) {
+                  console.log("Adding brick", brick);
+                  state.bricks.push(brick);
+                } else {
+                  console.log("Adding brick %o to container %o", brick, parentContainer);
+                  const parentBrick = state.bricks.find((b) => b.id === parentContainer.id);
+                  // @ts-ignore
+                  parentBrick?.props.children.push(brick);
+                }
               }),
 
             updateAttributes: (attr) =>

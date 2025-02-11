@@ -289,17 +289,14 @@ export type EffectsSettings = Static<typeof effects>;
 
 export const flex = Type.Object(
   {
-    direction: Type.Union(
-      [Type.Literal("row", { title: "Row" }), Type.Literal("column", { title: "Column" })],
-      {
-        default: "row",
-        title: "Direction",
-        description: "The direction of the container",
-        "ui:field": "enum",
-        "ui:display": "button-group",
-        "ui:group": "layout",
-      },
-    ),
+    direction: Type.Union([Type.Literal("row", { title: "Row" }), Type.Literal("col", { title: "Column" })], {
+      default: "row",
+      title: "Direction",
+      description: "The direction of the container",
+      "ui:field": "enum",
+      "ui:display": "button-group",
+      "ui:group": "layout",
+    }),
     wrap: Type.Union(
       [Type.Literal("wrap", { title: "Wrap" }), Type.Literal("nowrap", { title: "No wrap" })],
       {
@@ -346,6 +343,7 @@ export const flex = Type.Object(
         "ui:group": "layout",
       },
     ),
+    gap: Type.Optional(Type.Number({ default: 0 })),
   },
   {
     title: "Layout",
@@ -361,6 +359,13 @@ export const flex = Type.Object(
 );
 
 export type FlexSettings = Static<typeof flex>;
+
+export const flexProps = Type.Object({
+  flex,
+  children: Type.Array(Type.Any(), {
+    "ui:field": "hidden",
+  }),
+});
 
 /**
  * No margin in common style props as bricks are usually placed in a grid

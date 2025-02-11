@@ -1,5 +1,5 @@
 import { tx, apply, css } from "@upstart.gg/style-system/twind";
-import type { commonStyleProps, textStyleProps } from "@upstart.gg/sdk/bricks/props/style-props";
+import type { commonStyleProps, textStyleProps, flexProps } from "@upstart.gg/sdk/bricks/props/style-props";
 import type { commonProps } from "@upstart.gg/sdk/bricks/props/common";
 import type { Static } from "@sinclair/typebox";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
@@ -13,7 +13,8 @@ import { LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
 export function useBrickStyle(
   props: Partial<Static<typeof commonStyleProps>> &
     Partial<Static<typeof textStyleProps>> &
-    Partial<Static<typeof commonProps>>,
+    Partial<Static<typeof commonProps>> &
+    Partial<Static<typeof flexProps>>,
 ) {
   // This is the inner brick style. As the wrapper uses "display: flex",
   // we use flex-1 to make the inner brick fill the space.
@@ -24,6 +25,10 @@ export function useBrickStyle(
     props.fontSize ? `text-${props.fontSize}` : null,
     props.fontWeight ? `font-${props.fontWeight}` : null,
     props.textAlign ? `text-${props.textAlign}` : null,
+    props.flex?.direction ? `flex-${props.flex.direction}` : null,
+    props.flex?.wrap ? `flex-${props.flex.wrap}` : null,
+    props.flex?.justify ? `justify-${props.flex.justify}` : null,
+    props.flex?.align ? `items-${props.flex.align}` : null,
   ]);
 }
 

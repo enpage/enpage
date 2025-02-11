@@ -12,10 +12,14 @@ import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
 import { DeviceFrame } from "./Preview";
 import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
-import { Button } from "@upstart.gg/style-system/system";
+import { Button, Spinner } from "@upstart.gg/style-system/system";
 import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
 import DataPanel from "./PanelData";
+import PanelSettings from "./PanelSettings";
+import PanelTheme from "./PanelTheme";
+import PanelInspector from "./PanelInspector";
+import PanelLibrary from "./PanelLibrary";
 import Tour from "./Tour";
 
 type EditorProps = ComponentProps<"div"> & {
@@ -23,16 +27,23 @@ type EditorProps = ComponentProps<"div"> & {
   onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
-const PanelTheme = lazy(() => import("./PanelTheme"));
-const PanelSettings = lazy(() => import("./PanelSettings"));
-const PanelInspector = lazy(() => import("./PanelInspector"));
-const PanelLibrary = lazy(() => import("./PanelLibrary"));
+// const PanelTheme = lazy(() => import("./PanelTheme"));
+// const PanelSettings = lazy(() => import("./PanelSettings"));
+// const PanelInspector = lazy(() => import("./PanelInspector"));
+// const PanelLibrary = lazy(() => import("./PanelLibrary"));
+
+function PanelSpinner() {
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <Spinner size="3" />
+    </div>
+  );
+}
 
 export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
   const previewMode = usePreviewMode();
-  const attributes = useAttributes();
 
   usePageAutoSave();
   useOnDraftChange(onDraftChange);
@@ -142,31 +153,11 @@ function Panel({ className, ...props }: PanelProps) {
       )}
       {...props}
     >
-      {editor.previewMode === "desktop" && editor.panel === "library" && (
-        <Suspense>
-          <PanelLibrary />
-        </Suspense>
-      )}
-      {editor.panel === "inspector" && (
-        <Suspense>
-          <PanelInspector />
-        </Suspense>
-      )}
-      {editor.panel === "theme" && (
-        <Suspense>
-          <PanelTheme />
-        </Suspense>
-      )}
-      {editor.panel === "settings" && (
-        <Suspense>
-          <PanelSettings />
-        </Suspense>
-      )}
-      {editor.panel === "data" && (
-        <Suspense>
-          <DataPanel />
-        </Suspense>
-      )}
+      {editor.previewMode === "desktop" && editor.panel === "library" && <PanelLibrary />}
+      {editor.panel === "inspector" && <PanelInspector />}
+      {editor.panel === "theme" && <PanelTheme />}
+      {editor.panel === "settings" && <PanelSettings />}
+      {editor.panel === "data" && <DataPanel />}
     </aside>
   );
 }

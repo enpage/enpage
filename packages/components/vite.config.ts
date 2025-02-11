@@ -24,7 +24,7 @@ export default defineConfig({
       outDir: "dist/types",
     }),
     bundlesize({
-      limits: [{ name: "**/*", limit: "800 kB" }],
+      limits: [{ name: "**/*", limit: "1.2 mB" }],
     }),
   ],
   optimizeDeps: {

@@ -130,8 +130,11 @@ export default function EditablePage() {
         console.debug("onDrop (%s)", previewMode, gridPosition, brick);
 
         updateDragOverGhostStyle(false);
+
         const position = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
+
         if (position) {
+          console.log("dropped at", position);
           const bricksDefaults = defaults[brick.type];
           const newBrick: Brick = {
             id: `brick-${generateId()}`,
@@ -145,7 +148,7 @@ export default function EditablePage() {
           };
 
           // add the new brick to the store
-          draft.addBrick(newBrick);
+          draft.addBrick(newBrick, position.parent);
 
           // rewrite the mobile layout based on the desktop layout
           draft.adjustMobileLayout();

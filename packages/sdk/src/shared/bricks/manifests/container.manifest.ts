@@ -3,13 +3,14 @@ import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareProps } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
-import { backgroundColor, color, commonStyleProps, padding, flex } from "../props/style-props";
+import { backgroundColor, color, commonStyleProps, padding, flex, flexProps } from "../props/style-props";
 
 export const manifest = defineBrickManifest({
   type: "container",
   kind: "brick",
   title: "Container",
   description: "A container that can hold other bricks horizontally or vertically",
+  isContainer: true,
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,
     desktop: LAYOUT_COLS.desktop / 4,
@@ -38,8 +39,7 @@ export const manifest = defineBrickManifest({
     <line x1="12" y1="3" x2="12" y2="21"></line>
 </svg>
   `,
-
-  props: Type.Composite([Type.Object({ flex }), commonProps, commonStyleProps]),
+  props: Type.Composite([flexProps, commonProps, commonStyleProps]),
 });
 
 export type Manifest = Static<typeof manifest>;

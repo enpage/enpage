@@ -185,6 +185,8 @@ export const brickSchema = Type.Composite([
       title: "ID",
       description: "A unique identifier for the brick.",
     }),
+    isContainer: Type.Optional(Type.Boolean()),
+    hideInLibrary: Type.Optional(Type.Boolean()),
     position: Type.Object(
       {
         mobile: brickPositionSchema,
