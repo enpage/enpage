@@ -7,12 +7,22 @@ import type { ImageProps } from "@upstart.gg/sdk/shared/bricks/props/common";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 
 const ImageField: React.FC<FieldProps<ImageProps>> = (props) => {
-  const { schema, formData, onChange, required, title, description, currentValue } = props;
+  const {
+    schema,
+    formData,
+    onChange,
+    required,
+    title,
+    description,
+    currentValue = { src: "", alt: "" },
+  } = props;
   const [showSearch, setShowSearch] = useState(false);
   const id = useMemo(() => nanoid(), []);
   // const [src, setSrc] = useState<string | null>(currentValue.src);
 
-  const onPropsChange = (newVal: Partial<ImageProps>) => onChange({ ...currentValue, ...newVal });
+  const onPropsChange = (newVal: Partial<ImageProps>) => {
+    onChange({ ...(currentValue ?? {}), ...newVal });
+  };
 
   return (
     <>

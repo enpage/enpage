@@ -6,7 +6,19 @@ import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 
 export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
-  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
+  const {
+    currentValue = {
+      direction: "row",
+      wrap: "nowrap",
+      justify: "start",
+      align: "stretch",
+    } satisfies FlexSettings,
+    onChange,
+    title,
+    description,
+    placeholder,
+    schema,
+  } = props;
   const onSettingsChange = (newVal: Partial<FlexSettings>) => onChange({ ...currentValue, ...newVal });
 
   return (

@@ -290,7 +290,6 @@ export type EffectsSettings = Static<typeof effects>;
 export const flex = Type.Object(
   {
     direction: Type.Union([Type.Literal("row", { title: "Row" }), Type.Literal("col", { title: "Column" })], {
-      default: "row",
       title: "Direction",
       description: "The direction of the container",
       "ui:field": "enum",
@@ -300,7 +299,6 @@ export const flex = Type.Object(
     wrap: Type.Union(
       [Type.Literal("wrap", { title: "Wrap" }), Type.Literal("nowrap", { title: "No wrap" })],
       {
-        default: "wrap",
         title: "Wrap",
         description: "Wrap items",
         "ui:field": "enum",
@@ -318,7 +316,6 @@ export const flex = Type.Object(
         Type.Literal("evenly", { title: "Evenly" }),
       ],
       {
-        default: "start",
         title: "Justify",
         description: "Justify content",
         "ui:field": "enum",
@@ -335,7 +332,6 @@ export const flex = Type.Object(
         Type.Literal("stretch", { title: "Stretch" }),
       ],
       {
-        default: "stretch",
         title: "Align",
         description: "Align items",
         "ui:field": "enum",
@@ -352,7 +348,7 @@ export const flex = Type.Object(
       direction: "row",
       wrap: "wrap",
       justify: "start",
-      align: "start",
+      align: "stretch",
     },
     ...groupFlex,
   },

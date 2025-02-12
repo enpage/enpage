@@ -5,7 +5,20 @@ import { fieldLabel } from "../form-class";
 import { ColorPill } from "./color";
 
 export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
-  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
+  const {
+    currentValue = {
+      color: "#000000",
+      radius: "rounded-none",
+      style: "border-solid",
+      width: "border-0",
+    } satisfies BorderSettings,
+    onChange,
+    required,
+    title,
+    description,
+    placeholder,
+    schema,
+  } = props;
 
   const onSettingsChange = (newVal: Partial<BorderSettings>) => onChange({ ...currentValue, ...newVal });
 

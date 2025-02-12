@@ -16,9 +16,7 @@ const Hero = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
     // "font-size": `var(--${heroFontSize})`,
   });
 
-  return (
-    <TextBrick {...props} content={content} className={tx(props.className, sizeClass, "foo")} ref={ref} />
-  );
+  return <TextBrick {...props} content={content} className={tx(props.className, sizeClass)} ref={ref} />;
 });
 
 export default Hero;

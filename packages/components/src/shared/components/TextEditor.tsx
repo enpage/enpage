@@ -301,7 +301,7 @@ const MenuBar = ({
   }
 
   return (
-    <div ref={ref} className={tx(className)}>
+    <div ref={ref} id="text-editor-menubar" className={tx(className)}>
       <div className="flex gap-3 items-center bg-upstart-500 p-2 rounded-md shadow-xl backdrop-blur bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)]">
         <ButtonGroup>
           <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />

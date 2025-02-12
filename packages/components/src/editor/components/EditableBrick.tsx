@@ -84,8 +84,7 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
         <div className={tx("absolute right-1.5 top-1")}>
           <IconButton
             type="button"
-            variant="solid"
-            color="purple"
+            variant="ghost"
             size="1"
             radius="small"
             className={tx(
@@ -93,7 +92,7 @@ function BrickOptionsButton({ brick }: { brick: Brick }) {
                 "!opacity-0": !open,
               },
               "nodrag transition-all duration-300 group/button group-hover/brick:!opacity-100 \
-              active:!opacity-100 focus:!flex focus-within:!opacity-100 !border-2 !border-upstart-500 !bg-transparent \
+              active:!opacity-100 focus:!flex focus-within:!opacity-100 !border !border-upstart-500 !bg-upstart-400/30 \
               hover:!border-upstart-300 !px-0.5",
             )}
           >

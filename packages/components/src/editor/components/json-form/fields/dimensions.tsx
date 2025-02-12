@@ -6,7 +6,7 @@ import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 
 export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props) => {
-  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
+  const { currentValue = {}, onChange, required, title, description, placeholder, schema } = props;
   const onSettingsChange = (newVal: Partial<DimensionsSettings>) => onChange({ ...currentValue, ...newVal });
 
   return (

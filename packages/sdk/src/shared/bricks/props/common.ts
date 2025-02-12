@@ -66,19 +66,12 @@ const imageProps = Type.Object(
 
 export type ImageProps = Static<typeof imageProps>;
 
-export const imageSettings = Type.Object(
-  {
-    image: imageProps,
+export const imageSettings = Type.Object(imageProps.properties, {
+  default: {
+    src: "https://placehold.co/400x200",
+    alt: "my image",
   },
-  {
-    default: {
-      image: {
-        src: "https://placehold.co/400x200",
-        alt: "my image",
-      },
-    },
-  },
-);
+});
 
 export type ImageSettings = Static<typeof imageSettings>;
 
