@@ -301,10 +301,10 @@ export default function EditablePage() {
             editorHelpers.setSelectedGroup(e.selected.map((el) => el.id));
           }
           e.added.forEach((el) => {
-            el.classList.add("selected");
+            el.classList.add("selected-group");
           });
           e.removed.forEach((el) => {
-            el.classList.remove("selected");
+            el.classList.remove("selected-group");
           });
         }}
       />

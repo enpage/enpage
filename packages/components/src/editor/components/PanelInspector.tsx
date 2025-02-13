@@ -9,6 +9,7 @@ import { getFormComponents, FormRenderer } from "./json-form/form";
 import { IoCloseOutline } from "react-icons/io5";
 import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { useLocalStorage } from "usehooks-ts";
+import { BsStars } from "react-icons/bs";
 
 export default function Inspector() {
   const selectedBrick = useSelectedBrick();
@@ -47,7 +48,7 @@ export default function Inspector() {
         )}
         {selectedBrick.type === "text" && (
           <Tabs.Trigger value="ai" className="!flex-1">
-            Upstart AI
+            AI <BsStars className={tx("ml-1 w-4 h-4 text-upstart-600")} />
           </Tabs.Trigger>
         )}
         <IconButton
@@ -72,9 +73,9 @@ export default function Inspector() {
         <div className={tx("p-2 flex flex-col gap-3")}>
           <Callout.Root size="1">
             <Callout.Text size="1">
-              <span className="font-medium">Style presets</span> are pre-configured settings that can be
+              <span className="font-semibold">Style presets</span> are pre-configured settings that can be
               applied to your bricks to quickly change their appearance. Start from a preset and customize it
-              further in the <span className="font-medium">Settings</span> tab.
+              further in the <span className="font-semibold">Settings</span> tab.
             </Callout.Text>
           </Callout.Root>
         </div>

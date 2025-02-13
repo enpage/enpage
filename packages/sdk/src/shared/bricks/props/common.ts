@@ -73,7 +73,6 @@ const stylePreset = Type.Object(
       Type.Literal("secondary"),
       Type.Literal("accent"),
       Type.Literal("neutral"),
-      Type.Literal("default"), // For cases where we want to use standard colors
     ]),
   },
   {

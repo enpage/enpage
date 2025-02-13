@@ -37,6 +37,7 @@ type UseBrickWrapperStyleProps = {
   editable: boolean;
   className?: string;
   isContainerChild?: boolean;
+  selected?: boolean;
 };
 
 export function useBrickWrapperStyle({
@@ -44,6 +45,7 @@ export function useBrickWrapperStyle({
   editable,
   className,
   isContainerChild,
+  selected,
 }: UseBrickWrapperStyleProps) {
   return tx(
     apply(className),
@@ -51,11 +53,12 @@ export function useBrickWrapperStyle({
     "brick group/brick flex relative",
 
     isContainerChild && "container-child",
+    editable && selected && "!outline !outline-dashed !outline-orange-200",
 
     // "overflow-hidden",
 
     {
-      "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
+      "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] bg-upstart-500/10)":
         editable,
     },
 
@@ -86,7 +89,7 @@ export function useBrickWrapperStyle({
 
     editable &&
       css({
-        "&.selected": {
+        "&.selected-group": {
           outline: "2px dotted var(--violet-8) !important",
         },
       }),
@@ -98,7 +101,14 @@ export function useBrickWrapperStyle({
     "borders" in brick.props && (brick.props.borders.width as string),
 
     // Background
-    "backgroundColor" in brick.props && propToStyle(brick.props.backgroundColor as string, "background"),
+    "background" in brick.props && propToStyle(brick.props.background.color as string, "background"),
+    "background" in brick.props &&
+      brick.props.background.image &&
+      css({
+        backgroundImage: `url(${brick.props.background.image})`,
+        backgroundSize: brick.props.background.size ?? "auto",
+        backgroundRepeat: brick.props.background.repeat ?? "no-repeat",
+      }),
 
     // Opacity
     "effects" in brick.props && propToStyle(brick.props.effects.opacity as number | undefined, "opacity"),

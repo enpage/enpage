@@ -7,6 +7,7 @@ import type { BackgroundSettings } from "@upstart.gg/sdk/shared/bricks/props/sty
 import ColorField from "./color";
 import { useUploader } from "../../UploaderContext";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import { IoCloseOutline } from "react-icons/io5";
 
 const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   const { schema, formData, onChange, required, title, description, currentValue } = props;
@@ -18,13 +19,18 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   return (
     <>
       <div className="file-field flex items-center justify-between flex-wrap gap-1">
-        {title && (
+        {/* {title && (
           <div className="flex items-center justify-between">
             <Text as="label" size="2" weight="medium">
               {title}
             </Text>
           </div>
-        )}
+        )} */}
+        <div className="flex items-center justify-between">
+          <Text as="label" size="2" weight="medium">
+            Color / image
+          </Text>
+        </div>
         <div className="flex gap-1.5">
           <ColorField
             {...props}
@@ -75,46 +81,101 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
       {currentValue.image && (
         <>
           <div className="flex justify-between items-center">
-            <Text as="label" size="2" weight="medium">
-              Background sizing
-            </Text>
-            <div className="flex items-center gap-4">
-              <Select.Root
-                defaultValue={currentValue.size ?? "auto"}
-                size="2"
-                onValueChange={(value) =>
-                  onChange({ ...currentValue, size: value as BackgroundSettings["size"] })
-                }
-              >
-                <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
-                <Select.Content position="popper">
-                  <Select.Group>
-                    {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                    {schema.properties.size.anyOf.map((item: any) => (
-                      <Select.Item key={item.const} value={item.const}>
-                        {item.title}
-                      </Select.Item>
-                    ))}
-                  </Select.Group>
-                </Select.Content>
-              </Select.Root>
-              <Tooltip
-                content={`
+            <div className="flex flex-col flex-1">
+              <Text as="label" size="2" weight="medium">
+                Size
+              </Text>
+              <div className="flex items-end gap-4">
+                <Select.Root
+                  defaultValue={currentValue.size ?? "auto"}
+                  size="2"
+                  onValueChange={(value) =>
+                    onChange({ ...currentValue, size: value as BackgroundSettings["size"] })
+                  }
+                >
+                  <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+                  <Select.Content position="popper">
+                    <Select.Group>
+                      {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                      {schema.properties.size.anyOf.map((item: any) => (
+                        <Select.Item key={item.const} value={item.const}>
+                          {item.title}
+                        </Select.Item>
+                      ))}
+                    </Select.Group>
+                  </Select.Content>
+                </Select.Root>
+                <Tooltip
+                  content={`
               When "Auto", the background image will be displayed in its original size.
               "Cover" will make the background image cover the entire element,
               and "Contain" will make the background image contained within the element.
               `}
-                className="!z-[10000] !text-sm"
-                align="end"
-              >
-                <IconButton variant="ghost" size="1" radius="full" className="group !cursor-help" disabled>
-                  <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
-                </IconButton>
-              </Tooltip>
+                  className="!z-[10000] !text-sm"
+                  align="end"
+                >
+                  <IconButton variant="ghost" size="1" radius="full" className="group !cursor-help" disabled>
+                    <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            </div>
+            <div className="flex flex-col flex-1">
+              <Text as="label" size="2" weight="medium">
+                Repeat
+              </Text>
+              <div className="flex items-end gap-4">
+                <Select.Root
+                  defaultValue={currentValue.repeat ?? "no-repeat"}
+                  size="2"
+                  onValueChange={(value) =>
+                    onChange({ ...currentValue, repeat: value as BackgroundSettings["repeat"] })
+                  }
+                >
+                  <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+                  <Select.Content position="popper">
+                    <Select.Group>
+                      {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+                      {schema.properties.repeat.anyOf.map((item: any) => (
+                        <Select.Item key={item.const} value={item.const}>
+                          {item.title}
+                        </Select.Item>
+                      ))}
+                    </Select.Group>
+                  </Select.Content>
+                </Select.Root>
+                <Tooltip
+                  content={`
+              When "Auto", the background image will be displayed in its original size.
+              "Cover" will make the background image cover the entire element,
+              and "Contain" will make the background image contained within the element.
+              `}
+                  className="!z-[10000] !text-sm"
+                  align="end"
+                >
+                  <IconButton variant="ghost" size="1" radius="full" className="group !cursor-help" disabled>
+                    <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
+                  </IconButton>
+                </Tooltip>
+              </div>
             </div>
           </div>
-          <div className="border border-upstart-200 p-1.5 self-end">
+          {/* image preview */}
+          <div className="border border-upstart-200 p-1.5 self-end relative">
             <img src={currentValue.image} alt={id} className="max-w-full h-auto" />
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange({ ...currentValue, image: "" });
+              }}
+              title="Close"
+              size="1"
+              variant="surface"
+              color="gray"
+              className="!absolute !top-1 !right-1 !text-upstart-700 hover:(!bg-red-700 !text-white)"
+            >
+              <IoCloseOutline />
+            </IconButton>
           </div>
         </>
       )}

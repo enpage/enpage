@@ -1,7 +1,7 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { forwardRef, memo, useRef, useState, type ComponentProps, type MouseEvent } from "react";
 import { tx } from "@upstart.gg/style-system/twind";
-import { useDraft, useEditorHelpers, usePreviewMode } from "../hooks/use-editor";
+import { useDraft, useEditorHelpers, usePreviewMode, useSelectedBrick } from "../hooks/use-editor";
 import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
@@ -27,7 +27,14 @@ type BrickWrapperProps = ComponentProps<"div"> & {
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
   ({ brick, style, className, children, isContainerChild }, ref) => {
     const hasMouseMoved = useRef(false);
-    const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className, isContainerChild });
+    const selectedBrick = useSelectedBrick();
+    const wrapperClass = useBrickWrapperStyle({
+      brick,
+      editable: true,
+      className,
+      isContainerChild,
+      selected: selectedBrick?.id === brick.id,
+    });
     const { setSelectedBrick } = useEditorHelpers();
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
@@ -95,11 +102,11 @@ function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isConta
                 "!opacity-0": !open,
               },
               "nodrag transition-all duration-300 group/button group-hover/brick:!opacity-100 \
-              active:!opacity-100 focus:!flex focus-within:!opacity-100 !border !border-upstart-500 !bg-upstart-400/30 \
-              hover:!border-upstart-300 !px-0.5",
+              active:!opacity-100 focus:!flex focus-within:!opacity-100 !border !border-upstart-500 !bg-upstart-500  \
+              hover:!border-upstart-300 !p-0.5",
             )}
           >
-            <BiDotsVerticalRounded className="w-6 h-6 text-upstart-500 group-hover/button:text-upstart-600" />
+            <BiDotsVerticalRounded className="w-5 h-5 text-white/80 group-hover/button:text-white" />
           </IconButton>
         </div>
       </DropdownMenu.Trigger>

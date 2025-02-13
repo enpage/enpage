@@ -220,6 +220,21 @@ export const background = Type.Object(
         },
       ),
     ),
+    repeat: Type.Optional(
+      Type.Union(
+        [
+          Type.Literal("no-repeat", { title: "No repeat" }),
+          Type.Literal("repeat", { title: "Repeat" }),
+          Type.Literal("repeat-x", { title: "Repeat horizontally" }),
+          Type.Literal("repeat-y", { title: "Repeat vertically" }),
+          Type.Literal("space", { title: "Space" }),
+          Type.Literal("round", { title: "Round" }),
+        ],
+        {
+          default: "no-repeat",
+        },
+      ),
+    ),
   },
   {
     "ui:field": "background",
@@ -227,6 +242,10 @@ export const background = Type.Object(
     "ui:group:title": "Background",
     "ui:show-img-search": true,
     title: "Background",
+    default: {
+      size: "auto",
+      repeat: "no-repeat",
+    },
   },
 );
 
