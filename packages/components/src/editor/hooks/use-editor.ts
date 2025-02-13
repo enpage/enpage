@@ -14,6 +14,7 @@ import type { GenericPageConfig, GenericPageContext, SiteConfig } from "@upstart
 export { type Immer } from "immer";
 import type { ColorAdjustment } from "@upstart.gg/sdk/shared/themes/color-system";
 import { adjustMobileLayout } from "~/shared/utils/layout-utils";
+import type { WritableDraft } from "immer";
 
 export interface EditorStateProps {
   /**
@@ -358,18 +359,22 @@ export const createDraftStore = (
 
             updateBrick: (id, brick) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex] = { ...state.bricks[brickIndex], ...brick };
+                const original = getBrick(id, state.bricks);
+                if (original) {
+                  Object.assign(original, brick);
+                }
               }),
 
             updateBrickProps: (id, props) =>
               set((state) => {
-                const brickIndex = _get().bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex].props = { ...state.bricks[brickIndex].props, ...props };
+                const brick = getBrick(id, state.bricks);
+                if (brick) {
+                  brick.props = { ...brick.props, ...props };
+                }
               }),
 
             getBrick: (id) => {
-              return _get().bricks.find((b) => b.id === id);
+              return getBrick(id, _get().bricks);
             },
             setPreviewTheme: (theme) =>
               set((state) => {
@@ -405,15 +410,21 @@ export const createDraftStore = (
 
             updateBrickPosition: (id, bp, position) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                Object.assign(state.bricks[brickIndex].position[bp], position);
+                const brick = getBrick(id, state.bricks);
+                if (brick) {
+                  Object.assign(brick.position[bp], position);
+                }
               }),
 
             toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex].position[breakpoint]!.hidden =
-                  !state.bricks[brickIndex].position[breakpoint]?.hidden;
+                const brick = getBrick(id, state.bricks);
+                if (brick) {
+                  brick.position[breakpoint] = {
+                    ...brick.position[breakpoint],
+                    hidden: !brick.position[breakpoint]?.hidden,
+                  };
+                }
               }),
 
             addBrick: (brick, parentContainer) =>
@@ -699,4 +710,23 @@ function getDuplicatedBrickPosition(brick: Brick) {
       x: (desktop ?? mobile)!.x + 1,
     },
   };
+}
+
+/**
+ * This helpers is meant to be used from within DraftState actions
+ */
+function getBrick(id: string, bricks: Brick[]) {
+  let brick = bricks.find((b) => b.id === id);
+  if (!brick) {
+    for (const brickIter of bricks) {
+      if ("children" in brickIter.props) {
+        const child = brickIter.props.children.find((b: Brick) => b.id === id);
+        if (child) {
+          brick = child;
+          break;
+        }
+      }
+    }
+  }
+  return brick;
 }

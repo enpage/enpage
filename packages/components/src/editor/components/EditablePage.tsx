@@ -66,7 +66,7 @@ export default function EditablePage() {
     }
   }
 
-  useEditablePage(".brick", pageRef, {
+  useEditablePage(".brick:not(.container-child)", pageRef, {
     dragOptions: {
       enabled: previewMode === "desktop",
     },
@@ -292,7 +292,7 @@ export default function EditablePage() {
       </div>
       <Selecto
         className="selecto"
-        selectableTargets={[".brick"]}
+        selectableTargets={[".brick:not(.container-child)"]}
         selectFromInside={false}
         hitRate={1}
         selectByClick={false}
@@ -312,7 +312,7 @@ export default function EditablePage() {
   );
 }
 
-function ResizeHandle({
+export function ResizeHandle({
   direction,
 }: {
   direction: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne";

@@ -11,7 +11,7 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 export type FieldProps<T = unknown, F = Record<string, unknown>> = {
   brickId: Brick["id"];
   onChange: (value: T | null) => void;
-  currentValue: T | undefined;
+  currentValue: T;
   /**
    * Field schema
    */

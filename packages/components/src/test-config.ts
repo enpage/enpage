@@ -63,6 +63,30 @@ const datasources = defineDataSources({
 const homePageBricks = defineBricks([
   ...createRow([
     {
+      type: "container",
+      props: {
+        children: [
+          { type: "text", props: { content: "Hello World #1" } },
+          { type: "text", props: { content: "Hello World #2" } },
+          { type: "text", props: { content: "Hello World #3" } },
+        ],
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: "full",
+          h: 10,
+        },
+        desktop: {
+          x: 0,
+          w: "full",
+          h: 16,
+        },
+      },
+    },
+  ]),
+  ...createRow([
+    {
       type: "hero",
       props: {
         content: "Reach the stars.<br />Book your next trip<br />to Space.",
@@ -84,28 +108,7 @@ const homePageBricks = defineBricks([
       },
     },
   ]),
-  // ...createRow([
-  //   {
-  //     type: "image",
-  //     props: {
-  //       src: "/bluemoon.webp",
-  //       className: "justify-start",
-  //       // className: "max-h-24",
-  //     },
-  //     position: {
-  //       mobile: {
-  //         x: 0,
-  //         w: "full",
-  //         h: 5,
-  //       },
-  //       desktop: {
-  //         x: 0,
-  //         w: "full",
-  //         h: 12,
-  //       },
-  //     },
-  //   },
-  // ]),
+
   ...createRow([
     {
       type: "generic-component",

@@ -3,17 +3,20 @@ import { forwardRef } from "react";
 import { tx, apply } from "@upstart.gg/style-system/twind";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/container.manifest";
+import BrickWrapper from "~/editor/components/EditableBrick";
 
 const Container = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   const className = useBrickStyle(props);
 
-  console.log("className", className);
-
   return (
     <div className={tx(apply("flex"), className)} ref={ref}>
       {props.children.length > 0 ? (
         props.children.map((brick) => {
+          if (props.editable) {
+            return <BrickWrapper key={`${brick.id}`} brick={brick} isContainerChild />;
+          }
+          // todo: render the brick
           return (
             <div key={brick.id}>
               {brick.type} {brick.id}

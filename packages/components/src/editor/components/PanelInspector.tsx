@@ -1,77 +1,92 @@
 import { useMemo, useState, memo } from "react";
-import { useDraft, useEditor, useGetBrick } from "../hooks/use-editor";
+import { useDraft, useEditor, useEditorHelpers, useGetBrick, useSelectedBrick } from "../hooks/use-editor";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
-import { IconButton, Tabs } from "@upstart.gg/style-system/system";
+import { Callout, IconButton, Tabs } from "@upstart.gg/style-system/system";
 import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { getFormComponents, FormRenderer } from "./json-form/form";
 import { IoCloseOutline } from "react-icons/io5";
 import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
+import { useLocalStorage } from "usehooks-ts";
 
 export default function Inspector() {
-  const editor = useEditor();
+  const selectedBrick = useSelectedBrick();
+  const { deselectBrick } = useEditorHelpers();
+  const [selectedTab, setSelectedTab] = useLocalStorage("inspector_tab", "preset");
 
-  if (!editor.selectedBrick) {
+  if (!selectedBrick) {
     return null;
   }
 
-  const manifest = manifests[editor.selectedBrick.type];
+  const manifest = manifests[selectedBrick.type];
   if (!manifest) {
-    console.warn(`No manifest found for brick: ${JSON.stringify(editor.selectedBrick)}`);
-    editor.deselectBrick();
+    console.warn(`No manifest found for brick: ${JSON.stringify(selectedBrick)}`);
+    deselectBrick();
     return null;
   }
-
-  const tabsCount = [
-    1,
-    manifest.properties.datasource,
-    manifest.properties.datarecord,
-    editor.selectedBrick.type === "text",
-  ].filter(Boolean).length;
 
   return (
-    <Tabs.Root defaultValue="style">
-      {tabsCount > 1 && (
-        <Tabs.List className="sticky top-0 z-50">
-          <Tabs.Trigger value="style" className="!flex-1">
-            Style
+    <Tabs.Root defaultValue={selectedTab} onValueChange={setSelectedTab}>
+      <Tabs.List className="sticky top-0 z-50">
+        <Tabs.Trigger value="preset" className="!flex-1">
+          Preset
+        </Tabs.Trigger>
+        <Tabs.Trigger value="style" className="!flex-1">
+          Settings
+        </Tabs.Trigger>
+        {manifest.properties.datasource && (
+          <Tabs.Trigger value="datasource" className="!flex-1">
+            Data source
           </Tabs.Trigger>
-          {manifest.properties.datasource && (
-            <Tabs.Trigger value="datasource" className="!flex-1">
-              Data source
-            </Tabs.Trigger>
-          )}
-          {manifest.properties.datarecord && (
-            <Tabs.Trigger value="datarecord" className="!flex-1">
-              Data record
-            </Tabs.Trigger>
-          )}
-          {editor.selectedBrick.type === "text" && (
-            <Tabs.Trigger value="ai" className="!flex-1">
-              Upstart AI
-            </Tabs.Trigger>
-          )}
-        </Tabs.List>
-      )}
+        )}
+        {manifest.properties.datarecord && (
+          <Tabs.Trigger value="datarecord" className="!flex-1">
+            Data record
+          </Tabs.Trigger>
+        )}
+        {selectedBrick.type === "text" && (
+          <Tabs.Trigger value="ai" className="!flex-1">
+            Upstart AI
+          </Tabs.Trigger>
+        )}
+        <IconButton
+          title="Close"
+          className="self-center items-center justify-center inline-flex !mr-1 !mt-2"
+          size="1"
+          variant="ghost"
+          color="gray"
+          onClick={() => {
+            deselectBrick();
+          }}
+        >
+          <IoCloseOutline className="w-4 h-4 text-gray-400 hover:text-gray-700" />
+        </IconButton>
+      </Tabs.List>
+      <ScrollablePanelTab tab="preset">
+        <div className="flex justify-between pr-0">
+          <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
+            {manifest.properties.title.const}
+          </h2>
+        </div>
+        <div className={tx("p-2 flex flex-col gap-3")}>
+          <Callout.Root size="1">
+            <Callout.Text size="1">
+              <span className="font-medium">Style presets</span> are pre-configured settings that can be
+              applied to your bricks to quickly change their appearance. Start from a preset and customize it
+              further in the <span className="font-medium">Settings</span> tab.
+            </Callout.Text>
+          </Callout.Root>
+        </div>
+      </ScrollablePanelTab>
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
-            <IconButton
-              title="Reset"
-              size="2"
-              variant="ghost"
-              color="gray"
-              onClick={() => {
-                editor.deselectBrick();
-              }}
-            >
-              <IoCloseOutline className="w-4 h-4" />
-            </IconButton>
           </h2>
+          <span className="text-xs text-gray-400">{}</span>
         </div>
-        <ElementInspector brick={editor.selectedBrick} />
+        <ElementInspector brick={selectedBrick} />
       </ScrollablePanelTab>
     </Tabs.Root>
   );

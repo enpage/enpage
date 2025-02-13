@@ -21,13 +21,13 @@ import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";
 
 type BrickWrapperProps = ComponentProps<"div"> & {
   brick: Brick;
+  isContainerChild?: boolean;
 };
 
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
-  ({ brick, style, className, children }, ref) => {
+  ({ brick, style, className, children, isContainerChild }, ref) => {
     const hasMouseMoved = useRef(false);
-    const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className });
-    const previewMode = usePreviewMode();
+    const wrapperClass = useBrickWrapperStyle({ brick, editable: true, className, isContainerChild });
     const { setSelectedBrick } = useEditorHelpers();
 
     const onClick = (e: MouseEvent<HTMLElement>) => {
@@ -37,6 +37,9 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
       }
       setSelectedBrick(brick);
       hasMouseMoved.current = false;
+
+      // stop propagation otherwise the click could then be handled by the container
+      e.stopPropagation();
     };
 
     return (
@@ -44,7 +47,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         id={brick.id}
         // data-x="0"
         // data-y="0"
-        data-position={JSON.stringify(brick.position[previewMode])}
+        // data-position={JSON.stringify(brick.position[previewMode])}
         style={style}
         className={wrapperClass}
         ref={ref}
@@ -62,7 +65,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         }}
       >
         <BaseBrick brick={brick} id={brick.id} editable />
-        <BrickOptionsButton brick={brick} />
+        <BrickOptionsButton brick={brick} isContainerChild={isContainerChild} />
         {children} {/* Make sure to include children to add resizable handle */}
       </div>
     );
@@ -74,14 +77,14 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
 
 export default BrickWrapper;
 
-function BrickOptionsButton({ brick }: { brick: Brick }) {
+function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isContainerChild?: boolean }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
   const editorHelpers = useEditorHelpers();
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
       <DropdownMenu.Trigger>
-        <div className={tx("absolute right-1.5 top-1")}>
+        <div className={tx("absolute top-1", isContainerChild ? "left-1.5" : "right-1.5 z-[99999]")}>
           <IconButton
             type="button"
             variant="ghost"

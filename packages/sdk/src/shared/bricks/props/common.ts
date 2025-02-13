@@ -1,5 +1,86 @@
 import { Type, type Static } from "@sinclair/typebox";
 
+const stylePreset = Type.Object(
+  {
+    style: Type.Union([
+      Type.Literal("ghost", {
+        title: "Ghost",
+        description: "Minimal style with transparent background and no border",
+      }),
+      Type.Literal("classic", {
+        title: "Classic",
+        description: "Clean and professional look with subtle shadow and rounded corners",
+      }),
+      Type.Literal("modern", {
+        title: "Modern",
+        description: "Bold black borders with generous spacing and sharp corners",
+      }),
+      Type.Literal("soft", {
+        title: "Soft",
+        description: "Gentle curves and muted colors for a comfortable feel",
+      }),
+      Type.Literal("glass", {
+        title: "Glass",
+        description: "Translucent backdrop with blur effect for depth",
+      }),
+      Type.Literal("minimal", {
+        title: "Minimal",
+        description: "Simple and straightforward design with basic borders",
+      }),
+      Type.Literal("elevated", {
+        title: "Elevated",
+        description: "Floating appearance with shadow depth and no borders",
+      }),
+      Type.Literal("playful", {
+        title: "Playful",
+        description: "Fun dashed borders and light colors for engaging content",
+      }),
+      Type.Literal("professional", {
+        title: "Professional",
+        description: "Clean design with accent border for important content",
+      }),
+      Type.Literal("outlined", {
+        title: "Outlined",
+        description: "Simple outline with hover effect and no background",
+      }),
+      Type.Literal("paper", {
+        title: "Paper",
+        description: "Subtle texture and slight rotation for a paper-like appearance",
+      }),
+      Type.Literal("gradient", {
+        title: "Gradient",
+        description: "Smooth color transition background with soft edges",
+      }),
+      Type.Literal("nested", {
+        title: "Nested",
+        description: "Layered appearance with offset background",
+      }),
+      Type.Literal("callout", {
+        title: "Callout",
+        description: "Prominent style for important information or CTAs",
+      }),
+      Type.Literal("floating", {
+        title: "Floating",
+        description: "Hovering effect with dynamic shadow on interaction",
+      }),
+      Type.Literal("inset", {
+        title: "Inset",
+        description: "Pressed-in appearance with inner shadow",
+      }),
+    ]),
+    variant: Type.Union([
+      Type.Literal("primary"),
+      Type.Literal("secondary"),
+      Type.Literal("accent"),
+      Type.Literal("neutral"),
+      Type.Literal("default"), // For cases where we want to use standard colors
+    ]),
+  },
+  {
+    "ui:field": "hidden",
+  },
+);
+
 export const commonProps = Type.Object({
   id: Type.String({
     title: "Brick ID",
@@ -18,6 +99,7 @@ export const commonProps = Type.Object({
     default: false,
     "ui:field": "hidden",
   }),
+  stylePreset,
 });
 
 export const richText = Type.String({

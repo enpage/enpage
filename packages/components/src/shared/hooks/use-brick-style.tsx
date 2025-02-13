@@ -32,15 +32,25 @@ export function useBrickStyle(
   ]);
 }
 
+type UseBrickWrapperStyleProps = {
+  brick: Brick;
+  editable: boolean;
+  className?: string;
+  isContainerChild?: boolean;
+};
+
 export function useBrickWrapperStyle({
   brick,
   editable,
   className,
-}: { brick: Brick; editable: boolean; className?: string }) {
+  isContainerChild,
+}: UseBrickWrapperStyleProps) {
   return tx(
     apply(className),
     // no transition otherwise it will slow down the drag
     "brick group/brick flex relative",
+
+    isContainerChild && "container-child",
 
     // "overflow-hidden",
 
@@ -48,8 +58,18 @@ export function useBrickWrapperStyle({
       "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
         editable,
     },
+
+    // container children expand to fill the space
+    isContainerChild && "flex-1",
+
+    // Position of the wrapper
+    //
+    // Note:  for container children, we don't set it as they are not positioned
+    //        relatively to the page grid but to the container
+    //
     // Warning: those 2 rules blocks are pretty sensible!
-    `@desktop:(
+    !isContainerChild &&
+      `@desktop:(
         col-start-${brick.position.desktop.x + 1}
         col-span-${brick.position.desktop.w}
         row-start-${brick.position.desktop.y + 1}
