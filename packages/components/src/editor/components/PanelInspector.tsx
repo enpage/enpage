@@ -82,7 +82,7 @@ export default function Inspector() {
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
-          <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
+          <h2 className="py-1.5 px-2 flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
           </h2>
           <span className="text-xs text-gray-400">{}</span>

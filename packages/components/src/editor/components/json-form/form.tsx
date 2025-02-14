@@ -355,7 +355,7 @@ export function getFormComponents({
     // filter null values
     .filter(Boolean);
 
-  console.debug("Form elements", elements);
+  console.debug("Form elements for %s", brickId, elements);
 
   return elements as FormComponents;
 }

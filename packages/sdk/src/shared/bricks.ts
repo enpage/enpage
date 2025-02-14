@@ -20,7 +20,7 @@ import { manifest as videoManifest } from "./bricks/manifests/video.manifest";
 import { manifest as loopManifest } from "./bricks/manifests/loop.manifest";
 import { manifest as containerManifest } from "./bricks/manifests/container.manifest";
 import { manifest as genericComponentManifest } from "./bricks/manifests/generic-component.manifest";
-
+import { defaults } from "./bricks/manifests/all-manifests";
 /**
  * Generates a unique identifier for bricks.
  */
@@ -190,7 +190,7 @@ export const brickSchema = Type.Composite([
       title: "ID",
       description: "A unique identifier for the brick.",
     }),
-    isContainer: Type.Optional(Type.Boolean()),
+    isContainer: Type.Boolean({ default: false }),
     hideInLibrary: Type.Optional(Type.Boolean()),
     position: Type.Object(
       {
@@ -268,6 +268,7 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
   return bricks.map((brick) => {
     return {
       id: `brick-${generateId()}`,
+      ...defaults[brick.type],
       ...brick,
       props: {
         ...brick.props,
@@ -275,6 +276,7 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
           ? {
               children: (brick.props.children as DefinedBrick[]).map((childBrick) => ({
                 id: `brick-${generateId()}`,
+                ...defaults[childBrick.type],
                 ...childBrick,
                 ...("position" in childBrick
                   ? {}

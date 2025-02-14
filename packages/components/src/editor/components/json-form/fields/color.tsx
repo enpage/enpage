@@ -1,12 +1,7 @@
-import { Button, IconButton, Popover, Text } from "@upstart.gg/style-system/system";
-import { tx, colors, css } from "@upstart.gg/style-system/twind";
+import { IconButton, Popover, Text } from "@upstart.gg/style-system/system";
+import { tx, css } from "@upstart.gg/style-system/twind";
 import transSvg from "./trans.svg?url";
-import {
-  isStandardColor,
-  type ColorType,
-  type ElementColor,
-  type ElementColorType,
-} from "@upstart.gg/sdk/shared/themes/color-system";
+import type { ColorType, ElementColor, ElementColorType } from "@upstart.gg/sdk/shared/themes/color-system";
 import BaseColorPicker, { ElementColorPicker } from "~/editor/components/ColorPicker";
 import type { FieldProps } from "./types";
 import { IoCloseOutline } from "react-icons/io5";

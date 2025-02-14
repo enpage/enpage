@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import type { Theme } from "../theme";
 export { default as chroma } from "chroma-js";
-import { colors, css } from "@upstart.gg/style-system/twind";
+import { colors, css, tx } from "@upstart.gg/style-system/twind";
 
 export type ColorType = "primary" | "secondary" | "accent" | "neutral";
 export type ElementColorType =
@@ -236,7 +236,7 @@ export function propToStyle(prop: string | number | undefined, cssAttr: string) 
     return undefined;
   }
   // @ts-ignore
-  return isStandardColor(prop) || typeof prop === "number" ? css({ [cssAttr]: prop }) : prop;
+  return isStandardColor(prop) || typeof prop === "number" ? css({ [cssAttr as string]: prop }) : tx(prop);
 }
 
 export function generateColorsVars(theme: Theme) {

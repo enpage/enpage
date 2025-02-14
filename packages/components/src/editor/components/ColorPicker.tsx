@@ -225,7 +225,6 @@ function ColorPillList({
   elementColorType,
 }: PropsWithChildren<ColorPillListProps>) {
   const [gradientDir, setGradientDir] = useState<string>(getInitialGradientDir());
-  const [gradientPair, setGradientPair] = useState<{ from: string; to: string } | null>(null);
 
   function getInitialGradientDir() {
     const match = currentColor?.match(/to-(\w+)/);
@@ -234,12 +233,6 @@ function ColorPillList({
     }
     return "t";
   }
-
-  useEffect(() => {
-    if (type === "gradient" && gradientPair) {
-      onChange(`bg-gradient-to-${gradientDir} from-${gradientPair.from} to-${gradientPair.to}`);
-    }
-  }, [gradientDir, gradientPair, onChange, type]);
 
   if (type === "solid") {
     return (
@@ -262,10 +255,10 @@ function ColorPillList({
     );
   } else if (type === "gradient") {
     const mixs = [
-      ["50", "100"],
       ["50", "200"],
-      ["100", "200"],
-      ["100", "300"],
+      ["200", "400"],
+      ["400", "600"],
+      ["600", "800"],
       ["800", "900"],
     ];
     return (
@@ -305,7 +298,6 @@ function ColorPillList({
                     `bg-gradient-to-${gradientDir} from-${color.from} to-${color.to} hover:scale-110`,
                   )}
                   onClick={() => {
-                    setGradientPair(color);
                     onChange(`bg-gradient-to-${gradientDir} from-${color.from} to-${color.to}`);
                   }}
                 />
@@ -323,6 +315,7 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
   elementColorType,
   onChange = () => {},
 }) => {
+  console.log("ElementColorPicker", { initialValue, elementColorType });
   const defaultColorType = initialValue?.includes("gradient") ? "gradient" : "solid";
   function makeCominations(colors: string[], shades: string[]) {
     return colors.flatMap((color) => shades.map((shade) => `${color}-${shade}`));

@@ -101,7 +101,7 @@ export function useBrickWrapperStyle({
     "borders" in brick.props && (brick.props.borders.width as string),
 
     // Background
-    "background" in brick.props && propToStyle(brick.props.background.color as string, "background"),
+    "background" in brick.props && propToStyle(brick.props.background.color as string, "background-color"),
     "background" in brick.props &&
       brick.props.background.image &&
       css({

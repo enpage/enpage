@@ -1,14 +1,13 @@
 import { useAttributes, useAttributesSchema, useDraft } from "../hooks/use-editor";
 import { sortJsonSchemaProperties } from "~/shared/utils/sort-json-schema-props";
-import { css, tx } from "@upstart.gg/style-system/twind";
-import { createUiSchema } from "./json-form/ui-schema";
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import "./json-form/json-form.css";
+import { tx } from "@upstart.gg/style-system/twind";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormRenderer, getFormComponents } from "./json-form/form";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
-import { panelTabContentScrollClass } from "../utils/styles";
-import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@upstart.gg/style-system/system";
+import { Tabs, Spinner } from "@upstart.gg/style-system/system";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
+
+import "./json-form/json-form.css";
 
 export default function SettingsForm() {
   const draft = useDraft();
@@ -60,26 +59,6 @@ export default function SettingsForm() {
   if (!shouldRender) {
     return <LoadingSpinner />;
   }
-
-  // const elements = getFormComponents({
-  //   brickId: "settings",
-  //   formSchema: filteredAttrSchema as JSONSchemaType<unknown>,
-  //   formData: attributes,
-  //   onChange,
-  //   filter(field) {
-  //     console.log("filtering field %o", field);
-  //     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  //     return (field as any)?.["ui:scope"] !== "site";
-  //   },
-  // });
-
-  // return (
-  //   <div className={tx(panelTabContentScrollClass, "h-full overflow-y-auto overscroll-none pb-10")}>
-  //     <form className={tx("px-3 flex flex-col gap-y-2.5")}>
-  //       <FormRenderer components={elements} brickId={"settings"} />
-  //     </form>
-  //   </div>
-  // );
 
   return (
     <Tabs.Root defaultValue={currentTab} onValueChange={setCurrentTab}>

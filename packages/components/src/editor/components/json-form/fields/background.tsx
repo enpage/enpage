@@ -19,13 +19,6 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   return (
     <>
       <div className="file-field flex items-center justify-between flex-wrap gap-1">
-        {/* {title && (
-          <div className="flex items-center justify-between">
-            <Text as="label" size="2" weight="medium">
-              {title}
-            </Text>
-          </div>
-        )} */}
         <div className="flex items-center justify-between">
           <Text as="label" size="2" weight="medium">
             Color / image
@@ -37,6 +30,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
             currentValue={currentValue.color}
             title={undefined}
             onChange={(color) => {
+              console.log("color", color);
               onChange({ ...currentValue, color: color as string });
             }}
           />
