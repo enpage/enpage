@@ -2,7 +2,7 @@ import { stylePreset, type StylePreset } from "@upstart.gg/sdk/shared/bricks/pro
 import { getPresetStyles, type StyleProperties } from "@upstart.gg/sdk/shared/bricks/props/style-presets";
 import { tx } from "@upstart.gg/style-system/twind";
 import { fieldLabel } from "./json-form/form-class";
-import { Button, Text, Select, Tooltip, IconButton } from "@upstart.gg/style-system/system";
+import { Button, Text, Select, Tooltip, IconButton, SegmentedControl } from "@upstart.gg/style-system/system";
 import { useState } from "react";
 
 type PresetsViewProps = {
@@ -27,24 +27,25 @@ export default function PresetsView({ onChoose }: PresetsViewProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-1 flex-1 px-2">
-        <label className={fieldLabel}>Variant</label>
-        <Select.Root
-          defaultValue={variant}
-          size="2"
+      <div className="flex flex-col gap-1 flex-1 px-1">
+        <label className={fieldLabel}>Main color</label>
+        <SegmentedControl.Root
           onValueChange={(value) => setVariant(value as StylePreset["variant"])}
+          defaultValue={variant}
+          size="1"
+          className="w-full !max-w-full mt-1"
+          radius="full"
         >
-          <Select.Trigger radius="large" variant="soft" />
-          <Select.Content position="popper">
-            <Select.Group>
-              {["primary", "secondary", "accent", "neutral"].map((item) => (
-                <Select.Item key={item} value={item} className="capitalize">
-                  {item}
-                </Select.Item>
-              ))}
-            </Select.Group>
-          </Select.Content>
-        </Select.Root>
+          {["primary", "secondary", "accent"].map((option) => (
+            <SegmentedControl.Item
+              key={option}
+              value={option}
+              className={tx("[&_.rt-SegmentedControlItemLabel]:px-1")}
+            >
+              <span className="capitalize">{option}</span>
+            </SegmentedControl.Item>
+          ))}
+        </SegmentedControl.Root>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {styles.map((style) => {

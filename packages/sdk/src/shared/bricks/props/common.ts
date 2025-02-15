@@ -147,7 +147,7 @@ export type RichText = Static<typeof richText>;
 const imageProps = Type.Object(
   {
     src: Type.String({
-      default: "https://placehold.co/400x200",
+      default: "/placeholder.svg",
       title: "Image",
     }),
     alt: Type.String({

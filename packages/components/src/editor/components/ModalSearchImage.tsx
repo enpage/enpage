@@ -170,7 +170,7 @@ export default function ModalSearchImage({ onChoose, onClose, open }: ModalSearc
                 onClick={() => {
                   console.log("Image results", result.urls);
                   editor.hideModal();
-                  onChoose?.(result.urls.regular, result.urls.thumb);
+                  onChoose?.(result.urls.full, result.urls.thumb);
                 }}
               />
               <p

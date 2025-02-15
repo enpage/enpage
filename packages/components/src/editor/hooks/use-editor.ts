@@ -53,8 +53,8 @@ export interface EditorState extends EditorStateProps {
   setIsEditingText: (forBrickId: string | false) => void;
   setlastTextEditPosition: (position?: number) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
-  togglePanel: (panel: EditorStateProps["panel"]) => void;
-  hidePanel: (panel: EditorStateProps["panel"]) => void;
+  togglePanel: (panel?: EditorStateProps["panel"]) => void;
+  hidePanel: (panel?: EditorStateProps["panel"]) => void;
   setSelectedGroup: (group?: Brick["id"][]) => void;
   setShouldShowGrid: (show: boolean) => void;
   setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
@@ -133,12 +133,12 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
 
             togglePanel: (panel) =>
               set((state) => {
-                state.panel = state.panel === panel ? undefined : panel;
+                state.panel = panel && state.panel === panel ? undefined : panel;
               }),
 
             hidePanel: (panel) =>
               set((state) => {
-                if (state.panel === panel) {
+                if (!panel || state.panel === panel) {
                   state.panel = undefined;
                 }
               }),

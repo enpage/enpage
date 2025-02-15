@@ -4,7 +4,7 @@ import type { EffectsSettings, BackgroundSettings, BorderSettings } from "./styl
 export type StyleProperties = {
   text?: string;
   background: BackgroundSettings;
-  border?: BorderSettings;
+  border?: Partial<BorderSettings>;
   effects?: EffectsSettings;
 };
 
@@ -56,6 +56,9 @@ export function getPresetStyles({ style, variant }: StylePreset): StylePropertie
     ghost: {
       background: {
         color: "transparent",
+      },
+      border: {
+        width: "border-0",
       },
       text: `text-${variant}-900`,
     },

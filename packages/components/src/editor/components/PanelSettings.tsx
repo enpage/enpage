@@ -1,11 +1,12 @@
-import { useAttributes, useAttributesSchema, useDraft } from "../hooks/use-editor";
+import { useAttributes, useAttributesSchema, useDraft, useEditorHelpers } from "../hooks/use-editor";
 import { sortJsonSchemaProperties } from "~/shared/utils/sort-json-schema-props";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormRenderer, getFormComponents } from "./json-form/form";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
-import { Tabs, Spinner } from "@upstart.gg/style-system/system";
+import { Tabs, Spinner, IconButton } from "@upstart.gg/style-system/system";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
+import { IoCloseOutline } from "react-icons/io5";
 
 export default function SettingsForm() {
   const draft = useDraft();
@@ -14,6 +15,7 @@ export default function SettingsForm() {
   const filteredAttrSchema = sortJsonSchemaProperties(attrSchema);
   const [shouldRender, setShouldRender] = useState(false);
   const [currentTab, setCurrentTab] = useState("page-settings");
+  const { hidePanel } = useEditorHelpers();
 
   const onChange = useCallback(
     (data: Record<string, unknown>, propertyChanged: string) => {
@@ -67,6 +69,16 @@ export default function SettingsForm() {
         <Tabs.Trigger value="site-settings" className={tx("!flex-1")}>
           Site settings
         </Tabs.Trigger>
+        <IconButton
+          title="Close"
+          className="self-center items-center justify-center inline-flex !mr-1 !mt-2"
+          size="1"
+          variant="ghost"
+          color="gray"
+          onClick={() => hidePanel()}
+        >
+          <IoCloseOutline className="w-4 h-4 text-gray-400 hover:text-gray-700" />
+        </IconButton>
       </Tabs.List>
       <ScrollablePanelTab tab="page-settings">
         <form className={tx("px-3 flex flex-col gap-y-2.5 pb-6")}>

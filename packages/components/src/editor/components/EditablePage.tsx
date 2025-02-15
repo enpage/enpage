@@ -250,7 +250,7 @@ export default function EditablePage() {
 
   useHotkeys("esc", () => {
     draftHelpers.deselectBrick();
-    editorHelpers.hidePanel("inspector");
+    editorHelpers.hidePanel();
   });
 
   useHotkeys("mod+c", () => {
@@ -268,6 +268,23 @@ export default function EditablePage() {
       draftHelpers.deselectBrick(selectedBrick.id);
       editorHelpers.hidePanel("inspector");
     }
+  });
+
+  useHotkeys("s", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel("settings");
+  });
+  useHotkeys("l", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel("library");
+  });
+  useHotkeys("t", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel("theme");
+  });
+  useHotkeys("p", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel();
   });
 
   /**

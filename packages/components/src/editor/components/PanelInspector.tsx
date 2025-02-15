@@ -1,8 +1,6 @@
-import { useMemo, useState, memo } from "react";
 import {
   useDraft,
   useDraftHelpers,
-  useEditor,
   useEditorHelpers,
   useGetBrick,
   usePreviewMode,
@@ -11,7 +9,7 @@ import {
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
 import { Callout, IconButton, Tabs } from "@upstart.gg/style-system/system";
-import { manifests, defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
+import { manifests } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import { getFormComponents, FormRenderer } from "./json-form/form";
 import { IoCloseOutline } from "react-icons/io5";
@@ -72,7 +70,7 @@ export default function Inspector() {
           color="gray"
           onClick={() => {
             deselectBrick();
-            hidePanel("inspector");
+            hidePanel();
           }}
         >
           <IoCloseOutline className="w-4 h-4 text-gray-400 hover:text-gray-700" />
