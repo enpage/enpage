@@ -261,7 +261,7 @@ export interface DraftState extends DraftStateProps {
   duplicateBrick: (id: string) => void;
   addBrick: (brick: Brick, parentContainer?: Brick) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
-  updateBrickProps: (id: string, props: Record<string, unknown>) => void;
+  updateBrickProps: (id: string, props: Record<string, unknown>, isMobileProps?: boolean) => void;
   updateBrickPosition: (id: string, bp: keyof Brick["position"], position: Partial<BrickPosition>) => void;
   updateBricksPositions: (bp: keyof Brick["position"], positions: Record<string, BrickPosition>) => void;
   toggleBrickVisibilityPerBreakpoint: (id: string, breakpoint: keyof Brick["position"]) => void;
@@ -340,8 +340,25 @@ export const createDraftStore = (
 
             deleteBrick: (id) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks.splice(brickIndex, 1);
+                const bricks: Brick[] = [];
+                for (const brick of state.bricks) {
+                  if (brick.id !== id) {
+                    bricks.push({
+                      ...brick,
+                      ...("children" in brick.props
+                        ? {
+                            props: {
+                              ...brick.props,
+                              children: brick.props.children.filter((child: Brick) => {
+                                return child.id !== id;
+                              }),
+                            },
+                          }
+                        : {}),
+                    });
+                  }
+                }
+                state.bricks = bricks;
               }),
 
             duplicateBrick: (id) =>
@@ -365,11 +382,15 @@ export const createDraftStore = (
                 }
               }),
 
-            updateBrickProps: (id, props) =>
+            updateBrickProps: (id, props, isMobileProps) =>
               set((state) => {
                 const brick = getBrick(id, state.bricks);
                 if (brick) {
-                  brick.props = { ...brick.props, ...props };
+                  if (isMobileProps) {
+                    brick.mobileProps = { ...brick.mobileProps, ...props };
+                  } else {
+                    brick.props = { ...brick.props, ...props };
+                  }
                 }
               }),
 

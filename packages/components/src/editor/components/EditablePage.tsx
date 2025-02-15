@@ -261,6 +261,30 @@ export default function EditablePage() {
     if (selectedBrick) {
       e.preventDefault();
       draft.deleteBrick(selectedBrick.id);
+      editorHelpers.deselectBrick(selectedBrick.id);
+    }
+  });
+
+  /**
+   * Move brick left within a container
+   * @todo
+   */
+  useHotkeys("mod+left", (e) => {
+    e.preventDefault();
+    if (selectedBrick) {
+      // console
+      console.log("Moving %s to left", selectedBrick.id);
+    }
+  });
+  /**
+   * Move brick right within a container
+   * @todo
+   */
+  useHotkeys("mod+right", (e) => {
+    e.preventDefault();
+    if (selectedBrick) {
+      // console
+      console.log("Moving %s to right", selectedBrick.id);
     }
   });
 
@@ -321,7 +345,7 @@ export function ResizeHandle({
     <div
       className={tx(
         "react-resizable-handle absolute z-10 transition-opacity duration-200 opacity-0",
-        "group-hover/brick:opacity-50 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
+        "group-hover/brick:opacity-90 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
         `react-resizable-handle-${direction}`,
         {
           "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": direction === "s",
@@ -340,19 +364,19 @@ export function ResizeHandle({
       )}
     >
       <div
-        className={tx("absolute w-[7px] h-[7px] bg-orange-400 z-10 shadow-sm", {
-          "top-1/2 -translate-y-1/2 -left-[4px]": direction === "w",
-          "top-1/2 -translate-y-1/2 -right-[4px]": direction === "e",
-          "left-1/2 -translate-x-1/2 -top-[4px]": direction === "n",
-          "left-1/2 -translate-x-1/2 -bottom-[4px]": direction === "s",
+        className={tx("absolute w-[10px] h-[10px] border-orange-400 border-2 rounded-full z-10 shadow-md", {
+          "top-1/2 -translate-y-1/2 -left-[5px]": direction === "w",
+          "top-1/2 -translate-y-1/2 -right-[5px]": direction === "e",
+          "left-1/2 -translate-x-1/2 -top-[5px]": direction === "n",
+          "left-1/2 -translate-x-1/2 -bottom-[5px]": direction === "s",
 
           // sw and nw
-          "-bottom-[4px] -left-[4px]": direction === "sw",
-          "-top-[4px] -left-[4px]": direction === "nw",
+          "-bottom-[5px] -left-[5px]": direction === "sw",
+          "-top-[5px] -left-[5px]": direction === "nw",
 
           // se and ne
-          "-bottom-[4px] -right-[4px]": direction === "se",
-          "-top-[4px] -right-[4px]": direction === "ne",
+          "-bottom-[5px] -right-[5px]": direction === "se",
+          "-top-[5px] -right-[5px]": direction === "ne",
         })}
       />
     </div>

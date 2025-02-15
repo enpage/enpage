@@ -25,7 +25,7 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
             size="2"
             onValueChange={(value) => onSettingsChange({ padding: value as DimensionsSettings["padding"] })}
           >
-            <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+            <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
@@ -45,7 +45,7 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
             onValueChange={(value) => onSettingsChange({ height: value as DimensionsSettings["height"] })}
             defaultValue={currentValue.height as string}
             size="1"
-            className="w-full !max-w-full"
+            className="w-full !max-w-full "
             radius="full"
           >
             {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}

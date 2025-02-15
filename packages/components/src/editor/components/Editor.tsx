@@ -1,11 +1,4 @@
-import {
-  useDraft,
-  useEditor,
-  useAttributes,
-  usePreviewMode,
-  type DraftState,
-  type usePageInfo,
-} from "../hooks/use-editor";
+import { useDraft, useEditor, usePreviewMode, type DraftState, type usePageInfo } from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
@@ -13,7 +6,7 @@ import { DeviceFrame } from "./Preview";
 import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
 import { Button, Spinner } from "@upstart.gg/style-system/system";
-import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
+import { generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
 import DataPanel from "./PanelData";
 import PanelSettings from "./PanelSettings";
@@ -145,7 +138,7 @@ function Panel({ className, ...props }: PanelProps) {
       id="floating-panel"
       className={tx(
         `z-[9999] fixed top-[3.7rem] bottom-0 left-[3.7rem] flex shadow-2xl flex-col overscroll-none \
-        min-w-[300px] w-[350px] transition-all duration-200 ease-in-out opacity-100
+        min-w-[300px] w-[320px] transition-all duration-200 ease-in-out opacity-100
         bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-visible`,
         {
           "-translate-x-full opacity-0": !editor.panel,

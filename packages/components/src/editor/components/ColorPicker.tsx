@@ -325,7 +325,7 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
     // combine gradients between each color
     const gradients: { from: string; to: string }[] = [];
     for (let i = 0; i < colors.length; i++) {
-      for (let j = 0; j < colors.length; j++) {
+      for (let j = i; j < colors.length; j++) {
         // don't mix neutral with other colors
         if (
           (colors[i] === "neutral" && colors[j] !== "neutral") ||
@@ -341,7 +341,7 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
 
   if (elementColorType === "page-background") {
     const colors = ["primary", "secondary", "accent", "neutral"];
-    const shades = ["50", "100", "200", "900"];
+    const shades = ["100", "300", "500", "700", "900"];
 
     return (
       <Tabs.Root defaultValue={defaultColorType}>

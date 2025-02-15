@@ -13,7 +13,7 @@ export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
     setShow(false);
     setTimeout(() => {
       setShow(true);
-    }, 450);
+    }, 300);
   }, [previewMode]);
 
   return (
@@ -24,7 +24,7 @@ export function DeviceFrame({ children, ...props }: ComponentProps<"div">) {
         styles[previewMode],
         {
           [styles.handled]: previewMode === "mobile",
-          "!opacity-20": !show,
+          "!opacity-90": !show,
           "!opacity-100": show,
         },
         css({

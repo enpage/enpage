@@ -1,6 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 
-const stylePreset = Type.Object(
+export const stylePreset = Type.Object(
   {
     style: Type.Union([
       Type.Literal("ghost", {
@@ -69,16 +69,30 @@ const stylePreset = Type.Object(
       }),
     ]),
     variant: Type.Union([
-      Type.Literal("primary"),
-      Type.Literal("secondary"),
-      Type.Literal("accent"),
-      Type.Literal("neutral"),
+      Type.Literal("primary", {
+        title: "Primary",
+        description: "Uses the theme primary color as the main color",
+      }),
+      Type.Literal("secondary", {
+        title: "Secondary",
+        description: "Uses the theme secondary color as the main color",
+      }),
+      Type.Literal("accent", {
+        title: "Accent",
+        description: "Uses the theme accent color as the main color",
+      }),
+      Type.Literal("neutral", {
+        title: "Neutral",
+        description: "Uses the theme neutral color as the main color",
+      }),
     ]),
   },
   {
     "ui:field": "hidden",
   },
 );
+
+export type StylePreset = Static<typeof stylePreset>;
 
 export const commonProps = Type.Object({
   id: Type.String({

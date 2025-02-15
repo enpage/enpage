@@ -1,5 +1,12 @@
 import { useMemo, useState, memo } from "react";
-import { useDraft, useEditor, useEditorHelpers, useGetBrick, useSelectedBrick } from "../hooks/use-editor";
+import {
+  useDraft,
+  useEditor,
+  useEditorHelpers,
+  useGetBrick,
+  usePreviewMode,
+  useSelectedBrick,
+} from "../hooks/use-editor";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { tx } from "@upstart.gg/style-system/twind";
 import { Callout, IconButton, Tabs } from "@upstart.gg/style-system/system";
@@ -10,10 +17,12 @@ import { IoCloseOutline } from "react-icons/io5";
 import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { useLocalStorage } from "usehooks-ts";
 import { BsStars } from "react-icons/bs";
+import PresetsView from "./PresetsView";
 
 export default function Inspector() {
   const selectedBrick = useSelectedBrick();
   const { deselectBrick } = useEditorHelpers();
+  const previewMode = usePreviewMode();
   const [selectedTab, setSelectedTab] = useLocalStorage("inspector_tab", "preset");
 
   if (!selectedBrick) {
@@ -78,6 +87,7 @@ export default function Inspector() {
               further in the <span className="font-semibold">Settings</span> tab.
             </Callout.Text>
           </Callout.Root>
+          <PresetsView />
         </div>
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="style">
@@ -87,6 +97,15 @@ export default function Inspector() {
           </h2>
           <span className="text-xs text-gray-400">{}</span>
         </div>
+        {previewMode === "mobile" && (
+          <Callout.Root size="1" className="m-2">
+            <Callout.Text size="1">
+              <strong>Warning</strong>: You are editing the mobile settings. Any changes here will only affect
+              how the brick appears on mobile devices. Yellow-highlighted fields are mobile-specific
+              customizations, while other fields inherit their values from the desktop version.
+            </Callout.Text>
+          </Callout.Root>
+        )}
         <ElementInspector brick={selectedBrick} />
       </ScrollablePanelTab>
     </Tabs.Root>
@@ -94,14 +113,14 @@ export default function Inspector() {
 }
 
 function ElementInspector({ brick }: { brick: Brick }) {
-  const brickDefaults = defaults[brick.type];
   const draft = useDraft();
   const getBrick = useGetBrick();
   const brickInfo = getBrick(brick.id);
-  const formData = useMemo(
-    () => ({ ...brickDefaults.props, ...(brickInfo?.props ?? {}) }),
-    [brickInfo, brickDefaults],
-  );
+  const previewMode = usePreviewMode();
+  // const formData = useMemo(
+  //   () => ({ ...brickDefaults.props, ...(brickInfo?.props ?? {}) }),
+  //   [brickInfo, brickDefaults],
+  // );
 
   if (!brickInfo) {
     console.log("No brick info found for brick: %s", brick.id);
@@ -114,7 +133,7 @@ function ElementInspector({ brick }: { brick: Brick }) {
       return;
     }
     console.log("onChange(%s)", propertyChanged, data, brickInfo);
-    draft.updateBrickProps(brick.id, { ...data, lastTouched: Date.now() });
+    draft.updateBrickProps(brick.id, { ...data, lastTouched: Date.now() }, previewMode === "mobile");
   };
 
   const manifest = manifests[brick.type];
@@ -124,10 +143,13 @@ function ElementInspector({ brick }: { brick: Brick }) {
     return null;
   }
 
+  const mobileFormData = previewMode === "mobile" ? brickInfo.mobileProps : undefined;
+
   const elements = getFormComponents({
     brickId: brick.id,
     formSchema: manifest.properties.props as unknown as JSONSchemaType<unknown>,
-    formData,
+    formData: brickInfo.props,
+    mobileFormData,
     onChange,
   });
 

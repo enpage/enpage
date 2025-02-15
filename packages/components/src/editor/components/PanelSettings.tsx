@@ -7,8 +7,6 @@ import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attribut
 import { Tabs, Spinner } from "@upstart.gg/style-system/system";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 
-import "./json-form/json-form.css";
-
 export default function SettingsForm() {
   const draft = useDraft();
   const attributes = useAttributes();

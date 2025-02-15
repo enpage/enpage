@@ -41,7 +41,6 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Width</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.width.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
@@ -63,7 +62,6 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Style</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.style.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
@@ -87,7 +85,6 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Rounding</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.radius.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>

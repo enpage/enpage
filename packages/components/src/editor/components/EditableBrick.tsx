@@ -1,5 +1,13 @@
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import { forwardRef, memo, useRef, useState, type ComponentProps, type MouseEvent } from "react";
+import {
+  forwardRef,
+  memo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useDraft, useEditorHelpers, usePreviewMode, useSelectedBrick } from "../hooks/use-editor";
 import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
@@ -34,8 +42,6 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
       isContainerChild,
       selected: selectedBrick?.id === brick.id,
     });
-
-    console.log({ brick });
 
     const { setSelectedBrick } = useEditorHelpers();
 
@@ -90,8 +96,11 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         }}
       >
         <BaseBrick brick={brick} id={brick.id} editable />
-        <BrickOptionsButton brick={brick} isContainerChild={isContainerChild} />
-        {brick.isContainer && <ContainerLabel brick={brick} />}
+        {brick.isContainer ? (
+          <ContainerLabel brick={brick} />
+        ) : (
+          <BrickOptionsButton brick={brick} isContainerChild={isContainerChild} />
+        )}
         {children} {/* Make sure to include children to add resizable handle */}
       </div>
     );
@@ -102,8 +111,8 @@ function ContainerLabel({ brick }: { brick: Brick }) {
   return (
     <div
       className={tx(
-        `container-label capitalize absolute left-0
-        bg-upstart-400 text-white py-1 px-2 text-xs font-medium
+        `container-label capitalize absolute left-1.5 cursor-pointer flex gap-2 items-center
+        bg-upstart-500 text-white py-1 px-2 text-xs font-medium
         opacity-0 group-hover/brick:!opacity-100 transition-opacity duration-100`,
         {
           "bottom-full rounded-t-md": brick.position.desktop.y > 0,
@@ -111,7 +120,8 @@ function ContainerLabel({ brick }: { brick: Brick }) {
         },
       )}
     >
-      {brick.type}
+      <span>{brick.type}</span>
+      <BrickOptionsButton brick={brick} containerButton />
     </div>
   );
 }
@@ -121,7 +131,11 @@ function ContainerLabel({ brick }: { brick: Brick }) {
 
 export default BrickWrapper;
 
-function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isContainerChild?: boolean }) {
+function BrickOptionsButton({
+  brick,
+  isContainerChild,
+  containerButton,
+}: { brick: Brick; isContainerChild?: boolean; containerButton?: boolean }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
   const editorHelpers = useEditorHelpers();
@@ -130,7 +144,13 @@ function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isConta
       <DropdownMenu.Trigger>
         {/* when the brick is a container child, the button should be on the left side
             so that it doesn't overlap with the container button */}
-        <div className={tx("absolute top-1", isContainerChild ? "left-1.5" : "right-1.5 z-[99999]")}>
+        <div
+          className={tx({
+            "absolute top-1 right-1.5": !containerButton,
+            "!opacity-0 group-hover/brick:!opacity-100": containerButton,
+            "!opacity-100": containerButton && open,
+          })}
+        >
           <IconButton
             type="button"
             variant="ghost"
@@ -139,13 +159,19 @@ function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isConta
             className={tx(
               {
                 "!opacity-0": !open,
+                "!border !border-upstart-500 !bg-upstart-500 hover:!border-upstart-300 !p-0.5":
+                  !containerButton,
               },
               "nodrag transition-all duration-300 group/button group-hover/brick:!opacity-100 \
-              active:!opacity-100 focus:!flex focus-within:!opacity-100 !border !border-upstart-500 !bg-upstart-500  \
-              hover:!border-upstart-300 !p-0.5",
+              active:!opacity-100 focus:!flex focus-within:!opacity-100 ",
             )}
           >
-            <BiDotsVerticalRounded className="w-5 h-5 text-white/80 group-hover/button:text-white" />
+            <BiDotsVerticalRounded
+              className={tx(" text-white/80 group-hover/button:text-white", {
+                "w-5 h-5": !containerButton,
+                "w-4 h-4": containerButton,
+              })}
+            />
           </IconButton>
         </div>
       </DropdownMenu.Trigger>
@@ -153,7 +179,7 @@ function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isConta
         {/* The "nodrag" class is here to prevent the grid manager
             from handling click event coming from the menu items.
             We still need to stop the propagation for other listeners. */}
-        <DropdownMenu.Content className="nodrag">
+        <DropdownMenu.Content className="nodrag" size="1">
           <DropdownMenu.Item
             shortcut="⌘D"
             onClick={(e) => {
@@ -163,6 +189,26 @@ function BrickOptionsButton({ brick, isContainerChild }: { brick: Brick; isConta
           >
             Duplicate
           </DropdownMenu.Item>
+          {isContainerChild && (
+            <>
+              <DropdownMenu.Item
+                shortcut="⌘&larr;"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Move left
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                shortcut="⌘&rarr;"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Move right
+              </DropdownMenu.Item>
+            </>
+          )}
           <DropdownMenu.Sub>
             <DropdownMenu.SubTrigger>Visible on</DropdownMenu.SubTrigger>
             <DropdownMenu.SubContent>

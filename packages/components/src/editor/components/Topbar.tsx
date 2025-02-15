@@ -43,9 +43,13 @@ export default function TopBar() {
     [draft.siteId, draft.id, pageVersion],
   );
 
-  const switchPreviewMode = useCallback(() => {
-    editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
-  }, [previewMode, editorHelpers.setPreviewMode]);
+  const switchPreviewMode = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
+    },
+    [previewMode, editorHelpers.setPreviewMode],
+  );
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;

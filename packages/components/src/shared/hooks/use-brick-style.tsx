@@ -29,6 +29,7 @@ export function useBrickStyle(
     props.flex?.wrap ? `flex-${props.flex.wrap}` : null,
     props.flex?.justify ? `justify-${props.flex.justify}` : null,
     props.flex?.align ? `items-${props.flex.align}` : null,
+    props.flex?.gap ? `gap-${props.flex.gap}` : null,
   ]);
 }
 
@@ -58,8 +59,7 @@ export function useBrickWrapperStyle({
     // "overflow-hidden",
 
     {
-      "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] bg-upstart-500/10)":
-        editable,
+      "select-none hover:z-[9999]": editable,
     },
 
     // container children expand to fill the space

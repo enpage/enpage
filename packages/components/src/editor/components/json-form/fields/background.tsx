@@ -8,6 +8,7 @@ import ColorField from "./color";
 import { useUploader } from "../../UploaderContext";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
+import { HelpIcon } from "../HelpIcon";
 
 const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   const { schema, formData, onChange, required, title, description, currentValue } = props;
@@ -79,7 +80,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
               <Text as="label" size="2" weight="medium">
                 Size
               </Text>
-              <div className="flex items-end gap-4">
+              <div className="flex items-center gap-4">
                 <Select.Root
                   defaultValue={currentValue.size ?? "auto"}
                   size="2"
@@ -87,7 +88,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
                     onChange({ ...currentValue, size: value as BackgroundSettings["size"] })
                   }
                 >
-                  <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+                  <Select.Trigger radius="large" variant="ghost" />
                   <Select.Content position="popper">
                     <Select.Group>
                       {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
@@ -99,26 +100,20 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
                     </Select.Group>
                   </Select.Content>
                 </Select.Root>
-                <Tooltip
-                  content={`
+                <HelpIcon
+                  help={`
               When "Auto", the background image will be displayed in its original size.
               "Cover" will make the background image cover the entire element,
               and "Contain" will make the background image contained within the element.
               `}
-                  className="!z-[10000] !text-sm"
-                  align="end"
-                >
-                  <IconButton variant="ghost" size="1" radius="full" className="group !cursor-help" disabled>
-                    <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
-                  </IconButton>
-                </Tooltip>
+                />
               </div>
             </div>
             <div className="flex flex-col flex-1">
               <Text as="label" size="2" weight="medium">
                 Repeat
               </Text>
-              <div className="flex items-end gap-4">
+              <div className="flex items-center gap-4">
                 <Select.Root
                   defaultValue={currentValue.repeat ?? "no-repeat"}
                   size="2"
@@ -126,7 +121,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
                     onChange({ ...currentValue, repeat: value as BackgroundSettings["repeat"] })
                   }
                 >
-                  <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+                  <Select.Trigger radius="large" variant="ghost" />
                   <Select.Content position="popper">
                     <Select.Group>
                       {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
@@ -138,19 +133,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
                     </Select.Group>
                   </Select.Content>
                 </Select.Root>
-                <Tooltip
-                  content={`
-              When "Auto", the background image will be displayed in its original size.
-              "Cover" will make the background image cover the entire element,
-              and "Contain" will make the background image contained within the element.
-              `}
-                  className="!z-[10000] !text-sm"
-                  align="end"
-                >
-                  <IconButton variant="ghost" size="1" radius="full" className="group !cursor-help" disabled>
-                    <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
-                  </IconButton>
-                </Tooltip>
+                <HelpIcon help={"Choose how the background image will be repeated."} />
               </div>
             </div>
           </div>

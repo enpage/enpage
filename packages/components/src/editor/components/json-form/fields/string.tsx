@@ -2,8 +2,8 @@ import type { FieldProps } from "./types";
 import { TextField, TextArea } from "@upstart.gg/style-system/system";
 import { TbSlash } from "react-icons/tb";
 import { fieldLabel } from "../form-class";
-import { Text, Select, Tooltip, IconButton } from "@upstart.gg/style-system/system";
-import { IoIosHelpCircleOutline } from "react-icons/io";
+import { Text } from "@upstart.gg/style-system/system";
+import { HelpIcon } from "../HelpIcon";
 
 export const StringField: React.FC<FieldProps<string>> = (props) => {
   const { currentValue, onChange, required, title, description, placeholder, schema } = props;
@@ -13,26 +13,14 @@ export const StringField: React.FC<FieldProps<string>> = (props) => {
       {title && (
         <div className="flex items-center justify-between">
           <label className={fieldLabel}>{title}</label>
-          {description && (
-            <Tooltip content={description} className="!z-[10000]" align="end">
-              <IconButton
-                variant="ghost"
-                size="1"
-                radius="full"
-                className="!p-0.5 group !cursor-help"
-                disabled
-              >
-                <IoIosHelpCircleOutline className="text-upstart-400 w-5 h-5 group-hover:text-upstart-600" />
-              </IconButton>
-            </Tooltip>
-          )}
+          {description && <HelpIcon help={description} />}
         </div>
       )}
       {schema["ui:multiline"] ? (
         <TextArea
           defaultValue={currentValue}
           onChange={(e) => onChange(e.target.value)}
-          className="!mt-0.5 scrollbar-thin"
+          className="!mt-1 scrollbar-thin"
           required={required}
           placeholder={placeholder}
           resize="vertical"
@@ -42,7 +30,7 @@ export const StringField: React.FC<FieldProps<string>> = (props) => {
         <TextField.Root
           defaultValue={currentValue}
           onChange={(e) => onChange(e.target.value)}
-          className="!mt-0.5"
+          className="!mt-1"
           required={required}
           placeholder={placeholder}
           spellCheck={!!schema["ui:spellcheck"]}

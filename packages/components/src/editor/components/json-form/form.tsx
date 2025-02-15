@@ -34,6 +34,7 @@ type FormComponents = (FormComponent | { group: string; groupTitle: string; comp
 type GetFormComponentsProps = {
   formSchema: JSONSchemaType<unknown>;
   formData: Record<string, unknown>;
+  mobileFormData?: Record<string, unknown>;
   onChange: (data: Record<string, unknown>, id: string) => void;
   onSubmit?: (data: Record<string, unknown>) => void;
   submitButtonLabel?: string;
@@ -45,6 +46,7 @@ type GetFormComponentsProps = {
  * Render a JSON schema form
  * @param schema the schema
  * @param formData data to prefill the form
+ * @param mobileFormData mobile specific data to prefill the form
  * @param onChange callback when the form changes
  * @param submitButtonLabel label for the submit button. If omitted, no submit button will be rendered
  * @param prefix prefix for deep fields
