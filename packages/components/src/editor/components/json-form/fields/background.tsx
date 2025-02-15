@@ -143,7 +143,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
-                onChange({ ...currentValue, image: "" });
+                onChange({ ...currentValue, image: undefined });
               }}
               title="Close"
               size="1"
