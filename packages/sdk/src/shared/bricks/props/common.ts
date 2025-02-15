@@ -63,6 +63,14 @@ export const stylePreset = Type.Object(
         title: "Gradient 4",
         description: "Smooth color gradients background with soft edges",
       }),
+      Type.Literal("gradient5", {
+        title: "Gradient 5",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient6", {
+        title: "Gradient 6",
+        description: "Smooth color gradients background with soft edges",
+      }),
       Type.Literal("callout", {
         title: "Callout",
         description: "Prominent style for important information or CTAs",

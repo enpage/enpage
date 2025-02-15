@@ -87,7 +87,7 @@ export function getPresetStyles({ style, variant }: StylePreset): StylePropertie
       effects: {
         shadow: "shadow-sm",
       },
-      text: variant === "neutral" ? "text-neutral-800" : `text-${variant}-50`,
+      text: variant === "neutral" ? "text-neutral-800" : `text-${variant}-900`,
     },
     plain3: {
       background: {
@@ -224,6 +224,30 @@ export function getPresetStyles({ style, variant }: StylePreset): StylePropertie
       },
       text: "text-neutral-900",
     },
+    gradient5: {
+      background: {
+        color: `bg-gradient-to-tr from-${variant}-400 ${variant === "neutral" ? "to-neutral-200" : `to-${getOtherVariantColor(variant)}-400`}`,
+      },
+      border: {
+        color: `border-${variant}-200`,
+        style: "border-solid",
+        width: "border",
+        radius: "rounded-md",
+      },
+      text: "text-neutral-900",
+    },
+    gradient6: {
+      background: {
+        color: `bg-gradient-to-tr from-${variant}-400 ${variant === "neutral" ? "to-neutral-200" : `to-${getOtherVariantColor(variant, true)}-400`}`,
+      },
+      border: {
+        color: `border-${variant}-200`,
+        style: "border-solid",
+        width: "border",
+        radius: "rounded-md",
+      },
+      text: "text-neutral-900",
+    },
     paper: {
       background: {
         color: `bg-${variant}-50`,
@@ -240,7 +264,7 @@ export function getPresetStyles({ style, variant }: StylePreset): StylePropertie
       border: {
         color: `border-${variant}-600`,
         style: "border-solid",
-        width: "border-4",
+        width: "border-2",
         radius: "rounded-none",
       },
       text: `text-${variant}-800`,

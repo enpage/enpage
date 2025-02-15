@@ -238,6 +238,7 @@ export default function EditablePage() {
         draftHelpers.deselectBrick();
         // also deselect the library panel
         editorHelpers.hidePanel("library");
+        editorHelpers.hidePanel("inspector");
         editorHelpers.setTextEditMode("default");
       }
     };

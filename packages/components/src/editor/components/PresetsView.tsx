@@ -52,7 +52,7 @@ export default function PresetsView({ onChoose }: PresetsViewProps) {
           return (
             <div
               key={`${style.name}-${variant}`}
-              className="bg-gray-200 transition-all duration-100 hover:(scale-105) rounded-lg gap-2 flex items-stretch justify-center h-20 text-gray-800 cursor-pointer"
+              className="bg-gray-200 transition-all duration-100 hover:(scale-105) rounded-lg gap-2 flex items-stretch justify-center h-16 text-gray-800 cursor-pointer"
               onClick={() => onChoose(preset)}
             >
               <div
@@ -67,8 +67,7 @@ export default function PresetsView({ onChoose }: PresetsViewProps) {
                   preset?.effects?.shadow,
                 )}
               >
-                <h2 className="text-center text-xs font-semibold">{style.name}</h2>
-                <h3 className="text-center text-xs font-normal">{variant}</h3>
+                <h2 className="text-center text-xs font-medium">{style.name}</h2>
               </div>
             </div>
           );
