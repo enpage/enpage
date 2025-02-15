@@ -7,13 +7,25 @@ export const stylePreset = Type.Object(
         title: "Ghost",
         description: "Minimal style with transparent background and no border",
       }),
-      Type.Literal("classic", {
-        title: "Classic",
-        description: "Clean and professional look with subtle shadow and rounded corners",
+      Type.Literal("plain", {
+        title: "Plain",
+        description: "Simple style with solid dark background and basic border",
+      }),
+      Type.Literal("plain2", {
+        title: "Plain 2",
+        description: "Simple style with solid dark background and basic border",
+      }),
+      Type.Literal("plain3", {
+        title: "Plain 3",
+        description: "Simple style with solid dark background and basic border",
       }),
       Type.Literal("modern", {
         title: "Modern",
-        description: "Bold black borders with generous spacing and sharp corners",
+        description: "Bold borders with generous spacing and sharp corners",
+      }),
+      Type.Literal("modern2", {
+        title: "Modern 2",
+        description: "Bold borders with generous spacing and sharp corners",
       }),
       Type.Literal("soft", {
         title: "Soft",
@@ -23,21 +35,9 @@ export const stylePreset = Type.Object(
         title: "Glass",
         description: "Translucent backdrop with blur effect for depth",
       }),
-      Type.Literal("minimal", {
-        title: "Minimal",
-        description: "Simple and straightforward design with basic borders",
-      }),
       Type.Literal("elevated", {
         title: "Elevated",
         description: "Floating appearance with shadow depth and no borders",
-      }),
-      Type.Literal("playful", {
-        title: "Playful",
-        description: "Fun dashed borders and light colors for engaging content",
-      }),
-      Type.Literal("professional", {
-        title: "Professional",
-        description: "Clean design with accent border for important content",
       }),
       Type.Literal("outlined", {
         title: "Outlined",
@@ -49,23 +49,23 @@ export const stylePreset = Type.Object(
       }),
       Type.Literal("gradient", {
         title: "Gradient",
-        description: "Smooth color transition background with soft edges",
+        description: "Smooth color gradients background with soft edges",
       }),
-      Type.Literal("nested", {
-        title: "Nested",
-        description: "Layered appearance with offset background",
+      Type.Literal("gradient2", {
+        title: "Gradient 2",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient3", {
+        title: "Gradient 3",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient4", {
+        title: "Gradient 4",
+        description: "Smooth color gradients background with soft edges",
       }),
       Type.Literal("callout", {
         title: "Callout",
         description: "Prominent style for important information or CTAs",
-      }),
-      Type.Literal("floating", {
-        title: "Floating",
-        description: "Hovering effect with dynamic shadow on interaction",
-      }),
-      Type.Literal("inset", {
-        title: "Inset",
-        description: "Pressed-in appearance with inner shadow",
       }),
     ]),
     variant: Type.Union([

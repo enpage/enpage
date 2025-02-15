@@ -9,7 +9,13 @@ import {
   type ReactNode,
 } from "react";
 import { tx } from "@upstart.gg/style-system/twind";
-import { useDraft, useEditorHelpers, usePreviewMode, useSelectedBrick } from "../hooks/use-editor";
+import {
+  useDraft,
+  useDraftHelpers,
+  useEditorHelpers,
+  usePreviewMode,
+  useSelectedBrick,
+} from "../hooks/use-editor";
 import { DropdownMenu, IconButton, Portal } from "@upstart.gg/style-system/system";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import BaseBrick from "~/shared/components/BaseBrick";
@@ -43,7 +49,8 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
       selected: selectedBrick?.id === brick.id,
     });
 
-    const { setSelectedBrick } = useEditorHelpers();
+    const { setSelectedBrick } = useDraftHelpers();
+    const { setPanel } = useEditorHelpers();
 
     /*
 
@@ -67,6 +74,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         return;
       }
       setSelectedBrick(brick);
+      setPanel("inspector");
       hasMouseMoved.current = false;
 
       // stop propagation otherwise the click could then be handled by the container
@@ -138,6 +146,7 @@ function BrickOptionsButton({
 }: { brick: Brick; isContainerChild?: boolean; containerButton?: boolean }) {
   const [open, setOpen] = useState(false);
   const draft = useDraft();
+  const draftHelpers = useDraftHelpers();
   const editorHelpers = useEditorHelpers();
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
@@ -236,7 +245,8 @@ function BrickOptionsButton({
             onClick={(e) => {
               e.stopPropagation();
               draft.deleteBrick(brick.id);
-              editorHelpers.deselectBrick(brick.id);
+              draftHelpers.deselectBrick(brick.id);
+              editorHelpers.hidePanel("inspector");
             }}
           >
             Delete

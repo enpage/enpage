@@ -1,6 +1,7 @@
 import { useMemo, useState, memo } from "react";
 import {
   useDraft,
+  useDraftHelpers,
   useEditor,
   useEditorHelpers,
   useGetBrick,
@@ -20,19 +21,22 @@ import { BsStars } from "react-icons/bs";
 import PresetsView from "./PresetsView";
 
 export default function Inspector() {
-  const selectedBrick = useSelectedBrick();
-  const { deselectBrick } = useEditorHelpers();
+  const brick = useSelectedBrick();
+  const { deselectBrick } = useDraftHelpers();
+  const { hidePanel } = useEditorHelpers();
   const previewMode = usePreviewMode();
   const [selectedTab, setSelectedTab] = useLocalStorage("inspector_tab", "preset");
+  const draft = useDraft();
 
-  if (!selectedBrick) {
+  if (!brick) {
     return null;
   }
 
-  const manifest = manifests[selectedBrick.type];
+  const manifest = manifests[brick.type];
   if (!manifest) {
-    console.warn(`No manifest found for brick: ${JSON.stringify(selectedBrick)}`);
+    console.warn(`No manifest found for brick: ${JSON.stringify(brick)}`);
     deselectBrick();
+    hidePanel("inspector");
     return null;
   }
 
@@ -55,7 +59,7 @@ export default function Inspector() {
             Data record
           </Tabs.Trigger>
         )}
-        {selectedBrick.type === "text" && (
+        {brick.type === "text" && (
           <Tabs.Trigger value="ai" className="!flex-1">
             AI <BsStars className={tx("ml-1 w-4 h-4 text-upstart-600")} />
           </Tabs.Trigger>
@@ -68,6 +72,7 @@ export default function Inspector() {
           color="gray"
           onClick={() => {
             deselectBrick();
+            hidePanel("inspector");
           }}
         >
           <IoCloseOutline className="w-4 h-4 text-gray-400 hover:text-gray-700" />
@@ -87,7 +92,12 @@ export default function Inspector() {
               further in the <span className="font-semibold">Settings</span> tab.
             </Callout.Text>
           </Callout.Root>
-          <PresetsView />
+          <PresetsView
+            onChoose={(preset) => {
+              console.log("onChoose(%o)", preset);
+              draft.updateBrickProps(brick.id, preset, previewMode === "mobile");
+            }}
+          />
         </div>
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="style">
@@ -106,7 +116,7 @@ export default function Inspector() {
             </Callout.Text>
           </Callout.Root>
         )}
-        <ElementInspector brick={selectedBrick} />
+        <ElementInspector brick={brick} />
       </ScrollablePanelTab>
     </Tabs.Root>
   );
@@ -133,7 +143,7 @@ function ElementInspector({ brick }: { brick: Brick }) {
       return;
     }
     console.log("onChange(%s)", propertyChanged, data, brickInfo);
-    draft.updateBrickProps(brick.id, { ...data, lastTouched: Date.now() }, previewMode === "mobile");
+    draft.updateBrickProps(brick.id, data, previewMode === "mobile");
   };
 
   const manifest = manifests[brick.type];

@@ -6,6 +6,7 @@ import {
   useAttributes,
   useBricks,
   useDraft,
+  useDraftHelpers,
   useEditorHelpers,
   usePreviewMode,
   useSelectedBrick,
@@ -26,6 +27,7 @@ const ghostInvalid = tx("bg-red-100");
 export default function EditablePage() {
   const previewMode = usePreviewMode();
   const editorHelpers = useEditorHelpers();
+  const draftHelpers = useDraftHelpers();
   const selectedBrick = useSelectedBrick();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
@@ -154,7 +156,8 @@ export default function EditablePage() {
           draft.adjustMobileLayout();
 
           // auto select the new brick
-          editorHelpers.setSelectedBrick(newBrick);
+          draftHelpers.setSelectedBrick(newBrick);
+          editorHelpers.setPanel("inspector");
         } else {
           console.warn("Can't drop here");
         }
@@ -232,7 +235,7 @@ export default function EditablePage() {
         !target.closest(".brick")
       ) {
         console.debug("click out, hidding", event.target);
-        editorHelpers.deselectBrick();
+        draftHelpers.deselectBrick();
         // also deselect the library panel
         editorHelpers.hidePanel("library");
         editorHelpers.setTextEditMode("default");
@@ -245,8 +248,8 @@ export default function EditablePage() {
   }, []);
 
   useHotkeys("esc", () => {
-    editorHelpers.deselectBrick();
-    editorHelpers.setPanel();
+    draftHelpers.deselectBrick();
+    editorHelpers.hidePanel("inspector");
   });
 
   useHotkeys("mod+c", () => {
@@ -261,7 +264,8 @@ export default function EditablePage() {
     if (selectedBrick) {
       e.preventDefault();
       draft.deleteBrick(selectedBrick.id);
-      editorHelpers.deselectBrick(selectedBrick.id);
+      draftHelpers.deselectBrick(selectedBrick.id);
+      editorHelpers.hidePanel("inspector");
     }
   });
 

@@ -63,10 +63,10 @@ export default defineConfig({
     /**
      * Can be used with text-neutral-500, but also text-neutral-500-subtle, text-neutral-500-tonal-subtle, text-neutral-500-strong, etc.
      */
-    ["text-neutral-", ({ $$ }) => ({ color: `var(--text-neutral-${$$})` })],
-    ["text-accent-", ({ $$ }) => ({ color: `var(--text-accent-${$$})` })],
-    ["text-primary-", ({ $$ }) => ({ color: `var(--text-primary-${$$})` })],
-    ["text-secondary-", ({ $$ }) => ({ color: `var(--text-secondary-${$$})` })],
+    ["text-neutral-", ({ $$ }) => ({ color: `var(--color-neutral-${$$})` })],
+    ["text-accent-", ({ $$ }) => ({ color: `var(--color-accent-${$$})` })],
+    ["text-primary-", ({ $$ }) => ({ color: `var(--color-primary-${$$})` })],
+    ["text-secondary-", ({ $$ }) => ({ color: `var(--color-secondary-${$$})` })],
 
     ["outline-primary-", ({ $$ }) => ({ outlineColor: `var(--color-primary-${$$})` })],
     ["outline-secondary-", ({ $$ }) => ({ outlineColor: `var(--color-secondary-${$$})` })],

@@ -97,7 +97,7 @@ export const borderRadius = Type.Union(
   },
 );
 
-export const borders = Type.Optional(
+export const border = Type.Optional(
   Type.Object(
     {
       radius: borderRadius,
@@ -120,7 +120,7 @@ export const borders = Type.Optional(
   ),
 );
 
-export type BorderSettings = Static<typeof borders>;
+export type BorderSettings = Static<typeof border>;
 
 export const padding = Type.Union(
   [
@@ -405,7 +405,7 @@ export const commonStyleProps = Type.Object({
   // borderColor,
   // borderStyle,
   dimensions,
-  borders,
+  border,
   effects,
   // padding,
   background,

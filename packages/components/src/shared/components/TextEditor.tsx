@@ -26,7 +26,7 @@ import {
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import { useDatasourcesSchemas, useEditor } from "~/editor/hooks/use-editor";
+import { useDatasourcesSchemas, useEditor, useSelectedBrick } from "~/editor/hooks/use-editor";
 import { VscDatabase } from "react-icons/vsc";
 import { BiFullscreen, BiExitFullscreen } from "react-icons/bi";
 import { JSONSchemaView } from "~/editor/components/json-form/SchemaView";
@@ -278,7 +278,7 @@ const MenuBar = ({
   inline?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const mainEditor = useEditor();
+  const selectedBrick = useSelectedBrick();
   let className = "";
 
   if (placement === "above-editor") {
@@ -295,7 +295,7 @@ const MenuBar = ({
       // "z-[900] text-gray-800 flex gap-3 p-1 bg-upstart-600/25",
       // "shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
       {
-        "opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
+        "opacity-0 hidden": selectedBrick?.id !== brickId,
       },
     );
   }

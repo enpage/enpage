@@ -95,10 +95,10 @@ export function useBrickWrapperStyle({
       }),
 
     // Border
-    "borders" in brick.props && propToStyle(brick.props.borders.color as string, "borderColor"),
-    "borders" in brick.props && (brick.props.borders.radius as string),
-    "borders" in brick.props && (brick.props.borders.style as string),
-    "borders" in brick.props && (brick.props.borders.width as string),
+    "border" in brick.props && propToStyle(brick.props.border.color as string, "borderColor"),
+    "border" in brick.props && (brick.props.border.radius as string),
+    "border" in brick.props && (brick.props.border.style as string),
+    "border" in brick.props && (brick.props.border.width as string),
 
     // Background
     "background" in brick.props && propToStyle(brick.props.background.color as string, "background-color"),
