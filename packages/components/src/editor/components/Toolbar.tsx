@@ -17,7 +17,7 @@ export default function Toolbar() {
   const commonCls = `${baseCls}
     w-full
     hover:from-transparent hover:to-[rgba(255,255,255,0.45)] dark:hover:to-dark-700
-    active:(from-transparent hover:to-[rgba(0,0,0,0.15)])
+    active:(from-transparent hover:to-[rgba(0,0,0,0.07)])
     disabled:text-gray-400/80 disabled:hover:from-transparent disabled:hover:to-transparent
   `;
 

@@ -38,7 +38,7 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
             defaultValue={currentValue.direction as string}
             size="1"
             className="w-full mt-0.5 !max-w-full"
-            radius="full"
+            radius="large"
           >
             {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
             {schema.properties.direction.anyOf.map((option: any) => (

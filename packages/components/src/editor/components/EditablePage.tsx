@@ -1,4 +1,4 @@
-import { css, tx } from "@upstart.gg/style-system/twind";
+import { css, tx, sheet } from "@upstart.gg/style-system/twind";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { generateId, type Brick } from "@upstart.gg/sdk/shared/bricks";
 import BrickWrapper from "./EditableBrick";

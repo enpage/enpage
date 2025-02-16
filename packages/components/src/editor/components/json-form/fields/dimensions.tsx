@@ -46,7 +46,7 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
             defaultValue={currentValue.height as string}
             size="1"
             className="w-full !max-w-full "
-            radius="full"
+            radius="large"
           >
             {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
             {schema.properties.height.anyOf.map((option: any) => (

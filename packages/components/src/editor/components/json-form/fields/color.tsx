@@ -246,6 +246,9 @@ function ColorElementPopover({
     case "border":
       width = "186px";
       break;
+    case "text":
+      width = "216px";
+      break;
   }
   return (
     <Popover.Content width={width} side={side} align={align} maxWidth={width}>

@@ -8,6 +8,7 @@ import ColorField from "./color";
 import { useUploader } from "../../UploaderContext";
 import { IoCloseOutline } from "react-icons/io5";
 import { HelpIcon } from "../HelpIcon";
+import { IoSearch } from "react-icons/io5";
 
 const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
   const { schema, formData, onChange, required, title, description, currentValue } = props;
@@ -66,7 +67,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
           {schema["ui:show-img-search"] && (
             <Button variant="soft" size="1" radius="full" type="button" onClick={() => setShowSearch(true)}>
               <label className="!leading-[inherit] !mb-0 !font-medium !text-inherit cursor-[inherit]">
-                Search
+                <IoSearch className="text-upstart-700 w-4 h-4" />
               </label>
             </Button>
           )}

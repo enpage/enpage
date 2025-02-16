@@ -210,6 +210,7 @@ export const brickSchema = Type.Composite([
       description: "A unique identifier for the brick.",
     }),
     isContainer: Type.Optional(Type.Boolean({ default: false })),
+    parentId: Type.Optional(Type.String()),
     hideInLibrary: Type.Optional(Type.Boolean()),
     position: Type.Object(
       {
@@ -285,8 +286,9 @@ function mapPosition(
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
   return bricks.map((brick) => {
+    const id = `brick-${generateId()}`;
     return {
-      id: `brick-${generateId()}`,
+      id,
       ...defaults[brick.type],
       ...brick,
       props: {
@@ -297,6 +299,7 @@ export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
                 id: `brick-${generateId()}`,
                 ...defaults[childBrick.type],
                 ...childBrick,
+                parentId: id,
                 ...("position" in childBrick
                   ? {}
                   : {

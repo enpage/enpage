@@ -116,19 +116,26 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
 );
 
 function ContainerLabel({ brick }: { brick: Brick }) {
+  const draftHelpers = useDraftHelpers();
+  const editorHelpers = useEditorHelpers();
   return (
     <div
       className={tx(
-        `container-label capitalize absolute left-1.5 cursor-pointer flex gap-2 items-center
+        `container-label bottom-0 rounded-t-md capitalize absolute left-1.5 cursor-pointer flex gap-2 items-center
         bg-upstart-500 text-white py-1 px-2 text-xs font-medium
         opacity-0 group-hover/brick:!opacity-100 transition-opacity duration-100`,
-        {
-          "bottom-full rounded-t-md": brick.position.desktop.y > 0,
-          "top-full rounded-b-md": brick.position.desktop.y === 0,
-        },
       )}
     >
-      <span>{brick.type}</span>
+      <span
+        className="flex-1"
+        onClick={(e) => {
+          e.stopPropagation();
+          draftHelpers.setSelectedBrick(brick);
+          editorHelpers.setPanel("inspector");
+        }}
+      >
+        {brick.type}
+      </span>
       <BrickOptionsButton brick={brick} containerButton />
     </div>
   );
@@ -150,7 +157,7 @@ function BrickOptionsButton({
   const editorHelpers = useEditorHelpers();
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>
-      <DropdownMenu.Trigger>
+      <DropdownMenu.Trigger onClick={(e) => e.stopPropagation()}>
         {/* when the brick is a container child, the button should be on the left side
             so that it doesn't overlap with the container button */}
         <div
@@ -198,12 +205,22 @@ function BrickOptionsButton({
           >
             Duplicate
           </DropdownMenu.Item>
+          <DropdownMenu.Item
+            shortcut="⌘D"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(JSON.stringify(brick));
+            }}
+          >
+            Copy
+          </DropdownMenu.Item>
           {isContainerChild && (
             <>
               <DropdownMenu.Item
                 shortcut="⌘&larr;"
                 onClick={(e) => {
                   e.stopPropagation();
+                  draft.moveBrick(brick.id, "left");
                 }}
               >
                 Move left
@@ -212,6 +229,7 @@ function BrickOptionsButton({
                 shortcut="⌘&rarr;"
                 onClick={(e) => {
                   e.stopPropagation();
+                  draft.moveBrick(brick.id, "right");
                 }}
               >
                 Move right

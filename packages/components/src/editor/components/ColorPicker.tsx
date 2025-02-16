@@ -448,6 +448,21 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
       />
     );
   }
+  if (elementColorType === "text") {
+    const colors = ["gray", "primary", "secondary", "accent", "neutral"];
+    const shades = ["100", "300", "500", "700", "900"];
+
+    return (
+      <ColorPillList
+        type="solid"
+        elementColorType={elementColorType}
+        currentColor={initialValue}
+        cols={shades.length}
+        colors={makeCominations(colors, shades)}
+        onChange={onChange}
+      />
+    );
+  }
 
   if (elementColorType === "background") {
     const colors = ["primary", "secondary", "neutral"];

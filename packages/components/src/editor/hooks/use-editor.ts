@@ -49,7 +49,6 @@ export interface EditorState extends EditorStateProps {
   toggleSettings: () => void;
   toggleTextEditMode: () => void;
   setTextEditMode: (mode: EditorStateProps["textEditMode"]) => void;
-
   setIsEditingText: (forBrickId: string | false) => void;
   setlastTextEditPosition: (position?: number) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
@@ -240,6 +239,7 @@ export interface DraftState extends DraftStateProps {
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
+  moveBrick: (id: string, to: "left" | "right") => void;
   addBrick: (brick: Brick, parentContainer?: Brick) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
   updateBrickProps: (id: string, props: Record<string, unknown>, isMobileProps?: boolean) => void;
@@ -389,6 +389,28 @@ export const createDraftStore = (
                 }
               }),
 
+            /**
+             * Move abrick inside its container.
+             * If the brick does not belong to a container, does nothing
+             */
+            moveBrick: (id, to) =>
+              set((state) => {
+                const brick = getBrick(id, state.bricks);
+                if (!brick?.parentId) {
+                  console.error("Cannot move brick %s, it does not belong to a container", id);
+                  return;
+                }
+                const parentBrick = getBrick(brick.parentId, _get().bricks);
+                if (!parentBrick) {
+                  console.error(
+                    "Cannot move brick %s, parent brick %s not found",
+                    id,
+                    brick.parentId ?? "<unknown id>",
+                  );
+                  return;
+                }
+              }),
+
             getBrick: (id) => {
               return getBrick(id, _get().bricks);
             },
@@ -452,7 +474,7 @@ export const createDraftStore = (
                   console.log("Adding brick %o to container %o", brick, parentContainer);
                   const parentBrick = state.bricks.find((b) => b.id === parentContainer.id);
                   // @ts-ignore
-                  parentBrick?.props.children.push(brick);
+                  parentBrick?.props.children?.push({ ...brick, parentId: parentContainer.id });
                 }
               }),
 

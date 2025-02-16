@@ -419,7 +419,7 @@ export function AnyOfField(props: FieldProps<unknown>) {
         defaultValue={currentOpt}
         size="1"
         className="w-full !max-w-full mt-2"
-        radius="full"
+        radius="large"
       >
         {(options as TSchema[])
           .filter((o) => !o["ui:hidden-option"])

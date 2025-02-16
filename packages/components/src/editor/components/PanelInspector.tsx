@@ -82,6 +82,7 @@ export default function Inspector() {
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
           </h2>
+          <span className="text-xs text-gray-400">{brick.id}</span>
         </div>
         <div className={tx("p-2 flex flex-col gap-3")}>
           <Callout.Root size="1">
@@ -101,10 +102,18 @@ export default function Inspector() {
       </ScrollablePanelTab>
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
-          <h2 className="py-1.5 px-2 flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
+          <h2 className="group py-1.5 px-2 flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
+            <span
+              className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
+              onClick={() => {
+                // copy to clipboard
+                navigator.clipboard.writeText(brick.id);
+              }}
+            >
+              {brick.id}
+            </span>
           </h2>
-          <span className="text-xs text-gray-400">{}</span>
         </div>
         {previewMode === "mobile" && (
           <Callout.Root size="1" className="m-2">

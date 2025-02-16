@@ -97,7 +97,7 @@ const EnumField: React.FC<FieldProps<string>> = (props) => {
             defaultValue={currentValue as string}
             size="1"
             className="w-full !max-w-full mt-2"
-            radius="full"
+            radius="large"
           >
             {options
               .filter((o) => !o["ui:hidden-option"])

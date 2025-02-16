@@ -27,14 +27,14 @@ export default function PresetsView({ onChoose }: PresetsViewProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-1 flex-1 px-1">
+      <div className="flex flex-col gap-1 flex-1">
         <label className={fieldLabel}>Main color</label>
         <SegmentedControl.Root
           onValueChange={(value) => setVariant(value as StylePreset["variant"])}
           defaultValue={variant}
           size="1"
-          className="w-full !max-w-full mt-1"
-          radius="full"
+          className="w-full mt-1"
+          radius="large"
         >
           {["primary", "secondary", "accent"].map((option) => (
             <SegmentedControl.Item

@@ -1,6 +1,6 @@
 import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
-import { commonProps, contentAwareProps } from "../props/common";
+import { commonProps } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
 import { backgroundColor, color, commonStyleProps, padding, flex, flexProps } from "../props/style-props";
@@ -9,7 +9,7 @@ export const manifest = defineBrickManifest({
   type: "container",
   kind: "brick",
   title: "Container",
-  description: "A container that can hold other bricks horizontally or vertically",
+  description: "A container that can hold other bricks and align them horizontally or vertically",
   isContainer: true,
   preferredWidth: {
     mobile: LAYOUT_COLS.mobile / 2,

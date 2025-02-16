@@ -10,7 +10,7 @@ const Container = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => 
   const className = useBrickStyle(props);
 
   return (
-    <div className={tx(apply("flex"), className)} ref={ref}>
+    <div className={tx(apply("flex"), className)} data-brick-type={manifest.properties.type.const} ref={ref}>
       {props.children.length > 0 ? (
         props.children.map((brick) => {
           if (props.editable) {

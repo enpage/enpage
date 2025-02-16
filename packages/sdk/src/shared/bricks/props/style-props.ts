@@ -398,18 +398,18 @@ export const flexProps = Type.Object({
 
 const fontSize = Type.Union(
   [
-    Type.Literal("text-xs", { title: "XS" }),
-    Type.Literal("text-sm", { title: "S" }),
-    Type.Literal("text-base", { title: "M" }),
-    Type.Literal("text-lg", { title: "L" }),
-    Type.Literal("text-xl", { title: "XL" }),
-    Type.Literal("text-2xl", { title: "2XL" }),
-    Type.Literal("text-3xl", { title: "3XL" }),
-    Type.Literal("text-4xl", { title: "4XL" }),
-    Type.Literal("text-5xl", { title: "5XL" }),
-    Type.Literal("text-6xl", { title: "6XL" }),
-    Type.Literal("text-7xl", { title: "7XL" }),
-    Type.Literal("inherit", { title: "Inherit" }),
+    Type.Literal("inherit", { title: "Inherit from page/container" }),
+    Type.Literal("text-xs", { title: "Extra small" }),
+    Type.Literal("text-sm", { title: "Small" }),
+    Type.Literal("text-base", { title: "Base size" }),
+    Type.Literal("text-lg", { title: "Large" }),
+    Type.Literal("text-xl", { title: "Extra large" }),
+    Type.Literal("text-2xl", { title: "Extra large (x2)" }),
+    Type.Literal("text-3xl", { title: "Extra large (x3)" }),
+    Type.Literal("text-4xl", { title: "Extra large (x4)" }),
+    Type.Literal("text-5xl", { title: "Extra large (x5)" }),
+    Type.Literal("text-6xl", { title: "Extra large (x6)" }),
+    Type.Literal("text-7xl", { title: "Extra large (x7)" }),
   ],
   {
     default: "inherit",
@@ -426,8 +426,9 @@ export const text = Type.Object(
     color: Type.Optional(
       Type.String({
         default: "transparent",
-        title: "Color",
+        title: "Default Color",
         "ui:field": "color",
+        "ui:color-type": "text",
       }),
     ),
   },
@@ -436,6 +437,7 @@ export const text = Type.Object(
     // "ui:field": "text",
     "ui:group": "text",
     "ui:group:title": "Text",
+
     default: {
       size: "text-base",
       color: "inherit",
