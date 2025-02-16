@@ -4,23 +4,24 @@ import {
   Callout,
   TextArea,
   Spinner,
-  Select,
   useAutoAnimate,
+  IconButton,
   Text,
 } from "@upstart.gg/style-system/system";
 import { themes } from "@upstart.gg/sdk/shared/themes/all-themes";
-import { forwardRef, useState, type ComponentProps, useMemo } from "react";
+import { forwardRef, useState, type ComponentProps } from "react";
 import { LuArrowRightCircle } from "react-icons/lu";
 import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
 import { tx } from "@upstart.gg/style-system/twind";
-import { type Theme, themeSchema, getProcessedThemeSchema } from "@upstart.gg/sdk/shared/theme";
-import { useDraft } from "~/editor/hooks/use-editor";
+import { type Theme, themeSchema, type FontType } from "@upstart.gg/sdk/shared/theme";
+import { useDraft, useEditorHelpers } from "~/editor/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import type { ColorType } from "@upstart.gg/sdk/shared/themes/color-system";
-import type { TUnion } from "@sinclair/typebox";
+import FontPicker from "./json-form/fields/font";
+import { IoCloseOutline } from "react-icons/io5";
 
 export default function ThemePanel() {
   const draft = useDraft();
@@ -28,10 +29,7 @@ export default function ThemePanel() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThemes, setGeneratedThemes] = useState<Theme[]>([]);
   const [genListRef] = useAutoAnimate(/* optional config */);
-  const themeSchemaProcessed = useMemo(
-    () => getProcessedThemeSchema(themeSchema, draft.theme),
-    [draft.theme],
-  );
+  const { hidePanel } = useEditorHelpers();
 
   const generateTheme = async () => {
     if (!themeDescription) {
@@ -57,21 +55,29 @@ export default function ThemePanel() {
     setIsGenerating(false);
   };
 
-  console.log({ typo: themeSchemaProcessed.properties.typography });
-
   return (
     <Tabs.Root defaultValue="current">
       <div className={tx("bg-white dark:bg-dark-800")}>
         <Tabs.List className="sticky top-0 z-50">
           <Tabs.Trigger value="current" className="!flex-1">
-            Current
+            Theme
           </Tabs.Trigger>
           <Tabs.Trigger value="list" className="!flex-1">
-            List
+            All themes
           </Tabs.Trigger>
-          <Tabs.Trigger value="ai" className="!flex-1">
-            Upstart AI <BsStars className="ml-1 w-4 h-4 text-upstart-600" />
+          <Tabs.Trigger value="ai" className="!flex-1 text-gray-400 group">
+            AI creator <BsStars className="ml-1 w-4 h-4 text-upstart-500" />
           </Tabs.Trigger>
+          <IconButton
+            title="Close"
+            className="self-center items-center justify-center inline-flex !mr-1 !mt-2"
+            size="1"
+            variant="ghost"
+            color="gray"
+            onClick={() => hidePanel()}
+          >
+            <IoCloseOutline className="w-4 h-4 text-gray-400 hover:text-gray-700" />
+          </IconButton>
         </Tabs.List>
       </div>
       <ScrollablePanelTab tab="ai" className="p-2">
@@ -150,46 +156,30 @@ export default function ThemePanel() {
           </div>
           <div className="text-sm flex flex-col gap-y-3 px-1">
             {Object.entries(draft.theme.typography)
-              .filter((obj) => obj[0] !== "base")
+              .filter((obj) => obj[0] === "body" || obj[0] === "heading")
               .map(([fontType, font]) => (
                 <div key={fontType}>
                   <label className="font-medium">
                     {/* @ts-ignore */}
-                    {themeSchemaProcessed.properties.typography.properties[fontType].title}
+                    {themeSchema.properties.typography.properties[fontType].title}
                   </label>
                   <Text color="gray" as="p" size="1" className="mb-1">
                     {/* @ts-ignore */}
-                    {themeSchemaProcessed.properties.typography.properties[fontType].description}
+                    {themeSchema.properties.typography.properties[fontType].description}
                   </Text>
-                  <Select.Root
-                    defaultValue={font as string}
-                    size="2"
-                    onValueChange={(newFont) => {
+                  <FontPicker
+                    fontType={fontType as "body" | "heading"}
+                    initialValue={font as FontType}
+                    onChange={(chosen) => {
                       draft.setTheme({
                         ...draft.theme,
                         typography: {
                           ...draft.theme.typography,
-                          [fontType]: newFont,
+                          [fontType]: chosen,
                         },
                       });
                     }}
-                  >
-                    <Select.Trigger className="!w-full !capitalize">{font}</Select.Trigger>
-                    <Select.Content>
-                      <Select.Group>
-                        {
-                          //  @ts-ignore
-                          (themeSchemaProcessed.properties.typography.properties[fontType] as TUnion).anyOf //  @ts-ignore
-                            .filter((item) => !item["ui:option-hidden"])
-                            .map((item) => (
-                              <Select.Item key={item.const} value={item.const}>
-                                <span className={`font-${item.const}`}>{item.title}</span>
-                              </Select.Item>
-                            ))
-                        }
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
+                  />
                 </div>
               ))}
           </div>

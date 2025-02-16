@@ -83,7 +83,7 @@ export type PageConfig<D extends DatasourcesMap, B extends Brick[]> = PageInfo &
   data?: D extends DatasourcesMap ? DatasourcesResolved<D> : undefined;
 
   /**
-   * Page attributes. (can ovveride site attributes)
+   * Page attributes. (can override site attributes)
    */
   attributes?: JSONSchemaType<Attributes>;
   /**

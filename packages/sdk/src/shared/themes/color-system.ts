@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import type { Theme } from "../theme";
 export { default as chroma } from "chroma-js";
-import { colors, css } from "@upstart.gg/style-system/twind";
+import { colors, css, tx } from "@upstart.gg/style-system/twind";
 
 export type ColorType = "primary" | "secondary" | "accent" | "neutral";
 export type ElementColorType =
@@ -52,8 +52,6 @@ export function getColorsSuggestions(baseHueOrColor: number | string, theme: The
   const themeColors = Object.values(theme.colors).map((color) => chroma(color).get("hsl.h"));
   const excluded = [...themeColors, baseHue];
 
-  console.log({ baseHueOrColor, excluded });
-
   return Array.from(
     new Set([
       ...getHarmoniousHues(baseHue, "complementary"),
@@ -67,16 +65,6 @@ export function getColorsSuggestions(baseHueOrColor: number | string, theme: The
     .filter((hue) => excluded.includes(hue) === false) // limit to 8
     .slice(0, 8);
 }
-
-// const hslToOklab = (hue: number, saturation: number, lightness: number) => {
-//   return chroma.hsl(hue, saturation, lightness).oklab();
-// };
-
-// const getOklabContrast = (color1: string, color2: string): string => {
-//   const l1 = chroma(color1).oklab()[0];
-//   const l2 = chroma(color2).oklab()[0];
-//   return ((Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05)).toFixed(2);
-// };
 
 export const generateShades = (baseColor: string) => {
   // Convert base color to Oklab
@@ -92,11 +80,11 @@ export const generateShades = (baseColor: string) => {
   // Define adjustments for each shade
   // Format: [lightness adjustment, chroma multiplier]
   const adjustments: Record<string, [number, number]> = {
-    50: [+0.3, 0.12], // Much lighter, much less saturated
-    100: [+0.25, 0.25], // Very light, less saturated
-    200: [+0.2, 0.4], // Lighter, slightly less saturated
-    300: [+0.1, 0.7], // Light, slightly less saturated
-    400: [+0.05, 0.85], // Slightly light, nearly same saturation
+    50: [+0.52, 0.1], // Much lighter, much less saturated
+    100: [+0.45, 0.2], // Very light, less saturated
+    200: [+0.35, 0.35], // Lighter, slightly less saturated
+    300: [+0.2, 0.8], // Light, slightly less saturated
+    400: [+0.1, 0.8], // Slightly light, nearly same saturation
     500: [0, 1.0], // Base color
     600: [-0.05, 1.1], // Slightly dark, slightly more saturated
     700: [-0.1, 1.2], // Dark, more saturated
@@ -123,12 +111,13 @@ export const generateShades = (baseColor: string) => {
 
       // Generate the new color
       const newColor = chroma.oklab(newL, newA, newB).hex();
+      const shadeInt = parseInt(shade, 10);
 
       // Ensure we don't have duplicates
       if (usedColors.has(newColor)) {
         // If duplicate, try adjusting slightly
-        const tweakedL = newL + (shade > "500" ? -0.02 : +0.02);
-        const tweakedChroma = newChroma * (shade > "500" ? 1.05 : 0.95);
+        const tweakedL = newL + (shadeInt > 500 ? -0.02 : +0.02);
+        const tweakedChroma = newChroma * (shadeInt > 500 ? 1.05 : 0.95);
         const tweakedA = tweakedChroma * Math.cos(baseHue);
         const tweakedB = tweakedChroma * Math.sin(baseHue);
         shades[shade] = chroma.oklab(tweakedL, tweakedA, tweakedB).hex();
@@ -149,7 +138,6 @@ export const generateShades = (baseColor: string) => {
     // Additional adjustment if still having duplicates
     Object.entries(shades).forEach(([shade, color], index) => {
       if (index > 0 && shades[Object.keys(shades)[index - 1]] === color) {
-        const prevShade = Object.keys(shades)[index - 1];
         const [lAdjust, chromaMultiplier] = adjustments[shade];
 
         // Try a more aggressive adjustment
@@ -236,7 +224,7 @@ export function propToStyle(prop: string | number | undefined, cssAttr: string) 
     return undefined;
   }
   // @ts-ignore
-  return isStandardColor(prop) || typeof prop === "number" ? css({ [cssAttr]: prop }) : prop;
+  return isStandardColor(prop) || typeof prop === "number" ? css({ [cssAttr as string]: prop }) : tx(prop);
 }
 
 export function generateColorsVars(theme: Theme) {

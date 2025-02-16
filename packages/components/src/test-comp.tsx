@@ -1,6 +1,7 @@
 import { tx, apply } from "@upstart.gg/style-system/twind";
 import { useBrickStyle } from "./shared/hooks/use-brick-style";
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function FirstBlock(props: any) {
   const className = useBrickStyle(props);
 
@@ -44,6 +45,7 @@ export function FirstBlock(props: any) {
   );
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function SecondBlock(props: any) {
   const className = useBrickStyle(props);
 

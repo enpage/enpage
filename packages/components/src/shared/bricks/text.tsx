@@ -11,8 +11,13 @@ import { tx } from "@upstart.gg/style-system/twind";
  */
 const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const newProps = { ...Value.Create(manifest).props, ...props };
-  return <NonEditableText ref={ref} {...newProps} />;
-  // return props.editable ? <EditableText ref={ref} {...props} /> : <NonEditableText ref={ref} {...props} />;
+
+  //return <NonEditableText ref={ref} {...newProps} />;
+  return newProps.editable ? (
+    <EditableText ref={ref} {...newProps} />
+  ) : (
+    <NonEditableText ref={ref} {...newProps} />
+  );
 });
 
 const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
@@ -22,22 +27,24 @@ const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, re
       ref={ref}
       className={tx(className)}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-      dangerouslySetInnerHTML={{ __html: props.content.text }}
+      dangerouslySetInnerHTML={{ __html: props.content }}
     />
   );
 });
 
 const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   const className = useBrickStyle(props);
-  const content = "";
-  // const content = useEditableText(props.id, props.content.text);
+  const content = useEditableText({
+    brickId: props.id,
+    initialContent: props.content,
+    inline: true,
+    menuPlacement: "page",
+    enabled: true,
+  });
   return (
-    <div
-      ref={ref}
-      className={tx(className)}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-      dangerouslySetInnerHTML={{ __html: props.content.text }}
-    />
+    <div ref={ref} className={tx(className)}>
+      {content}
+    </div>
   );
 });
 

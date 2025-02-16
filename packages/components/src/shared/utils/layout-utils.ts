@@ -2,7 +2,6 @@ import { LAYOUT_COLS } from "@upstart.gg/sdk/layout-constants";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 import type { BrickConstraints } from "@upstart.gg/sdk/shared/brick-manifest";
-import cloneDeep from "lodash-es/cloneDeep";
 
 const defaultsPreferred = {
   mobile: {
@@ -73,8 +72,8 @@ export function canDropOnLayout(
   currentBp: ResponsiveMode,
   dropPosition: { y: number; x: number },
   constraints: BrickConstraints,
-  checkCollisions = true,
-): { y: number; x: number; w: number; h: number; forbidden?: boolean } | false {
+  checkCollisions = false,
+): { y: number; x: number; w: number; h: number; forbidden?: boolean; parent?: Brick } | false {
   // Helper function to check if a position is valid
   function isPositionValid(
     existingBricks: Brick[],
@@ -98,7 +97,7 @@ export function canDropOnLayout(
       const brickPos = brick.position[currentBp];
       const horizontalOverlap = x < brickPos.x + brickPos.w && x + width > brickPos.x;
       const verticalOverlap = y < brickPos.y + brickPos.h && y + height > brickPos.y;
-      return horizontalOverlap && verticalOverlap;
+      return horizontalOverlap && verticalOverlap && !brick.isContainer;
     });
   }
 
@@ -113,16 +112,33 @@ export function canDropOnLayout(
 
   // Check if the drop position is valid
   if (isPositionValid(bricks, dropPosition.x, dropPosition.y, width, height)) {
+    const brickAtPos = getBrickAtPosition(dropPosition.x, dropPosition.y, bricks, currentBp);
     return {
       x: dropPosition.x,
       y: dropPosition.y,
       w: width,
       h: height,
+      parent: brickAtPos?.isContainer ? brickAtPos : undefined,
     };
   }
 
   // If the position is invalid, return false
   return false;
+}
+
+/**
+ * Returns the brick at the given position
+ */
+function getBrickAtPosition(
+  x: number,
+  y: number,
+  bricks: Brick[],
+  currentBp: ResponsiveMode = "desktop",
+): Brick | undefined {
+  return bricks.find((brick) => {
+    const pos = brick.position[currentBp];
+    return x >= pos.x && x < pos.x + pos.w && y >= pos.y && y < pos.y + pos.h;
+  });
 }
 
 type CollisionSide = "left" | "right" | "top" | "bottom";

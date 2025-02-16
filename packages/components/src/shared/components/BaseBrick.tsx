@@ -2,8 +2,7 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { lazy, Suspense, type ComponentProps, type ComponentType, type LazyExoticComponent } from "react";
 
 // Load all bricks in the bricks directory
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const bricks = import.meta.glob<false, string, { default: ComponentType<any> }>(["../bricks/*.tsx"]);
+const bricks = import.meta.glob<false, string, { default: ComponentType<unknown> }>(["../bricks/*.tsx"]);
 
 const bricksMap = Object.entries(bricks).reduce(
   (acc, [path, importFn]) => {

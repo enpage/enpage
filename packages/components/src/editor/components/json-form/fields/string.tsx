@@ -1,34 +1,41 @@
 import type { FieldProps } from "./types";
-import { TextField } from "@upstart.gg/style-system/system";
-import { tx } from "@upstart.gg/style-system/twind";
+import { TextField, TextArea } from "@upstart.gg/style-system/system";
 import { TbSlash } from "react-icons/tb";
 import { fieldLabel } from "../form-class";
-import { Text, Select } from "@upstart.gg/style-system/system";
+import { Text } from "@upstart.gg/style-system/system";
+import { HelpIcon } from "../HelpIcon";
 
 export const StringField: React.FC<FieldProps<string>> = (props) => {
-  const { currentValue, onChange, required, title, description, placeholder } = props;
-
-  console.log("in StringField", { currentValue });
+  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
 
   return (
     <div className="field field-string">
       {title && (
-        <div>
+        <div className="flex items-center justify-between">
           <label className={fieldLabel}>{title}</label>
-          {description && (
-            <Text as="p" color="gray" size="1">
-              {description}
-            </Text>
-          )}
+          {description && <HelpIcon help={description} />}
         </div>
       )}
-      <TextField.Root
-        defaultValue={currentValue}
-        onChange={(e) => onChange(e.target.value)}
-        className="!mt-1.5"
-        required={required}
-        placeholder={placeholder}
-      />
+      {schema["ui:multiline"] ? (
+        <TextArea
+          defaultValue={currentValue}
+          onChange={(e) => onChange(e.target.value)}
+          className="!mt-1 scrollbar-thin"
+          required={required}
+          placeholder={placeholder}
+          resize="vertical"
+          spellCheck={!!schema["ui:spellcheck"]}
+        />
+      ) : (
+        <TextField.Root
+          defaultValue={currentValue}
+          onChange={(e) => onChange(e.target.value)}
+          className="!mt-1"
+          required={required}
+          placeholder={placeholder}
+          spellCheck={!!schema["ui:spellcheck"]}
+        />
+      )}
     </div>
   );
 };

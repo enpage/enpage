@@ -21,6 +21,7 @@ export function defineBrickManifest<
   props,
   datasource,
   datarecord,
+  isContainer,
   hideInLibrary,
 }: {
   type: BType;
@@ -52,6 +53,7 @@ export function defineBrickManifest<
   datasource?: TObject;
   datarecord?: TObject;
   hideInLibrary?: boolean;
+  isContainer?: boolean;
 }) {
   return Type.Object({
     type: Type.Literal(type),
@@ -60,6 +62,7 @@ export function defineBrickManifest<
     description: Type.Literal(description),
     icon: Type.Literal(icon),
     hideInLibrary: Type.Boolean({ default: hideInLibrary ?? false }),
+    isContainer: Type.Boolean({ default: isContainer ?? false }),
     preferredWidth: Type.Object(
       {
         mobile: Type.Number(),

@@ -4,8 +4,8 @@ import { defineDataSources } from "@upstart.gg/sdk/datasources";
 import { defineAttributes, attr } from "@upstart.gg/sdk/attributes";
 import { defineBricks, createRow } from "@upstart.gg/sdk/bricks";
 import { defineConfig } from "@upstart.gg/sdk/page";
-import { richText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import { FirstBlock, SecondBlock } from "./test-comp";
+import type { Theme } from "@upstart.gg/sdk/shared/theme";
 
 // define your datasources
 const datasources = defineDataSources({
@@ -63,13 +63,35 @@ const datasources = defineDataSources({
 const homePageBricks = defineBricks([
   ...createRow([
     {
+      type: "container",
+      props: {
+        children: [
+          { type: "text", props: { content: "Hello World #1" } },
+          { type: "text", props: { content: "Hello World #2" } },
+          { type: "text", props: { content: "Hello World #3" } },
+        ],
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: "full",
+          h: 10,
+        },
+        desktop: {
+          x: 0,
+          w: "full",
+          h: 16,
+        },
+      },
+    },
+  ]),
+  ...createRow([
+    {
       type: "hero",
       props: {
-        content: {
-          text: "Reach the stars.<br />Book your next trip<br />to Space.",
-        },
-        className:
-          "capitalize flex font-bold text-[2.2rem] leading-[1] @desktop:text-7xl justify-center items-center text-center [text-shadow:_2px_2px_5px_rgb(0_0_0_/_40%)]",
+        content: "Reach the stars.<br />Book your next trip<br />to Space.",
+        // className:
+        //   "capitalize flex font-bold text-[2.2rem] leading-[1] @desktop:text-7xl justify-center items-center text-center [text-shadow:_2px_2px_5px_rgb(0_0_0_/_40%)]",
       },
       position: {
         mobile: {
@@ -86,28 +108,7 @@ const homePageBricks = defineBricks([
       },
     },
   ]),
-  // ...createRow([
-  //   {
-  //     type: "image",
-  //     props: {
-  //       src: "/bluemoon.webp",
-  //       className: "justify-start",
-  //       // className: "max-h-24",
-  //     },
-  //     position: {
-  //       mobile: {
-  //         x: 0,
-  //         w: "full",
-  //         h: 5,
-  //       },
-  //       desktop: {
-  //         x: 0,
-  //         w: "full",
-  //         h: 12,
-  //       },
-  //     },
-  //   },
-  // ]),
+
   ...createRow([
     {
       type: "generic-component",
@@ -154,10 +155,8 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content: {
-          text: "&laquo; The lunar view of Earth changed my perspective forever.<br />An unforgettable experience &raquo;<br /><small>- John Doe</small>",
-          richText: true,
-        },
+        content:
+          "&laquo; The lunar view of Earth changed my perspective forever.<br />An unforgettable experience &raquo;<br /><small>- John Doe</small>",
         className: "text-center text-3xl italic",
         format: "html",
       },
@@ -181,10 +180,7 @@ const homePageBricks = defineBricks([
     {
       type: "text",
       props: {
-        content: {
-          text: " ",
-          richText: true,
-        },
+        content: " ",
         justify: "text-center",
         format: "html",
       },
@@ -274,13 +270,12 @@ const homePageBricks = defineBricks([
   // ]),
 ]);
 
-const themes = [
+const themes: Theme[] = [
   {
     id: "aurora",
     name: "Aurora",
     description: "Vibrant gradients with ethereal color transitions",
     tags: ["gradient", "vibrant", "modern", "creative", "dynamic", "artistic", "bold"],
-
     colors: {
       primary: "#FF9900",
       secondary: "#2dd4bf", // Teal
@@ -290,25 +285,38 @@ const themes = [
     },
     typography: {
       base: 16,
-      heading: "system-ui",
-      body: "system-ui",
+      heading: { type: "stack", family: "system-ui" },
+      body: { type: "stack", family: "system-ui" },
+      alternatives: [
+        {
+          heading: {
+            type: "stack",
+            family: "transitional",
+          },
+          body: {
+            type: "stack",
+            family: "humanist",
+          },
+        },
+      ],
     },
-    customFonts: [
-      {
-        name: "Cabinet Grotesk!",
-        src: "https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&display=swap",
-        weight: "700",
-        display: "swap",
-      },
-    ],
   },
 ];
 
 // define your attributes
 const siteAttributes = defineAttributes({
-  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", { $id: "mainButtonUrl" }),
-  testBoolTrue: attr.boolean("Test Bool True", true),
-  customerId: attr.string("Customer ID"),
+  mainButtonUrl: attr.url("Main Button URL", "https://facebook.com", {
+    "ui:group": "other",
+    "ui:group:title": "Other",
+  }),
+  testBoolTrue: attr.boolean("Test Bool True", true, {
+    "ui:group": "other",
+    "ui:group:title": "Other",
+  }),
+  customerId: attr.string("Customer ID", "", {
+    "ui:group": "other",
+    "ui:group:title": "Other",
+  }),
   testUrl: attr.url("Test URL", "https://enpage.co"),
 });
 
@@ -316,8 +324,10 @@ export default defineConfig({
   attributes: siteAttributes,
   attr: {
     $textColor: "#fff",
-    $backgroundColor: "#0B1016",
-    $backgroundImage: "/earth-big.jpg",
+    $background: {
+      color: "#0B1016",
+      image: "/earth-big.jpg",
+    },
   },
   pages: [
     {

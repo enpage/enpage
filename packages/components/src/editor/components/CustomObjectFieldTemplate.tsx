@@ -1,7 +1,5 @@
 import type { UiSchema, ObjectFieldTemplateProps } from "@rjsf/utils";
 import { tx } from "@upstart.gg/style-system/twind";
-import { createUiSchema } from "./json-form/ui-schema";
-import type { AnySchemaObject } from "@upstart.gg/sdk/shared/ajv";
 import { Fragment } from "react/jsx-runtime";
 
 interface GroupedField {

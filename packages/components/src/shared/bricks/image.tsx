@@ -7,9 +7,7 @@ import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/image.
 const Image = forwardRef<HTMLImageElement, Manifest["props"]>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   const className = useBrickStyle(props);
-  const {
-    image: { src, alt },
-  } = props;
+  const { src, alt } = props;
 
   return (
     <div className={tx(apply("flex items-center justify-center h-full w-full"), className)}>

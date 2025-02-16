@@ -1,10 +1,112 @@
 import { Type, type Static } from "@sinclair/typebox";
 
+export const stylePreset = Type.Object(
+  {
+    style: Type.Union([
+      Type.Literal("ghost", {
+        title: "Ghost",
+        description: "Minimal style with transparent background and no border",
+      }),
+      Type.Literal("plain", {
+        title: "Plain",
+        description: "Simple style with solid dark background and basic border",
+      }),
+      Type.Literal("plain2", {
+        title: "Plain 2",
+        description: "Simple style with solid dark background and basic border",
+      }),
+      Type.Literal("plain3", {
+        title: "Plain 3",
+        description: "Simple style with solid dark background and basic border",
+      }),
+      Type.Literal("modern", {
+        title: "Modern",
+        description: "Bold borders with generous spacing and sharp corners",
+      }),
+      Type.Literal("modern2", {
+        title: "Modern 2",
+        description: "Bold borders with generous spacing and sharp corners",
+      }),
+      Type.Literal("soft", {
+        title: "Soft",
+        description: "Gentle curves and muted colors for a comfortable feel",
+      }),
+      Type.Literal("glass", {
+        title: "Glass",
+        description: "Translucent backdrop with blur effect for depth",
+      }),
+      Type.Literal("elevated", {
+        title: "Elevated",
+        description: "Floating appearance with shadow depth and no borders",
+      }),
+      Type.Literal("outlined", {
+        title: "Outlined",
+        description: "Simple outline with hover effect and no background",
+      }),
+      Type.Literal("paper", {
+        title: "Paper",
+        description: "Subtle texture and slight rotation for a paper-like appearance",
+      }),
+      Type.Literal("gradient", {
+        title: "Gradient",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient2", {
+        title: "Gradient 2",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient3", {
+        title: "Gradient 3",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient4", {
+        title: "Gradient 4",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient5", {
+        title: "Gradient 5",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("gradient6", {
+        title: "Gradient 6",
+        description: "Smooth color gradients background with soft edges",
+      }),
+      Type.Literal("callout", {
+        title: "Callout",
+        description: "Prominent style for important information or CTAs",
+      }),
+    ]),
+    variant: Type.Union([
+      Type.Literal("primary", {
+        title: "Primary",
+        description: "Uses the theme primary color as the main color",
+      }),
+      Type.Literal("secondary", {
+        title: "Secondary",
+        description: "Uses the theme secondary color as the main color",
+      }),
+      Type.Literal("accent", {
+        title: "Accent",
+        description: "Uses the theme accent color as the main color",
+      }),
+      Type.Literal("neutral", {
+        title: "Neutral",
+        description: "Uses the theme neutral color as the main color",
+      }),
+    ]),
+  },
+  {
+    "ui:field": "hidden",
+  },
+);
+
+export type StylePreset = Static<typeof stylePreset>;
+
 export const commonProps = Type.Object({
-  // id: Type.String({
-  //   title: "Brick ID",
-  //   "ui:field": "hidden",
-  // }),
+  id: Type.String({
+    title: "Brick ID",
+    "ui:field": "hidden",
+  }),
   className: Type.String({
     default: "",
     "ui:field": "hidden",
@@ -18,34 +120,34 @@ export const commonProps = Type.Object({
     default: false,
     "ui:field": "hidden",
   }),
+  stylePreset,
 });
 
-export const richText = Type.Boolean({
-  title: "Rich Text",
-  description: "Allow rich text",
-  default: true,
+export const richText = Type.String({
+  default: "some text here",
+  // "ui:field": "rich-text",
   "ui:field": "hidden",
+  "ui:group": "content",
+  "ui:group:title": "Content",
+  "ui:group:order": 3,
 });
 
-export const mixedContent = Type.Object(
-  { text: Type.String(), richText: Type.Boolean() },
-  {
-    default: {
-      text: "some text here",
-    },
-    "ui:field": "mixed-content",
-    "ui:group": "content",
-    "ui:group:title": "Content",
-    "ui:group:order": 3,
-  },
-);
+export const richTextHero = Type.String({
+  default: "<h1>some text here</h1>",
+  // "ui:field": "rich-text",
+  "ui:field": "hidden",
+  "ui:paragraph-mode": "hero",
+  "ui:group": "content",
+  "ui:group:title": "Content",
+  "ui:group:order": 3,
+});
 
-export type MixedContent = Static<typeof mixedContent>;
+export type RichText = Static<typeof richText>;
 
 const imageProps = Type.Object(
   {
     src: Type.String({
-      default: "https://placehold.co/400x200",
+      default: "/placeholder.svg",
       title: "Image",
     }),
     alt: Type.String({
@@ -67,34 +169,31 @@ const imageProps = Type.Object(
 
 export type ImageProps = Static<typeof imageProps>;
 
-export const imageSettings = Type.Object(
-  {
-    image: imageProps,
+export const imageSettings = Type.Object(imageProps.properties, {
+  default: {
+    src: "https://placehold.co/400x200",
+    alt: "my image",
   },
-  {
-    default: {
-      image: {
-        src: "https://placehold.co/400x200",
-        alt: "my image",
-      },
-    },
-  },
-);
+});
 
 export type ImageSettings = Static<typeof imageSettings>;
 
 export const contentAwareProps = Type.Object(
   {
-    content: mixedContent,
+    content: richText,
   },
-  {
-    default: {
-      content: {
-        text: "some text here",
-      },
-    },
-  },
+  // {
+  //   default: {
+  //     content: {
+  //       text: "some text here",
+  //     },
+  //   },
+  // },
 );
+
+export const contentAwareHeroProps = Type.Object({
+  content: richTextHero,
+});
 
 export const container = Type.Object({
   container: Type.Boolean({

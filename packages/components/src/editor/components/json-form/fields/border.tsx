@@ -5,7 +5,20 @@ import { fieldLabel } from "../form-class";
 import { ColorPill } from "./color";
 
 export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
-  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
+  const {
+    currentValue = {
+      color: "#000000",
+      radius: "rounded-none",
+      style: "border-solid",
+      width: "border-0",
+    } satisfies BorderSettings,
+    onChange,
+    required,
+    title,
+    description,
+    placeholder,
+    schema,
+  } = props;
 
   const onSettingsChange = (newVal: Partial<BorderSettings>) => onChange({ ...currentValue, ...newVal });
 
@@ -22,13 +35,12 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
           <label className={fieldLabel}>Width</label>
           <Select.Root
             defaultValue={currentValue.width}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ width: value as BorderSettings["width"] })}
           >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Width</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.width.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
@@ -44,13 +56,12 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
           <label className={fieldLabel}>Style</label>
           <Select.Root
             defaultValue={currentValue.style}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ style: value as BorderSettings["style"] })}
           >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Style</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.style.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
@@ -68,13 +79,12 @@ export const BorderField: React.FC<FieldProps<BorderSettings>> = (props) => {
           <label className={fieldLabel}>Rounding</label>
           <Select.Root
             defaultValue={currentValue.radius}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ radius: value as BorderSettings["radius"] })}
           >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                <Select.Label>Rounding</Select.Label>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {schema.properties.radius.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>

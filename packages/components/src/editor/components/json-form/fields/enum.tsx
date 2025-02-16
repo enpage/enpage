@@ -97,7 +97,7 @@ const EnumField: React.FC<FieldProps<string>> = (props) => {
             defaultValue={currentValue as string}
             size="1"
             className="w-full !max-w-full mt-2"
-            radius="full"
+            radius="large"
           >
             {options
               .filter((o) => !o["ui:hidden-option"])
@@ -184,10 +184,10 @@ const EnumField: React.FC<FieldProps<string>> = (props) => {
         //   </select>
         // </div>
 
-        <div className="flex flex-col gap-1 flex-1 mx-0.5">
+        <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>{title}</label>
-          <Select.Root defaultValue={currentValue} size="1" onValueChange={(value) => onChange(value)}>
-            <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+          <Select.Root defaultValue={currentValue} size="2" onValueChange={(value) => onChange(value)}>
+            <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
                 {options

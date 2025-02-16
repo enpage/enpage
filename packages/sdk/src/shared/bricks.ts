@@ -18,8 +18,9 @@ import { manifest as socialLinksManifest } from "./bricks/manifests/social-links
 import { manifest as textManifest } from "./bricks/manifests/text.manifest";
 import { manifest as videoManifest } from "./bricks/manifests/video.manifest";
 import { manifest as loopManifest } from "./bricks/manifests/loop.manifest";
+import { manifest as containerManifest } from "./bricks/manifests/container.manifest";
 import { manifest as genericComponentManifest } from "./bricks/manifests/generic-component.manifest";
-
+import { defaults } from "./bricks/manifests/all-manifests";
 /**
  * Generates a unique identifier for bricks.
  */
@@ -110,74 +111,97 @@ export const brickSchema = Type.Composite([
     Type.Object({
       type: Type.Literal("button"),
       props: buttonManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(buttonManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("card"),
       props: cardManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(cardManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("carousel"),
       props: carouselManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(carouselManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("countdown"),
       props: countdownManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(countdownManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("footer"),
       props: footerManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(footerManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("form"),
       props: formManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(formManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("header"),
       props: headerManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(headerManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("hero"),
       props: heroManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(heroManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("icon"),
       props: iconManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(iconManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("image"),
       props: imageManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(imageManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("images-wall"),
       props: imagesWallManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(imagesWallManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("map"),
       props: mapManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(mapManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("social-links"),
       props: socialLinksManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(socialLinksManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("text"),
       props: textManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(textManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("video"),
       props: videoManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(videoManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("html-element"),
       props: Type.Record(Type.String(), Type.Any()),
+      mobileProps: Type.Optional(Type.Record(Type.String(), Type.Any())),
     }),
     Type.Object({
       type: Type.Literal("generic-component"),
       props: genericComponentManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(genericComponentManifest.properties.props)),
     }),
     Type.Object({
       type: Type.Literal("loop"),
       props: loopManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(loopManifest.properties.props)),
+    }),
+    Type.Object({
+      type: Type.Literal("container"),
+      props: containerManifest.properties.props,
+      mobileProps: Type.Optional(Type.Partial(containerManifest.properties.props)),
     }),
   ]),
   Type.Object({
@@ -185,6 +209,9 @@ export const brickSchema = Type.Composite([
       title: "ID",
       description: "A unique identifier for the brick.",
     }),
+    isContainer: Type.Optional(Type.Boolean({ default: false })),
+    parentId: Type.Optional(Type.String()),
+    hideInLibrary: Type.Optional(Type.Boolean()),
     position: Type.Object(
       {
         mobile: brickPositionSchema,
@@ -259,9 +286,32 @@ function mapPosition(
 
 export function defineBricks<B extends DefinedBrick[]>(bricks: B): Brick[] {
   return bricks.map((brick) => {
+    const id = `brick-${generateId()}`;
     return {
-      id: `brick-${generateId()}`,
+      id,
+      ...defaults[brick.type],
       ...brick,
+      props: {
+        ...brick.props,
+        ...("children" in brick.props
+          ? {
+              children: (brick.props.children as DefinedBrick[]).map((childBrick) => ({
+                id: `brick-${generateId()}`,
+                ...defaults[childBrick.type],
+                ...childBrick,
+                parentId: id,
+                ...("position" in childBrick
+                  ? {}
+                  : {
+                      position: {
+                        mobile: {},
+                        desktop: {},
+                      },
+                    }),
+              })),
+            }
+          : {}),
+      },
       position: {
         mobile: mapPosition(brick.position.mobile, "mobile"),
         desktop: mapPosition(brick.position.desktop, "desktop"),

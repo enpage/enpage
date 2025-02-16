@@ -12,13 +12,10 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit"; // define your extension array
 import TextAlign from "@tiptap/extension-text-align";
-import { Button, Callout, IconButton, Popover, Select, ToggleGroup } from "@upstart.gg/style-system/system";
+import { Callout, IconButton, Popover, Select, ToggleGroup, Portal } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import { useState, useRef, useEffect, useMemo } from "react";
 import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-
 import {
   MdFormatBold,
   MdFormatAlignCenter,
@@ -29,10 +26,9 @@ import {
 import { MdOutlineFormatItalic } from "react-icons/md";
 import { MdStrikethroughS } from "react-icons/md";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
-import { useDatasourcesSchemas, useEditor } from "~/editor/hooks/use-editor";
+import { useDatasourcesSchemas, useEditor, useSelectedBrick } from "~/editor/hooks/use-editor";
 import { VscDatabase } from "react-icons/vsc";
 import { BiFullscreen, BiExitFullscreen } from "react-icons/bi";
-import type { TObject, TSchema } from "@sinclair/typebox";
 import { JSONSchemaView } from "~/editor/components/json-form/SchemaView";
 import Mention from "@tiptap/extension-mention";
 import datasourceFieldSuggestions from "./datasourceFieldSuggestions";
@@ -52,7 +48,7 @@ function DatasourceFieldNode(props: NodeViewProps) {
 
 const fieldsRegex = /(\{\{([^}]+)\}\})/;
 
-export const DatasourceFieldExtension = Node.create({
+const DatasourceFieldExtension = Node.create({
   // configuration
   name: "datasourceField",
   group: "inline",
@@ -91,19 +87,23 @@ export const DatasourceFieldExtension = Node.create({
   },
 });
 
-type Props = {
+export type TextEditorProps = {
   initialContent: string;
   onUpdate: (e: EditorEvents["update"]) => void;
   enabled?: boolean;
   className?: string;
   brickId: Brick["id"];
-  menuPlacement?: "above-editor" | "page";
+  menuPlacement: "above-editor" | "page";
   discrete?: boolean;
-  richText?: boolean;
+  paragraphMode?: string;
+  /**
+   * Whether the editor is inlined in the page or appears in the panel
+   */
+  inline?: boolean;
 };
 
 const toolbarBtnCls =
-  "first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
+  "!bg-white first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
 
 const TextEditor = ({
   initialContent,
@@ -113,68 +113,57 @@ const TextEditor = ({
   menuPlacement,
   enabled = false,
   discrete = false,
-  richText = true,
-}: Props) => {
+  paragraphMode,
+  inline,
+}: TextEditorProps) => {
   const mainEditor = useEditor();
   const datasources = useDatasourcesSchemas();
   const [editable, setEditable] = useState(enabled);
+  const menuContainer = useRef<HTMLDivElement>(document.querySelector("#editor"));
 
   // @ts-ignore
   const fields = getJSONSchemaFieldsList({ schemas: datasources });
 
-  const extensions = richText
-    ? [
-        StarterKit,
-        TextAlign.configure({
-          types: ["heading", "paragraph"],
-        }),
-        // DatasourceFieldExtension,
-        Mention.configure({
-          HTMLAttributes: {
-            class: "mention",
+  const extensions = [
+    StarterKit.configure({
+      ...(paragraphMode === "hero" && {
+        document: false,
+      }),
+    }),
+    ...(paragraphMode === "hero" ? [Document.extend({ content: "heading" })] : []),
+    TextAlign.configure({
+      types: ["heading"],
+    }),
+    // DatasourceFieldExtension,
+    Mention.configure({
+      HTMLAttributes: {
+        class: "mention",
+      },
+      suggestion: {
+        ...datasourceFieldSuggestions,
+        items: ({ query }) => {
+          return fields.filter((field) => field.toLowerCase().includes(query.toLowerCase()));
+        },
+      },
+      renderHTML: ({ options, node }) => {
+        // console.log("RENDER ATTRS", options, node);
+        const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+        return [
+          "span",
+          {
+            "data-type": "mention",
+            class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
+            "data-field": field,
           },
-          suggestion: {
-            ...datasourceFieldSuggestions,
-            items: ({ query }) => {
-              return fields.filter((field) => field.toLowerCase().includes(query.toLowerCase()));
-            },
-          },
-          renderHTML: ({ options, node }) => {
-            // console.log("RENDER ATTRS", options, node);
-            const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
-            return [
-              "span",
-              {
-                "data-type": "mention",
-                class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
-                "data-field": field,
-              },
-              `${options.suggestion.char}${field}}}`,
-            ];
-          },
-          renderText: ({ options, node }) => {
-            const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
-            return `${options.suggestion.char}${field}}}`;
-          },
-        }),
-      ]
-    : [
-        Document.extend({
-          content: "block",
-        }),
-        Paragraph.configure({
-          HTMLAttributes: {
-            class: tx("whitespace-nowrap overflow-hidden [&>br]:hidden [&>*]:(inline! whitespace-nowrap!)"),
-          },
-        }).extend({
-          addAttributes() {
-            return {
-              class: tx("whitespace-nowrap overflow-hidden [&>br]:hidden [&>*]:(inline! whitespace-nowrap!)"),
-            };
-          },
-        }),
-        Text,
-      ];
+          `${options.suggestion.char}${field}}}`,
+        ];
+      },
+      renderText: ({ options, node }) => {
+        const field = node.attrs["data-field"] ?? node.attrs.label ?? node.attrs.id;
+        return `${options.suggestion.char}${field}}}`;
+      },
+    }),
+  ];
 
   const editor = useTextEditor(
     {
@@ -186,17 +175,20 @@ const TextEditor = ({
       editable,
       editorProps: {
         attributes: {
-          class: tx(
-            "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm mx-auto min-h-[46px] dark:(bg-dark-800 text-dark-100) p-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),inset_0_-1px_2px_rgba(0,0,0,0.1)]",
-            className,
-          ),
+          class: inline
+            ? tx(className)
+            : tx(
+                "max-w-[100%] focus:outline-none focus:border-gray-300 prose prose-sm mx-auto min-h-[46px] dark:(bg-dark-800 text-dark-100) p-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),inset_0_-1px_2px_rgba(0,0,0,0.1)]",
+                className,
+                mainEditor.textEditMode === "large" && "flex-1 !h-[inherit]",
+              ),
         },
       },
       onBlur(props) {
         mainEditor.setlastTextEditPosition(props.editor.state.selection.anchor);
       },
     },
-    [brickId],
+    [brickId, editable, mainEditor.textEditMode],
   );
 
   useEffect(() => {
@@ -234,12 +226,14 @@ const TextEditor = ({
           editor={editor}
           placement={menuPlacement}
           discrete={discrete}
-          richText={richText}
+          inline={inline}
+          paragraphMode={paragraphMode}
         />
       )}
       <EditorContent
         onDoubleClick={(e) => {
           e.preventDefault();
+          console.log("dblclick");
           setEditable(true);
           setTimeout(() => {
             editor?.view.focus();
@@ -249,17 +243,20 @@ const TextEditor = ({
         spellCheck="false"
         editor={editor}
         className={tx("outline-none ring-0 ", {
-          "min-h-full flex flex-col border-0": mainEditor.textEditMode === "large",
+          "min-h-full flex border-0": mainEditor.textEditMode === "large",
         })}
       />
-      {editor && editable && menuPlacement !== "above-editor" && (
-        <MenuBar
-          brickId={brickId}
-          editor={editor}
-          placement={menuPlacement}
-          discrete={discrete}
-          richText={richText}
-        />
+      {editor && editable && menuPlacement === "page" && (
+        <Portal container={menuContainer.current}>
+          <MenuBar
+            brickId={brickId}
+            editor={editor}
+            placement={menuPlacement}
+            discrete={discrete}
+            inline={inline}
+            paragraphMode={paragraphMode}
+          />
+        </Portal>
       )}
     </div>
   );
@@ -270,16 +267,18 @@ const MenuBar = ({
   brickId,
   placement,
   discrete,
-  richText,
+  paragraphMode,
+  inline,
 }: {
   editor: Editor;
   brickId: Brick["id"];
-  placement: Props["menuPlacement"];
-  richText: Props["richText"];
+  placement: TextEditorProps["menuPlacement"];
+  paragraphMode?: string;
   discrete?: boolean;
+  inline?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const mainEditor = useEditor();
+  const selectedBrick = useSelectedBrick();
   let className = "";
 
   if (placement === "above-editor") {
@@ -291,33 +290,33 @@ const MenuBar = ({
     );
   } else {
     className = tx(
-      "z-[900] text-gray-800 h-10 flex gap-3 p-1 bg-gradient-to-t from-upstart-400/75 to-upstart-200/75 \
-      shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
+      "z-[800] text-gray-800 flex isolate transition-opacity duration-100",
+      "fixed top-[66px] left-0 right-0 text-sm justify-center",
+      // "z-[900] text-gray-800 flex gap-3 p-1 bg-upstart-600/25",
+      // "shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
       {
-        "scale-90 opacity-0 hidden": mainEditor.selectedBrick?.id !== brickId,
+        "opacity-0 hidden": selectedBrick?.id !== brickId,
       },
     );
   }
 
   return (
-    <div ref={ref} className={className}>
-      {richText && (
-        <>
-          <ButtonGroup>
-            <TextSizeSelect editor={editor} />
-          </ButtonGroup>
-          <TextAlignButtonGroup editor={editor} />
-          <TextStyleButtonGroup editor={editor} />
-        </>
-      )}
-      <DatasourceItemButton editor={editor} />
-      {richText && <DisplayModeButton icon="enlarge" />}
-      {!discrete && (
-        <>
-          <span className="flex-1" />
-          <DisplayModeButton icon="close" />
-        </>
-      )}
+    <div ref={ref} id="text-editor-menubar" className={tx(className)}>
+      <div className="flex gap-3 items-center bg-upstart-500 p-2 rounded-md shadow-xl backdrop-blur bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)]">
+        <ButtonGroup>
+          <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
+        </ButtonGroup>
+        <TextAlignButtonGroup editor={editor} />
+        <TextStyleButtonGroup editor={editor} />
+        <DatasourceItemButton editor={editor} />
+        {!inline && <DisplayModeButton icon="enlarge" />}
+        {!discrete && inline !== true && (
+          <>
+            <span className="flex-1" />
+            <DisplayModeButton icon="close" />
+          </>
+        )}
+      </div>
     </div>
   );
 };
@@ -325,7 +324,7 @@ const MenuBar = ({
 function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-8"
       type="single"
       value={editor.isActive("textAlign") ? editor.getAttributes("textAlign").alignment : undefined}
       aria-label="Text align"
@@ -335,28 +334,28 @@ function TextAlignButtonGroup({ editor }: { editor: Editor }) {
         value="left"
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
       >
-        <MdFormatAlignLeft className="w-4 h-4" />
+        <MdFormatAlignLeft className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="center"
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
       >
-        <MdFormatAlignCenter className="w-4 h-4" />
+        <MdFormatAlignCenter className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="right"
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
       >
-        <MdFormatAlignRight className="w-4 h-4" />
+        <MdFormatAlignRight className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="justify"
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
       >
-        <MdFormatAlignJustify className="w-4 h-4" />
+        <MdFormatAlignJustify className="w-5 h-5" />
       </ToggleGroup.Item>
     </ToggleGroup.Root>
   );
@@ -403,7 +402,6 @@ function DatasourceFieldPickerModal(props: DatasourceFieldPickerModalProps) {
             <Select.Content position="popper">
               <Select.Group>
                 <Select.Label>Datasource</Select.Label>
-                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
                 {Object.entries(datasources ?? {}).map(([dsId, dsSchema]) => (
                   <Select.Item key={dsId} value={dsId}>
                     {dsSchema.name}
@@ -434,18 +432,6 @@ function DatasourceFieldPickerModal(props: DatasourceFieldPickerModalProps) {
     </div>
   );
 }
-
-// function DatasourceFieldPicker({ schema }: { schema: TSchema }) {
-//   return (
-//     <JSONSchemaView
-//       schema={schema}
-//       onChange={() => {
-//         console.log("changed");
-//       }}
-//     />
-//   );
-// }
-
 function DisplayModeButton({ icon }: { icon: "close" | "enlarge" }) {
   const editor = useEditor();
   return (
@@ -508,8 +494,8 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
   return (
     <Popover.Root>
       <Popover.Trigger>
-        <IconButton size="1" color="gray" variant="surface" className={tx(toolbarBtnCls)}>
-          <VscDatabase className="w-4 h-4 " />
+        <IconButton size="2" color="gray" variant="surface" className={tx(toolbarBtnCls)}>
+          <VscDatabase className="w-5 h-5" />
         </IconButton>
       </Popover.Trigger>
       <Popover.Content width="460px" side="right" align="center" size="2" maxHeight="50vh" sideOffset={50}>
@@ -522,7 +508,7 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
 function TextStyleButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-6"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-8"
       type="multiple"
       value={
         [
@@ -538,21 +524,21 @@ function TextStyleButtonGroup({ editor }: { editor: Editor }) {
         value="bold"
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
-        <MdFormatBold className="w-4 h-4" />
+        <MdFormatBold className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="italic"
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
-        <MdOutlineFormatItalic className="w-4 h-4" />
+        <MdOutlineFormatItalic className="w-5 h-5" />
       </ToggleGroup.Item>
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
         value="strike"
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
-        <MdStrikethroughS className="w-4 h-4" />
+        <MdStrikethroughS className="w-5 h-5" />
       </ToggleGroup.Item>
     </ToggleGroup.Root>
   );
@@ -564,12 +550,13 @@ function ButtonGroup({ children, gap = "gap-0" }: { children: React.ReactNode; g
 
 type TextSizeSelectProps = {
   editor: Editor;
+  paragraphMode?: string;
 };
 
-function TextSizeSelect({ editor }: TextSizeSelectProps) {
+function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
   return (
     <Select.Root
-      size="1"
+      size="2"
       defaultValue={
         editor.isActive("heading")
           ? editor.getAttributes("heading").level?.toString()
@@ -588,7 +575,7 @@ function TextSizeSelect({ editor }: TextSizeSelectProps) {
         }
       }}
     >
-      <Select.Trigger />
+      <Select.Trigger className={tx("px-3", toolbarBtnCls)} />
       <Select.Content position="popper">
         <Select.Group>
           <Select.Label>Headings</Select.Label>
@@ -598,12 +585,16 @@ function TextSizeSelect({ editor }: TextSizeSelectProps) {
             </Select.Item>
           ))}
         </Select.Group>
-        <Select.Separator />
-        <Select.Group>
-          <Select.Label>Text</Select.Label>
-          <Select.Item value="paragraph">Paragraph</Select.Item>
-          <Select.Item value="code">Code</Select.Item>
-        </Select.Group>
+        {paragraphMode !== "hero" && (
+          <>
+            <Select.Separator />
+            <Select.Group>
+              <Select.Label>Text</Select.Label>
+              <Select.Item value="paragraph">Paragraph</Select.Item>
+              <Select.Item value="code">Code</Select.Item>
+            </Select.Group>
+          </>
+        )}
       </Select.Content>
     </Select.Root>
   );

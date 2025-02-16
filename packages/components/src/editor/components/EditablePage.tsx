@@ -1,4 +1,4 @@
-import { css, tx } from "@upstart.gg/style-system/twind";
+import { css, tx, sheet } from "@upstart.gg/style-system/twind";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { generateId, type Brick } from "@upstart.gg/sdk/shared/bricks";
 import BrickWrapper from "./EditableBrick";
@@ -6,6 +6,7 @@ import {
   useAttributes,
   useBricks,
   useDraft,
+  useDraftHelpers,
   useEditorHelpers,
   usePreviewMode,
   useSelectedBrick,
@@ -18,6 +19,7 @@ import { debounce } from "lodash-es";
 import { defaults } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { usePageStyle } from "~/shared/hooks/use-page-style";
 import { canDropOnLayout, detectCollisions, getDropOverGhostPosition } from "~/shared/utils/layout-utils";
+import { useFontWatcher } from "../hooks/use-font-watcher";
 
 const ghostValid = tx("bg-upstart-100");
 const ghostInvalid = tx("bg-red-100");
@@ -25,6 +27,7 @@ const ghostInvalid = tx("bg-red-100");
 export default function EditablePage() {
   const previewMode = usePreviewMode();
   const editorHelpers = useEditorHelpers();
+  const draftHelpers = useDraftHelpers();
   const selectedBrick = useSelectedBrick();
   const draft = useDraft();
   const pageRef = useRef<HTMLDivElement>(null);
@@ -32,7 +35,8 @@ export default function EditablePage() {
   const bricks = useBricks();
   const [colWidth, setColWidth] = useState(0);
   const dragOverRef = useRef<HTMLDivElement>(null);
-  const pageClassName = usePageStyle({ attributes, editable: true, previewMode });
+  const typography = useFontWatcher();
+  const pageClassName = usePageStyle({ attributes, typography, editable: true, previewMode });
 
   // on page load, set last loaded property so that the store is saved to local storage
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -64,7 +68,7 @@ export default function EditablePage() {
     }
   }
 
-  useEditablePage(".brick", pageRef, {
+  useEditablePage(".brick:not(.container-child)", pageRef, {
     dragOptions: {
       enabled: previewMode === "desktop",
     },
@@ -72,9 +76,9 @@ export default function EditablePage() {
       colWidth,
       rowHeight: LAYOUT_ROW_HEIGHT,
       containerHorizontalPadding:
-        previewMode === "desktop" ? parseInt(attributes.$pagePaddingHorizontal as string) : 10,
+        previewMode === "desktop" ? parseInt(attributes.$pagePadding.horizontal as string) : 10,
       containerVerticalPadding:
-        previewMode === "desktop" ? parseInt(attributes.$pagePaddingVertical as string) : 10,
+        previewMode === "desktop" ? parseInt(attributes.$pagePadding.vertical as string) : 10,
     },
     dragCallbacks: {
       onDragMove(brick, pos, gridPosition) {
@@ -89,7 +93,7 @@ export default function EditablePage() {
         // editorHelpers.setCollidingBrick(dropOverPos.collision);
       },
       onDragEnd: (brick, pos, gridPos) => {
-        console.log("onDragEnd (%s)", previewMode, gridPos);
+        console.debug("onDragEnd (%s)", previewMode, gridPos);
 
         updateDragOverGhostStyle(false);
 
@@ -118,18 +122,21 @@ export default function EditablePage() {
     },
     dropCallbacks: {
       onDropMove(event, gridPosition, brick) {
-        const canDrop = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
+        const canDrop = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints, false);
         updateDragOverGhostStyle(canDrop);
       },
       onDropDeactivate() {
         updateDragOverGhostStyle(false);
       },
       onDrop(event, gridPosition, brick) {
-        console.log("onDrop (%s)", previewMode, gridPosition, brick);
+        console.debug("onDrop (%s)", previewMode, gridPosition, brick);
 
         updateDragOverGhostStyle(false);
+
         const position = canDropOnLayout(draft.bricks, previewMode, gridPosition, brick.constraints);
+
         if (position) {
+          console.log("dropped at", position);
           const bricksDefaults = defaults[brick.type];
           const newBrick: Brick = {
             id: `brick-${generateId()}`,
@@ -141,10 +148,16 @@ export default function EditablePage() {
               [previewMode]: position,
             },
           };
-          draft.addBrick(newBrick);
+
+          // add the new brick to the store
+          draft.addBrick(newBrick, position.parent);
 
           // rewrite the mobile layout based on the desktop layout
           draft.adjustMobileLayout();
+
+          // auto select the new brick
+          draftHelpers.setSelectedBrick(newBrick);
+          editorHelpers.setPanel("inspector");
         } else {
           console.warn("Can't drop here");
         }
@@ -152,7 +165,7 @@ export default function EditablePage() {
     },
     resizeCallbacks: {
       onResizeEnd: (brickId, pos, gridPos) => {
-        console.log("onResizeEnd (%s)", previewMode, brickId, gridPos);
+        console.debug("onResizeEnd (%s)", previewMode, brickId, gridPos);
 
         updateDragOverGhostStyle(false);
 
@@ -178,7 +191,7 @@ export default function EditablePage() {
     const updateCellWidth = debounce(() => {
       if (pageRef.current) {
         const containerWidth = pageRef.current.offsetWidth;
-        const totalGapWidth = parseInt(attributes.$pagePaddingHorizontal as string) * 2;
+        const totalGapWidth = parseInt(attributes.$pagePadding.horizontal as string) * 2;
         const availableWidth = containerWidth - totalGapWidth;
         setColWidth(availableWidth / LAYOUT_COLS[previewMode]);
       }
@@ -199,7 +212,7 @@ export default function EditablePage() {
       window.removeEventListener("resize", updateCellWidth);
       observer.disconnect();
     };
-  }, [previewMode, attributes.$pagePaddingHorizontal]);
+  }, [previewMode, attributes.$pagePadding]);
 
   // listen for global click events on the document
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -215,15 +228,17 @@ export default function EditablePage() {
         !target.closest('[role="toolbar"]') &&
         !target.closest('[role="navigation"]') &&
         !target.matches('[role="menuitem"]') &&
+        !target.closest("#text-editor-menubar") &&
         !target.matches("html") &&
         !target.matches("body") &&
         !target.matches(".brick") &&
         !target.closest(".brick")
       ) {
         console.debug("click out, hidding", event.target);
-        editorHelpers.deselectBrick();
+        draftHelpers.deselectBrick();
         // also deselect the library panel
         editorHelpers.hidePanel("library");
+        editorHelpers.hidePanel("inspector");
         editorHelpers.setTextEditMode("default");
       }
     };
@@ -234,15 +249,15 @@ export default function EditablePage() {
   }, []);
 
   useHotkeys("esc", () => {
-    editorHelpers.deselectBrick();
-    editorHelpers.setPanel();
+    draftHelpers.deselectBrick();
+    editorHelpers.hidePanel();
   });
 
   useHotkeys("mod+c", () => {
     // let the browser handle the copy event
     const sel = window.getSelection();
     if (!sel?.rangeCount) {
-      console.log("mod+c pressed");
+      console.debug("mod+c pressed");
     }
   });
 
@@ -250,6 +265,48 @@ export default function EditablePage() {
     if (selectedBrick) {
       e.preventDefault();
       draft.deleteBrick(selectedBrick.id);
+      draftHelpers.deselectBrick(selectedBrick.id);
+      editorHelpers.hidePanel("inspector");
+    }
+  });
+
+  useHotkeys("s", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel("settings");
+  });
+  useHotkeys("l", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel("library");
+  });
+  useHotkeys("t", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel("theme");
+  });
+  useHotkeys("p", (e) => {
+    e.preventDefault();
+    editorHelpers.togglePanel();
+  });
+
+  /**
+   * Move brick left within a container
+   * @todo
+   */
+  useHotkeys("mod+left", (e) => {
+    e.preventDefault();
+    if (selectedBrick) {
+      // console
+      console.log("Moving %s to left", selectedBrick.id);
+    }
+  });
+  /**
+   * Move brick right within a container
+   * @todo
+   */
+  useHotkeys("mod+right", (e) => {
+    e.preventDefault();
+    if (selectedBrick) {
+      // console
+      console.log("Moving %s to right", selectedBrick.id);
     }
   });
 
@@ -281,7 +338,7 @@ export default function EditablePage() {
       </div>
       <Selecto
         className="selecto"
-        selectableTargets={[".brick"]}
+        selectableTargets={[".brick:not(.container-child)"]}
         selectFromInside={false}
         hitRate={1}
         selectByClick={false}
@@ -290,10 +347,10 @@ export default function EditablePage() {
             editorHelpers.setSelectedGroup(e.selected.map((el) => el.id));
           }
           e.added.forEach((el) => {
-            el.classList.add("selected");
+            el.classList.add("selected-group");
           });
           e.removed.forEach((el) => {
-            el.classList.remove("selected");
+            el.classList.remove("selected-group");
           });
         }}
       />
@@ -301,7 +358,7 @@ export default function EditablePage() {
   );
 }
 
-function ResizeHandle({
+export function ResizeHandle({
   direction,
 }: {
   direction: "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne";
@@ -310,7 +367,7 @@ function ResizeHandle({
     <div
       className={tx(
         "react-resizable-handle absolute z-10 transition-opacity duration-200 opacity-0",
-        "group-hover/brick:opacity-50 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
+        "group-hover/brick:opacity-90 hover:!opacity-100 overflow-visible border-dashed border-upstart-600/80 hover:border-upstart-600",
         `react-resizable-handle-${direction}`,
         {
           "bottom-px left-px right-px h-1 w-[inherit] border-b cursor-s-resize": direction === "s",
@@ -329,19 +386,19 @@ function ResizeHandle({
       )}
     >
       <div
-        className={tx("absolute w-[7px] h-[7px] bg-orange-400 z-10 shadow-sm", {
-          "top-1/2 -translate-y-1/2 -left-[4px]": direction === "w",
-          "top-1/2 -translate-y-1/2 -right-[4px]": direction === "e",
-          "left-1/2 -translate-x-1/2 -top-[4px]": direction === "n",
-          "left-1/2 -translate-x-1/2 -bottom-[4px]": direction === "s",
+        className={tx("absolute w-[10px] h-[10px] border-orange-400 border-2 rounded-full z-10 shadow-md", {
+          "top-1/2 -translate-y-1/2 -left-[5px]": direction === "w",
+          "top-1/2 -translate-y-1/2 -right-[5px]": direction === "e",
+          "left-1/2 -translate-x-1/2 -top-[5px]": direction === "n",
+          "left-1/2 -translate-x-1/2 -bottom-[5px]": direction === "s",
 
           // sw and nw
-          "-bottom-[4px] -left-[4px]": direction === "sw",
-          "-top-[4px] -left-[4px]": direction === "nw",
+          "-bottom-[5px] -left-[5px]": direction === "sw",
+          "-top-[5px] -left-[5px]": direction === "nw",
 
           // se and ne
-          "-bottom-[4px] -right-[4px]": direction === "se",
-          "-top-[4px] -right-[4px]": direction === "ne",
+          "-bottom-[5px] -right-[5px]": direction === "se",
+          "-top-[5px] -right-[5px]": direction === "ne",
         })}
       />
     </div>

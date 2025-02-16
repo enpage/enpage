@@ -15,7 +15,7 @@ import { WiStars } from "react-icons/wi";
 import { nanoid } from "nanoid";
 import { BsStars } from "react-icons/bs";
 import { tx } from "@upstart.gg/style-system/twind";
-import { type Theme, themeSchema, getProcessedThemeSchema } from "@upstart.gg/sdk/shared/theme";
+import { type Theme, themeSchema } from "@upstart.gg/sdk/shared/theme";
 import { useDraft } from "~/editor/hooks/use-editor";
 import { ColorFieldRow } from "./json-form/fields/color";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";

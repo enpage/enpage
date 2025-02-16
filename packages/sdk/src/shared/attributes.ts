@@ -11,6 +11,7 @@ import type { ElementColor } from "./themes/color-system";
 import type { JSONSchemaType } from "ajv";
 import { ajv } from "./ajv";
 import { typeboxSchemaToJSONSchema } from "./utils/schema";
+import { background } from "./bricks/props/style-props";
 
 type EnumOption = {
   title?: string;
@@ -20,11 +21,13 @@ type EnumOption = {
 };
 
 type AttributeOptions<T extends Record<string, unknown>> = {
+  "ui:field"?: string;
   "ui:group"?: string;
   "ui:group:title"?: string;
   "ui:group:order"?: number;
   advanced?: boolean;
   "ui:hidden"?: boolean | "if-empty";
+  "ui:scope"?: "site" | "page";
 } & T;
 
 type GeoPoint = { lat: number; lng: number; name?: string };
@@ -202,84 +205,85 @@ const defaultAttributes = {
       { value: "vi", title: "Vietnamese" },
     ],
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+  }),
+
+  $pageOgImage: attr.string("Social share image", "", {
+    description: "Image shown when page is shared on social media",
+    "ui:group": "meta",
+  }),
+
+  $robotsIndexing: attr.boolean("Allow search engines to index this site", true, {
+    description: "Disabling this will prevent search engines from indexing this site",
+    "ui:group": "seo",
+    "ui:group:title": "SEO",
+    "ui:scope": "site",
+  }),
+
+  $siteOgImage: attr.string("Social share image", "", {
+    description: "Image shown when this site is shared on social media",
+    "ui:field": "image",
+    "ui:group": "meta",
+    "ui:group:title": "Meta tags",
+    "ui:scope": "site",
   }),
 
   $pagePath: attr.string("Page path", "/", {
     description: "The URL path of the page",
     "ui:group": "location",
     "ui:group:title": "Location",
-    "ui:group:order": 1,
-    "ui:field": "path",
   }),
 
   $pageTitle: attr.string("Title", "Untitled", {
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+    description: "The title of the page. Appears in the browser tab and search results.",
   }),
 
   $pageDescription: attr.string("Description", "", {
     "ui:widget": "textarea",
-    "ui:options": {
-      rows: 3,
-      widget: "textarea",
-    },
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+    description: "A short description of the page. Used by search engines.",
   }),
 
   $pageKeywords: attr.string("Keywords", "", {
     "ui:group": "meta",
-    "ui:group:title": "Page Meta tags (SEO)",
+    "ui:group:title": "Meta tags",
+    description: "Keywords related to the page. Used by search engines.",
   }),
 
   $pageLastUpdated: attr.datetime("Last updated", undefined, { "ui:hidden": true }),
 
   // --- layout attributes ---
-  $pageWidth: attr.enum("Page width", "max-w-full", {
-    options: [
-      {
-        value: "max-w-screen-lg",
-        title: "M",
-        description: "Common for text-heavy content/blog posts",
-      },
-      { value: "max-w-screen-xl", title: "L", description: "Usefull or some landing pages" },
-      { value: "max-w-screen-2xl", title: "XL", description: "Common width" },
-      { value: "max-w-full", title: "Full", description: "Takes the entire space" },
-    ],
-    description: "The maximum width of the page. Desktop only.",
-    displayAs: "button-group",
-    "ui:group": "layout",
-    "ui:group:title": "Layout & Design",
-  }),
 
   $pagePadding: Type.Object(
     {
       vertical: attr.enum("Vertical spacing", "20", {
         options: [
           { value: "0", title: "None" },
-          { value: "10", title: "S" },
-          { value: "20", title: "M" },
-          { value: "30", title: "L" },
-          { value: "50", title: "XL" },
+          { value: "10", title: "Small" },
+          { value: "20", title: "Medium" },
+          { value: "30", title: "Large" },
+          { value: "50", title: "Extra large" },
         ],
-        description: "Vertical spacing. Desktop only.",
-        displayAs: "button-group",
+        description: "Desktop only.",
+        displayAs: "select",
         "ui:group": "layout",
-        "ui:group:title": "Page Layout & Design",
+        "ui:group:title": "Page Layout",
       }),
       horizontal: attr.enum("Horizontal spacing", "20", {
         options: [
           { value: "0", title: "None" },
-          { value: "10", title: "S" },
-          { value: "20", title: "M" },
-          { value: "30", title: "L" },
-          { value: "50", title: "XL" },
+          { value: "10", title: "Small" },
+          { value: "20", title: "Medium" },
+          { value: "30", title: "Large" },
+          { value: "50", title: "Extra large" },
         ],
-        description: "Horizontal spacing. Desktop only.",
+        description: "Desktop only.",
         displayAs: "button-group",
         "ui:group": "layout",
-        "ui:group:title": "Page Layout & Design",
+        "ui:group:title": "Page Layout",
       }),
     },
     {
@@ -287,55 +291,82 @@ const defaultAttributes = {
         vertical: "20",
         horizontal: "20",
       },
+      "ui:field": "padding",
+      "ui:group": "layout",
+      "ui:group:title": "Layout",
     },
   ),
 
-  $pagePaddingVertical: attr.enum("Vertical spacing", "20", {
+  $pageWidth: attr.enum("Page width", "max-w-full", {
     options: [
-      { value: "0", title: "None" },
-      { value: "10", title: "S" },
-      { value: "20", title: "M" },
-      { value: "30", title: "L" },
-      { value: "50", title: "XL" },
+      {
+        value: "max-w-screen-lg",
+        title: "Medium",
+        description: "Common for text-heavy content/blog posts",
+      },
+      { value: "max-w-screen-xl", title: "Large", description: "Usefull or some landing pages" },
+      { value: "max-w-screen-2xl", title: "Extra large", description: "Common width" },
+      { value: "max-w-full", title: "Full width", description: "Takes the entire space" },
     ],
-    description: "Vertical spacing. Desktop only.",
-    displayAs: "button-group",
+    description: "The maximum width of the page. Desktop only.",
+    displayAs: "select",
     "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
+    "ui:group:title": "Layout",
   }),
 
-  $pagePaddingHorizontal: attr.enum("Horizontal spacing", "20", {
-    options: [
-      { value: "0", title: "None" },
-      { value: "10", title: "S" },
-      { value: "20", title: "M" },
-      { value: "30", title: "L" },
-      { value: "50", title: "XL" },
+  $background: Type.Composite(
+    [
+      background,
+      Type.Object(
+        {},
+        {
+          title: "Background",
+        },
+      ),
     ],
-    description: "Horizontal spacing. Desktop only.",
-    displayAs: "button-group",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
+    {
+      default: {
+        color: "#ffffff",
+        image: "https://placehold.co/400x200",
+      },
+      title: "Background",
+      "ui:field": "background",
+      "ui:show-img-search": true,
+      "ui:group": "background",
+      "ui:group:title": "Background",
+      "ui:group:order": 4,
+    },
+  ),
 
-  $backgroundColor: attr.color("Background color", "#ffffff", {
+  $textColor: attr.color("Text color", "#222222", {
     "ui:field": "color",
     "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
-
-  $backgroundImage: attr.color("Background image", undefined, {
-    "ui:field": "image",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
-  }),
-
-  $textColor: attr.color("Default text color", "#222222", {
-    "ui:field": "color",
-    "ui:group": "layout",
-    "ui:group:title": "Page Layout & Design",
+    "ui:group:title": "Page Layout",
     "ui:color-type": "page-text",
   }),
+
+  $siteHeadTags: Type.Optional(
+    Type.String({
+      title: "Head tags",
+      description:
+        "Add custom tags to the <head> of your site. Useful for analytics tags, custom scripts, etc.",
+      "ui:multiline": true,
+      "ui:scope": "site",
+      "ui:group": "external-scripts",
+      "ui:group:title": "External scripts",
+    }),
+  ),
+  $siteBodyTags: Type.Optional(
+    Type.String({
+      title: "Body tags",
+      description:
+        "Add custom tags to the <body> of your site. Useful for analytics tags, custom scripts, etc.",
+      "ui:multiline": true,
+      "ui:scope": "site",
+      "ui:group": "external-scripts",
+      "ui:group:title": "External scripts",
+    }),
+  ),
 };
 
 export const defaultAttributesSchema = Type.Object(defaultAttributes);

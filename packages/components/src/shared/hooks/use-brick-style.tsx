@@ -1,5 +1,5 @@
 import { tx, apply, css } from "@upstart.gg/style-system/twind";
-import type { commonStyleProps, textStyleProps } from "@upstart.gg/sdk/bricks/props/style-props";
+import type { commonStyleProps, textStyleProps, flexProps } from "@upstart.gg/sdk/bricks/props/style-props";
 import type { commonProps } from "@upstart.gg/sdk/bricks/props/common";
 import type { Static } from "@sinclair/typebox";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
@@ -13,36 +13,70 @@ import { LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
 export function useBrickStyle(
   props: Partial<Static<typeof commonStyleProps>> &
     Partial<Static<typeof textStyleProps>> &
-    Partial<Static<typeof commonProps>>,
+    Partial<Static<typeof commonProps>> &
+    Partial<Static<typeof flexProps>>,
 ) {
   // This is the inner brick style. As the wrapper uses "display: flex",
   // we use flex-1 to make the inner brick fill the space.
   return tx("flex-1", [
     props.className && apply(props.className),
-    // props.padding ? (props.padding as string) : null,
-    props.dimensions?.padding ? (props.dimensions.padding as string) : null,
+    props.dimensions?.padding,
     props.color ? `text-${props.color}` : null,
-    props.fontSize ? `text-${props.fontSize}` : null,
-    props.fontWeight ? `font-${props.fontWeight}` : null,
-    props.textAlign ? `text-${props.textAlign}` : null,
+    props.fontSize,
+    props.fontWeight,
+    props.textAlign,
+    props.flex?.direction,
+    props.flex?.wrap,
+    props.flex?.justify,
+    props.flex?.align,
+    props.flex?.gap ? `${props.flex.gap}` : null,
   ]);
 }
+
+type UseBrickWrapperStyleProps = {
+  brick: Brick;
+  editable: boolean;
+  className?: string;
+  isContainerChild?: boolean;
+  selected?: boolean;
+};
 
 export function useBrickWrapperStyle({
   brick,
   editable,
   className,
-}: { brick: Brick; editable: boolean; className?: string }) {
+  isContainerChild,
+  selected,
+}: UseBrickWrapperStyleProps) {
   return tx(
     apply(className),
     // no transition otherwise it will slow down the drag
-    "brick group/brick flex relative overflow-hidden",
+    "brick group/brick flex relative",
+
+    isContainerChild && "container-child",
+    editable && selected && "!outline !outline-dashed !outline-orange-200",
+    editable &&
+      !selected &&
+      isContainerChild &&
+      "hover:outline !hover:outline-dashed !hover:outline-upstart-400/30",
+
+    // "overflow-hidden",
+
     {
-      "select-none group-hover/page:(outline outline-dashed outline-upstart-100/20) hover:(z-[9999] shadow-lg)":
-        editable,
+      "select-none hover:z-[9999]": editable,
     },
+
+    // container children expand to fill the space
+    isContainerChild && "flex-1",
+
+    // Position of the wrapper
+    //
+    // Note:  for container children, we don't set it as they are not positioned
+    //        relatively to the page grid but to the container
+    //
     // Warning: those 2 rules blocks are pretty sensible!
-    `@desktop:(
+    !isContainerChild &&
+      `@desktop:(
         col-start-${brick.position.desktop.x + 1}
         col-span-${brick.position.desktop.w}
         row-start-${brick.position.desktop.y + 1}
@@ -59,19 +93,26 @@ export function useBrickWrapperStyle({
 
     editable &&
       css({
-        "&.selected": {
+        "&.selected-group": {
           outline: "2px dotted var(--violet-8) !important",
         },
       }),
 
     // Border
-    "borders" in brick.props && propToStyle(brick.props.borders.color as string, "borderColor"),
-    "borders" in brick.props && (brick.props.borders.radius as string),
-    "borders" in brick.props && (brick.props.borders.style as string),
-    "borders" in brick.props && (brick.props.borders.width as string),
+    "border" in brick.props && propToStyle(brick.props.border.color as string, "borderColor"),
+    "border" in brick.props && (brick.props.border.radius as string),
+    "border" in brick.props && (brick.props.border.style as string),
+    "border" in brick.props && (brick.props.border.width as string),
 
     // Background
-    "backgroundColor" in brick.props && propToStyle(brick.props.backgroundColor as string, "background"),
+    "background" in brick.props && propToStyle(brick.props.background.color as string, "background-color"),
+    "background" in brick.props &&
+      brick.props.background.image &&
+      css({
+        backgroundImage: `url(${brick.props.background.image})`,
+        backgroundSize: brick.props.background.size ?? "auto",
+        backgroundRepeat: brick.props.background.repeat ?? "no-repeat",
+      }),
 
     // Opacity
     "effects" in brick.props && propToStyle(brick.props.effects.opacity as number | undefined, "opacity"),

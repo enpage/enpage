@@ -2,7 +2,15 @@ import { tx, css } from "@upstart.gg/style-system/twind";
 import { manifests } from "@upstart.gg/sdk/bricks/manifests/all-manifests";
 import { Value } from "@sinclair/typebox/value";
 import { WiStars } from "react-icons/wi";
-import { Tabs, Button, Callout, TextArea, Spinner, Tooltip } from "@upstart.gg/style-system/system";
+import {
+  Tabs,
+  Button,
+  Callout,
+  TextArea,
+  Spinner,
+  Tooltip,
+  IconButton,
+} from "@upstart.gg/style-system/system";
 import { BsStars } from "react-icons/bs";
 import { TbDragDrop } from "react-icons/tb";
 import { useCalloutViewCounter } from "../hooks/use-callout-view-counter";
@@ -11,80 +19,29 @@ import type { BrickManifest } from "@upstart.gg/sdk/shared/brick-manifest";
 import type { Static } from "@sinclair/typebox";
 import { ScrollablePanelTab } from "./ScrollablePanelTab";
 import interact from "interactjs";
-
-const tabContentScrollClass = css({
-  scrollbarColor: "var(--violet-4) var(--violet-2)",
-  scrollBehavior: "smooth",
-  scrollbarWidth: "thin",
-  "&:hover": {
-    scrollbarColor: "var(--violet-6) var(--violet-3)",
-  },
-});
+import { IoCloseOutline } from "react-icons/io5";
+import { panelTabContentScrollClass } from "../utils/styles";
+import { useEditorHelpers } from "../hooks/use-editor";
 
 export default function PanelLibrary() {
   const { shouldDisplay: shouldDisplayLibraryCallout } = useCalloutViewCounter("blocks-library");
   const [brickPrompt, setBrickPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const interactable = useRef<Interact.Interactable | null>(null);
-  const ghost = useRef<HTMLElement | null>(null);
+  const { hidePanel } = useEditorHelpers();
 
   useEffect(() => {
+    /**
+     * Initialize interactjs for draggable bricks from the library.
+     * The drop logic is handled in `use-draggable.ts`, not here.
+     */
     interactable.current = interact(".draggable-brick");
     interactable.current.draggable({
-      // inertia: true,
+      inertia: true,
       autoScroll: {
         enabled: false,
       },
-      // manualStart: true,
-      listeners: {
-        start: (event: Interact.InteractEvent) => {
-          const clone = event.target.cloneNode(true) as HTMLElement;
-          clone.classList.add("clone");
-
-          // Position clone at original element's position
-          const rect = event.target.getBoundingClientRect();
-          clone.id = "library-brick-ghost";
-          clone.style.left = `${rect.left}px`;
-          clone.style.top = `${rect.top}px`;
-          clone.style.position = "absolute";
-          clone.style.zIndex = "999";
-          clone.style.width = `${rect.width}px`;
-          clone.style.height = `${rect.height}px`;
-
-          // Store reference to clone
-          // @ts-ignore
-          event.target.cloneElement = clone;
-
-          document.body.appendChild(clone);
-        },
-        move: (event: Interact.InteractEvent) => {
-          // @ts-ignore
-          const clone = event.target.cloneElement as HTMLElement | null;
-          if (!clone) {
-            return;
-          }
-
-          // Get current position of clone
-          const position = {
-            x: parseFloat(clone.style.left) || 0,
-            y: parseFloat(clone.style.top) || 0,
-          };
-
-          // Update clone position
-          clone.style.left = `${position.x + event.dx}px`;
-          clone.style.top = `${position.y + event.dy}px`;
-        },
-        end(event: Interact.InteractEvent) {
-          // Remove clone when drag ends
-          // @ts-ignore
-          const clone = event.target.cloneElement as HTMLElement | null;
-          if (clone) {
-            clone.remove();
-          }
-        },
-      },
     });
-
     return () => {
       interactable.current?.unset();
       interactable.current = null;
@@ -100,8 +57,6 @@ export default function PanelLibrary() {
     setIsGenerating(false);
   };
 
-  console.log({ manifests });
-
   return (
     <Tabs.Root defaultValue="library">
       <Tabs.List className={tx("sticky top-0 z-50")}>
@@ -109,8 +64,18 @@ export default function PanelLibrary() {
           Library
         </Tabs.Trigger>
         <Tabs.Trigger value="ai" className={tx("!flex-1")}>
-          Upstart AI <BsStars className={tx("ml-1 w-4 h-4 text-upstart-600")} />
+          AI creator <BsStars className={tx("ml-1 w-4 h-4 text-upstart-500")} />
         </Tabs.Trigger>
+        <IconButton
+          title="Close"
+          className="self-center items-center justify-center inline-flex !mr-1 !mt-2"
+          size="1"
+          variant="ghost"
+          color="gray"
+          onClick={() => hidePanel()}
+        >
+          <IoCloseOutline className="w-4 h-4 text-gray-400 hover:text-gray-700" />
+        </IconButton>
       </Tabs.List>
       <Tabs.Content value="library">
         {shouldDisplayLibraryCallout && (
@@ -123,7 +88,10 @@ export default function PanelLibrary() {
         )}
 
         <div
-          className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
+          className={tx(
+            "flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto",
+            panelTabContentScrollClass,
+          )}
         >
           <h3
             className={tx(
@@ -142,6 +110,7 @@ export default function PanelLibrary() {
               .filter((m) => m.properties.kind.const === "brick" && !m.properties.hideInLibrary.default)
               .map((brickImport) => {
                 const brick = Value.Create(brickImport);
+                const ref = useRef<HTMLDivElement>(null);
                 return (
                   <Tooltip content={brick.description} key={brick.type}>
                     <DraggableBrick brick={brick} />
@@ -151,7 +120,10 @@ export default function PanelLibrary() {
           </div>
         </div>
         <div
-          className={tx("flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto", tabContentScrollClass)}
+          className={tx(
+            "flex flex-col max-h-[calc(100dvh/2-99px)] overflow-y-auto",
+            panelTabContentScrollClass,
+          )}
         >
           <h3
             className={tx(
@@ -171,7 +143,7 @@ export default function PanelLibrary() {
               .map((brickImport) => {
                 const brick = Value.Create(brickImport);
                 return (
-                  <Tooltip content={brick.description} key={brick.type}>
+                  <Tooltip content={brick.description} key={brick.type} delayDuration={850}>
                     <DraggableBrick brick={brick} />
                   </Tooltip>
                 );
@@ -214,7 +186,8 @@ export default function PanelLibrary() {
 type DraggableBrickProps = {
   brick: Static<BrickManifest>;
 };
-const DraggableBrick = forwardRef<HTMLButtonElement, DraggableBrickProps>(({ brick }, ref) => {
+
+const DraggableBrick = forwardRef<HTMLButtonElement, DraggableBrickProps>(({ brick, ...props }, ref) => {
   return (
     <button
       ref={ref}
@@ -227,6 +200,7 @@ const DraggableBrick = forwardRef<HTMLButtonElement, DraggableBrickProps>(({ bri
       className={tx(
         "rounded border border-transparent hover:border-upstart-600 bg-white dark:bg-dark-700 cursor-grab active:cursor-grabbing touch-none select-none pointer-events-auto transition draggable-brick [&:is(.clone)]:(opacity-80 !bg-white)",
       )}
+      {...props}
     >
       <div
         className={tx(

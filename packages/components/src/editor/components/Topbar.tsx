@@ -3,10 +3,9 @@ import { RxMobile } from "react-icons/rx";
 import { RxDesktop } from "react-icons/rx";
 import { BsStars } from "react-icons/bs";
 import { VscCopy } from "react-icons/vsc";
-import { type MouseEvent, type PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { type MouseEvent, type PropsWithChildren, useCallback, useMemo } from "react";
 import {
   useDraftUndoManager,
-  useEditor,
   usePagesInfo,
   useEditorMode,
   usePageVersion,
@@ -14,12 +13,13 @@ import {
   useDraft,
   useEditorHelpers,
   usePreviewMode,
+  useLogoLink,
 } from "~/editor/hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
 import logo from "../../../../../creatives/upstart-dark.svg";
 import { RiArrowDownSLine } from "react-icons/ri";
-import { DropdownMenu, TextField, Popover, AlertDialog, Button, Flex } from "@upstart.gg/style-system/system";
+import { DropdownMenu, TextField, Popover } from "@upstart.gg/style-system/system";
 import { post } from "~/editor/utils/api/base-api";
 import { IoIosSave } from "react-icons/io";
 import { formatDistance } from "date-fns";
@@ -27,12 +27,12 @@ import { formatDistance } from "date-fns";
 export default function TopBar() {
   const editorHelpers = useEditorHelpers();
   const previewMode = usePreviewMode();
+  const logoLink = useLogoLink();
   const draft = useDraft();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
   const lastSaved = useLastSaved();
   const pages = usePagesInfo();
-  const [showSaveAlert, setShowSaveAlert] = useState(false);
   const { undo, redo, futureStates, pastStates } = useDraftUndoManager();
   const canRedo = useMemo(() => futureStates.length > 0, [futureStates]);
   const canUndo = useMemo(() => pastStates.length > 0, [pastStates]);
@@ -45,9 +45,13 @@ export default function TopBar() {
     [draft.siteId, draft.id, pageVersion],
   );
 
-  const switchPreviewMode = useCallback(() => {
-    editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
-  }, [previewMode, editorHelpers.setPreviewMode]);
+  const switchPreviewMode = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      editorHelpers.setPreviewMode(previewMode === "mobile" ? "desktop" : "mobile");
+    },
+    [previewMode, editorHelpers.setPreviewMode],
+  );
 
   // bg-upstart-600
   const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
@@ -92,7 +96,7 @@ export default function TopBar() {
           type="button"
           disabled={editorMode === "local"}
           onClick={() => {
-            window.location.href = "/dashboard";
+            window.location.href = logoLink;
           }}
           className={tx(baseCls, "flex-shrink-0")}
         >
@@ -170,6 +174,7 @@ export default function TopBar() {
 
         {(editorMode === "remote" || (editorMode === "local" && pages.length > 1)) && (
           <TopbarMenu
+            id="switch-page-menu-btn"
             items={[
               ...(editorMode === "remote"
                 ? [{ label: "New page" }, { label: "Duplicate page" }, { type: "separator" as const }]
@@ -207,18 +212,21 @@ export default function TopBar() {
 
         <div className={tx("flex-1", "border-x border-l-upstart-400 border-r-upstart-700", baseCls)} />
 
-        <div className={tx(btnClass, baseCls, "border-x border-l-upstart-400 border-r-upstart-700 px-8")}>
-          {lastSaved ? (
-            <div className={tx("text-sm")}>
-              Last saved {formatDistance(lastSaved, new Date(), { addSuffix: true })}
-            </div>
-          ) : (
-            <div className={tx("text-sm")}>No saved yet</div>
-          )}
-        </div>
+        {editorMode === "remote" && (
+          <div className={tx(btnClass, baseCls, "border-x border-l-upstart-400 border-r-upstart-700 px-8")}>
+            {lastSaved ? (
+              <div className={tx("text-sm")}>
+                Last saved {formatDistance(lastSaved, new Date(), { addSuffix: true })}
+              </div>
+            ) : (
+              <div className={tx("text-sm")}>Not saved yet</div>
+            )}
+          </div>
+        )}
 
         {editorMode === "remote" ? (
           <TopbarMenu
+            id="publish-menu-btn"
             items={[
               { label: "Publish this page", onClick: () => publish() },
               { label: "Publish the whole site", onClick: () => publish(true) },
@@ -233,46 +241,18 @@ export default function TopBar() {
           </TopbarMenu>
         ) : (
           <button
+            id="publish-menu-btn"
             type="button"
             className={tx(btnClass, rocketBtn, "px-4")}
             onClick={() => {
-              setShowSaveAlert(true);
+              editorHelpers.onShowLogin();
             }}
           >
             <IoIosSave className={tx("h-5 w-auto")} />
-            <span className={tx("font-bold italic px-2", css({ fontSize: "1.2rem" }))}>Save</span>
+            <span className={tx("font-bold px-2", css({ fontSize: "1.2rem" }))}>Save your site</span>
           </button>
         )}
       </nav>
-      {showSaveAlert && (
-        <AlertDialog.Root defaultOpen={showSaveAlert} onOpenChange={setShowSaveAlert}>
-          <AlertDialog.Content maxWidth="480px">
-            <AlertDialog.Title>Redirecting to sign-up page</AlertDialog.Title>
-            <AlertDialog.Description size="3" className="pb-2">
-              Save your progress by creating an account.
-              <br />
-              Once registered, this page will be saved to your account where you can continue editing and
-              publish when ready.
-            </AlertDialog.Description>
-            <Flex gap="3" mt="4" justify="end">
-              <AlertDialog.Cancel>
-                <Button variant="soft" color="gray">
-                  Cancel
-                </Button>
-              </AlertDialog.Cancel>
-              <AlertDialog.Action
-                onClick={() => {
-                  window.location.href = "/sign-up/?next=/dashboard/first-site-setup";
-                }}
-              >
-                <Button variant="solid" color="violet">
-                  Sign up
-                </Button>
-              </AlertDialog.Action>
-            </Flex>
-          </AlertDialog.Content>
-        </AlertDialog.Root>
-      )}
     </>
   );
 }
@@ -304,10 +284,12 @@ type TopbarMenuItems = (TopbarMenuItem | TopbarMenuSeparator | TopbarMenuLabel |
 
 /**
  */
-function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems }>) {
+function TopbarMenu(props: PropsWithChildren<{ items: TopbarMenuItems; id?: string }>) {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger className="focus:outline-none">{props.children}</DropdownMenu.Trigger>
+      <DropdownMenu.Trigger className="focus:outline-none" id={props.id}>
+        {props.children}
+      </DropdownMenu.Trigger>
       <DropdownMenu.Content side="bottom">
         {props.items.map((item, index) =>
           item.type === "separator" ? (

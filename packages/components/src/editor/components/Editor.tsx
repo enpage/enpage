@@ -1,7 +1,7 @@
 import {
   useDraft,
   useEditor,
-  useAttributes,
+  usePanel,
   usePreviewMode,
   type DraftState,
   type usePageInfo,
@@ -12,26 +12,39 @@ import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
 import { DeviceFrame } from "./Preview";
 import EditablePage from "./EditablePage";
 import { tx, injectGlobal, css } from "@upstart.gg/style-system/twind";
-import { Button } from "@upstart.gg/style-system/system";
-import { isStandardColor, generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
+import { Button, Spinner } from "@upstart.gg/style-system/system";
+import { generateColorsVars } from "@upstart.gg/sdk/shared/themes/color-system";
 import { usePageAutoSave, useOnDraftChange } from "~/editor/hooks/use-page-autosave";
 import DataPanel from "./PanelData";
+import PanelSettings from "./PanelSettings";
+import PanelTheme from "./PanelTheme";
+import PanelInspector from "./PanelInspector";
+import PanelLibrary from "./PanelLibrary";
+import Tour from "./Tour";
 
 type EditorProps = ComponentProps<"div"> & {
   mode?: "local" | "live";
   onDraftChange?: (state: DraftState, pageInfo: ReturnType<typeof usePageInfo>) => void;
 };
 
-const PanelTheme = lazy(() => import("./PanelTheme"));
-const SettingsPanel = lazy(() => import("./PanelSettings"));
-const PanelInspector = lazy(() => import("./PanelInspector"));
-const PanelLibrary = lazy(() => import("./PanelLibrary"));
+// const PanelTheme = lazy(() => import("./PanelTheme"));
+// const PanelSettings = lazy(() => import("./PanelSettings"));
+// const PanelInspector = lazy(() => import("./PanelInspector"));
+// const PanelLibrary = lazy(() => import("./PanelLibrary"));
+
+function PanelSpinner() {
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <Spinner size="3" />
+    </div>
+  );
+}
 
 export default function Editor({ mode = "local", onDraftChange, ...props }: EditorProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
   const previewMode = usePreviewMode();
-  const attributes = useAttributes();
+  const { panel, panelPosition } = usePanel();
 
   usePageAutoSave();
   useOnDraftChange(onDraftChange);
@@ -56,11 +69,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
           --font-size-hero-5: clamp(6rem, 9vw, 11rem);
 
         }
-        [data-upstart-theme] {
-          .page-container {
-            font-family: var(--font-${themeUsed.typography.body});
-          }
-        }
+
     }
     `;
 
@@ -73,14 +82,17 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       className={tx(
         "min-h-[100dvh] max-h-[100dvh] grid relative overscroll-none overflow-hidden",
         css({
-          gridTemplateAreas: `"topbar topbar" "toolbar main"`,
+          gridTemplateAreas:
+            panelPosition === "left" ? `"topbar topbar" "toolbar main"` : `"topbar topbar" "main toolbar"`,
           gridTemplateRows: "3.7rem 1fr",
-          gridTemplateColumns: "3.7rem 1fr",
+          // gridTemplateColumns: "3.7rem 1fr",
+          gridTemplateColumns: panelPosition === "left" ? "3.7rem 1fr" : "1fr 3.7rem",
         }),
       )}
       {...props}
       ref={rootRef}
     >
+      <Tour />
       <Topbar />
       <Panel />
       <Toolbar />
@@ -88,28 +100,17 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       <div
         className={tx(
           "flex-1 flex place-content-center z-40 overscroll-none overflow-x-auto overflow-y-visible transition-colors duration-300",
+          previewMode === "mobile" && "bg-gray-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",
             scrollBehavior: "smooth",
-            scrollbarWidth: "thin",
+            scrollbarGutter: "stable",
+            scrollbarWidth: panelPosition === "left" ? "thin" : "none",
             "&:hover": {
               scrollbarColor: "var(--violet-7) var(--violet-3)",
             },
           }),
-          previewMode === "mobile" && "bg-gray-300",
-          previewMode === "desktop" &&
-            isStandardColor(attributes.$backgroundColor) &&
-            css({ backgroundColor: attributes.$backgroundColor as string }),
-          previewMode === "desktop" &&
-            isStandardColor(attributes.$textColor) &&
-            css({ color: attributes.$textColor as string }),
-          previewMode === "desktop" &&
-            !isStandardColor(attributes.$backgroundColor) &&
-            (attributes.$backgroundColor as string),
-          previewMode === "desktop" &&
-            !isStandardColor(attributes.$textColor) &&
-            (attributes.$textColor as string),
         )}
       >
         <DeviceFrame>
@@ -129,47 +130,30 @@ type PanelProps = ComponentProps<"aside">;
  * Panel used to display both the inspector and the library
  */
 function Panel({ className, ...props }: PanelProps) {
-  const editor = useEditor();
+  const { panel, panelPosition } = usePanel();
+  const previewMode = usePreviewMode();
 
   return (
     <aside
       id="floating-panel"
       className={tx(
-        `z-[9999] fixed top-[3.7rem] bottom-0 left-[3.7rem] flex shadow-2xl flex-col overscroll-none \
-        min-w-[300px] w-[350px] transition-all duration-200 ease-in-out opacity-100
-        bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-auto`,
+        `z-[9999] fixed top-[3.7rem] bottom-0 flex shadow-2xl flex-col overscroll-none \
+        min-w-[300px] w-[320px] transition-all duration-200 ease-in-out opacity-100
+        bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-visible`,
         {
-          "-translate-x-full opacity-0": !editor.panel,
+          "left-[3.7rem]": panelPosition === "left",
+          "right-[3.7rem]": panelPosition === "right",
+          "-translate-x-full opacity-0": !panel && panelPosition === "left",
+          "translate-x-full": !panel && panelPosition === "right",
         },
       )}
       {...props}
     >
-      {editor.previewMode === "desktop" && editor.panel === "library" && (
-        <Suspense>
-          <PanelLibrary />
-        </Suspense>
-      )}
-      {editor.panel === "inspector" && (
-        <Suspense>
-          <PanelInspector />
-        </Suspense>
-      )}
-      {editor.panel === "theme" && (
-        <Suspense>
-          <PanelTheme />
-        </Suspense>
-      )}
-      {editor.panel === "settings" && (
-        <Suspense>
-          <SettingsPanel />
-        </Suspense>
-      )}
-      {editor.panel === "data" && (
-        <Suspense>
-          <DataPanel />
-        </Suspense>
-      )}
-      {/* {editor.modal === "image-search" && <ModalSearchImage />} */}
+      {previewMode === "desktop" && panel === "library" && <PanelLibrary />}
+      {panel === "inspector" && <PanelInspector />}
+      {panel === "theme" && <PanelTheme />}
+      {panel === "settings" && <PanelSettings />}
+      {panel === "data" && <DataPanel />}
     </aside>
   );
 }

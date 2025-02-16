@@ -5,12 +5,12 @@ import { fieldLabel } from "../form-class";
 import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 
-export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props) => {
-  const { currentValue, onChange, required, title, description, placeholder, schema } = props;
+export const LayoutField: React.FC<FieldProps<DimensionsSettings>> = (props) => {
+  const { currentValue = {}, onChange, required, title, description, placeholder, schema } = props;
   const onSettingsChange = (newVal: Partial<DimensionsSettings>) => onChange({ ...currentValue, ...newVal });
 
   return (
-    <div className="border-field">
+    <div className="layout-field">
       {description && (
         <Text as="p" color="gray" size="1">
           {description}
@@ -22,10 +22,10 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
           <label className={fieldLabel}>Padding</label>
           <Select.Root
             defaultValue={currentValue.padding}
-            size="1"
+            size="2"
             onValueChange={(value) => onSettingsChange({ padding: value as DimensionsSettings["padding"] })}
           >
-            <Select.Trigger radius="large" variant="ghost" className="!mt-[1px]" />
+            <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
                 {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
@@ -45,8 +45,8 @@ export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props)
             onValueChange={(value) => onSettingsChange({ height: value as DimensionsSettings["height"] })}
             defaultValue={currentValue.height as string}
             size="1"
-            className="w-full !max-w-full"
-            radius="full"
+            className="w-full !max-w-full "
+            radius="large"
           >
             {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
             {schema.properties.height.anyOf.map((option: any) => (

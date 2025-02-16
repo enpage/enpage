@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#EEEEEE"/>
+
+  <!-- Image icon -->
+  <path d="M0 0 h400 v300 h-400 z" fill="none" stroke="#8186d3" stroke-width="4"/>
+  <circle cx="50" cy="50" r="20" fill="#8186d3"/>
+  <path d="M0 300 l100 -100 l100 100 l100 -150 l100 150" fill="none" stroke="#8186d3" stroke-width="4"/>
+</svg>

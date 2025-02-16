@@ -1,9 +1,9 @@
 import type { TSchema } from "@sinclair/typebox";
 import ColorField from "./fields/color";
-import { DimensionsField } from "./fields/dimensions";
+import { LayoutField } from "./fields/layout";
 import EnumField from "./fields/enum";
 import ImageField from "./fields/image";
-import MixedContentField from "./fields/mixed-content";
+import RichTextField from "./fields/rich-text";
 import { BorderField } from "./fields/border";
 import { PathField, StringField } from "./fields/string";
 import { NumberField, SliderField } from "./fields/number";
@@ -15,21 +15,38 @@ import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import get from "lodash-es/get";
 import type {
+  BackgroundSettings,
   BorderSettings,
   DimensionsSettings,
   EffectsSettings,
+  FlexSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
-import type { ImageProps, MixedContent } from "@upstart.gg/sdk/shared/bricks/props/common";
+import type { ImageProps, RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
+import { PagePaddingField } from "./fields/padding";
+import BackgroundField from "./fields/background";
+import { FlexField } from "./fields/flex";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
 
+type GetFormComponentsProps = {
+  formSchema: JSONSchemaType<unknown>;
+  formData: Record<string, unknown>;
+  mobileFormData?: Record<string, unknown>;
+  onChange: (data: Record<string, unknown>, id: string) => void;
+  onSubmit?: (data: Record<string, unknown>) => void;
+  submitButtonLabel?: string;
+  brickId: string;
+  filter?: (field: unknown) => boolean;
+  parents?: string[];
+};
 /**
  * Render a JSON schema form
  * @param schema the schema
  * @param formData data to prefill the form
+ * @param mobileFormData mobile specific data to prefill the form
  * @param onChange callback when the form changes
  * @param submitButtonLabel label for the submit button. If omitted, no submit button will be rendered
  * @param prefix prefix for deep fields
@@ -41,22 +58,13 @@ export function getFormComponents({
   onSubmit,
   submitButtonLabel,
   brickId,
+  filter,
   parents = [],
-}: {
-  formSchema: JSONSchemaType<unknown>;
-  formData: Record<string, unknown>;
-  onChange: (data: Record<string, unknown>, id: string) => void;
-  onSubmit?: (data: Record<string, unknown>) => void;
-  submitButtonLabel?: string;
-  parents?: string[];
-  /**
-   * Related brick id.
-   */
-  brickId: string;
-}): FormComponents {
+}: GetFormComponentsProps): FormComponents {
   formSchema = sortJsonSchemaProperties(formSchema);
 
   const elements = Object.entries(formSchema.properties)
+    .filter(([, fieldSchema]) => (filter ? filter(fieldSchema) : true))
     .map(([fieldName, fieldSchema]) => {
       const field = fieldSchema as JSONSchemaType<unknown>;
       const id = parents.length ? `${parents.join(".")}.${fieldName}` : fieldName;
@@ -88,7 +96,7 @@ export function getFormComponents({
             component: (
               <ColorField
                 currentValue={currentValue}
-                onChange={(value: string | null) => onChange({ [id]: value }, id)}
+                onChange={(value?: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -131,7 +139,7 @@ export function getFormComponents({
             group,
             groupTitle,
             component: (
-              <DimensionsField
+              <LayoutField
                 currentValue={currentValue}
                 onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
@@ -139,6 +147,53 @@ export function getFormComponents({
             ),
           };
         }
+
+        case "flex": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as FlexSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <FlexField
+                currentValue={currentValue}
+                onChange={(value: FlexSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "padding": {
+          const currentValue = (get(formData, id) ??
+            commonProps.schema.default) as Attributes["$pagePadding"];
+          return {
+            group,
+            groupTitle,
+            component: (
+              <PagePaddingField
+                currentValue={currentValue}
+                onChange={(value: Attributes["$pagePadding"] | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "background": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as BackgroundSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <BackgroundField
+                currentValue={currentValue}
+                onChange={(value: BackgroundSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
         case "enum": {
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
@@ -157,6 +212,7 @@ export function getFormComponents({
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as ImageProps;
           return {
             group,
+            groupTitle,
             component: (
               <ImageField
                 currentValue={currentValue}
@@ -166,14 +222,13 @@ export function getFormComponents({
             ),
           };
         }
-        case "mixed-content": {
-          // console.log("mixed-content", { id, field, formData, commonProps });
-          const currentValue = (get(formData, id) ?? commonProps.schema.default) as MixedContent;
+        case "rich-text": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as RichText;
           return {
             group,
             groupTitle,
             component: (
-              <MixedContentField
+              <RichTextField
                 currentValue={currentValue}
                 onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
@@ -186,6 +241,7 @@ export function getFormComponents({
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
+            groupTitle,
             component: (
               <PathField
                 currentValue={currentValue}
@@ -214,6 +270,7 @@ export function getFormComponents({
           const currentValue = (get(formData, id) ?? commonProps.schema.default) as boolean;
           return {
             group,
+            groupTitle,
             component: (
               <SwitchField
                 currentValue={currentValue}
@@ -300,6 +357,8 @@ export function getFormComponents({
     // filter null values
     .filter(Boolean);
 
+  console.debug("Form elements for %s", brickId, elements);
+
   return elements as FormComponents;
 }
 
@@ -308,16 +367,16 @@ export function FormRenderer({ components, brickId }: { components: FormComponen
   return components.map((element, index) => {
     const node = (
       <Fragment key={`${brickId}_${index}`}>
+        {currentGroup !== element.group && element.groupTitle && (
+          <h3
+            className={tx(
+              "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
+            )}
+          >
+            {element.groupTitle}
+          </h3>
+        )}
         <div className="form-group flex flex-col gap-3">
-          {currentGroup !== element.group && element.groupTitle && (
-            <h3
-              className={tx(
-                "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
-              )}
-            >
-              {element.groupTitle}
-            </h3>
-          )}
           {"component" in element
             ? element.component
             : element.components.map((c, i) => (
@@ -360,7 +419,7 @@ export function AnyOfField(props: FieldProps<unknown>) {
         defaultValue={currentOpt}
         size="1"
         className="w-full !max-w-full mt-2"
-        radius="full"
+        radius="large"
       >
         {(options as TSchema[])
           .filter((o) => !o["ui:hidden-option"])

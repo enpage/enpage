@@ -1,20 +1,19 @@
-import { Button, IconButton, Popover, Text } from "@upstart.gg/style-system/system";
-import { tx, colors, css } from "@upstart.gg/style-system/twind";
+import { IconButton, Popover, Text } from "@upstart.gg/style-system/system";
+import { tx, css } from "@upstart.gg/style-system/twind";
 import transSvg from "./trans.svg?url";
-import {
-  isStandardColor,
-  type ColorType,
-  type ElementColor,
-  type ElementColorType,
-} from "@upstart.gg/sdk/shared/themes/color-system";
+import type { ColorType, ElementColor, ElementColorType } from "@upstart.gg/sdk/shared/themes/color-system";
 import BaseColorPicker, { ElementColorPicker } from "~/editor/components/ColorPicker";
 import type { FieldProps } from "./types";
 import { IoCloseOutline } from "react-icons/io5";
 
-const ColorField: React.FC<FieldProps<string>> = (props) => {
+const ColorField: React.FC<FieldProps<string | undefined>> = (props) => {
   const { schema, onChange, formSchema: formContext, currentValue, title, description } = props;
   const elementColorType = (schema["ui:color-type"] ??
     "page-background") as ColorElementPreviewPillProps["elementColorType"];
+
+  if (schema["ui:display"] === "inline") {
+    return <div>inline color pill</div>;
+  }
 
   return (
     <ColorFieldRow
@@ -36,13 +35,13 @@ type ColorFieldRowProps = {
   showReset?: boolean;
 } & (
   | {
-      color: string;
+      color?: string;
       colorType?: ColorBasePreviewPillProps["colorType"];
       onChange: ColorBasePreviewPillProps["onChange"];
       elementColorType?: never;
     }
   | {
-      color: ElementColor;
+      color?: ElementColor;
       colorType?: never;
       elementColorType?: ColorElementPreviewPillProps["elementColorType"];
       onChange: ColorElementPreviewPillProps["onChange"];
@@ -101,7 +100,7 @@ export function ColorFieldRow({
 }
 
 type ColorElementPreviewPillProps = {
-  color: ElementColor;
+  color?: ElementColor;
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   elementColorType: ElementColorType;
@@ -162,7 +161,7 @@ function ColorElementPreviewPill({
 }
 
 type ColorBasePreviewPillProps = {
-  color: string;
+  color?: string;
   side?: "left" | "right" | "top" | "bottom";
   align?: "start" | "center" | "end";
   colorType: ColorType;
@@ -246,6 +245,9 @@ function ColorElementPopover({
       break;
     case "border":
       width = "186px";
+      break;
+    case "text":
+      width = "216px";
       break;
   }
   return (

@@ -193,7 +193,7 @@ export default BaseColorPicker;
 
 interface ElementColorPickerProps {
   elementColorType: ElementColorType;
-  initialValue: ElementColor;
+  initialValue?: ElementColor;
   onChange?: (color: ElementColor) => void;
 }
 
@@ -204,7 +204,7 @@ type ColorPillListProps =
       colors: string[];
       cols: number;
       onChange: (color: ElementColor) => void;
-      currentColor: ElementColor;
+      currentColor?: ElementColor;
     }
   | {
       type: "gradient";
@@ -212,7 +212,7 @@ type ColorPillListProps =
       colors: { from: string; to: string }[];
       cols: number;
       onChange: (color: ElementColor) => void;
-      currentColor: ElementColor;
+      currentColor?: ElementColor;
     };
 
 function ColorPillList({
@@ -225,21 +225,14 @@ function ColorPillList({
   elementColorType,
 }: PropsWithChildren<ColorPillListProps>) {
   const [gradientDir, setGradientDir] = useState<string>(getInitialGradientDir());
-  const [gradientPair, setGradientPair] = useState<{ from: string; to: string } | null>(null);
 
   function getInitialGradientDir() {
-    const match = currentColor.match(/to-(\w+)/);
+    const match = currentColor?.match(/to-(\w+)/);
     if (match) {
       return match[1];
     }
     return "t";
   }
-
-  useEffect(() => {
-    if (type === "gradient" && gradientPair) {
-      onChange(`bg-gradient-to-${gradientDir} from-${gradientPair.from} to-${gradientPair.to}`);
-    }
-  }, [gradientDir, gradientPair, onChange, type]);
 
   if (type === "solid") {
     return (
@@ -262,10 +255,10 @@ function ColorPillList({
     );
   } else if (type === "gradient") {
     const mixs = [
-      ["50", "100"],
       ["50", "200"],
-      ["100", "200"],
-      ["100", "300"],
+      ["200", "400"],
+      ["400", "600"],
+      ["600", "800"],
       ["800", "900"],
     ];
     return (
@@ -305,7 +298,6 @@ function ColorPillList({
                     `bg-gradient-to-${gradientDir} from-${color.from} to-${color.to} hover:scale-110`,
                   )}
                   onClick={() => {
-                    setGradientPair(color);
                     onChange(`bg-gradient-to-${gradientDir} from-${color.from} to-${color.to}`);
                   }}
                 />
@@ -323,7 +315,8 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
   elementColorType,
   onChange = () => {},
 }) => {
-  const defaultColorType = initialValue.includes("gradient") ? "gradient" : "solid";
+  console.log("ElementColorPicker", { initialValue, elementColorType });
+  const defaultColorType = initialValue?.includes("gradient") ? "gradient" : "solid";
   function makeCominations(colors: string[], shades: string[]) {
     return colors.flatMap((color) => shades.map((shade) => `${color}-${shade}`));
   }
@@ -332,7 +325,7 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
     // combine gradients between each color
     const gradients: { from: string; to: string }[] = [];
     for (let i = 0; i < colors.length; i++) {
-      for (let j = 0; j < colors.length; j++) {
+      for (let j = i; j < colors.length; j++) {
         // don't mix neutral with other colors
         if (
           (colors[i] === "neutral" && colors[j] !== "neutral") ||
@@ -348,7 +341,7 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
 
   if (elementColorType === "page-background") {
     const colors = ["primary", "secondary", "accent", "neutral"];
-    const shades = ["50", "100", "200", "900"];
+    const shades = ["100", "300", "500", "700", "900"];
 
     return (
       <Tabs.Root defaultValue={defaultColorType}>
@@ -443,6 +436,21 @@ export const ElementColorPicker: React.FC<ElementColorPickerProps> = ({
   if (elementColorType === "border") {
     const colors = ["gray", "primary", "secondary", "accent", "neutral"];
     const shades = ["100", "200", "300", "400"];
+
+    return (
+      <ColorPillList
+        type="solid"
+        elementColorType={elementColorType}
+        currentColor={initialValue}
+        cols={shades.length}
+        colors={makeCominations(colors, shades)}
+        onChange={onChange}
+      />
+    );
+  }
+  if (elementColorType === "text") {
+    const colors = ["gray", "primary", "secondary", "accent", "neutral"];
+    const shades = ["100", "300", "500", "700", "900"];
 
     return (
       <ColorPillList

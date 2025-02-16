@@ -26,18 +26,22 @@ export interface EditorStateProps {
   textEditMode?: "default" | "large";
   lastTextEditPosition?: number;
   settingsVisible?: boolean;
-  selectedBrick?: Brick;
+
   selectedGroup?: Brick["id"][];
   isEditingTextForBrickId?: string;
   shouldShowGrid?: boolean;
   panel?: "library" | "inspector" | "theme" | "settings" | "data";
   modal?: "image-search" | "datasources";
   panelPosition: "left" | "right";
+  seenTours: string[];
+  disableTours?: boolean;
+  logoLink: string;
   /**
    * Latest used color adjustment
    */
   colorAdjustment: ColorAdjustment;
   collidingBrick?: { brick: Brick; side: "top" | "bottom" | "left" | "right" };
+  onShowLogin: () => void;
 }
 
 export interface EditorState extends EditorStateProps {
@@ -46,13 +50,11 @@ export interface EditorState extends EditorStateProps {
   toggleSettings: () => void;
   toggleTextEditMode: () => void;
   setTextEditMode: (mode: EditorStateProps["textEditMode"]) => void;
-  setSelectedBrick: (brick?: Brick) => void;
-  deselectBrick: (brickId?: Brick["id"]) => void;
   setIsEditingText: (forBrickId: string | false) => void;
   setlastTextEditPosition: (position?: number) => void;
   setPanel: (panel?: EditorStateProps["panel"]) => void;
-  togglePanel: (panel: EditorStateProps["panel"]) => void;
-  hidePanel: (panel: EditorStateProps["panel"]) => void;
+  togglePanel: (panel?: EditorStateProps["panel"]) => void;
+  hidePanel: (panel?: EditorStateProps["panel"]) => void;
   setSelectedGroup: (group?: Brick["id"][]) => void;
   setShouldShowGrid: (show: boolean) => void;
   setColorAdjustment: (colorAdjustment: ColorAdjustment) => void;
@@ -60,14 +62,20 @@ export interface EditorState extends EditorStateProps {
   showModal: (modal: EditorStateProps["modal"]) => void;
   setCollidingBrick: (info: { brick: Brick; side: "top" | "bottom" | "left" | "right" } | null) => void;
   hideModal: () => void;
+  onShowLogin: () => void;
 }
 
 export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
   const DEFAULT_PROPS: Omit<EditorStateProps, "pageConfig" | "pages"> = {
     previewMode: "desktop",
+    seenTours: [],
     mode: "local",
     colorAdjustment: "default",
     panelPosition: "left",
+    logoLink: "/dashboard",
+    onShowLogin: () => {
+      console.warn("onShowLogin is not implemented");
+    },
   };
 
   return createStore<EditorState>()(
@@ -114,24 +122,6 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                 state.settingsVisible = !state.settingsVisible;
               }),
 
-            setSelectedBrick: (brick) =>
-              set((state) => {
-                state.selectedBrick = brick;
-                if (brick) {
-                  state.panel = "inspector";
-                }
-              }),
-
-            deselectBrick: (brickId) =>
-              set((state) => {
-                if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
-                  state.selectedBrick = undefined;
-                  if (state.panel === "inspector") {
-                    state.panel = undefined;
-                  }
-                }
-              }),
-
             setIsEditingText: (forBrickId: string | false) =>
               set((state) => {
                 state.isEditingTextForBrickId = forBrickId || undefined;
@@ -144,12 +134,12 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
 
             togglePanel: (panel) =>
               set((state) => {
-                state.panel = state.panel === panel ? undefined : panel;
+                state.panel = panel && state.panel === panel ? undefined : panel;
               }),
 
             hidePanel: (panel) =>
               set((state) => {
-                if (state.panel === panel) {
+                if (!panel || state.panel === panel) {
                   state.panel = undefined;
                 }
               }),
@@ -200,6 +190,10 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                       "isEditingTextForBrickId",
                       "shouldShowGrid",
                       "textEditMode",
+                      "onShowLogin",
+                      "seenTours",
+                      "disableTours",
+                      "logoLink",
                     ].includes(key),
                 ),
               ),
@@ -219,6 +213,7 @@ export interface DraftStateProps {
   path: string;
   label: string;
   bricks: Brick[];
+  selectedBrick?: Brick;
   data: Record<string, unknown>;
   datasources?: SiteConfig["datasources"];
   datarecords?: SiteConfig["datarecords"];
@@ -235,6 +230,7 @@ export interface DraftStateProps {
   lastSaved?: Date;
   dirty?: boolean;
   lastLoaded?: Date;
+
   /**
    * When local, the editor does not fetch data from the server or save data to the server
    * It is used when the user is not logged in yet or does not have an account yet
@@ -247,9 +243,10 @@ export interface DraftState extends DraftStateProps {
   getBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
-  addBrick: (brick: Brick) => void;
+  moveBrick: (id: string, to: "left" | "right") => void;
+  addBrick: (brick: Brick, parentContainer?: Brick) => void;
   updateBrick: (id: string, brick: Partial<Brick>) => void;
-  updateBrickProps: (id: string, props: Record<string, unknown>) => void;
+  updateBrickProps: (id: string, props: Record<string, unknown>, isMobileProps?: boolean) => void;
   updateBrickPosition: (id: string, bp: keyof Brick["position"], position: Partial<BrickPosition>) => void;
   updateBricksPositions: (bp: keyof Brick["position"], positions: Record<string, BrickPosition>) => void;
   toggleBrickVisibilityPerBreakpoint: (id: string, breakpoint: keyof Brick["position"]) => void;
@@ -263,6 +260,8 @@ export interface DraftState extends DraftStateProps {
   setLastLoaded: () => void;
   setVersion(version: string): void;
   adjustMobileLayout(): void;
+  setSelectedBrick: (brick?: Brick) => void;
+  deselectBrick: (brickId?: Brick["id"]) => void;
 }
 
 /**
@@ -326,10 +325,39 @@ export const createDraftStore = (
                 state.bricks = bricks;
               }),
 
+            setSelectedBrick: (brick) =>
+              set((state) => {
+                state.selectedBrick = brick;
+              }),
+
+            deselectBrick: (brickId) =>
+              set((state) => {
+                if (state.selectedBrick && (!brickId || state.selectedBrick?.id === brickId)) {
+                  state.selectedBrick = undefined;
+                }
+              }),
+
             deleteBrick: (id) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks.splice(brickIndex, 1);
+                const bricks: Brick[] = [];
+                for (const brick of state.bricks) {
+                  if (brick.id !== id) {
+                    bricks.push({
+                      ...brick,
+                      ...("children" in brick.props
+                        ? {
+                            props: {
+                              ...brick.props,
+                              children: brick.props.children.filter((child: Brick) => {
+                                return child.id !== id;
+                              }),
+                            },
+                          }
+                        : {}),
+                    });
+                  }
+                }
+                state.bricks = bricks;
               }),
 
             duplicateBrick: (id) =>
@@ -347,18 +375,48 @@ export const createDraftStore = (
 
             updateBrick: (id, brick) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex] = { ...state.bricks[brickIndex], ...brick };
+                const original = getBrick(id, state.bricks);
+                if (original) {
+                  Object.assign(original, brick);
+                }
               }),
 
-            updateBrickProps: (id, props) =>
+            updateBrickProps: (id, props, isMobileProps) =>
               set((state) => {
-                const brickIndex = _get().bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex].props = { ...state.bricks[brickIndex].props, ...props };
+                const brick = getBrick(id, state.bricks);
+                if (brick) {
+                  if (isMobileProps) {
+                    brick.mobileProps = { ...brick.mobileProps, ...props, lastTouched: Date.now() };
+                  } else {
+                    brick.props = { ...brick.props, ...props, lastTouched: Date.now() };
+                  }
+                }
+              }),
+
+            /**
+             * Move abrick inside its container.
+             * If the brick does not belong to a container, does nothing
+             */
+            moveBrick: (id, to) =>
+              set((state) => {
+                const brick = getBrick(id, state.bricks);
+                if (!brick?.parentId) {
+                  console.error("Cannot move brick %s, it does not belong to a container", id);
+                  return;
+                }
+                const parentBrick = getBrick(brick.parentId, _get().bricks);
+                if (!parentBrick) {
+                  console.error(
+                    "Cannot move brick %s, parent brick %s not found",
+                    id,
+                    brick.parentId ?? "<unknown id>",
+                  );
+                  return;
+                }
               }),
 
             getBrick: (id) => {
-              return _get().bricks.find((b) => b.id === id);
+              return getBrick(id, _get().bricks);
             },
             setPreviewTheme: (theme) =>
               set((state) => {
@@ -394,21 +452,34 @@ export const createDraftStore = (
 
             updateBrickPosition: (id, bp, position) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                Object.assign(state.bricks[brickIndex].position[bp], position);
+                const brick = getBrick(id, state.bricks);
+                if (brick) {
+                  Object.assign(brick.position[bp], position);
+                }
               }),
 
             toggleBrickVisibilityPerBreakpoint: (id, breakpoint) =>
               set((state) => {
-                const brickIndex = state.bricks.findIndex((item) => item.id === id);
-                state.bricks[brickIndex].position[breakpoint]!.hidden =
-                  !state.bricks[brickIndex].position[breakpoint]?.hidden;
+                const brick = getBrick(id, state.bricks);
+                if (brick) {
+                  brick.position[breakpoint] = {
+                    ...brick.position[breakpoint],
+                    hidden: !brick.position[breakpoint]?.hidden,
+                  };
+                }
               }),
 
-            addBrick: (brick) =>
+            addBrick: (brick, parentContainer) =>
               set((state) => {
-                console.log("Adding brick", brick);
-                state.bricks.push(brick);
+                if (!parentContainer) {
+                  console.log("Adding brick", brick);
+                  state.bricks.push(brick);
+                } else {
+                  console.log("Adding brick %o to container %o", brick, parentContainer);
+                  const parentBrick = state.bricks.find((b) => b.id === parentContainer.id);
+                  // @ts-ignore
+                  parentBrick?.props.children?.push({ ...brick, parentId: parentContainer.id });
+                }
               }),
 
             updateAttributes: (attr) =>
@@ -451,7 +522,7 @@ export const createDraftStore = (
             partialize: (state) =>
               Object.fromEntries(
                 Object.entries(state).filter(
-                  ([key]) => !["previewTheme", "attributes", "lastSaved"].includes(key),
+                  ([key]) => !["previewTheme", "attributes", "lastSaved", "selectedBrick"].includes(key),
                 ),
               ),
           },
@@ -463,7 +534,7 @@ export const createDraftStore = (
           partialize: (state) =>
             Object.fromEntries(
               Object.entries(state).filter(
-                ([key]) => !["previewTheme", "attributes", "lastSaved"].includes(key),
+                ([key]) => !["previewTheme", "attributes", "lastSaved", "selectedBrick"].includes(key),
               ),
             ) as DraftState,
           handleSet: (handleSet) =>
@@ -517,6 +588,10 @@ export const usePreviewMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.previewMode);
 };
+export const useLogoLink = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.logoLink);
+};
 
 export const useSelectedGroup = () => {
   const ctx = useEditorStoreContext();
@@ -524,7 +599,7 @@ export const useSelectedGroup = () => {
 };
 
 export const useSelectedBrick = () => {
-  const ctx = useEditorStoreContext();
+  const ctx = useDraftStoreContext();
   return useStore(ctx, (state) => state.selectedBrick);
 };
 
@@ -533,9 +608,19 @@ export const useColorAdjustment = () => {
   return useStore(ctx, (state) => state.colorAdjustment);
 };
 
+export const usePanel = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => ({ panel: state.panel, panelPosition: state.panelPosition }));
+};
+
 export const useEditorMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.mode);
+};
+
+export const useTours = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => ({ seenTours: state.seenTours, disabled: state.disableTours }));
 };
 
 export const useTextEditMode = () => {
@@ -591,8 +676,6 @@ export const useEditorHelpers = () => {
     toggleSettings: state.toggleSettings,
     toggleTextEditMode: state.toggleTextEditMode,
     setTextEditMode: state.setTextEditMode,
-    setSelectedBrick: state.setSelectedBrick,
-    deselectBrick: state.deselectBrick,
     setIsEditingText: state.setIsEditingText,
     setlastTextEditPosition: state.setlastTextEditPosition,
     setPanel: state.setPanel,
@@ -605,6 +688,16 @@ export const useEditorHelpers = () => {
     showModal: state.showModal,
     hideModal: state.hideModal,
     setCollidingBrick: state.setCollidingBrick,
+    onShowLogin: state.onShowLogin,
+  }));
+};
+
+export const useDraftHelpers = () => {
+  const ctx = useDraftStoreContext();
+  return useStore(ctx, (state) => ({
+    setSelectedBrick: state.setSelectedBrick,
+    deselectBrick: state.deselectBrick,
+    deleteBrick: state.deleteBrick,
   }));
 };
 
@@ -675,4 +768,23 @@ function getDuplicatedBrickPosition(brick: Brick) {
       x: (desktop ?? mobile)!.x + 1,
     },
   };
+}
+
+/**
+ * This helpers is meant to be used from within DraftState actions
+ */
+function getBrick(id: string, bricks: Brick[]) {
+  let brick = bricks.find((b) => b.id === id);
+  if (!brick) {
+    for (const brickIter of bricks) {
+      if ("children" in brickIter.props) {
+        const child = brickIter.props.children.find((b: Brick) => b.id === id);
+        if (child) {
+          brick = child;
+          break;
+        }
+      }
+    }
+  }
+  return brick;
 }
