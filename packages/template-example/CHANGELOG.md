@@ -1,5 +1,23 @@
 # @upstart.gg/template-example
 
+## 0.0.78
+
+### Patch Changes
+
+- [#274](https://github.com/enpage/enpage/pull/274) [`5874303`](https://github.com/enpage/enpage/commit/58743034311b75118dbfcd649bfa4cdd68afde00) Thanks [@mattallty](https://github.com/mattallty)! - ## New features
+
+  - Panel position switching
+  - Tours
+  - Basic datarecords (Airtable, Google sheets)
+
+  ## Fixes
+
+  - Various fiex and improvements
+
+- Updated dependencies [[`5874303`](https://github.com/enpage/enpage/commit/58743034311b75118dbfcd649bfa4cdd68afde00)]:
+  - @upstart.gg/style-system@0.0.34
+  - @upstart.gg/sdk@0.0.78
+
 ## 0.0.77
 
 ### Patch Changes

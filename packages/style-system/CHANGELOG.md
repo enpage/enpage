@@ -1,5 +1,19 @@
 # @upstart.gg/style-system
 
+## 0.0.34
+
+### Patch Changes
+
+- [#274](https://github.com/enpage/enpage/pull/274) [`5874303`](https://github.com/enpage/enpage/commit/58743034311b75118dbfcd649bfa4cdd68afde00) Thanks [@mattallty](https://github.com/mattallty)! - ## New features
+
+  - Panel position switching
+  - Tours
+  - Basic datarecords (Airtable, Google sheets)
+
+  ## Fixes
+
+  - Various fiex and improvements
+
 ## 0.0.33
 
 ### Patch Changes
