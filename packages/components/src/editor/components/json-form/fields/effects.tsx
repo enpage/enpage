@@ -15,13 +15,13 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
   };
 
   return (
-    <div className="border-field">
+    <div className="effects-field">
       {description && (
         <Text as="p" color="gray" size="1">
           {description}
         </Text>
       )}
-      <div className="flex items-center flex-wrap gap-x-4 gap-y-1">
+      <div className="flex items-start flex-wrap gap-x-4 gap-y-1">
         {/* shadow */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Shadow</label>
@@ -46,7 +46,7 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
           </Select.Root>
         </div>
         {/* border style */}
-        <div className="flex flex-col gap-1 flex-1">
+        <div className="flex flex-col gap-1 flex-1 place-items-start">
           <label className={fieldLabel}>
             Opacity{" "}
             <span className="text-gray-500 dark:text-gray-50 font-normal text-xs">
@@ -54,7 +54,7 @@ export const EffectsField: React.FC<FieldProps<EffectsSettings>> = (props) => {
             </span>
           </label>
           <Slider
-            className="!mt-1 !mx-px"
+            className="!mt-[8px] !mx-px"
             onValueChange={(value) => onOpacityChange(value[0])}
             size="1"
             variant="soft"

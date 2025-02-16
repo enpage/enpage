@@ -1,8 +1,6 @@
 import type { FieldProps } from "./types";
 import { Text, Select, Slider } from "@upstart.gg/style-system/system";
-import type { DimensionsSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { fieldLabel } from "../form-class";
-import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 

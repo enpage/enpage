@@ -396,6 +396,53 @@ export const flexProps = Type.Object({
   }),
 });
 
+const fontSize = Type.Union(
+  [
+    Type.Literal("text-xs", { title: "XS" }),
+    Type.Literal("text-sm", { title: "S" }),
+    Type.Literal("text-base", { title: "M" }),
+    Type.Literal("text-lg", { title: "L" }),
+    Type.Literal("text-xl", { title: "XL" }),
+    Type.Literal("text-2xl", { title: "2XL" }),
+    Type.Literal("text-3xl", { title: "3XL" }),
+    Type.Literal("text-4xl", { title: "4XL" }),
+    Type.Literal("text-5xl", { title: "5XL" }),
+    Type.Literal("text-6xl", { title: "6XL" }),
+    Type.Literal("text-7xl", { title: "7XL" }),
+    Type.Literal("inherit", { title: "Inherit" }),
+  ],
+  {
+    default: "inherit",
+    title: "Default size",
+    "ui:field": "enum",
+    "ui:display": "select",
+    "ui:group": "text",
+  },
+);
+
+export const text = Type.Object(
+  {
+    size: fontSize,
+    color: Type.Optional(
+      Type.String({
+        default: "transparent",
+        title: "Color",
+        "ui:field": "color",
+      }),
+    ),
+  },
+  {
+    title: "Text style",
+    // "ui:field": "text",
+    "ui:group": "text",
+    "ui:group:title": "Text",
+    default: {
+      size: "text-base",
+      color: "inherit",
+    },
+  },
+);
+
 /**
  * No margin in common style props as bricks are usually placed in a grid
  */
@@ -409,6 +456,7 @@ export const commonStyleProps = Type.Object({
   effects,
   // padding,
   background,
+  text,
 });
 
 const textAlign = Type.Optional(
@@ -428,30 +476,6 @@ const textAlign = Type.Optional(
       "ui:group": "text",
     },
   ),
-);
-
-const fontSize = Type.Union(
-  [
-    Type.Literal("text-xs", { title: "XS" }),
-    Type.Literal("text-sm", { title: "S" }),
-    Type.Literal("text-base", { title: "M" }),
-    Type.Literal("text-lg", { title: "L" }),
-    Type.Literal("text-xl", { title: "XL" }),
-    Type.Literal("text-2xl", { title: "2XL" }),
-    Type.Literal("text-3xl", { title: "3XL" }),
-    Type.Literal("text-4xl", { title: "4XL" }),
-    Type.Literal("text-5xl", { title: "5XL" }),
-    Type.Literal("text-6xl", { title: "6XL" }),
-    Type.Literal("text-7xl", { title: "7XL" }),
-  ],
-  {
-    $id: "fontSize",
-    default: "text-base",
-    title: "Font size",
-    "ui:field": "enum",
-    "ui:display": "button-group",
-    "ui:group": "text",
-  },
 );
 
 const fontWeight = Type.Union(

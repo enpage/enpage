@@ -12,18 +12,16 @@ export default function SettingsForm() {
   const draft = useDraft();
   const attributes = useAttributes();
   const attrSchema = useAttributesSchema();
-  const filteredAttrSchema = sortJsonSchemaProperties(attrSchema);
+  const filteredAttrSchema = useMemo(() => sortJsonSchemaProperties(attrSchema), [attrSchema]);
   const [shouldRender, setShouldRender] = useState(false);
   const [currentTab, setCurrentTab] = useState("page-settings");
   const { hidePanel } = useEditorHelpers();
 
-  const onChange = useCallback(
-    (data: Record<string, unknown>, propertyChanged: string) => {
-      console.log("changed attr %o", data);
-      draft.updateAttributes(data as Attributes);
-    },
-    [draft.updateAttributes],
-  );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: draft.updateAttributes is a stable function
+  const onChange = useCallback((data: Record<string, unknown>, propertyChanged: string) => {
+    console.log("changed attr %o", data);
+    draft.updateAttributes(data as Attributes);
+  }, []);
 
   const formElements = useMemo(() => {
     return getFormComponents({

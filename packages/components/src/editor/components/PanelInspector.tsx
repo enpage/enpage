@@ -17,6 +17,7 @@ import type { JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { useLocalStorage } from "usehooks-ts";
 import { BsStars } from "react-icons/bs";
 import PresetsView from "./PresetsView";
+import { useCallback, useMemo } from "react";
 
 export default function Inspector() {
   const brick = useSelectedBrick();
@@ -123,43 +124,43 @@ export default function Inspector() {
 function ElementInspector({ brick }: { brick: Brick }) {
   const draft = useDraft();
   const getBrick = useGetBrick();
-  const brickInfo = getBrick(brick.id);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: getBrick is a stable function
+  const brickInfo = useMemo(() => getBrick(brick.id), [brick.id]);
   const previewMode = usePreviewMode();
-  // const formData = useMemo(
-  //   () => ({ ...brickDefaults.props, ...(brickInfo?.props ?? {}) }),
-  //   [brickInfo, brickDefaults],
-  // );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: draft.updateBrickProps is a stable function
+  const onChange = useCallback(
+    (data: Record<string, unknown>, propertyChanged: string) => {
+      if (!propertyChanged) {
+        // ignore changes unrelated to the brick
+        return;
+      }
+      draft.updateBrickProps(brick.id, data, previewMode === "mobile");
+    },
+    [brick.id],
+  );
+  const manifest = useMemo(() => manifests[brick.type], [brick.type]);
 
   if (!brickInfo) {
     console.log("No brick info found for brick: %s", brick.id);
     return null;
   }
 
-  const onChange = (data: Record<string, unknown>, propertyChanged: string) => {
-    if (!propertyChanged) {
-      // ignore changes unrelated to the brick
-      return;
-    }
-    console.log("onChange(%s)", propertyChanged, data, brickInfo);
-    draft.updateBrickProps(brick.id, data, previewMode === "mobile");
-  };
-
-  const manifest = manifests[brick.type];
-
   if (!manifest) {
     console.warn(`No manifest found for brick: ${JSON.stringify(brick)}`);
     return null;
   }
 
-  const mobileFormData = previewMode === "mobile" ? brickInfo.mobileProps : undefined;
-
-  const elements = getFormComponents({
-    brickId: brick.id,
-    formSchema: manifest.properties.props as unknown as JSONSchemaType<unknown>,
-    formData: brickInfo.props,
-    mobileFormData,
-    onChange,
-  });
+  const elements = useMemo(
+    () =>
+      getFormComponents({
+        brickId: brick.id,
+        formSchema: manifest.properties.props as unknown as JSONSchemaType<unknown>,
+        formData: brickInfo.props,
+        mobileFormData: previewMode === "mobile" ? brickInfo.mobileProps : undefined,
+        onChange,
+      }),
+    [manifest, onChange, brick.id, brickInfo, previewMode],
+  );
 
   return (
     <form className={tx("px-3 flex flex-col gap-3")}>

@@ -6,7 +6,6 @@ import ModalSearchImage from "~/editor/components/ModalSearchImage";
 import type { BackgroundSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import ColorField from "./color";
 import { useUploader } from "../../UploaderContext";
-import { IoIosHelpCircleOutline } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
 import { HelpIcon } from "../HelpIcon";
 
