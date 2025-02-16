@@ -125,10 +125,11 @@ export type BorderSettings = Static<typeof border>;
 export const padding = Type.Union(
   [
     Type.Literal("p-0", { title: "None" }),
-    Type.Literal("p-2", { title: "Small" }),
-    Type.Literal("p-4", { title: "Medium" }),
-    Type.Literal("p-8", { title: "Large" }),
-    Type.Literal("p-16", { title: "Extra large" }),
+    Type.Literal("p-1", { title: "Small" }),
+    Type.Literal("p-2", { title: "Medium" }),
+    Type.Literal("p-4", { title: "Large" }),
+    Type.Literal("p-8", { title: "Extra large" }),
+    Type.Literal("p-16", { title: "Extra large (v2)" }),
   ],
   {
     $id: "padding",
@@ -308,15 +309,18 @@ export type EffectsSettings = Static<typeof effects>;
 
 export const flex = Type.Object(
   {
-    direction: Type.Union([Type.Literal("row", { title: "Row" }), Type.Literal("col", { title: "Column" })], {
-      title: "Direction",
-      description: "The direction of the container",
-      "ui:field": "enum",
-      "ui:display": "button-group",
-      "ui:group": "layout",
-    }),
+    direction: Type.Union(
+      [Type.Literal("flex-row", { title: "Row" }), Type.Literal("flex-col", { title: "Column" })],
+      {
+        title: "Direction",
+        description: "The direction of the container",
+        "ui:field": "enum",
+        "ui:display": "button-group",
+        "ui:group": "layout",
+      },
+    ),
     wrap: Type.Union(
-      [Type.Literal("wrap", { title: "Wrap" }), Type.Literal("nowrap", { title: "No wrap" })],
+      [Type.Literal("flex-wrap", { title: "Wrap" }), Type.Literal("flex-nowrap", { title: "No wrap" })],
       {
         title: "Wrap",
         description: "Wrap items",
@@ -327,12 +331,12 @@ export const flex = Type.Object(
     ),
     justify: Type.Union(
       [
-        Type.Literal("start", { title: "Start" }),
-        Type.Literal("center", { title: "Center" }),
-        Type.Literal("end", { title: "End" }),
-        Type.Literal("between", { title: "Between" }),
-        Type.Literal("around", { title: "Around" }),
-        Type.Literal("evenly", { title: "Evenly" }),
+        Type.Literal("justify-start", { title: "Start" }),
+        Type.Literal("justify-center", { title: "Center" }),
+        Type.Literal("justify-end", { title: "End" }),
+        Type.Literal("justify-between", { title: "Between" }),
+        Type.Literal("justify-around", { title: "Around" }),
+        Type.Literal("justify-evenly", { title: "Evenly" }),
       ],
       {
         title: "Justify",
@@ -343,11 +347,11 @@ export const flex = Type.Object(
     ),
     align: Type.Union(
       [
-        Type.Literal("start", { title: "Start" }),
-        Type.Literal("center", { title: "Center" }),
-        Type.Literal("end", { title: "End" }),
-        Type.Literal("baseline", { title: "Baseline" }),
-        Type.Literal("stretch", { title: "Stretch" }),
+        Type.Literal("items-start", { title: "Start" }),
+        Type.Literal("items-center", { title: "Center" }),
+        Type.Literal("items-end", { title: "End" }),
+        Type.Literal("items-baseline", { title: "Baseline" }),
+        Type.Literal("items-stretch", { title: "Stretch" }),
       ],
       {
         title: "Align",
@@ -358,12 +362,12 @@ export const flex = Type.Object(
     ),
     gap: Type.Union(
       [
-        Type.Literal("0", { title: "None" }),
-        Type.Literal("1", { title: "Small" }),
-        Type.Literal("2", { title: "Medium" }),
-        Type.Literal("4", { title: "Large" }),
-        Type.Literal("8", { title: "Extra large" }),
-        Type.Literal("16", { title: "Extra large (2x)" }),
+        Type.Literal("gap-0", { title: "None" }),
+        Type.Literal("gap-1", { title: "Small" }),
+        Type.Literal("gap-2", { title: "Medium" }),
+        Type.Literal("gap-4", { title: "Large" }),
+        Type.Literal("gap-8", { title: "Extra large" }),
+        Type.Literal("gap-16", { title: "Extra large (2x)" }),
       ],
       {
         title: "Gap",
@@ -377,11 +381,11 @@ export const flex = Type.Object(
     title: "Layout",
     "ui:field": "flex",
     default: {
-      direction: "row",
-      gap: "1",
-      wrap: "wrap",
-      justify: "start",
-      align: "stretch",
+      direction: "flex-row",
+      gap: "gap-1",
+      wrap: "flex-wrap",
+      justify: "justify-start",
+      align: "items-stretch",
     },
     ...groupFlex,
   },

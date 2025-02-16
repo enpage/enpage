@@ -20,16 +20,16 @@ export function useBrickStyle(
   // we use flex-1 to make the inner brick fill the space.
   return tx("flex-1", [
     props.className && apply(props.className),
-    props.dimensions?.padding ? (props.dimensions.padding as string) : null,
+    props.dimensions?.padding,
     props.color ? `text-${props.color}` : null,
-    props.fontSize ? `text-${props.fontSize}` : null,
-    props.fontWeight ? `font-${props.fontWeight}` : null,
-    props.textAlign ? `text-${props.textAlign}` : null,
-    props.flex?.direction ? `flex-${props.flex.direction}` : null,
-    props.flex?.wrap ? `flex-${props.flex.wrap}` : null,
-    props.flex?.justify ? `justify-${props.flex.justify}` : null,
-    props.flex?.align ? `items-${props.flex.align}` : null,
-    props.flex?.gap ? `gap-${props.flex.gap}` : null,
+    props.fontSize,
+    props.fontWeight,
+    props.textAlign,
+    props.flex?.direction,
+    props.flex?.wrap,
+    props.flex?.justify,
+    props.flex?.align,
+    props.flex?.gap ? `${props.flex.gap}` : null,
   ]);
 }
 
@@ -55,6 +55,10 @@ export function useBrickWrapperStyle({
 
     isContainerChild && "container-child",
     editable && selected && "!outline !outline-dashed !outline-orange-200",
+    editable &&
+      !selected &&
+      isContainerChild &&
+      "hover:outline !hover:outline-dashed !hover:outline-upstart-400/30",
 
     // "overflow-hidden",
 

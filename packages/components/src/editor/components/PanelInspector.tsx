@@ -81,8 +81,8 @@ export default function Inspector() {
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
+            <span className="text-xs text-gray-400 lowercase">{brick.id}</span>
           </h2>
-          <span className="text-xs text-gray-400">{brick.id}</span>
         </div>
         <div className={tx("p-2 flex flex-col gap-3")}>
           <Callout.Root size="1">

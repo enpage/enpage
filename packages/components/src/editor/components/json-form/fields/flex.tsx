@@ -1,6 +1,6 @@
 import type { FieldProps } from "./types";
-import { Text, Select, Slider } from "@upstart.gg/style-system/system";
-import type { DimensionsSettings, FlexSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
+import { Text, Select } from "@upstart.gg/style-system/system";
+import type { FlexSettings } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { fieldLabel } from "../form-class";
 import { SegmentedControl, Switch } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
@@ -9,11 +9,11 @@ import { HelpIcon } from "../HelpIcon";
 export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
   const {
     currentValue = {
-      direction: "row",
-      wrap: "nowrap",
-      justify: "start",
-      align: "stretch",
-      gap: "1",
+      direction: "flex-row",
+      wrap: "flex-nowrap",
+      justify: "justify-start",
+      align: "items-stretch",
+      gap: "gap-1",
     } satisfies FlexSettings,
     onChange,
     description,
@@ -23,7 +23,7 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
   const onSettingsChange = (newVal: Partial<FlexSettings>) => onChange({ ...currentValue, ...newVal });
 
   return (
-    <div className="border-field">
+    <div className="flex-field">
       {description && (
         <Text as="p" color="gray" size="1">
           {description}
@@ -133,12 +133,10 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
             <HelpIcon help="Whether the children bricks should wrap to the next line when they reach the end of the container." />
           </div>
           <Switch
-            onCheckedChange={(value) =>
-              onSettingsChange({ wrap: value ? "wrap" : ("nowrap" as FlexSettings["wrap"]) })
-            }
+            onCheckedChange={(value) => onSettingsChange({ wrap: value ? "flex-wrap" : "flex-nowrap" })}
             size="2"
             variant="soft"
-            defaultChecked={currentValue.wrap === "wrap"}
+            defaultChecked={currentValue.wrap === "flex-wrap"}
           />
         </div>
       </div>
