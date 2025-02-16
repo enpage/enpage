@@ -1,4 +1,11 @@
-import { useDraft, useEditor, usePreviewMode, type DraftState, type usePageInfo } from "../hooks/use-editor";
+import {
+  useDraft,
+  useEditor,
+  usePanel,
+  usePreviewMode,
+  type DraftState,
+  type usePageInfo,
+} from "../hooks/use-editor";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
@@ -37,6 +44,7 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
   const rootRef = useRef<HTMLDivElement>(null);
   const draft = useDraft();
   const previewMode = usePreviewMode();
+  const { panel, panelPosition } = usePanel();
 
   usePageAutoSave();
   useOnDraftChange(onDraftChange);
@@ -74,9 +82,11 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       className={tx(
         "min-h-[100dvh] max-h-[100dvh] grid relative overscroll-none overflow-hidden",
         css({
-          gridTemplateAreas: `"topbar topbar" "toolbar main"`,
+          gridTemplateAreas:
+            panelPosition === "left" ? `"topbar topbar" "toolbar main"` : `"topbar topbar" "main toolbar"`,
           gridTemplateRows: "3.7rem 1fr",
-          gridTemplateColumns: "3.7rem 1fr",
+          // gridTemplateColumns: "3.7rem 1fr",
+          gridTemplateColumns: panelPosition === "left" ? "3.7rem 1fr" : "1fr 3.7rem",
         }),
       )}
       {...props}
@@ -90,28 +100,17 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
       <div
         className={tx(
           "flex-1 flex place-content-center z-40 overscroll-none overflow-x-auto overflow-y-visible transition-colors duration-300",
+          previewMode === "mobile" && "bg-gray-300",
           css({
             gridArea: "main",
             scrollbarColor: "var(--violet-4) var(--violet-2)",
             scrollBehavior: "smooth",
-            scrollbarWidth: "thin",
+            scrollbarGutter: "stable",
+            scrollbarWidth: panelPosition === "left" ? "thin" : "none",
             "&:hover": {
               scrollbarColor: "var(--violet-7) var(--violet-3)",
             },
           }),
-          previewMode === "mobile" && "bg-gray-300",
-          // previewMode === "desktop" &&
-          //   isStandardColor(attributes.$background.color) &&
-          //   css({ backgroundColor: attributes.$background.color as string }),
-          // previewMode === "desktop" &&
-          //   isStandardColor(attributes.$textColor) &&
-          //   css({ color: attributes.$textColor as string }),
-          // previewMode === "desktop" &&
-          //   !isStandardColor(attributes.$background.color) &&
-          //   (attributes.$background.color as string),
-          // previewMode === "desktop" &&
-          //   !isStandardColor(attributes.$textColor) &&
-          //   (attributes.$textColor as string),
         )}
       >
         <DeviceFrame>
@@ -131,26 +130,30 @@ type PanelProps = ComponentProps<"aside">;
  * Panel used to display both the inspector and the library
  */
 function Panel({ className, ...props }: PanelProps) {
-  const editor = useEditor();
+  const { panel, panelPosition } = usePanel();
+  const previewMode = usePreviewMode();
 
   return (
     <aside
       id="floating-panel"
       className={tx(
-        `z-[9999] fixed top-[3.7rem] bottom-0 left-[3.7rem] flex shadow-2xl flex-col overscroll-none \
+        `z-[9999] fixed top-[3.7rem] bottom-0 flex shadow-2xl flex-col overscroll-none \
         min-w-[300px] w-[320px] transition-all duration-200 ease-in-out opacity-100
         bg-gray-50 dark:bg-dark-700 border-r border-upstart-200 dark:border-dark-700 overflow-visible`,
         {
-          "-translate-x-full opacity-0": !editor.panel,
+          "left-[3.7rem]": panelPosition === "left",
+          "right-[3.7rem]": panelPosition === "right",
+          "-translate-x-full opacity-0": !panel && panelPosition === "left",
+          "translate-x-full": !panel && panelPosition === "right",
         },
       )}
       {...props}
     >
-      {editor.previewMode === "desktop" && editor.panel === "library" && <PanelLibrary />}
-      {editor.panel === "inspector" && <PanelInspector />}
-      {editor.panel === "theme" && <PanelTheme />}
-      {editor.panel === "settings" && <PanelSettings />}
-      {editor.panel === "data" && <DataPanel />}
+      {previewMode === "desktop" && panel === "library" && <PanelLibrary />}
+      {panel === "inspector" && <PanelInspector />}
+      {panel === "theme" && <PanelTheme />}
+      {panel === "settings" && <PanelSettings />}
+      {panel === "data" && <DataPanel />}
     </aside>
   );
 }

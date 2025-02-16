@@ -13,6 +13,7 @@ import {
   useDraft,
   useEditorHelpers,
   usePreviewMode,
+  useLogoLink,
 } from "~/editor/hooks/use-editor";
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { RxRocket } from "react-icons/rx";
@@ -26,6 +27,7 @@ import { formatDistance } from "date-fns";
 export default function TopBar() {
   const editorHelpers = useEditorHelpers();
   const previewMode = usePreviewMode();
+  const logoLink = useLogoLink();
   const draft = useDraft();
   const editorMode = useEditorMode();
   const pageVersion = usePageVersion();
@@ -94,7 +96,7 @@ export default function TopBar() {
           type="button"
           disabled={editorMode === "local"}
           onClick={() => {
-            window.location.href = "/dashboard";
+            window.location.href = logoLink;
           }}
           className={tx(baseCls, "flex-shrink-0")}
         >

@@ -68,7 +68,7 @@ export default function PresetsView({ onChoose }: PresetsViewProps) {
                   preset?.effects?.shadow,
                 )}
               >
-                <h2 className="text-center text-xs font-medium">{style.name}</h2>
+                <h2 className="text-center text-xs font-medium select-none">{style.name}</h2>
               </div>
             </div>
           );

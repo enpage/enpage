@@ -35,6 +35,7 @@ export interface EditorStateProps {
   panelPosition: "left" | "right";
   seenTours: string[];
   disableTours?: boolean;
+  logoLink: string;
   /**
    * Latest used color adjustment
    */
@@ -71,6 +72,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
     mode: "local",
     colorAdjustment: "default",
     panelPosition: "left",
+    logoLink: "/dashboard",
     onShowLogin: () => {
       console.warn("onShowLogin is not implemented");
     },
@@ -191,6 +193,7 @@ export const createEditorStore = (initProps: Partial<EditorStateProps>) => {
                       "onShowLogin",
                       "seenTours",
                       "disableTours",
+                      "logoLink",
                     ].includes(key),
                 ),
               ),
@@ -227,6 +230,7 @@ export interface DraftStateProps {
   lastSaved?: Date;
   dirty?: boolean;
   lastLoaded?: Date;
+
   /**
    * When local, the editor does not fetch data from the server or save data to the server
    * It is used when the user is not logged in yet or does not have an account yet
@@ -584,6 +588,10 @@ export const usePreviewMode = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.previewMode);
 };
+export const useLogoLink = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => state.logoLink);
+};
 
 export const useSelectedGroup = () => {
   const ctx = useEditorStoreContext();
@@ -598,6 +606,11 @@ export const useSelectedBrick = () => {
 export const useColorAdjustment = () => {
   const ctx = useEditorStoreContext();
   return useStore(ctx, (state) => state.colorAdjustment);
+};
+
+export const usePanel = () => {
+  const ctx = useEditorStoreContext();
+  return useStore(ctx, (state) => ({ panel: state.panel, panelPosition: state.panelPosition }));
 };
 
 export const useEditorMode = () => {
