@@ -5,12 +5,12 @@ import { fieldLabel } from "../form-class";
 import { SegmentedControl } from "@upstart.gg/style-system/system";
 import { tx } from "@upstart.gg/style-system/twind";
 
-export const DimensionsField: React.FC<FieldProps<DimensionsSettings>> = (props) => {
+export const LayoutField: React.FC<FieldProps<DimensionsSettings>> = (props) => {
   const { currentValue = {}, onChange, required, title, description, placeholder, schema } = props;
   const onSettingsChange = (newVal: Partial<DimensionsSettings>) => onChange({ ...currentValue, ...newVal });
 
   return (
-    <div className="border-field">
+    <div className="layout-field">
       {description && (
         <Text as="p" color="gray" size="1">
           {description}

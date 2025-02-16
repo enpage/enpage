@@ -1,44 +1,12 @@
 import { ReactRenderer } from "@tiptap/react";
-import type { MentionNodeAttrs, MentionOptions } from "@tiptap/extension-mention";
+import type { MentionNodeAttrs } from "@tiptap/extension-mention";
 import tippy, { type GetReferenceClientRect } from "tippy.js";
-
 // @ts-ignore
 import MentionList from "./DatasourceFieldList.jsx";
 import type { SuggestionOptions } from "@tiptap/suggestion";
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const config: Omit<SuggestionOptions<any, MentionNodeAttrs>, "editor"> = {
-  // items: ({ query }: { query: string }) => {
-  //   return [
-  //     "Lea Thompson",
-  //     "Cyndi Lauper",
-  //     "Tom Cruise",
-  //     "Madonna",
-  //     "Jerry Hall",
-  //     "Joan Collins",
-  //     "Winona Ryder",
-  //     "Christina Applegate",
-  //     "Alyssa Milano",
-  //     "Molly Ringwald",
-  //     "Ally Sheedy",
-  //     "Debbie Harry",
-  //     "Olivia Newton-John",
-  //     "Elton John",
-  //     "Michael J. Fox",
-  //     "Axl Rose",
-  //     "Emilio Estevez",
-  //     "Ralph Macchio",
-  //     "Rob Lowe",
-  //     "Jennifer Grey",
-  //     "Mickey Rourke",
-  //     "John Cusack",
-  //     "Matthew Broderick",
-  //     "Justine Bateman",
-  //     "Lisa Bonet",
-  //   ]
-  //     .filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))
-  //     .slice(0, 5);
-  // },
-
   char: "{{",
 
   render: () => {

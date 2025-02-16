@@ -76,7 +76,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
       {currentValue.image && (
         <>
           <div className="flex justify-between items-center">
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 gap-1">
               <Text as="label" size="2" weight="medium">
                 Size
               </Text>
@@ -109,7 +109,7 @@ const BackgroundField: React.FC<FieldProps<BackgroundSettings>> = (props) => {
                 />
               </div>
             </div>
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 gap-1">
               <Text as="label" size="2" weight="medium">
                 Repeat
               </Text>

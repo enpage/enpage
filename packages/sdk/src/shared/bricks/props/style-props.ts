@@ -15,19 +15,13 @@ const groupEffects = {
   "ui:group:title": "Effects",
 };
 
-const groupDimensions = {
-  "ui:group": "dimensions",
-  "ui:group:title": "Dimensions",
-  "ui:group:order": 1,
-};
-
 const groupColors = {
   "ui:group": "colors",
   "ui:group:title": "Colors",
   "ui:group:order": 2,
 };
 
-const groupFlex = {
+const groupLayout = {
   "ui:group": "layout",
   "ui:group:title": "Layout",
   "ui:group:order": 0,
@@ -150,9 +144,9 @@ export const dimensions = Type.Object(
     padding: Type.Optional(padding),
   },
   {
-    title: "Dimensions",
-    "ui:field": "dimensions",
-    ...groupDimensions,
+    title: "Layout",
+    "ui:field": "layout",
+    ...groupLayout,
     default: {
       padding: "p-2",
       height: "fixed",
@@ -387,7 +381,7 @@ export const flex = Type.Object(
       justify: "justify-start",
       align: "items-stretch",
     },
-    ...groupFlex,
+    ...groupLayout,
   },
 );
 

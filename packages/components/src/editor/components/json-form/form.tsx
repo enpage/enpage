@@ -1,6 +1,6 @@
 import type { TSchema } from "@sinclair/typebox";
 import ColorField from "./fields/color";
-import { DimensionsField } from "./fields/dimensions";
+import { LayoutField } from "./fields/layout";
 import EnumField from "./fields/enum";
 import ImageField from "./fields/image";
 import RichTextField from "./fields/rich-text";
@@ -139,7 +139,7 @@ export function getFormComponents({
             group,
             groupTitle,
             component: (
-              <DimensionsField
+              <LayoutField
                 currentValue={currentValue}
                 onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
