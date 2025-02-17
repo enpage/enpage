@@ -3,6 +3,7 @@ import {
   DraftStoreContext,
   createDraftStore,
   createEditorStore,
+  type EditorState,
 } from "../hooks/use-editor";
 import { useEffect, useRef, type PropsWithChildren } from "react";
 import type { GenericPageConfig, SiteConfig } from "@upstart.gg/sdk/shared/page";
@@ -56,7 +57,15 @@ export function EditorWrapper({
   onShowLogin,
   onReady = () => {},
 }: PropsWithChildren<EditorWrapperProps>) {
-  const editorStore = useRef(createEditorStore({ mode, seenTours, onShowLogin, disableTours })).current;
+  const editorStore = useRef(
+    createEditorStore({
+      mode,
+      seenTours,
+      onShowLogin,
+      disableTours,
+      panel: (new URL(self.location.href).searchParams.get("panel") as EditorState["panel"]) ?? undefined,
+    }),
+  ).current;
   const draftStore = useRef(
     createDraftStore({
       siteId: siteConfig.id,

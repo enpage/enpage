@@ -61,15 +61,12 @@ export default function Editor({ mode = "local", onDraftChange, ...props }: Edit
             .join("\n")}
 
           --color-link: var(--color-primary);
-
           --font-size-hero-1: clamp(2rem, 9vw, 3.5rem);
           --font-size-hero-2: clamp(3rem, 9vw, 5rem);
           --font-size-hero-3: clamp(4rem, 9vw, 7rem);
           --font-size-hero-4: clamp(5rem, 9vw, 9rem);
           --font-size-hero-5: clamp(6rem, 9vw, 11rem);
-
         }
-
     }
     `;
 
