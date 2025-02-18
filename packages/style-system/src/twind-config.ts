@@ -222,8 +222,15 @@ export default defineConfig({
 
       animation: {
         "fade-in": "fade-in 0.5s",
+        "elastic-pop": "elastic-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards",
       },
       keyframes: {
+        "elastic-pop": {
+          "0%": { transform: "scale(0) translateZ(-100rem) translateY(-10rem)", opacity: "0" },
+          "60%": { transform: "scale(1.15) translateZ(-60rem)", opacity: "0.9" },
+          "80%": { transform: "scale(0.98) translateZ(-1rem)", opacity: "1" },
+          "100%": { transform: "scale(1) translateZ(0) translateY(0)", opacity: "1" },
+        },
         "fade-in": {
           from: { opacity: "0" },
           to: { opacity: "1" },

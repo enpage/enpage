@@ -24,7 +24,11 @@ import { useFontWatcher } from "../hooks/use-font-watcher";
 const ghostValid = tx("bg-upstart-100");
 const ghostInvalid = tx("bg-red-100");
 
-export default function EditablePage() {
+type EditablePageProps = {
+  showIntro?: boolean;
+};
+
+export default function EditablePage({ showIntro }: EditablePageProps) {
   const previewMode = usePreviewMode();
   const editorHelpers = useEditorHelpers();
   const draftHelpers = useDraftHelpers();
@@ -36,7 +40,7 @@ export default function EditablePage() {
   const [colWidth, setColWidth] = useState(0);
   const dragOverRef = useRef<HTMLDivElement>(null);
   const typography = useFontWatcher();
-  const pageClassName = usePageStyle({ attributes, typography, editable: true, previewMode });
+  const pageClassName = usePageStyle({ attributes, typography, editable: true, previewMode, showIntro });
 
   // on page load, set last loaded property so that the store is saved to local storage
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -324,7 +328,7 @@ export default function EditablePage() {
         {bricks
           .filter((b) => !b.position[previewMode]?.hidden)
           .map((brick, index) => (
-            <BrickWrapper key={`${previewMode}-${brick.id}`} brick={brick}>
+            <BrickWrapper key={`${previewMode}-${brick.id}`} brick={brick} index={index}>
               <ResizeHandle direction="s" />
               <ResizeHandle direction="n" />
               <ResizeHandle direction="w" />
