@@ -103,7 +103,7 @@ export default function TopBar() {
           <img src={logo} alt="Upstart" className={tx("h-8 w-auto")} />
         </button>
 
-        <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
+        {/* <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
           <Popover.Root>
             <Popover.Trigger>
               <button type="button" className="w-full">
@@ -144,7 +144,10 @@ export default function TopBar() {
               </div>
             </Popover.Content>
           </Popover.Root>
-        </div>
+        </div> */}
+
+        {/* spacer */}
+        <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))} />
 
         <button
           disabled={!canUndo}

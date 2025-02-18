@@ -111,9 +111,9 @@ export default function Toolbar() {
         }}
       >
         {panelPosition === "left" ? (
-          <LuPanelRight className="h-7 w-auto" />
-        ) : (
           <LuPanelLeft className="h-7 w-auto" />
+        ) : (
+          <LuPanelRight className="h-7 w-auto" />
         )}
         <span className={tx(tooltipCls)}>
           {panelPosition === "left" ? "Move toolbar to right" : "Move toolbar to right"}

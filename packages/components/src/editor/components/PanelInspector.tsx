@@ -24,7 +24,10 @@ export default function Inspector() {
   const { deselectBrick } = useDraftHelpers();
   const { hidePanel } = useEditorHelpers();
   const previewMode = usePreviewMode();
-  const [selectedTab, setSelectedTab] = useLocalStorage("inspector_tab", "preset");
+  const [selectedTab, setSelectedTab] = useLocalStorage(
+    "inspector_tab",
+    previewMode === "desktop" ? "preset" : "style",
+  );
   const draft = useDraft();
 
   if (!brick) {
@@ -40,15 +43,20 @@ export default function Inspector() {
   }
 
   return (
-    <Tabs.Root defaultValue={selectedTab} onValueChange={setSelectedTab}>
+    <Tabs.Root
+      defaultValue={previewMode === "desktop" ? selectedTab : "style"}
+      onValueChange={setSelectedTab}
+    >
       <Tabs.List className="sticky top-0 z-50">
-        <Tabs.Trigger value="preset" className="!flex-1">
-          Preset
-        </Tabs.Trigger>
+        {previewMode === "desktop" && (
+          <Tabs.Trigger value="preset" className="!flex-1">
+            Preset
+          </Tabs.Trigger>
+        )}
         <Tabs.Trigger value="style" className="!flex-1">
-          Settings
+          {previewMode === "mobile" ? "Mobile styles" : "Styles"}
         </Tabs.Trigger>
-        {manifest.properties.datasource && (
+        {/* {manifest.properties.datasource && (
           <Tabs.Trigger value="datasource" className="!flex-1">
             Data source
           </Tabs.Trigger>
@@ -57,8 +65,8 @@ export default function Inspector() {
           <Tabs.Trigger value="datarecord" className="!flex-1">
             Data record
           </Tabs.Trigger>
-        )}
-        {brick.type === "text" && (
+        )} */}
+        {previewMode === "desktop" && brick.type === "text" && (
           <Tabs.Trigger value="ai" className="!flex-1">
             AI <BsStars className={tx("ml-1 w-4 h-4 text-upstart-600")} />
           </Tabs.Trigger>
@@ -124,9 +132,8 @@ export default function Inspector() {
         {previewMode === "mobile" && (
           <Callout.Root size="1" className="m-2">
             <Callout.Text size="1">
-              <strong>Warning</strong>: You are editing the mobile settings. Any changes here will only affect
-              how the brick appears on mobile devices. Yellow-highlighted fields are mobile-specific
-              customizations, while other fields inherit their values from the desktop version.
+              <strong>Note</strong>: You are editing mobile-only styles. Any changes here will only affect how
+              the brick appears on mobile devices.
             </Callout.Text>
           </Callout.Root>
         )}
@@ -172,6 +179,9 @@ function ElementInspector({ brick }: { brick: Brick }) {
         formSchema: manifest.properties.props as unknown as JSONSchemaType<unknown>,
         formData: brickInfo.props,
         mobileFormData: previewMode === "mobile" ? brickInfo.mobileProps : undefined,
+        filter: (prop) => {
+          return previewMode !== "mobile" || prop["ui:responsive"];
+        },
         onChange,
       }),
     [manifest, onChange, brick.id, brickInfo, previewMode],

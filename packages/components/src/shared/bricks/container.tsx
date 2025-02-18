@@ -4,8 +4,9 @@ import { tx, apply } from "@upstart.gg/style-system/twind";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/container.manifest";
 import BrickWrapper from "~/editor/components/EditableBrick";
+import type { BrickProps } from "@upstart.gg/sdk/shared/bricks/props/types";
 
-const Container = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const Container = forwardRef<HTMLDivElement, BrickProps<Manifest>>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   const className = useBrickStyle(props);
 

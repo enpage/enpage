@@ -3,8 +3,9 @@ import { forwardRef } from "react";
 import { css, tx } from "@upstart.gg/style-system/twind";
 import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/card.manifest";
 import TextBrick from "./text";
+import type { BrickProps } from "@upstart.gg/sdk/shared/bricks/props/types";
 
-const Card = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const Card = forwardRef<HTMLDivElement, BrickProps<Manifest>>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
 
   return (

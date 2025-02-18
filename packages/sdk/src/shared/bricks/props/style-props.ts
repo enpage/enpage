@@ -146,6 +146,7 @@ export const layout = Type.Object(
   {
     title: "Layout",
     "ui:field": "layout",
+    "ui:responsive": true,
     ...groupLayout,
     default: {
       padding: "p-2",
@@ -374,6 +375,7 @@ export const flex = Type.Object(
   {
     title: "Layout",
     "ui:field": "flex",
+    "ui:responsive": true,
     default: {
       direction: "flex-row",
       gap: "gap-1",
@@ -432,16 +434,18 @@ export const text = Type.Object(
   },
   {
     title: "Text style",
-    // "ui:field": "text",
+    "ui:field": "text",
     "ui:group": "text",
     "ui:group:title": "Text",
-
+    "ui:responsive": true,
     default: {
       size: "text-base",
       color: "inherit",
     },
   },
 );
+
+export type TextSettings = Static<typeof text>;
 
 /**
  * No margin in common style props as bricks are usually placed in a grid

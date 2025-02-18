@@ -6,16 +6,16 @@ import type { Brick } from "@upstart.gg/sdk/shared/bricks";
 import { propToStyle } from "@upstart.gg/sdk/shared/themes/color-system";
 import { LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
 
+type AllStyleProps = Partial<Static<typeof commonStyleProps>> &
+  Partial<Static<typeof textStyleProps>> &
+  Partial<Static<typeof commonProps>> &
+  Partial<Static<typeof flexProps>>;
+
 /**
  * The classNames for the brick
  * @param manifest `
  */
-export function useBrickStyle(
-  props: Partial<Static<typeof commonStyleProps>> &
-    Partial<Static<typeof textStyleProps>> &
-    Partial<Static<typeof commonProps>> &
-    Partial<Static<typeof flexProps>>,
-) {
+export function useBrickStyle(props: AllStyleProps) {
   // This is the inner brick style. As the wrapper uses "display: flex",
   // we use flex-1 to make the inner brick fill the space.
   return tx("flex-1", [

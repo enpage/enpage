@@ -20,11 +20,13 @@ import type {
   LayoutSettings,
   EffectsSettings,
   FlexSettings,
+  TextSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
 import type { ImageProps, RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { PagePaddingField } from "./fields/padding";
+import { TextField } from "./fields/text";
 import BackgroundField from "./fields/background";
 import { FlexField } from "./fields/flex";
 
@@ -39,7 +41,7 @@ type GetFormComponentsProps = {
   onSubmit?: (data: Record<string, unknown>) => void;
   submitButtonLabel?: string;
   brickId: string;
-  filter?: (field: unknown) => boolean;
+  filter?: (field: JSONSchemaType<unknown>) => boolean;
   parents?: string[];
 };
 /**
@@ -64,7 +66,7 @@ export function getFormComponents({
   formSchema = sortJsonSchemaProperties(formSchema);
 
   const elements = Object.entries(formSchema.properties)
-    .filter(([, fieldSchema]) => (filter ? filter(fieldSchema) : true))
+    .filter(([, fieldSchema]) => (filter ? filter(fieldSchema as JSONSchemaType<unknown>) : true))
     .map(([fieldName, fieldSchema]) => {
       const field = fieldSchema as JSONSchemaType<unknown>;
       const id = parents.length ? `${parents.join(".")}.${fieldName}` : fieldName;
@@ -142,6 +144,21 @@ export function getFormComponents({
               <LayoutField
                 currentValue={currentValue}
                 onChange={(value: LayoutSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "text": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as TextSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <TextField
+                currentValue={currentValue}
+                onChange={(value: TextSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
