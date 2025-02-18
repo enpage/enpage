@@ -20,7 +20,7 @@ export function useBrickStyle(
   // we use flex-1 to make the inner brick fill the space.
   return tx("flex-1", [
     props.className && apply(props.className),
-    props.dimensions?.padding,
+    props.layout?.padding,
     props.color ? `text-${props.color}` : null,
     props.fontSize,
     props.fontWeight,

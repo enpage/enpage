@@ -136,7 +136,7 @@ export const padding = Type.Union(
   },
 );
 
-export const dimensions = Type.Object(
+export const layout = Type.Object(
   {
     height: Type.Optional(
       Type.Union([Type.Literal("fixed", { title: "Fixed" }), Type.Literal("auto", { title: "Auto" })]),
@@ -154,7 +154,7 @@ export const dimensions = Type.Object(
   },
 );
 
-export type DimensionsSettings = Static<typeof dimensions>;
+export type LayoutSettings = Static<typeof layout>;
 
 /**
  * We don't manage margins yet (users have to move bricks over the grid to handle margins)
@@ -451,7 +451,7 @@ export const commonStyleProps = Type.Object({
   // borderWidth,
   // borderColor,
   // borderStyle,
-  dimensions,
+  layout,
   border,
   effects,
   // padding,

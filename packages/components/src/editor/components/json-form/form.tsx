@@ -17,7 +17,7 @@ import get from "lodash-es/get";
 import type {
   BackgroundSettings,
   BorderSettings,
-  DimensionsSettings,
+  LayoutSettings,
   EffectsSettings,
   FlexSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
@@ -133,15 +133,15 @@ export function getFormComponents({
           };
         }
 
-        case "dimensions": {
-          const currentValue = (get(formData, id) ?? commonProps.schema.default) as DimensionsSettings;
+        case "layout": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as LayoutSettings;
           return {
             group,
             groupTitle,
             component: (
               <LayoutField
                 currentValue={currentValue}
-                onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
+                onChange={(value: LayoutSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),

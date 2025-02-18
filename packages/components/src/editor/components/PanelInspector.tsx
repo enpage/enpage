@@ -81,7 +81,14 @@ export default function Inspector() {
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
             {manifest.properties.title.const}
-            <span className="text-xs text-gray-400 lowercase">{brick.id}</span>
+            <span
+              className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
+              onClick={() => {
+                navigator.clipboard.writeText(brick.id);
+              }}
+            >
+              {brick.id}
+            </span>
           </h2>
         </div>
         <div className={tx("p-2 flex flex-col gap-3")}>
@@ -107,7 +114,6 @@ export default function Inspector() {
             <span
               className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
               onClick={() => {
-                // copy to clipboard
                 navigator.clipboard.writeText(brick.id);
               }}
             >
