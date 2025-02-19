@@ -21,11 +21,13 @@ import type {
   EffectsSettings,
   FlexSettings,
   TextSettings,
+  AlignSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
 import type { ImageProps, RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { PagePaddingField } from "./fields/padding";
+import { AlignField } from "./fields/align";
 import { TextField } from "./fields/text";
 import BackgroundField from "./fields/background";
 import { FlexField } from "./fields/flex";
@@ -145,6 +147,21 @@ export function getFormComponents({
               <LayoutField
                 currentValue={currentValue}
                 onChange={(value: LayoutSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "align": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as AlignSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <AlignField
+                currentValue={currentValue}
+                onChange={(value: AlignSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),

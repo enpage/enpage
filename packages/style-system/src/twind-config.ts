@@ -96,16 +96,16 @@ export default defineConfig({
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],
 
-    ["hero-size-m", { fontSize: "clamp(3rem, 2.5vw + 2.5rem, 4.75rem)", lineHeight: "1.1" }],
-    ["hero-size-l", { fontSize: "clamp(3.75rem, 3vw + 3rem, 5.75rem)", lineHeight: "1.1" }],
+    ["hero-size-md", { fontSize: "clamp(3rem, 2.5vw + 2.5rem, 4.75rem)", lineHeight: "1.1" }],
+    ["hero-size-lg", { fontSize: "clamp(3.75rem, 3vw + 3rem, 5.75rem)", lineHeight: "1.1" }],
     ["hero-size-xl", { fontSize: "clamp(4.5rem, 3.5vw + 3.5rem, 6.75rem)", lineHeight: "1.1" }],
     ["hero-size-2xl", { fontSize: "clamp(5.25rem, 4vw + 4rem, 7.75rem)", lineHeight: "1.1" }],
     ["hero-size-3xl", { fontSize: "clamp(6rem, 4.5vw + 4.5rem, 8.75rem)", lineHeight: "1.1" }],
 
     ["text-shadow-none", { textShadow: "none" }],
-    ["text-shadow-s", { textShadow: "0 1px 2px rgba(0, 0, 0, 0.15)" }],
-    ["text-shadow-m", { textShadow: "0 2px 4px rgba(0, 0, 0, 0.2)" }],
-    ["text-shadow-l", { textShadow: "0 4px 8px rgba(0, 0, 0, 0.25)" }],
+    ["text-shadow-sm", { textShadow: "0 1px 2px rgba(0, 0, 0, 0.15)" }],
+    ["text-shadow-md", { textShadow: "0 2px 4px rgba(0, 0, 0, 0.2)" }],
+    ["text-shadow-lg", { textShadow: "0 4px 8px rgba(0, 0, 0, 0.25)" }],
     ["text-shadow-xl", { textShadow: "0 6px 12px rgba(0, 0, 0, 0.3)" }],
 
     ["scrollbar-thin", { scrollbarWidth: "thin" }],

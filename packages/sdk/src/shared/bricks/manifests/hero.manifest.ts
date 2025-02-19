@@ -3,21 +3,29 @@ import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareHeroProps, contentAwareProps } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
-import { layout, border, background, getTextShadowSchema } from "../props/style-props";
+import {
+  layout,
+  border,
+  background,
+  getTextShadowSchema,
+  align,
+  alignProps,
+  basicAlignProps,
+} from "../props/style-props";
 
 const heroProps = Type.Object(
   {
     heroSize: Type.Union(
       [
-        Type.Literal("hero-size-m", { title: "M" }),
-        Type.Literal("hero-size-l", { title: "L" }),
+        Type.Literal("hero-size-md", { title: "M" }),
+        Type.Literal("hero-size-lg", { title: "L" }),
         Type.Literal("hero-size-xl", { title: "XL" }),
         Type.Literal("hero-size-2xl", { title: "2XL" }),
         Type.Literal("hero-size-3xl", { title: "3XL" }),
       ],
       {
         title: "Text size",
-        default: "hero-size-l",
+        default: "hero-size-lg",
         "ui:group": "hero",
         "ui:group:title": "Display",
         "ui:group:order": 0,
@@ -32,7 +40,8 @@ const heroProps = Type.Object(
   {
     title: "Display",
     default: {
-      heroSize: "hero-size-l",
+      heroSize: "hero-size-lg",
+      textShadow: "text-shadow-md",
     },
   },
 );
@@ -67,6 +76,7 @@ export const manifest = defineBrickManifest({
   `,
   props: Type.Composite([
     heroProps,
+    basicAlignProps,
     contentAwareHeroProps,
     commonProps,
     Type.Object({ layout, border, background }),

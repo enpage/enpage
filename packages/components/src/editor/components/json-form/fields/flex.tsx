@@ -11,8 +11,6 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
     currentValue = {
       direction: "flex-row",
       wrap: "flex-nowrap",
-      justify: "justify-start",
-      align: "items-stretch",
       gap: "gap-1",
     } satisfies FlexSettings,
     onChange,
@@ -76,21 +74,21 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
         </div>
 
         {/* break */}
-        <div className="basis-full w-0 h-2" />
-
-        {/* Justify */}
+        {/* <div className="basis-full w-0 h-2" /> */}
+        {/*
         <div className="flex flex-col gap-1 basis-1/3">
-          <label className={fieldLabel}>Justify</label>
+          <label className={fieldLabel}>Horizontal align</label>
           <Select.Root
-            defaultValue={currentValue.justify}
+            defaultValue={currentValue.horizontalAlign}
             size="2"
-            onValueChange={(value) => onSettingsChange({ justify: value as FlexSettings["justify"] })}
+            onValueChange={(value) =>
+              onSettingsChange({ horizontalAlign: value as FlexSettings["horizontalAlign"] })
+            }
           >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                {schema.properties.justify.anyOf.map((item: any) => (
+                {schema.properties.horizontalAlign.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
                     {item.title}
                   </Select.Item>
@@ -100,23 +98,23 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
           </Select.Root>
         </div>
 
-        {/* Align */}
         <div className="flex flex-col gap-1 basis-1/3">
           <div className="flex justify-between items-center">
-            <label className={fieldLabel}>Align</label>
+            <label className={fieldLabel}>Vertical Align</label>
             <HelpIcon help="Choose how the children should be aligned within the container, on the cross axis." />
           </div>
 
           <Select.Root
-            defaultValue={currentValue.align}
+            defaultValue={currentValue.verticalAlign}
             size="2"
-            onValueChange={(value) => onSettingsChange({ align: value as FlexSettings["align"] })}
+            onValueChange={(value) =>
+              onSettingsChange({ verticalAlign: value as FlexSettings["verticalAlign"] })
+            }
           >
             <Select.Trigger radius="large" variant="ghost" />
             <Select.Content position="popper">
               <Select.Group>
-                {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-                {schema.properties.align.anyOf.map((item: any) => (
+                {schema.properties.verticalAlign.anyOf.map((item: any) => (
                   <Select.Item key={item.const} value={item.const}>
                     {item.title}
                   </Select.Item>
@@ -124,7 +122,7 @@ export const FlexField: React.FC<FieldProps<FlexSettings>> = (props) => {
               </Select.Group>
             </Select.Content>
           </Select.Root>
-        </div>
+        </div> */}
 
         {/* Wrap */}
         <div className="flex flex-col gap-1 flex-1">

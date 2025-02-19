@@ -21,18 +21,21 @@ import { useCallback, useMemo } from "react";
 
 export default function Inspector() {
   const brick = useSelectedBrick();
-  const { deselectBrick } = useDraftHelpers();
+  const { deselectBrick, getParentBrick, updateBrickProps } = useDraftHelpers();
   const { hidePanel } = useEditorHelpers();
   const previewMode = usePreviewMode();
   const [selectedTab, setSelectedTab] = useLocalStorage(
     "inspector_tab",
     previewMode === "desktop" ? "preset" : "style",
   );
-  const draft = useDraft();
 
   if (!brick) {
     return null;
   }
+
+  const parentBrick = getParentBrick(brick.id);
+
+  console.log({ parentBrick, brick });
 
   const manifest = manifests[brick.type];
   if (!manifest) {
@@ -88,6 +91,7 @@ export default function Inspector() {
       <ScrollablePanelTab tab="preset">
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
+            {parentBrick ? `${parentBrick.type} &raquo;` : ""}
             {manifest.properties.title.const}
             <span
               className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
@@ -110,7 +114,7 @@ export default function Inspector() {
           <PresetsView
             onChoose={(preset) => {
               console.log("onChoose(%o)", preset);
-              draft.updateBrickProps(brick.id, preset, previewMode === "mobile");
+              updateBrickProps(brick.id, preset, previewMode === "mobile");
             }}
           />
         </div>

@@ -61,30 +61,30 @@ const datasources = defineDataSources({
 });
 
 const homePageBricks = defineBricks([
-  // ...createRow([
-  //   {
-  //     type: "container",
-  //     props: {
-  //       children: [
-  //         { type: "text", props: { content: "Hello World #1" } },
-  //         { type: "text", props: { content: "Hello World #2" } },
-  //         { type: "text", props: { content: "Hello World #3" } },
-  //       ],
-  //     },
-  //     position: {
-  //       mobile: {
-  //         x: 0,
-  //         w: "full",
-  //         h: 10,
-  //       },
-  //       desktop: {
-  //         x: 0,
-  //         w: "full",
-  //         h: 16,
-  //       },
-  //     },
-  //   },
-  // ]),
+  ...createRow([
+    {
+      type: "container",
+      props: {
+        children: [
+          { type: "text", props: { content: "Hello World #1" } },
+          { type: "text", props: { content: "Hello World #2" } },
+          { type: "text", props: { content: "Hello World #3" } },
+        ],
+      },
+      position: {
+        mobile: {
+          x: 0,
+          w: "full",
+          h: 10,
+        },
+        desktop: {
+          x: 0,
+          w: "full",
+          h: 16,
+        },
+      },
+    },
+  ]),
   ...createRow([
     {
       type: "hero",

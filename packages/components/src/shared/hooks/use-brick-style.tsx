@@ -1,5 +1,10 @@
 import { tx, apply, css } from "@upstart.gg/style-system/twind";
-import type { commonStyleProps, textStyleProps, flexProps } from "@upstart.gg/sdk/bricks/props/style-props";
+import type {
+  commonStyleProps,
+  textStyleProps,
+  flexProps,
+  alignProps,
+} from "@upstart.gg/sdk/bricks/props/style-props";
 import type { commonProps } from "@upstart.gg/sdk/bricks/props/common";
 import type { Static } from "@sinclair/typebox";
 import type { Brick } from "@upstart.gg/sdk/shared/bricks";
@@ -9,6 +14,7 @@ import { LAYOUT_ROW_HEIGHT } from "@upstart.gg/sdk/shared/layout-constants";
 type AllStyleProps = Partial<Static<typeof commonStyleProps>> &
   Partial<Static<typeof textStyleProps>> &
   Partial<Static<typeof commonProps>> &
+  Partial<Static<typeof alignProps>> &
   Partial<Static<typeof flexProps>>;
 
 /**
@@ -18,22 +24,18 @@ type AllStyleProps = Partial<Static<typeof commonStyleProps>> &
 export function useBrickStyle(props: AllStyleProps) {
   // This is the inner brick style. As the wrapper uses "display: flex",
   // we use flex-1 to make the inner brick fill the space.
-  return tx(
-    // "flex-1",
-    [
-      props.className && apply(props.className),
-      props.layout?.padding,
-      props.color ? `text-${props.color}` : null,
-      props.fontSize,
-      props.fontWeight,
-      props.textAlign,
-      props.flex?.direction,
-      props.flex?.wrap,
-      props.flex?.justify,
-      props.flex?.align,
-      props.flex?.gap ? `${props.flex.gap}` : null,
-    ],
-  );
+  return tx("flex-1", [
+    props.className && apply(props.className),
+    props.layout?.padding,
+    props.color ? `text-${props.color}` : null,
+    props.fontSize,
+    props.fontWeight,
+    props.textAlign,
+    props.flex?.direction,
+    props.flex?.wrap,
+    props.flex?.gap ? `${props.flex.gap}` : null,
+    getAlignmentStyle(props),
+  ]);
 }
 
 type UseBrickWrapperStyleProps = {
@@ -136,11 +138,11 @@ export function useBrickWrapperStyle({
  * We want to map the alignment to the flexbox properties.
  */
 function getAlignmentStyle(props: AllStyleProps) {
-  if (!props.layout) {
+  if (!props.align) {
     return;
   }
   if (props.flex?.direction === "flex-col") {
-    return `justify-${props.layout.verticalAlign} items-${props.layout.horizontalAlign}`;
+    return `justify-${props.align.vertical} items-${props.align.horizontal}`;
   }
-  return `justify-${props.layout.horizontalAlign} items-${props.layout.verticalAlign}`;
+  return `justify-${props.align.horizontal} items-${props.align.vertical}`;
 }

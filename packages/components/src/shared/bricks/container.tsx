@@ -13,9 +13,9 @@ const Container = forwardRef<HTMLDivElement, BrickProps<Manifest>>((props, ref) 
   return (
     <div className={tx(apply("flex"), className)} data-brick-type={manifest.properties.type.const} ref={ref}>
       {props.children.length > 0 ? (
-        props.children.map((brick) => {
+        props.children.map((brick, index) => {
           if (props.editable) {
-            return <BrickWrapper key={`${brick.id}`} brick={brick} isContainerChild />;
+            return <BrickWrapper key={`${brick.id}`} brick={brick} isContainerChild index={index} />;
           }
           // todo: render the brick
           return (

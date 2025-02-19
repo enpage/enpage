@@ -12,6 +12,7 @@ import {
   PiAlignRight,
   PiAlignCenterHorizontal,
 } from "react-icons/pi";
+import { LuAlignHorizontalSpaceBetween } from "react-icons/lu";
 
 export const LayoutField: React.FC<FieldProps<LayoutSettings>> = (props) => {
   const { currentValue = {}, onChange, required, title, description, placeholder, schema } = props;
@@ -73,9 +74,8 @@ export const LayoutField: React.FC<FieldProps<LayoutSettings>> = (props) => {
         </div>
 
         {/* break */}
-        <div className="basis-full w-0 h-2" />
+        {/* <div className="basis-full w-0 h-2" />
 
-        {/* Horizontal align */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Horizontal align</label>
           <SegmentedControl.Root
@@ -87,7 +87,6 @@ export const LayoutField: React.FC<FieldProps<LayoutSettings>> = (props) => {
             className="w-full !max-w-full"
             radius="large"
           >
-            {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
             {schema.properties.horizontalAlign.anyOf.map((option: any) => (
               <SegmentedControl.Item
                 key={option.const}
@@ -97,12 +96,12 @@ export const LayoutField: React.FC<FieldProps<LayoutSettings>> = (props) => {
                 {option.const === "start" && <PiAlignLeft className="w-4 h-4" />}
                 {option.const === "center" && <PiAlignCenterHorizontal className="w-4 h-4" />}
                 {option.const === "end" && <PiAlignRight className="w-4 h-4" />}
+                {option.const === "between" && <LuAlignHorizontalSpaceBetween className="w-4 h-4" />}
               </SegmentedControl.Item>
             ))}
           </SegmentedControl.Root>
         </div>
 
-        {/* Vertical align */}
         <div className="flex flex-col gap-1 flex-1">
           <label className={fieldLabel}>Vertical align</label>
           <SegmentedControl.Root
@@ -114,7 +113,6 @@ export const LayoutField: React.FC<FieldProps<LayoutSettings>> = (props) => {
             className="w-full !max-w-full"
             radius="large"
           >
-            {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
             {schema.properties.verticalAlign.anyOf.map((option: any) => (
               <SegmentedControl.Item
                 key={option.const}
@@ -127,7 +125,7 @@ export const LayoutField: React.FC<FieldProps<LayoutSettings>> = (props) => {
               </SegmentedControl.Item>
             ))}
           </SegmentedControl.Root>
-        </div>
+        </div> */}
       </div>
     </div>
   );
