@@ -21,7 +21,7 @@ import { useCallback, useMemo } from "react";
 
 export default function Inspector() {
   const brick = useSelectedBrick();
-  const { deselectBrick, getParentBrick, updateBrickProps } = useDraftHelpers();
+  const { deselectBrick, getParentBrick, updateBrickProps, setSelectedBrick } = useDraftHelpers();
   const { hidePanel } = useEditorHelpers();
   const previewMode = usePreviewMode();
   const [selectedTab, setSelectedTab] = useLocalStorage(
@@ -34,8 +34,6 @@ export default function Inspector() {
   }
 
   const parentBrick = getParentBrick(brick.id);
-
-  console.log({ parentBrick, brick });
 
   const manifest = manifests[brick.type];
   if (!manifest) {
@@ -91,8 +89,23 @@ export default function Inspector() {
       <ScrollablePanelTab tab="preset">
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
-            {parentBrick ? `${parentBrick.type} &raquo;` : ""}
-            {manifest.properties.title.const}
+            {parentBrick ? (
+              <div className="flex gap-1.5 items-center">
+                <span
+                  className="text-upstart-700 cursor-pointer hover:(text-upstart-800 underline)"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBrick(parentBrick);
+                  }}
+                >
+                  {parentBrick.type}
+                </span>
+                <span className="text-xs ">&rarr;</span>
+                <span>{manifest.properties.title.const}</span>
+              </div>
+            ) : (
+              manifest.properties.title.const
+            )}
             <span
               className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
               onClick={() => {
@@ -122,7 +135,23 @@ export default function Inspector() {
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
           <h2 className="group py-1.5 px-2 flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
-            {manifest.properties.title.const}
+            {parentBrick ? (
+              <div className="flex gap-1.5 items-center">
+                <span
+                  className="text-upstart-700 cursor-pointer hover:(text-upstart-800 underline)"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBrick(parentBrick);
+                  }}
+                >
+                  {parentBrick.type}
+                </span>
+                <span className="text-xs ">&rarr;</span>
+                <span>{manifest.properties.title.const}</span>
+              </div>
+            ) : (
+              manifest.properties.title.const
+            )}
             <span
               className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
               onClick={() => {
