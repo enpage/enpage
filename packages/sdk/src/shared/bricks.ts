@@ -349,7 +349,6 @@ export function createRow<B extends DefinedRowBrick[]>(
   const created = bricks.map((brick, index) => {
     const adjusted = {
       ...brick,
-      id: `brick-${generateId()}`,
       position: {
         desktop: {
           ...brick.position.desktop,
