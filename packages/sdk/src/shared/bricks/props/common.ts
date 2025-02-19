@@ -126,6 +126,7 @@ export const commonProps = Type.Object({
 export const richText = Type.String({
   default: "some text here",
   // "ui:field": "rich-text",
+  "ui:paragraph-mode": "auto",
   "ui:field": "hidden",
   "ui:group": "content",
   "ui:group:title": "Content",
@@ -134,7 +135,6 @@ export const richText = Type.String({
 
 export const richTextHero = Type.String({
   default: "<h1>some text here</h1>",
-  // "ui:field": "rich-text",
   "ui:field": "hidden",
   "ui:paragraph-mode": "hero",
   "ui:group": "content",

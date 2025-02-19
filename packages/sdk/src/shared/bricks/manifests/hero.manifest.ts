@@ -3,7 +3,39 @@ import { Value } from "@sinclair/typebox/value";
 import { commonProps, contentAwareHeroProps, contentAwareProps } from "../props/common";
 import { defineBrickManifest } from "~/shared/brick-manifest";
 import { LAYOUT_COLS } from "~/shared/layout-constants";
-import { commonStyleProps } from "../props/style-props";
+import { layout, border, background, getTextShadowSchema } from "../props/style-props";
+
+const heroProps = Type.Object(
+  {
+    heroSize: Type.Union(
+      [
+        Type.Literal("hero-size-m", { title: "M" }),
+        Type.Literal("hero-size-l", { title: "L" }),
+        Type.Literal("hero-size-xl", { title: "XL" }),
+        Type.Literal("hero-size-2xl", { title: "2XL" }),
+        Type.Literal("hero-size-3xl", { title: "3XL" }),
+      ],
+      {
+        title: "Text size",
+        default: "hero-size-l",
+        "ui:group": "hero",
+        "ui:group:title": "Display",
+        "ui:group:order": 0,
+        "ui:display": "button-group",
+      },
+    ),
+    textShadow: getTextShadowSchema({
+      "ui:group": "hero",
+      "ui:group:title": "Display",
+    }),
+  },
+  {
+    title: "Display",
+    default: {
+      heroSize: "hero-size-l",
+    },
+  },
+);
 
 export const manifest = defineBrickManifest({
   type: "hero",
@@ -33,7 +65,12 @@ export const manifest = defineBrickManifest({
   <rect x="20" y="52" width="40" height="12" rx="2" fill="currentColor"/>
 </svg>
   `,
-  props: Type.Composite([contentAwareHeroProps, commonProps, commonStyleProps]),
+  props: Type.Composite([
+    heroProps,
+    contentAwareHeroProps,
+    commonProps,
+    Type.Object({ layout, border, background }),
+  ]),
 });
 
 export type Manifest = Static<typeof manifest>;

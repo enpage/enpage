@@ -44,7 +44,9 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
     const hasMouseMoved = useRef(false);
     const selectedBrick = useSelectedBrick();
     const wrapperClass = useBrickWrapperStyle({
-      brick,
+      props: brick.props,
+      mobileProps: brick.mobileProps,
+      position: brick.position,
       editable: true,
       isContainerChild,
       selected: selectedBrick?.id === brick.id,

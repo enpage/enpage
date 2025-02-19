@@ -54,6 +54,25 @@ export const borderColor = Type.String({
   ...groupBorder,
 });
 
+export function getTextShadowSchema(opts = groupEffects, defaultValue = "text-shadow-m") {
+  return Type.Union(
+    [
+      Type.Literal("text-shadow-none", { title: "None" }),
+      Type.Literal("text-shadow-s", { title: "S" }),
+      Type.Literal("text-shadow-m", { title: "M" }),
+      Type.Literal("text-shadow-l", { title: "L" }),
+      Type.Literal("text-shadow-xl", { title: "XL" }),
+    ],
+    {
+      default: defaultValue,
+      title: "Text shadow",
+      "ui:field": "enum",
+      "ui:display": "button-group",
+      ...opts,
+    },
+  );
+}
+
 export const borderStyle = Type.Union(
   [
     Type.Literal("border-solid", { title: "Solid" }),
@@ -142,6 +161,30 @@ export const layout = Type.Object(
       Type.Union([Type.Literal("fixed", { title: "Fixed" }), Type.Literal("auto", { title: "Auto" })]),
     ),
     padding: Type.Optional(padding),
+    verticalAlign: Type.Optional(
+      Type.Union(
+        [
+          Type.Literal("start", { title: "Top" }),
+          Type.Literal("center", { title: "Middle" }),
+          Type.Literal("end", { title: "Bottom" }),
+        ],
+        {
+          title: "Vertical align",
+        },
+      ),
+    ),
+    horizontalAlign: Type.Optional(
+      Type.Union(
+        [
+          Type.Literal("start", { title: "Top" }),
+          Type.Literal("center", { title: "Middle" }),
+          Type.Literal("end", { title: "Bottom" }),
+        ],
+        {
+          title: "Horizontal align",
+        },
+      ),
+    ),
   },
   {
     title: "Layout",
@@ -151,6 +194,8 @@ export const layout = Type.Object(
     default: {
       padding: "p-2",
       height: "fixed",
+      verticalAlign: "start",
+      horizontalAlign: "start",
     },
   },
 );
@@ -451,14 +496,9 @@ export type TextSettings = Static<typeof text>;
  * No margin in common style props as bricks are usually placed in a grid
  */
 export const commonStyleProps = Type.Object({
-  // borderRadius,
-  // borderWidth,
-  // borderColor,
-  // borderStyle,
   layout,
   border,
   effects,
-  // padding,
   background,
   text,
 });

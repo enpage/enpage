@@ -29,6 +29,7 @@ import { PagePaddingField } from "./fields/padding";
 import { TextField } from "./fields/text";
 import BackgroundField from "./fields/background";
 import { FlexField } from "./fields/flex";
+import { Text } from "@upstart.gg/style-system/system";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -348,15 +349,16 @@ export function getFormComponents({
         }
 
         case "anyOf": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
             groupTitle,
             component: (
-              <AnyOfField
-                options={field.anyOf}
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
+              <EnumField
+                currentValue={currentValue}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
+                options={field.anyOf}
               />
             ),
           };
@@ -387,7 +389,7 @@ export function FormRenderer({ components, brickId }: { components: FormComponen
         {currentGroup !== element.group && element.groupTitle && (
           <h3
             className={tx(
-              "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
+              "text-sm font-semibold !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
             )}
           >
             {element.groupTitle}
@@ -421,16 +423,13 @@ export function AnyOfField(props: FieldProps<unknown>) {
 
   const currentOpt = "foo";
 
-  console.log("AnyOfField schema options", options);
-
   return (
     <>
       {title && (
-        <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] -mx-3">
+        <Text as="label" size="2" weight="medium">
           {title}
-        </h3>
+        </Text>
       )}
-      Hello anyof
       <SegmentedControl.Root
         onValueChange={onChange}
         defaultValue={currentOpt}

@@ -6,7 +6,11 @@ import { useEditorHelpers, usePanel, usePreviewMode } from "../hooks/use-editor"
 import { tx, css } from "@upstart.gg/style-system/twind";
 import { DropdownMenu } from "@upstart.gg/style-system/system";
 
-export default function Toolbar() {
+type ToolbarProps = {
+  showIntro: boolean;
+};
+
+export default function Toolbar({ showIntro }: ToolbarProps) {
   const previewMode = usePreviewMode();
   const editorHelpers = useEditorHelpers();
   const { panel, panelPosition } = usePanel();
@@ -40,15 +44,20 @@ export default function Toolbar() {
     }`,
   );
 
-  const tooltipCls = `absolute py-0.5 px-2.5 bg-upstart-600/90 left-[calc(100%+.5rem)]
-    rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0 -translate-x-1.5
-  group-hover:block group-hover:opacity-100 group-hover:translate-x-0 text-nowrap whitespace-nowrap pointer-events-none`;
+  const tooltipCls = tx(
+    `absolute py-0.5 px-2.5 bg-upstart-600/90 group-hover:translate-x-0
+    rounded-full text-sm text-white min-w-full transition-all delay-75 duration-200 ease-in-out opacity-0
+    group-hover:block group-hover:opacity-100  text-nowrap whitespace-nowrap pointer-events-none`,
+
+    panelPosition === "left" && "left-[calc(100%+.5rem)] -translate-x-1.5",
+    panelPosition === "right" && "right-[calc(100%+.5rem)] translate-x-1.5",
+  );
 
   return (
     <nav
       role="toolbar"
       className={tx(
-        `bg-gray-200 dark:bg-dark-800 z-[9999]
+        `bg-gray-200 dark:bg-dark-800 z-[9999] transition-opacity duration-300
           flex flex-col w-[3.7rem] text-xl text-gray-600 dark:text-gray-300
           border-r border-gray-300 dark:border-dark-700`,
         {
@@ -57,6 +66,7 @@ export default function Toolbar() {
         css({
           gridArea: "toolbar",
         }),
+        showIntro && "opacity-0",
       )}
     >
       <div className={tx("flex-1", baseCls)} />

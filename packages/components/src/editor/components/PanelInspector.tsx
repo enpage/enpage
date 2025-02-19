@@ -146,9 +146,9 @@ export default function Inspector() {
 function ElementInspector({ brick }: { brick: Brick }) {
   const draft = useDraft();
   const getBrick = useGetBrick();
-  // biome-ignore lint/correctness/useExhaustiveDependencies: getBrick is a stable function
-  const brickInfo = useMemo(() => getBrick(brick.id), [brick.id]);
+  const brickInfo = getBrick(brick.id);
   const previewMode = usePreviewMode();
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: draft.updateBrickProps is a stable function
   const onChange = useCallback(
     (data: Record<string, unknown>, propertyChanged: string) => {
@@ -160,6 +160,7 @@ function ElementInspector({ brick }: { brick: Brick }) {
     },
     [brick.id],
   );
+
   const manifest = useMemo(() => manifests[brick.type], [brick.type]);
 
   if (!brickInfo) {

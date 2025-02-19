@@ -96,7 +96,7 @@ const EnumField: React.FC<FieldProps<string>> = (props) => {
             onValueChange={onChange}
             defaultValue={currentValue as string}
             size="1"
-            className="w-full !max-w-full mt-2"
+            className="w-full !max-w-full mt-1"
             radius="large"
           >
             {options

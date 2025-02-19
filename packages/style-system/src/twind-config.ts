@@ -96,11 +96,18 @@ export default defineConfig({
     ["brick-normal-", ({ $$ }) => `bg-${$$}-500 text-${$$}-100`],
     ["brick-dark-", ({ $$ }) => `bg-${$$}-800 text-${$$}-200`],
 
-    ["hero-1", { fontSize: "clamp(1.75rem, 1.5vw + 1.25rem, 2.5rem)", lineHeight: "1.25" }],
-    ["hero-2", { fontSize: "clamp(2rem, 1.75vw + 1.375rem, 2.875rem)", lineHeight: "1.25" }],
-    ["hero-3", { fontSize: "clamp(2.25rem, 2vw + 1.5rem, 3.25rem)", lineHeight: "1.25" }],
-    ["hero-4", { fontSize: "clamp(2.5rem, 2.25vw + 1.625rem, 3.625rem)", lineHeight: "1.25" }],
-    ["hero-5", { fontSize: "clamp(2.75rem, 2.5vw + 1.75rem, 4rem)", lineHeight: "1.25" }],
+    ["hero-size-m", { fontSize: "clamp(3rem, 2.5vw + 2.5rem, 4.75rem)", lineHeight: "1.1" }],
+    ["hero-size-l", { fontSize: "clamp(3.75rem, 3vw + 3rem, 5.75rem)", lineHeight: "1.1" }],
+    ["hero-size-xl", { fontSize: "clamp(4.5rem, 3.5vw + 3.5rem, 6.75rem)", lineHeight: "1.1" }],
+    ["hero-size-2xl", { fontSize: "clamp(5.25rem, 4vw + 4rem, 7.75rem)", lineHeight: "1.1" }],
+    ["hero-size-3xl", { fontSize: "clamp(6rem, 4.5vw + 4.5rem, 8.75rem)", lineHeight: "1.1" }],
+
+    ["text-shadow-none", { textShadow: "none" }],
+    ["text-shadow-s", { textShadow: "0 1px 2px rgba(0, 0, 0, 0.15)" }],
+    ["text-shadow-m", { textShadow: "0 2px 4px rgba(0, 0, 0, 0.2)" }],
+    ["text-shadow-l", { textShadow: "0 4px 8px rgba(0, 0, 0, 0.25)" }],
+    ["text-shadow-xl", { textShadow: "0 6px 12px rgba(0, 0, 0, 0.3)" }],
+
     ["scrollbar-thin", { scrollbarWidth: "thin" }],
     ["scrollbar-color-", ({ $$ }) => ({ scrollbarColor: `var(--${$$}-6) var(--${$$}-surface)` })],
     [
@@ -222,14 +229,14 @@ export default defineConfig({
 
       animation: {
         "fade-in": "fade-in 0.5s",
-        "elastic-pop": "elastic-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "elastic-pop": "elastic-pop 1s cubic-bezier(0.22, 1, 0.36, 1) forwards",
       },
       keyframes: {
         "elastic-pop": {
-          "0%": { transform: "scale(0) translateZ(-100rem) translateY(-10rem)", opacity: "0" },
-          "60%": { transform: "scale(1.15) translateZ(-60rem)", opacity: "0.9" },
-          "80%": { transform: "scale(0.98) translateZ(-1rem)", opacity: "1" },
-          "100%": { transform: "scale(1) translateZ(0) translateY(0)", opacity: "1" },
+          "0%": { transform: "scale(0)", opacity: "0" },
+          "50%": { transform: "scale(1.1)", opacity: "0.8" },
+          "70%": { transform: "scale(0.98)", opacity: "1" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
         "fade-in": {
           from: { opacity: "0" },

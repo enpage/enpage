@@ -279,9 +279,11 @@ const MenuBar = ({
   return (
     <div ref={ref} id="text-editor-menubar" className={tx(className)}>
       <div className="z-[800] flex gap-3 items-center bg-upstart-500 p-2 rounded-md shadow-xl backdrop-blur bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)]">
-        <ButtonGroup>
-          <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
-        </ButtonGroup>
+        {paragraphMode !== "hero" && (
+          <ButtonGroup>
+            <TextSizeSelect editor={editor} />
+          </ButtonGroup>
+        )}
         <TextAlignButtonGroup editor={editor} />
         <TextStyleButtonGroup editor={editor} />
         <DatasourceItemButton editor={editor} />
@@ -527,10 +529,9 @@ function ButtonGroup({ children, gap = "gap-0" }: { children: React.ReactNode; g
 
 type TextSizeSelectProps = {
   editor: Editor;
-  paragraphMode?: string;
 };
 
-function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
+function TextSizeSelect({ editor }: TextSizeSelectProps) {
   return (
     <Select.Root
       size="2"
@@ -562,16 +563,12 @@ function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
             </Select.Item>
           ))}
         </Select.Group>
-        {paragraphMode !== "hero" && (
-          <>
-            <Select.Separator />
-            <Select.Group>
-              <Select.Label>Text</Select.Label>
-              <Select.Item value="paragraph">Paragraph</Select.Item>
-              <Select.Item value="code">Code</Select.Item>
-            </Select.Group>
-          </>
-        )}
+        <Select.Separator />
+        <Select.Group>
+          <Select.Label>Text</Select.Label>
+          <Select.Item value="paragraph">Paragraph</Select.Item>
+          <Select.Item value="code">Code</Select.Item>
+        </Select.Group>
       </Select.Content>
     </Select.Root>
   );
