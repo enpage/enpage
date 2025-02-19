@@ -21,15 +21,19 @@ import { useCallback, useMemo } from "react";
 
 export default function Inspector() {
   const brick = useSelectedBrick();
-  const { deselectBrick } = useDraftHelpers();
+  const { deselectBrick, getParentBrick, updateBrickProps, setSelectedBrick } = useDraftHelpers();
   const { hidePanel } = useEditorHelpers();
   const previewMode = usePreviewMode();
-  const [selectedTab, setSelectedTab] = useLocalStorage("inspector_tab", "preset");
-  const draft = useDraft();
+  const [selectedTab, setSelectedTab] = useLocalStorage(
+    "inspector_tab",
+    previewMode === "desktop" ? "preset" : "style",
+  );
 
   if (!brick) {
     return null;
   }
+
+  const parentBrick = getParentBrick(brick.id);
 
   const manifest = manifests[brick.type];
   if (!manifest) {
@@ -40,15 +44,20 @@ export default function Inspector() {
   }
 
   return (
-    <Tabs.Root defaultValue={selectedTab} onValueChange={setSelectedTab}>
+    <Tabs.Root
+      defaultValue={previewMode === "desktop" ? selectedTab : "style"}
+      onValueChange={setSelectedTab}
+    >
       <Tabs.List className="sticky top-0 z-50">
-        <Tabs.Trigger value="preset" className="!flex-1">
-          Preset
-        </Tabs.Trigger>
+        {previewMode === "desktop" && (
+          <Tabs.Trigger value="preset" className="!flex-1">
+            Preset
+          </Tabs.Trigger>
+        )}
         <Tabs.Trigger value="style" className="!flex-1">
-          Settings
+          {previewMode === "mobile" ? "Mobile styles" : "Styles"}
         </Tabs.Trigger>
-        {manifest.properties.datasource && (
+        {/* {manifest.properties.datasource && (
           <Tabs.Trigger value="datasource" className="!flex-1">
             Data source
           </Tabs.Trigger>
@@ -57,8 +66,8 @@ export default function Inspector() {
           <Tabs.Trigger value="datarecord" className="!flex-1">
             Data record
           </Tabs.Trigger>
-        )}
-        {brick.type === "text" && (
+        )} */}
+        {previewMode === "desktop" && brick.type === "text" && (
           <Tabs.Trigger value="ai" className="!flex-1">
             AI <BsStars className={tx("ml-1 w-4 h-4 text-upstart-600")} />
           </Tabs.Trigger>
@@ -80,8 +89,31 @@ export default function Inspector() {
       <ScrollablePanelTab tab="preset">
         <div className="flex justify-between pr-0">
           <h2 className="py-1.5 px-2 flex justify-between bg-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
-            {manifest.properties.title.const}
-            <span className="text-xs text-gray-400 lowercase">{brick.id}</span>
+            {parentBrick ? (
+              <div className="flex gap-1.5 items-center">
+                <span
+                  className="text-upstart-700 cursor-pointer hover:(text-upstart-800 underline)"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBrick(parentBrick);
+                  }}
+                >
+                  {parentBrick.type}
+                </span>
+                <span className="text-xs ">&rarr;</span>
+                <span>{manifest.properties.title.const}</span>
+              </div>
+            ) : (
+              manifest.properties.title.const
+            )}
+            <span
+              className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
+              onClick={() => {
+                navigator.clipboard.writeText(brick.id);
+              }}
+            >
+              {brick.id}
+            </span>
           </h2>
         </div>
         <div className={tx("p-2 flex flex-col gap-3")}>
@@ -95,7 +127,7 @@ export default function Inspector() {
           <PresetsView
             onChoose={(preset) => {
               console.log("onChoose(%o)", preset);
-              draft.updateBrickProps(brick.id, preset, previewMode === "mobile");
+              updateBrickProps(brick.id, preset, previewMode === "mobile");
             }}
           />
         </div>
@@ -103,11 +135,26 @@ export default function Inspector() {
       <ScrollablePanelTab tab="style">
         <div className="flex justify-between pr-0">
           <h2 className="group py-1.5 px-2 flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 dark:!bg-dark-700 items-center font-medium text-sm capitalize flex-1 select-none">
-            {manifest.properties.title.const}
+            {parentBrick ? (
+              <div className="flex gap-1.5 items-center">
+                <span
+                  className="text-upstart-700 cursor-pointer hover:(text-upstart-800 underline)"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBrick(parentBrick);
+                  }}
+                >
+                  {parentBrick.type}
+                </span>
+                <span className="text-xs ">&rarr;</span>
+                <span>{manifest.properties.title.const}</span>
+              </div>
+            ) : (
+              manifest.properties.title.const
+            )}
             <span
               className="text-xs text-gray-500 font-mono lowercase opacity-0 group-hover:opacity-70 transition-opacity delay-1000"
               onClick={() => {
-                // copy to clipboard
                 navigator.clipboard.writeText(brick.id);
               }}
             >
@@ -118,9 +165,8 @@ export default function Inspector() {
         {previewMode === "mobile" && (
           <Callout.Root size="1" className="m-2">
             <Callout.Text size="1">
-              <strong>Warning</strong>: You are editing the mobile settings. Any changes here will only affect
-              how the brick appears on mobile devices. Yellow-highlighted fields are mobile-specific
-              customizations, while other fields inherit their values from the desktop version.
+              <strong>Note</strong>: You are editing mobile-only styles. Any changes here will only affect how
+              the brick appears on mobile devices.
             </Callout.Text>
           </Callout.Root>
         )}
@@ -133,9 +179,9 @@ export default function Inspector() {
 function ElementInspector({ brick }: { brick: Brick }) {
   const draft = useDraft();
   const getBrick = useGetBrick();
-  // biome-ignore lint/correctness/useExhaustiveDependencies: getBrick is a stable function
-  const brickInfo = useMemo(() => getBrick(brick.id), [brick.id]);
+  const brickInfo = getBrick(brick.id);
   const previewMode = usePreviewMode();
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: draft.updateBrickProps is a stable function
   const onChange = useCallback(
     (data: Record<string, unknown>, propertyChanged: string) => {
@@ -147,6 +193,7 @@ function ElementInspector({ brick }: { brick: Brick }) {
     },
     [brick.id],
   );
+
   const manifest = useMemo(() => manifests[brick.type], [brick.type]);
 
   if (!brickInfo) {
@@ -166,6 +213,9 @@ function ElementInspector({ brick }: { brick: Brick }) {
         formSchema: manifest.properties.props as unknown as JSONSchemaType<unknown>,
         formData: brickInfo.props,
         mobileFormData: previewMode === "mobile" ? brickInfo.mobileProps : undefined,
+        filter: (prop) => {
+          return previewMode !== "mobile" || prop["ui:responsive"];
+        },
         onChange,
       }),
     [manifest, onChange, brick.id, brickInfo, previewMode],

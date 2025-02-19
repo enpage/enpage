@@ -27,7 +27,6 @@ const RichTextField: React.FC<FieldProps<RichText>> = (props) => {
           discrete={textEditMode !== "large"}
           brickId={brickId}
           initialContent={currentValue}
-          menuPlacement="above-editor"
           enabled
           className={tx("form-textarea focus:ring-0 h-full", {
             "flex-1 rounded rounded-t-none border-gray-300": textEditMode === "large",

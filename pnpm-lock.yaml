@@ -98,6 +98,9 @@ importers:
       '@tiptap/extension-document':
         specifier: 2.11.2
         version: 2.11.2(@tiptap/core@2.10.3)
+      '@tiptap/extension-highlight':
+        specifier: 2.11.5
+        version: 2.11.5(@tiptap/core@2.10.3)
       '@tiptap/extension-mention':
         specifier: 2.11.2
         version: 2.11.2(@tiptap/core@2.10.3)(@tiptap/pm@2.10.3)(@tiptap/suggestion@2.11.2)
@@ -5015,6 +5018,14 @@ packages:
 
   /@tiptap/extension-heading@2.10.3(@tiptap/core@2.10.3):
     resolution: {integrity: sha512-AlxXXPCWIvw8hQUDFRskasj32iMNB8Sb19VgyFWqwvntGs2/UffNu8VdsVqxD2HpZ0g5rLYCYtSW4wigs9R3og==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.10.3(@tiptap/pm@2.10.3)
+    dev: false
+
+  /@tiptap/extension-highlight@2.11.5(@tiptap/core@2.10.3):
+    resolution: {integrity: sha512-VBZfT869L9CiTLF8qr+3FBUtJcmlyUTECORNo0ceEiNDg4H6V9uNPwaROMXrWiQCc+DYVCOkx541QrXwNMzxlg==}
     peerDependencies:
       '@tiptap/core': ^2.7.0
     dependencies:

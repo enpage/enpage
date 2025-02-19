@@ -241,6 +241,7 @@ export interface DraftStateProps {
 export interface DraftState extends DraftStateProps {
   setBricks: (bricks: Brick[]) => void;
   getBrick: (id: string) => Brick | undefined;
+  getParentBrick: (id: string) => Brick | undefined;
   deleteBrick: (id: string) => void;
   duplicateBrick: (id: string) => void;
   moveBrick: (id: string, to: "left" | "right") => void;
@@ -418,6 +419,14 @@ export const createDraftStore = (
             getBrick: (id) => {
               return getBrick(id, _get().bricks);
             },
+
+            getParentBrick: (id) => {
+              const brick = getBrick(id, _get().bricks);
+              if (brick?.parentId) {
+                return getBrick(brick.parentId, _get().bricks);
+              }
+            },
+
             setPreviewTheme: (theme) =>
               set((state) => {
                 state.previewTheme = theme;
@@ -698,6 +707,8 @@ export const useDraftHelpers = () => {
     setSelectedBrick: state.setSelectedBrick,
     deselectBrick: state.deselectBrick,
     deleteBrick: state.deleteBrick,
+    getParentBrick: state.getParentBrick,
+    updateBrickProps: state.updateBrickProps,
   }));
 };
 

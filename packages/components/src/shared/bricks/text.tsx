@@ -5,11 +5,12 @@ import { useEditableText } from "~/shared/hooks/use-editable-text";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/text.manifest";
 import { tx } from "@upstart.gg/style-system/twind";
+import type { BrickProps } from "@upstart.gg/sdk/shared/bricks/props/types";
 
 /**
  * Text brick
  */
-const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const Text = forwardRef<HTMLDivElement, BrickProps<Manifest>>((props, ref) => {
   const newProps = { ...Value.Create(manifest).props, ...props };
 
   //return <NonEditableText ref={ref} {...newProps} />;
@@ -20,7 +21,7 @@ const Text = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
   );
 });
 
-const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const NonEditableText = forwardRef<HTMLDivElement, BrickProps<Manifest>>((props, ref) => {
   const className = useBrickStyle(props);
   return (
     <div
@@ -32,13 +33,12 @@ const NonEditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, re
   );
 });
 
-const EditableText = forwardRef<HTMLDivElement, Manifest["props"]>((props, ref) => {
+const EditableText = forwardRef<HTMLDivElement, BrickProps<Manifest>>((props, ref) => {
   const className = useBrickStyle(props);
   const content = useEditableText({
     brickId: props.id,
     initialContent: props.content,
     inline: true,
-    menuPlacement: "page",
     enabled: true,
   });
   return (

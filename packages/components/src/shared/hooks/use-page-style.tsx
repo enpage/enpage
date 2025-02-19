@@ -5,19 +5,23 @@ import type { Attributes } from "@upstart.gg/sdk/shared/attributes";
 import type { ResponsiveMode } from "@upstart.gg/sdk/shared/responsive";
 import type { Theme } from "@upstart.gg/sdk/shared/theme";
 
+type UsePageStyleProps = {
+  attributes: Attributes;
+  editable?: boolean;
+  previewMode?: ResponsiveMode;
+  typography: Theme["typography"];
+  showIntro?: boolean;
+};
+
 export function usePageStyle({
   attributes,
   editable,
   previewMode,
   typography,
-}: {
-  attributes: Attributes;
-  typography: Theme["typography"];
-  editable?: boolean;
-  previewMode?: ResponsiveMode;
-}) {
+  showIntro,
+}: UsePageStyleProps) {
   return tx(
-    "grid group/page mx-auto page-container relative",
+    "grid group/page mx-auto page-container relative overflow-y-hidden",
     isStandardColor(attributes.$background.color) &&
       css({ backgroundColor: attributes.$background.color as string }),
     isStandardColor(attributes.$textColor) && css({ color: attributes.$textColor as string }),
@@ -56,6 +60,12 @@ export function usePageStyle({
     getTypographyStyles(typography),
 
     editable && "transition-all duration-300",
+
+    // Animate all bricks when the page is loading
+    editable && showIntro && "[&>.brick]:(opacity-0 animate-elastic-pop)",
+    /*
+
+        */
 
     // this is the grid overlay shown when dragging
     editable &&

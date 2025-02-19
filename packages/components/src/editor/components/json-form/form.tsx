@@ -17,16 +17,21 @@ import get from "lodash-es/get";
 import type {
   BackgroundSettings,
   BorderSettings,
-  DimensionsSettings,
+  LayoutSettings,
   EffectsSettings,
   FlexSettings,
+  TextSettings,
+  AlignSettings,
 } from "@upstart.gg/sdk/shared/bricks/props/style-props";
 import { EffectsField } from "./fields/effects";
 import type { ImageProps, RichText } from "@upstart.gg/sdk/shared/bricks/props/common";
 import type { Attributes, JSONSchemaType } from "@upstart.gg/sdk/shared/attributes";
 import { PagePaddingField } from "./fields/padding";
+import { AlignField } from "./fields/align";
+import { TextField } from "./fields/text";
 import BackgroundField from "./fields/background";
 import { FlexField } from "./fields/flex";
+import { Text } from "@upstart.gg/style-system/system";
 
 type FormComponent = { group: string; groupTitle: string; component: ReactNode };
 type FormComponents = (FormComponent | { group: string; groupTitle: string; components: FormComponent[] })[];
@@ -39,7 +44,7 @@ type GetFormComponentsProps = {
   onSubmit?: (data: Record<string, unknown>) => void;
   submitButtonLabel?: string;
   brickId: string;
-  filter?: (field: unknown) => boolean;
+  filter?: (field: JSONSchemaType<unknown>) => boolean;
   parents?: string[];
 };
 /**
@@ -64,7 +69,7 @@ export function getFormComponents({
   formSchema = sortJsonSchemaProperties(formSchema);
 
   const elements = Object.entries(formSchema.properties)
-    .filter(([, fieldSchema]) => (filter ? filter(fieldSchema) : true))
+    .filter(([, fieldSchema]) => (filter ? filter(fieldSchema as JSONSchemaType<unknown>) : true))
     .map(([fieldName, fieldSchema]) => {
       const field = fieldSchema as JSONSchemaType<unknown>;
       const id = parents.length ? `${parents.join(".")}.${fieldName}` : fieldName;
@@ -133,15 +138,45 @@ export function getFormComponents({
           };
         }
 
-        case "dimensions": {
-          const currentValue = (get(formData, id) ?? commonProps.schema.default) as DimensionsSettings;
+        case "layout": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as LayoutSettings;
           return {
             group,
             groupTitle,
             component: (
               <LayoutField
                 currentValue={currentValue}
-                onChange={(value: DimensionsSettings | null) => onChange({ [id]: value }, id)}
+                onChange={(value: LayoutSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "align": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as AlignSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <AlignField
+                currentValue={currentValue}
+                onChange={(value: AlignSettings | null) => onChange({ [id]: value }, id)}
+                {...commonProps}
+              />
+            ),
+          };
+        }
+
+        case "text": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as TextSettings;
+          return {
+            group,
+            groupTitle,
+            component: (
+              <TextField
+                currentValue={currentValue}
+                onChange={(value: TextSettings | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
               />
             ),
@@ -331,15 +366,16 @@ export function getFormComponents({
         }
 
         case "anyOf": {
+          const currentValue = (get(formData, id) ?? commonProps.schema.default) as string;
           return {
             group,
             groupTitle,
             component: (
-              <AnyOfField
-                options={field.anyOf}
-                currentValue={(formData[id] ?? commonProps.schema.default) as string}
-                onChange={(value: unknown | null) => onChange({ [id]: value }, id)}
+              <EnumField
+                currentValue={currentValue}
+                onChange={(value: string | null) => onChange({ [id]: value }, id)}
                 {...commonProps}
+                options={field.anyOf}
               />
             ),
           };
@@ -370,7 +406,7 @@ export function FormRenderer({ components, brickId }: { components: FormComponen
         {currentGroup !== element.group && element.groupTitle && (
           <h3
             className={tx(
-              "text-sm font-semibold  !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
+              "text-sm font-semibold !dark:bg-dark-600 bg-upstart-100 px-2 py-1 sticky top-0 z-[999] -mx-3",
             )}
           >
             {element.groupTitle}
@@ -404,16 +440,13 @@ export function AnyOfField(props: FieldProps<unknown>) {
 
   const currentOpt = "foo";
 
-  console.log("AnyOfField schema options", options);
-
   return (
     <>
       {title && (
-        <h3 className="text-sm font-medium bg-upstart-100 dark:bg-dark-600 px-2 py-1 sticky top-0 z-[999] -mx-3">
+        <Text as="label" size="2" weight="medium">
           {title}
-        </h3>
+        </Text>
       )}
-      Hello anyof
       <SegmentedControl.Root
         onValueChange={onChange}
         defaultValue={currentOpt}

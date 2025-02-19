@@ -24,7 +24,11 @@ import { post } from "~/editor/utils/api/base-api";
 import { IoIosSave } from "react-icons/io";
 import { formatDistance } from "date-fns";
 
-export default function TopBar() {
+type TopBarProps = {
+  showIntro: boolean;
+};
+
+export default function TopBar({ showIntro }: TopBarProps) {
   const editorHelpers = useEditorHelpers();
   const previewMode = usePreviewMode();
   const logoLink = useLogoLink();
@@ -54,7 +58,10 @@ export default function TopBar() {
   );
 
   // bg-upstart-600
-  const baseCls = `bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`;
+  const baseCls = tx(
+    `transition-opacity duration-300 bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)] px-3 min-w-[3.7rem]`,
+    showIntro && "opacity-0",
+  );
   const commonCls = `${baseCls}
   border-x border-l-upstart-400 border-r-upstart-700
     disabled:hover:from-transparent disabled:hover:to-[rgba(255,255,255,0.15)]
@@ -63,8 +70,12 @@ export default function TopBar() {
     disabled:text-white/40
   `;
 
-  const rocketBtn = `px-3 bg-gradient-to-tr from-orange-500 !to-yellow-400 border-l border-l-orange-300
-  hover:bg-gradient-to-tr hover:from-orange-600 hover:to-yellow-500`;
+  const rocketBtn = tx(
+    `transition-opacity duration-300
+    px-3 bg-gradient-to-tr from-orange-500 !to-yellow-400 border-l border-l-orange-300
+  hover:bg-gradient-to-tr hover:from-orange-600 hover:to-yellow-500`,
+    showIntro && "opacity-0",
+  );
 
   const btnWithArrow = "cursor-default !aspect-auto";
 
@@ -85,7 +96,7 @@ export default function TopBar() {
         role="navigation"
         className={tx(
           `bg-upstart-600 z-[9999] shadow-xl
-          flex text-xl text-white w-full justify-start items-stretch
+          flex text-xl text-white w-full justify-start items-stretch transition-opacity duration-300
           `,
           css({
             gridArea: "topbar",
@@ -98,12 +109,12 @@ export default function TopBar() {
           onClick={() => {
             window.location.href = logoLink;
           }}
-          className={tx(baseCls, "flex-shrink-0")}
+          className={tx(baseCls, "flex-shrink-0 logo")}
         >
           <img src={logo} alt="Upstart" className={tx("h-8 w-auto")} />
         </button>
 
-        <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
+        {/* <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))}>
           <Popover.Root>
             <Popover.Trigger>
               <button type="button" className="w-full">
@@ -144,7 +155,10 @@ export default function TopBar() {
               </div>
             </Popover.Content>
           </Popover.Root>
-        </div>
+        </div> */}
+
+        {/* spacer */}
+        <div className={tx(baseCls, "px-5 max-lg:hidden flex-1", css({ paddingBlock: "0.6rem" }))} />
 
         <button
           disabled={!canUndo}

@@ -10,7 +10,7 @@ export function useEditableText({
   brickId,
   initialContent,
   ...props
-}: Pick<TextEditorProps, "brickId" | "initialContent" | "menuPlacement" | "inline" | "enabled">) {
+}: Pick<TextEditorProps, "brickId" | "initialContent" | "inline" | "enabled" | "paragraphMode">) {
   // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
   const content = initialContent.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
   const onUpdateHandler = useCallback(createTextEditorUpdateHandler(brickId), []);

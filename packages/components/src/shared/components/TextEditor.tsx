@@ -34,6 +34,7 @@ import Mention from "@tiptap/extension-mention";
 import datasourceFieldSuggestions from "./datasourceFieldSuggestions";
 import { CgCloseR } from "react-icons/cg";
 import { getJSONSchemaFieldsList } from "../utils/json-field-list";
+import Highlight from "@tiptap/extension-highlight";
 
 function DatasourceFieldNode(props: NodeViewProps) {
   return (
@@ -93,7 +94,6 @@ export type TextEditorProps = {
   enabled?: boolean;
   className?: string;
   brickId: Brick["id"];
-  menuPlacement: "above-editor" | "page";
   discrete?: boolean;
   paragraphMode?: string;
   /**
@@ -103,14 +103,13 @@ export type TextEditorProps = {
 };
 
 const toolbarBtnCls =
-  "!bg-white first:rounded-l last:rounded-r text-sm px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(bg-upstart-500 text-white)";
+  "!bg-white first:rounded-l last:rounded-r text-sm text-gray-800 px-1 hover:[&:not([data-state=on])]:bg-upstart-100 dark:hover:[&:not([data-state=on])]:(bg-dark-900) leading-none data-[state=on]:(!bg-upstart-600 text-white)";
 
 const TextEditor = ({
   initialContent,
   onUpdate,
   className,
   brickId,
-  menuPlacement,
   enabled = false,
   discrete = false,
   paragraphMode,
@@ -119,7 +118,6 @@ const TextEditor = ({
   const mainEditor = useEditor();
   const datasources = useDatasourcesSchemas();
   const [editable, setEditable] = useState(enabled);
-  const menuContainer = useRef<HTMLDivElement>(document.querySelector("#editor"));
 
   // @ts-ignore
   const fields = getJSONSchemaFieldsList({ schemas: datasources });
@@ -134,6 +132,7 @@ const TextEditor = ({
     TextAlign.configure({
       types: ["heading"],
     }),
+    Highlight.configure({ multicolor: true }),
     // DatasourceFieldExtension,
     Mention.configure({
       HTMLAttributes: {
@@ -152,7 +151,7 @@ const TextEditor = ({
           "span",
           {
             "data-type": "mention",
-            class: tx("bg-upstart-100 text-[94%] px-0.5 py-0.5 rounded"),
+            class: tx("bg-upstart-500 text-white text-[94%] px-0.5 py-0.5 rounded"),
             "data-field": field,
           },
           `${options.suggestion.char}${field}}}`,
@@ -220,16 +219,6 @@ const TextEditor = ({
         "-mx-3 -mt-3": discrete,
       })}
     >
-      {editor && editable && menuPlacement === "above-editor" && (
-        <MenuBar
-          brickId={brickId}
-          editor={editor}
-          placement={menuPlacement}
-          discrete={discrete}
-          inline={inline}
-          paragraphMode={paragraphMode}
-        />
-      )}
       <EditorContent
         onDoubleClick={(e) => {
           e.preventDefault();
@@ -246,17 +235,16 @@ const TextEditor = ({
           "min-h-full flex border-0": mainEditor.textEditMode === "large",
         })}
       />
-      {editor && editable && menuPlacement === "page" && (
-        <Portal container={menuContainer.current}>
-          <MenuBar
-            brickId={brickId}
-            editor={editor}
-            placement={menuPlacement}
-            discrete={discrete}
-            inline={inline}
-            paragraphMode={paragraphMode}
-          />
-        </Portal>
+      {editor && editable && (
+        // <Portal container={menuContainer.current}>
+        <MenuBar
+          brickId={brickId}
+          editor={editor}
+          discrete={discrete}
+          inline={inline}
+          paragraphMode={paragraphMode}
+        />
+        // </Portal>
       )}
     </div>
   );
@@ -265,47 +253,37 @@ const TextEditor = ({
 const MenuBar = ({
   editor,
   brickId,
-  placement,
   discrete,
   paragraphMode,
   inline,
 }: {
   editor: Editor;
   brickId: Brick["id"];
-  placement: TextEditorProps["menuPlacement"];
   paragraphMode?: string;
   discrete?: boolean;
   inline?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const selectedBrick = useSelectedBrick();
-  let className = "";
 
-  if (placement === "above-editor") {
-    className = tx(
-      "z-[900] text-gray-800 flex gap-1 p-1 bg-gray-100 dark:bg-dark-700 text-sm flex flex-wrap",
-      {
-        "border border-b-0 border-gray-300 rounded-t ": !discrete,
-      },
-    );
-  } else {
-    className = tx(
-      "z-[800] text-gray-800 flex isolate transition-opacity duration-100",
-      "fixed top-[66px] left-0 right-0 text-sm justify-center",
-      // "z-[900] text-gray-800 flex gap-3 p-1 bg-upstart-600/25",
-      // "shadow-lg rounded absolute -top-11 left-1/2 -translate-x-1/2 text-sm backdrop-blur transition-all duration-100",
-      {
-        "opacity-0 hidden": selectedBrick?.id !== brickId,
-      },
-    );
-  }
+  const className = tx(
+    " flex isolate transition-opacity duration-100",
+    "absolute left-0 right-0 text-sm justify-center",
+    {
+      "opacity-0 hidden": selectedBrick?.id !== brickId,
+      "bottom-[calc(100%+8px)]": (selectedBrick?.position.desktop.y ?? 0) > 2,
+      "top-[calc(100%+8px)]": (selectedBrick?.position.desktop.y ?? 0) <= 2,
+    },
+  );
 
   return (
     <div ref={ref} id="text-editor-menubar" className={tx(className)}>
-      <div className="flex gap-3 items-center bg-upstart-500 p-2 rounded-md shadow-xl backdrop-blur bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)]">
-        <ButtonGroup>
-          <TextSizeSelect editor={editor} paragraphMode={paragraphMode} />
-        </ButtonGroup>
+      <div className="z-[800] flex gap-3 items-center bg-upstart-500 p-2 rounded-md shadow-xl backdrop-blur bg-gradient-to-t from-transparent to-[rgba(255,255,255,0.15)]">
+        {paragraphMode !== "hero" && (
+          <ButtonGroup>
+            <TextSizeSelect editor={editor} />
+          </ButtonGroup>
+        )}
         <TextAlignButtonGroup editor={editor} />
         <TextStyleButtonGroup editor={editor} />
         <DatasourceItemButton editor={editor} />
@@ -324,10 +302,11 @@ const MenuBar = ({
 function TextAlignButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-8"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300/50 dark:divide-dark-400 h-8"
       type="single"
       value={editor.isActive("textAlign") ? editor.getAttributes("textAlign").alignment : undefined}
       aria-label="Text align"
+      color="gray"
     >
       <ToggleGroup.Item
         className={tx(toolbarBtnCls)}
@@ -508,7 +487,7 @@ function DatasourceItemButton({ editor }: { editor: Editor }) {
 function TextStyleButtonGroup({ editor }: { editor: Editor }) {
   return (
     <ToggleGroup.Root
-      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300 dark:divide-dark-400  bg-white dark:bg-dark-700 dark:text-dark-200 border border-gray-300 dark:!border-dark-500 h-8"
+      className="inline-flex space-x-px divide-x rounded-[3px] divide-gray-300/500 dark:divide-dark-400 dark:bg-dark-700 dark:text-dark-200 h-8"
       type="multiple"
       value={
         [
@@ -550,10 +529,9 @@ function ButtonGroup({ children, gap = "gap-0" }: { children: React.ReactNode; g
 
 type TextSizeSelectProps = {
   editor: Editor;
-  paragraphMode?: string;
 };
 
-function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
+function TextSizeSelect({ editor }: TextSizeSelectProps) {
   return (
     <Select.Root
       size="2"
@@ -585,16 +563,12 @@ function TextSizeSelect({ editor, paragraphMode }: TextSizeSelectProps) {
             </Select.Item>
           ))}
         </Select.Group>
-        {paragraphMode !== "hero" && (
-          <>
-            <Select.Separator />
-            <Select.Group>
-              <Select.Label>Text</Select.Label>
-              <Select.Item value="paragraph">Paragraph</Select.Item>
-              <Select.Item value="code">Code</Select.Item>
-            </Select.Group>
-          </>
-        )}
+        <Select.Separator />
+        <Select.Group>
+          <Select.Label>Text</Select.Label>
+          <Select.Item value="paragraph">Paragraph</Select.Item>
+          <Select.Item value="code">Code</Select.Item>
+        </Select.Group>
       </Select.Content>
     </Select.Root>
   );

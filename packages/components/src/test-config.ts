@@ -89,7 +89,8 @@ const homePageBricks = defineBricks([
     {
       type: "hero",
       props: {
-        content: "Reach the stars.<br />Book your next trip<br />to Space.",
+        content:
+          "<h1 style='text-align:center'>Reach the stars.<br />Book your next trip<br />to Space.</h1>",
         // className:
         //   "capitalize flex font-bold text-[2.2rem] leading-[1] @desktop:text-7xl justify-center items-center text-center [text-shadow:_2px_2px_5px_rgb(0_0_0_/_40%)]",
       },
@@ -101,7 +102,7 @@ const homePageBricks = defineBricks([
         },
         desktop: {
           x: 0,
-          forceY: 20,
+          forceY: 18,
           w: "full",
           h: 16,
         },

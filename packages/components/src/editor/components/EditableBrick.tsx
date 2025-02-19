@@ -36,14 +36,17 @@ import { useBrickWrapperStyle } from "~/shared/hooks/use-brick-style";
 type BrickWrapperProps = ComponentProps<"div"> & {
   brick: Brick;
   isContainerChild?: boolean;
+  index: number;
 };
 
 const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
-  ({ brick, style, children, isContainerChild }, ref) => {
+  ({ brick, style, children, isContainerChild, index }, ref) => {
     const hasMouseMoved = useRef(false);
     const selectedBrick = useSelectedBrick();
     const wrapperClass = useBrickWrapperStyle({
-      brick,
+      props: brick.props,
+      mobileProps: brick.mobileProps,
+      position: brick.position,
       editable: true,
       isContainerChild,
       selected: selectedBrick?.id === brick.id,
@@ -62,10 +65,11 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         75% { transform: scale(0.98); }
         100% { transform: scale(1); }
       }
+        transform transition-transform duration-600 ease-spring scale-105 animate-spring
     `,
 
     // Animation
-    "transform transition-transform duration-600 ease-spring scale-105 animate-spring",
+    "t",
     */
 
     const onBrickWrapperClick = (e: MouseEvent<HTMLElement>) => {
@@ -88,7 +92,7 @@ const BrickWrapper = forwardRef<HTMLDivElement, BrickWrapperProps>(
         // data-y="0"
         // data-position={JSON.stringify(brick.position[previewMode])}
         style={style}
-        className={wrapperClass}
+        className={tx(wrapperClass, `![animation-delay:${0.5 * (index + 1)}s]`)}
         ref={ref}
         onClick={onBrickWrapperClick}
         onMouseDown={(e) => {

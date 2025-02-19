@@ -3,8 +3,9 @@ import { forwardRef } from "react";
 import { tx, apply } from "@upstart.gg/style-system/twind";
 import { useBrickStyle } from "../hooks/use-brick-style";
 import { manifest, type Manifest } from "@upstart.gg/sdk/bricks/manifests/image.manifest";
+import type { BrickProps } from "@upstart.gg/sdk/shared/bricks/props/types";
 
-const Image = forwardRef<HTMLImageElement, Manifest["props"]>((props, ref) => {
+const Image = forwardRef<HTMLImageElement, BrickProps<Manifest>>((props, ref) => {
   props = { ...Value.Create(manifest).props, ...props };
   const className = useBrickStyle(props);
   const { src, alt } = props;

@@ -18,12 +18,6 @@ export default function PresetsView({ onChoose }: PresetsViewProps) {
       value: value.const,
     };
   });
-  const variants = Object.entries(stylePreset.properties.variant.anyOf).map(([name, value]) => {
-    return {
-      name: value.title,
-      value: value.const,
-    };
-  });
 
   return (
     <>
